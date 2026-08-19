@@ -15,7 +15,7 @@ Lý do chọn cấu hình này: một codebase chạy desktop lẫn iPhone, depl
 
 ### Hai chế độ dữ liệu
 
-**Khuyến nghị cho MVP: cloud sync ngay từ đầu.** Đăng nhập passwordless bằng email, dữ liệu lưu ở Supabase và được bảo vệ theo user. Cách này cho phép iPhone và desktop thấy cùng một danh sách.
+**Khuyến nghị cho MVP: cloud sync ngay từ đầu.** Đăng nhập passwordless bằng mã OTP gửi qua email, dữ liệu lưu ở Supabase và được bảo vệ theo user. Người dùng nhập mã ngay trong Spark để tránh magic link bị mở ở browser khác trên mobile. Cách này cho phép iPhone và desktop thấy cùng một danh sách.
 
 Nếu muốn làm prototype cực nhanh, có thể dùng IndexedDB/local storage trước. Nhược điểm là dữ liệu gắn với từng trình duyệt và không tự đồng bộ giữa thiết bị; phải có migration path trước khi đưa vào dùng thật.
 

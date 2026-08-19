@@ -4,7 +4,7 @@ Web app quản lý task và note cá nhân hằng ngày, ưu tiên tốc độ, 
 
 ## Trạng thái hiện tại
 
-Ứng dụng MVP đang được triển khai bằng Next.js App Router + TypeScript. Website mở public; chế độ demo lưu cục bộ, còn dữ liệu cá nhân đồng bộ qua Supabase sau khi xác thực bằng email magic link.
+Ứng dụng MVP đang được triển khai bằng Next.js App Router + TypeScript. Website mở public; chế độ demo lưu cục bộ, còn dữ liệu cá nhân đồng bộ qua Supabase sau khi xác thực bằng mã OTP gửi qua email.
 
 Hướng UI đã chọn: **Option C — Compact Canvas**, dùng palette navy–turquoise–violet–Muted Coral–Deep Purple và sidebar đầy đủ có thể thu gọn thành compact rail.
 
