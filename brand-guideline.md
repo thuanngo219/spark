@@ -24,6 +24,12 @@ Mở Spark ra, hiểu ngay việc cần làm và bắt đầu nhanh — không c
 - Tagline là thành phần truyền thông, không tự động ghép vào logo primary.
 - Có thể dùng độc lập ở hero, opening slide hoặc closing slide khi ngữ cảnh đã nhận diện rõ Spark.
 
+### Website title
+
+- Browser title, Open Graph title và tên đầy đủ trong PWA manifest: **Spark — Make todo easy & fun**.
+- Tên ngắn của ứng dụng tiếp tục là **Spark**.
+- Website title là metadata sản phẩm; không thay thế tagline truyền thông và không tự động ghép vào logo.
+
 ### Personality
 
 1. **Đơn giản:** ưu tiên một ý rõ ràng hơn nhiều lớp giải thích.
@@ -232,14 +238,16 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 
 | Token/ngữ cảnh | Font | Size / line-height | Weight |
 |---|---|---|---|
-| `display-page` | Inter; Raleway chỉ cho brand moment | `34–49px` / `1.05` | `700` |
-| `title-sheet` | Inter | `21–24px` / `1.15` | `700` |
-| `body` | Inter | `13–14px` / `1.4–1.6` | `400–500` |
-| `control` | Inter | `12px` / theo chiều cao control | `600–650` |
-| `label` | Inter | `11px` / `1.3` | `600–650` |
-| `metadata` | Inter | `9–10px` / `1.3` | `400–600` |
+| `display-page` | Inter; Raleway chỉ cho brand moment | Base `34–49px`, render khoảng `38–55px` desktop và `41–59px` mobile / `1.05` | `700` |
+| `title-sheet` | Inter | Base `21–24px`, render khoảng `24–27px` desktop và `25–29px` mobile / `1.15` | `700` |
+| `body` | Inter | Base `13–14px`, render khoảng `15–16px` desktop và `16–17px` mobile / `1.4–1.6` | `400–500` |
+| `control` | Inter | Base `12px`, render `13.5px` desktop và `14.4px` mobile / theo chiều cao control | `600–650` |
+| `label` | Inter | Base `11px`, render khoảng `12.4px` desktop và `13.2px` mobile / `1.3` | `600–650` |
+| `metadata` | Inter | Base `9–10px`, render khoảng `10–11px` desktop và `11–12px` mobile / `1.3` | `400–600` |
 
-- Item title mặc định dùng Inter `13px`, weight `400`; không tự động bold task/note.
+- CSS lưu type size bằng `rem` trên base 16px. Web app đặt root scale `112.5%` trên desktop và `120%` dưới 700px; nhờ vậy typography tăng đồng bộ mà không phóng to icon, rail hoặc control geometry.
+- Item title mặc định dùng Inter base `13px`, render khoảng `14.6px` desktop và `15.6px` mobile, weight `400`; không tự động bold task/note.
+- List density: desktop row khoảng `35px` với gap `6px`; mobile row tối thiểu `44px` với gap `2px` để gọn nhưng vẫn giữ vùng chạm đạt chuẩn.
 - Heading trang dùng Navy, tracking âm nhẹ; label ngắn có thể uppercase với letter-spacing `0.10–0.13em`.
 - Không thêm font family mới trong component. Mọi thay đổi font phải cập nhật bảng này và cách load font trước khi triển khai.
 

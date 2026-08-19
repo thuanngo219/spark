@@ -49,6 +49,9 @@ File này ghi lại các quyết định sản phẩm/kỹ thuật để các ph
 | D-041 | Gán shortcut `S A` cho view Tất cả và hiển thị mapping trong pending hint cùng bảng trợ giúp. | Giữ quy ước prefix `S` nhất quán và giúp view tổng hợp mới truy cập nhanh bằng bàn phím. |
 | D-042 | Thêm presentation filter Ẩn/Hiện ghi chú dùng chung cho mọi view; lựa chọn được giữ khi chuyển view trong phiên nhưng không thay đổi dữ liệu note. | Cho phép chuyển sang chế độ chỉ tập trung task mà không mất ghi chú hoặc tạo hành vi khác nhau giữa các view. |
 | D-043 | Chuyển filter Ẩn/Hiện ghi chú thành secondary icon button ở bên trái Search; trạng thái ẩn dùng note icon có nét gạch chéo. Mobile giữ icon này cạnh headline trong khi Search/Help vẫn ẩn. | Giảm thêm một hàng control trên canvas, đồng bộ view actions và vẫn giữ khả năng lọc trên mobile. |
+| D-044 | Chuyển toàn bộ UI font size từ px sang rem và đặt root type scale `112.5%` desktop, `120%` mobile. Icon, control geometry, sidebar width và row height tiếp tục dùng px. | Tăng khoảng 10–15% độ đọc trên desktop và 20% trên iPhone mà không phóng to toàn bộ giao diện hoặc phá mật độ Compact Canvas. |
+| D-045 | Giảm mật độ danh sách mobile từ row `48px` + gap `5px` xuống row tối thiểu `44px` + gap `2px`; desktop không đổi. | Bù lại cảm giác thoáng sau khi tăng font mobile, đồng thời giữ đúng touch target tối thiểu 44px. |
+| D-046 | Đổi browser title, Open Graph title và tên đầy đủ PWA thành `Spark — Make todo easy & fun`; short name vẫn là `Spark`. | Đồng bộ tiêu đề website với thông điệp tiếng Anh mới mà không thay tagline hoặc logo lockup. |
 
 ## Cần chủ dự án xác nhận
 

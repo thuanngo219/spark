@@ -123,6 +123,10 @@ Navigation chính có **Tất cả** ngay dưới **Theo ngày**. View này gi�
 
 Mọi view dùng chung một secondary icon button **Ẩn ghi chú / Hiện ghi chú** trong view actions, đặt bên trái Search. Trên mobile chỉ icon filter này còn hiển thị cạnh headline vì Search/Help được ẩn. Trạng thái ẩn được giữ khi chuyển view trong phiên, chỉ tác động presentation và dùng neutral selected background thay cho focus glow.
 
+Typography web app dùng base size bằng `rem`, scale root `112.5%` trên desktop và `120%` trên mobile. Cách này tăng độ đọc của navigation, item, metadata và editor nhưng giữ nguyên kích thước icon, sidebar, touch target và row geometry.
+
+Sau khi tăng type scale, danh sách mobile dùng row tối thiểu `44px` và gap `2px` giữa item. Đây là mật độ thấp nhất vẫn giữ touch target 44px; desktop tiếp tục dùng row khoảng `35px` và gap `6px`.
+
 ## Shared component inventory
 
 - App shell / sidebar / mobile navigation sheet.

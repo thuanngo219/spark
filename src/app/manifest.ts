@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Spark — Personal Tasks & Notes",
+    name: "Spark — Make todo easy & fun",
     short_name: "Spark",
     description: "Việc nhỏ, ngày sáng rõ.",
     start_url: "/",

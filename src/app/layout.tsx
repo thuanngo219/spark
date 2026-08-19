@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://spark.thuanngo.com"),
-  title: "Spark — Việc nhỏ, ngày sáng rõ",
+  title: "Spark — Make todo easy & fun",
   description: "Ứng dụng task và note cá nhân nhanh, gọn và yên tĩnh.",
   applicationName: "Spark",
   icons: {
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
   },
   openGraph: {
-    title: "Spark — Việc nhỏ, ngày sáng rõ",
+    title: "Spark — Make todo easy & fun",
     description: "Biết hôm nay cần làm gì. Ghi lại điều đáng nhớ.",
     url: "https://spark.thuanngo.com",
     siteName: "Spark",
