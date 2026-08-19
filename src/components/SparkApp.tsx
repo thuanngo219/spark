@@ -16,6 +16,7 @@ import {
   formatShortDate,
   getLocalDateKey,
 } from "@/lib/dates";
+import { normalizeDataIds, type SparkData } from "@/lib/data-ids";
 import { completedForView, filterItems } from "@/lib/task-filters";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase";
 import type { ItemType, Project, SparkItem, View } from "@/lib/types";
@@ -27,53 +28,56 @@ const projectColors = ["#32C8C7", "#8461D5", "#D6A84F", "#D9776A", "#5C78D6"];
 type SyncStatus = "demo" | "loading" | "syncing" | "synced" | "error" | "not-configured";
 type CloudUser = { id: string; email: string };
 
-function seedData(today: string): { items: SparkItem[]; projects: Project[] } {
+function seedData(today: string): SparkData {
+  const workProjectId = crypto.randomUUID();
+  const personalProjectId = crypto.randomUUID();
+  const sparkProjectId = crypto.randomUUID();
   const projects: Project[] = [
-    { id: "work", name: "Công việc", color: "#32C8C7", archivedAt: null },
-    { id: "personal", name: "Cá nhân", color: "#8461D5", archivedAt: null },
-    { id: "spark", name: "Spark", color: "#D6A84F", archivedAt: null },
+    { id: workProjectId, name: "Công việc", color: "#32C8C7", archivedAt: null },
+    { id: personalProjectId, name: "Cá nhân", color: "#8461D5", archivedAt: null },
+    { id: sparkProjectId, name: "Spark", color: "#D6A84F", archivedAt: null },
   ];
   const createdAt = new Date().toISOString();
   const items: SparkItem[] = [
     {
-      id: "welcome-1",
+      id: crypto.randomUUID(),
       type: "task",
       title: "Chốt ba việc quan trọng cho hôm nay",
       dueDate: today,
-      projectId: "work",
+      projectId: workProjectId,
       completedAt: null,
       isImportant: true,
       isUrgent: false,
       createdAt,
     },
     {
-      id: "welcome-2",
+      id: crypto.randomUUID(),
       type: "note",
       title: "Ý tưởng: dành 20 phút cuối ngày để thu gọn danh sách",
       dueDate: today,
-      projectId: "spark",
+      projectId: sparkProjectId,
       completedAt: null,
       isImportant: false,
       isUrgent: false,
       createdAt,
     },
     {
-      id: "welcome-3",
+      id: crypto.randomUUID(),
       type: "task",
       title: "Gửi bản cập nhật cho khách hàng",
       dueDate: addCalendarDays(today, -1),
-      projectId: "work",
+      projectId: workProjectId,
       completedAt: null,
       isImportant: false,
       isUrgent: true,
       createdAt,
     },
     {
-      id: "welcome-4",
+      id: crypto.randomUUID(),
       type: "task",
       title: "Đặt lịch khám định kỳ",
       dueDate: addCalendarDays(today, 2),
-      projectId: "personal",
+      projectId: personalProjectId,
       completedAt: null,
       isImportant: true,
       isUrgent: false,
@@ -81,6 +85,15 @@ function seedData(today: string): { items: SparkItem[]; projects: Project[] } {
     },
   ];
   return { items, projects };
+}
+
+function readLocalData(today: string): SparkData {
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    return normalizeDataIds(stored ? JSON.parse(stored) : seedData(today));
+  } catch {
+    return seedData(today);
+  }
 }
 
 function isTypingTarget(target: EventTarget | null) {
@@ -99,7 +112,7 @@ function viewKey(view: View) {
 
 export function SparkApp() {
   const today = getLocalDateKey();
-  const [data, setData] = useState<{ items: SparkItem[]; projects: Project[] } | null>(null);
+  const [data, setData] = useState<SparkData | null>(null);
   const [view, setView] = useState<View>({ type: "today" });
   const [sidebarCompact, setSidebarCompact] = useState(false);
   const [mobileNav, setMobileNav] = useState(false);
@@ -122,13 +135,10 @@ export function SparkApp() {
 
   useEffect(() => {
     queueMicrotask(() => {
-      try {
-        const stored = window.localStorage.getItem(STORAGE_KEY);
-        setData(stored ? JSON.parse(stored) : seedData(today));
-        setSidebarCompact(window.localStorage.getItem(SIDEBAR_KEY) === "compact");
-      } catch {
-        setData(seedData(today));
-      }
+      const localData = readLocalData(today);
+      dataRef.current = localData;
+      setData(localData);
+      setSidebarCompact(window.localStorage.getItem(SIDEBAR_KEY) === "compact");
     });
   }, [today]);
 
@@ -141,25 +151,39 @@ export function SparkApp() {
     const client = getSupabaseBrowserClient();
     if (!client) return;
     let active = true;
+    let activationUserId: string | null = null;
+    let activationPromise: Promise<void> | null = null;
 
-    const activateSession = async (user: { id: string; email?: string }) => {
-      if (!active) return;
-      setCloudUser({ id: user.id, email: user.email ?? "" });
-      setSyncStatus("loading");
-      try {
-        const remote = await fetchCloudData(client);
-        if (!active) return;
-        if (remote.items.length === 0 && remote.projects.length === 0) {
-          const localData = dataRef.current ?? seedData(getLocalDateKey());
-          await seedCloudData(client, localData, user.id);
-          setData(localData);
-        } else {
-          setData(remote);
+    const activateSession = (user: { id: string; email?: string }) => {
+      if (!active) return Promise.resolve();
+      if (activationUserId === user.id && activationPromise) return activationPromise;
+
+      activationUserId = user.id;
+      activationPromise = (async () => {
+        setCloudUser({ id: user.id, email: user.email ?? "" });
+        setSyncStatus("loading");
+        try {
+          const remote = await fetchCloudData(client);
+          if (!active) return;
+          if (remote.items.length === 0 && remote.projects.length === 0) {
+            const localData = normalizeDataIds(
+              dataRef.current ?? readLocalData(getLocalDateKey()),
+            );
+            dataRef.current = localData;
+            await seedCloudData(client, localData, user.id);
+            if (!active) return;
+            setData(localData);
+          } else {
+            dataRef.current = remote;
+            setData(remote);
+          }
+          setSyncStatus("synced");
+        } catch (error) {
+          console.error("Spark cloud activation failed", error);
+          if (active) setSyncStatus("error");
         }
-        setSyncStatus("synced");
-      } catch {
-        if (active) setSyncStatus("error");
-      }
+      })();
+      return activationPromise;
     };
 
     client.auth.getSession().then(({ data: sessionData }) => {
@@ -175,6 +199,8 @@ export function SparkApp() {
         if (session?.user) {
           void activateSession(session.user);
         } else if (active) {
+          activationUserId = null;
+          activationPromise = null;
           setCloudUser(null);
           setSyncStatus("demo");
         }
@@ -478,7 +504,15 @@ export function SparkApp() {
             )}
           </div>
         </section>
-        <p className="storage-note"><span /> Đã lưu trên thiết bị này</p>
+        <p className={`storage-note ${syncStatus}`}><span /> {
+          syncStatus === "synced"
+            ? "Đã đồng bộ trên mọi thiết bị"
+            : syncStatus === "syncing" || syncStatus === "loading"
+              ? "Đang đồng bộ dữ liệu…"
+              : syncStatus === "error"
+                ? "Đồng bộ bị gián đoạn · dữ liệu vẫn còn trên thiết bị"
+                : "Chỉ lưu trên thiết bị này · chưa đồng bộ"
+        }</p>
       </main>
 
       {editingItem && (
