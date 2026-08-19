@@ -7,8 +7,8 @@ Logo chính thức của Spark là lockup ngang gồm icon check-burst tách ri�
 ## Màu trong logo
 
 - Wordmark và dấu tick: Deep Purple `#65458A`.
-- Tia ngang phía dưới bên trái: turquoise `#44D4CD`.
-- Tia chéo phía trên bên trái: Muted Coral `#D9776A`.
+- Tia ngang phía dưới bên trái: Muted Coral `#D9776A`.
+- Tia chéo phía trên bên trái: turquoise `#44D4CD`.
 - Tia dọc phía trên: violet `#8951C7`.
 
 Navy `#111742` vẫn là màu nền/chrome chính của sản phẩm nhưng không xuất hiện trong primary logo lockup này.
@@ -28,9 +28,25 @@ Trắng, xám và đen là neutral, không tính vào năm màu chromatic.
 ## Asset
 
 - `spark-logo-primary.png`: PNG RGBA 2048×768, nền trong suốt.
-- Đây là master raster chính thức hiện tại. Khi triển khai production cần dựng SVG tương ứng, tạo colorway inverse/monochrome và kiểm tra favicon/app icon ở 16, 32, 192 và 512px.
+- `spark-logo-primary.svg`: SVG path 2048×768, nền trong suốt; không nhúng bitmap.
+- `spark-logo-negative.png`: PNG RGBA 2048×768, toàn bộ logo trắng trên nền trong suốt.
+- `spark-logo-negative.svg`: SVG colorway trắng cho background tối.
+- App icon đã được triển khai ở 32, 180, 192 và 512px; bước production tiếp theo là kiểm tra thêm favicon 16px và bản monochrome tối.
 - Không thay icon check-burst thành star; ba tia luôn là ba rounded bar tách rời.
+- Tick dùng stroke 57 đơn vị trong viewBox 2048×768, tương đương khoảng 68% độ dày của bản logo ban đầu.
+- Ba tia là ba capsule cùng kích thước 140×60 đơn vị, mỏng khoảng 82.5% so với tia ngang ban đầu; chỉ khác hướng xoay và màu.
+
+## Web app assets
+
+- `public/brand/spark-logo.svg` và `.png`: bản logo primary được phục vụ trực tiếp trong web app.
+- `public/brand/spark-logo-negative.svg` và `.png`: bản negative dùng trên sidebar/background tối.
+- `public/spark-mark.svg`: app mark standard trên nền neutral sáng.
+- `public/spark-mark-maskable.svg`: app mark maskable với safe zone trên nền navy.
+- `public/spark-mark-negative.svg`: app mark trắng nền trong suốt cho compact rail.
+- `public/icons/spark-32.png`, `spark-192.png`, `spark-512.png`: favicon/PWA raster sizes.
+- `public/icons/spark-apple-180.png`: Apple touch icon nền opaque.
+- `public/icons/spark-maskable-512.png`: PWA maskable icon.
 
 ## Prompt/edit intent
 
-Giữ nguyên bold lowercase wordmark `spark`, kerning, icon-left horizontal layout và hình học check-burst từ ảnh được chủ dự án chọn; chỉ áp palette mới, với wordmark/tick cùng Deep Purple và ba tia lần lượt turquoise–Muted Coral–violet. Không gradient, glow, shadow, mockup, 3D hoặc watermark.
+Giữ nguyên bold lowercase wordmark `spark`, kerning và icon-left horizontal layout từ ảnh được chủ dự án chọn. Dùng check-burst đã tinh chỉnh với tick thanh và ba tia đồng kích thước; wordmark/tick cùng Deep Purple, tia ngang dùng Muted Coral, tia chéo dùng turquoise và tia dọc dùng violet. Không gradient, glow, shadow, mockup, 3D hoặc watermark.

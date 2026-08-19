@@ -29,6 +29,7 @@ Nếu muốn làm prototype cực nhanh, có thể dùng IndexedDB/local storage
 | `user_id` | uuid | owner, tham chiếu auth user |
 | `name` | text | 1–80 ký tự |
 | `color` | text | token/hex đã kiểm tra |
+| `is_starred` | boolean | đưa project vào nhóm Cần lưu ý |
 | `position` | integer | thứ tự thủ công, chuẩn bị cho tương lai |
 | `archived_at` | timestamptz nullable | soft archive |
 | `created_at` | timestamptz | audit |
@@ -67,6 +68,8 @@ Tạo một module thuần, ví dụ `src/lib/task-filters.ts`, không rải log
 - `today`: `due_date <= localToday` và item còn hiện hành; với task yêu cầu chưa hoàn thành, note không kiểm tra completed state; chia `overdue` và `dueToday`.
 - `upcoming`: `localTomorrow <= due_date <= localToday + 3 calendar days`.
 - `byDate`: `due_date === selectedDate`.
+- `all`: lấy mọi item còn hiện hành rồi chia `overdue`, `today`, `upcoming` (ba ngày kế tiếp), `later` và `undated`; completed task vẫn ở disclosure riêng.
+- Trạng thái `hideNotes` là presentation filter dùng chung cho mọi view; áp dụng sau master/smart/project filter, trước khi chia nhóm và tính số quá hạn hiển thị. Không ghi thay đổi xuống item.
 - Luôn truyền timezone vào hàm tạo `localToday` để test được.
 - Test đặc biệt: cuối tháng, cuối năm, năm nhuận và thời điểm quanh nửa đêm.
 
@@ -80,6 +83,7 @@ src/
 │   │   ├── today/
 │   │   ├── upcoming/
 │   │   ├── calendar/
+│   │   ├── all/
 │   │   ├── important/
 │   │   ├── urgent/
 │   │   └── projects/[projectId]/
@@ -101,7 +105,7 @@ src/
 
 ## 5. Trạng thái và mutation
 
-- Dùng optimistic update cho check/uncheck task, create, rename và toggle Quan Trọng/Urgent.
+- Dùng optimistic update cho check/uncheck task, create, rename và toggle Quan Trọng/Ưu tiên (`is_urgent`).
 - Nếu server trả lỗi, rollback và hiển thị thông báo rõ.
 - Xóa dùng soft/undo ở UI; chỉ hard delete sau khi hết thời gian undo hoặc triển khai trường `deleted_at` nếu cần an toàn hơn.
 - Không dùng global state library ở MVP nếu server cache + component state đã đủ.
@@ -110,11 +114,14 @@ src/
 ### Sidebar và keyboard shortcuts
 
 - Sidebar có hai trạng thái: `expanded` và `compact`; lưu lựa chọn cục bộ để giữ sau reload.
+- Rail compact rộng khoảng `56px`; hai nhóm Cần lưu ý và Dự án có trạng thái mở/đóng riêng được lưu cục bộ.
+- Project có thể gắn sao; `is_starred` được đồng bộ cloud và project được hiển thị trong Cần lưu ý.
 - Ở compact state, filter dùng icon + count; project dùng dot màu lớn. Tất cả icon-only controls phải có accessible label và tooltip.
 - Dùng một keyboard shortcut handler tập trung, không gắn listener rải rác trong component.
-- Hỗ trợ chuỗi `G T` → Today, `G U` → Upcoming, `G D` → By date, `[` → toggle sidebar và `?` → shortcut help.
+- Hỗ trợ chuỗi `S T` → Today, `S S` → Upcoming, `S D` → By date, `S A` → Tất cả, `S I` → Quan Trọng, `S U` → Ưu tiên và `S 1–9` → chín project đầu theo thứ tự compact sidebar; `[` toggle sidebar và `?` mở trợ giúp.
+- Compact sidebar dùng tooltip tức thời cho navigation icon, project dot và footer action; tooltip project kèm shortcut `S 1–9` khi có.
 - Bỏ qua shortcut khi event phát sinh trong `input`, `textarea`, `select` hoặc phần tử `contenteditable`; `Escape` hủy pending sequence.
-- Hiển thị pending-key hint sau `G` và tự reset sau khoảng 1.000ms.
+- Hiển thị pending-key hint sau `S` và tự reset sau khoảng 1.000ms.
 - Test: từng mapping điều hướng đúng, sequence hết hạn, Escape hủy, không chạy khi nhập task và sidebar preference được restore.
 
 ## 6. PWA và iPhone
@@ -157,7 +164,7 @@ Biểu tượng Spark sẽ xuất hiện cạnh các app khác và mở trực t
 ### Phase 1 — Functional MVP
 
 - Scaffold project, auth và database migrations.
-- CRUD projects/items; hỗ trợ task/note và smart filters Quan Trọng/Urgent.
+- CRUD projects/items; hỗ trợ task/note và smart filters Quan Trọng/Ưu tiên.
 - Hôm nay, Sắp tới, Theo ngày và Project view.
 - Optimistic mutation + undo.
 - Unit và end-to-end tests.

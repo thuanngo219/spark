@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { addCalendarDays, getLocalDateKey } from "@/lib/dates";
-import { filterItems } from "@/lib/task-filters";
+import { filterItems, groupItemsByTime } from "@/lib/task-filters";
 import type { SparkItem } from "@/lib/types";
 
 const item = (overrides: Partial<SparkItem>): SparkItem => ({
@@ -62,6 +62,26 @@ describe("master filters", () => {
     const projectItems = items.map((entry) => ({ ...entry, projectId: "p1" }));
     const result = filterItems(projectItems, { type: "project", projectId: "p1" }, today);
     expect(result.at(-1)?.id).toBe("undated");
+  });
+
+  it("All includes every active item and groups it by time", () => {
+    const allItems = filterItems(items, { type: "all" }, today);
+    expect(allItems.map((entry) => entry.id)).toEqual([
+      "overdue",
+      "today",
+      "note",
+      "tomorrow",
+      "day-three",
+      "day-four",
+      "undated",
+    ]);
+    expect(groupItemsByTime(allItems, today).map((group) => [group.key, group.items.map((entry) => entry.id)])).toEqual([
+      ["overdue", ["overdue"]],
+      ["today", ["today", "note"]],
+      ["upcoming", ["tomorrow", "day-three"]],
+      ["later", ["day-four"]],
+      ["undated", ["undated"]],
+    ]);
   });
 });
 

@@ -57,17 +57,18 @@ Note là một item ghi chú ngắn, không phải task:
 - Có due date và project tùy chọn giống task để có thể xuất hiện trong view thời gian/dự án.
 - Không có trạng thái hoàn thành; có thể sửa, xóa hoặc lưu trữ.
 
-### Quan Trọng và Urgent
+### Quan Trọng và Ưu tiên
 
 - Cả task và note đều có thể bật **Quan Trọng** bằng icon star.
-- Cả task và note đều có thể bật **Urgent** bằng icon điện xẹt.
-- Hai cờ độc lập; một item có thể đồng thời Quan Trọng và Urgent.
+- Cả task và note đều có thể bật **Ưu tiên** bằng icon điện xẹt; data model giữ tên `is_urgent` để tương thích.
+- Hai cờ độc lập; một item có thể đồng thời Quan Trọng và Ưu tiên.
 - Đây là hai tín hiệu duy nhất trong MVP, không mở rộng thành hệ priority nhiều cấp.
 
 ### Projects
 
 - Tạo project bằng tên và một màu nhận diện.
 - Đổi tên/màu và lưu trữ project.
+- Có thể gắn sao project để đưa project lên nhóm **Cần lưu ý** trong sidebar.
 - Mở project để xem các task chưa hoàn thành của project đó.
 - Task trong project đã lưu trữ vẫn tồn tại; project không còn xuất hiện ở danh sách điều hướng chính.
 
@@ -78,16 +79,19 @@ Note là một item ghi chú ngắn, không phải task:
 | **Hôm nay** | Task chưa hoàn thành có due date hôm nay **hoặc đã quá hạn**. Task quá hạn nằm trong nhóm riêng ở đầu danh sách. |
 | **Sắp tới** | Task chưa hoàn thành có due date từ ngày mai đến hết ngày thứ ba tính từ hôm nay. Ví dụ hôm nay 10/8 thì gồm 11/8, 12/8 và 13/8. |
 | **Theo ngày** | Chọn một ngày cụ thể để xem task chưa hoàn thành đến hạn ngày đó; có nút quay về hôm nay. |
+| **Tất cả** | Toàn bộ task chưa hoàn thành và note, chia theo thứ tự Quá hạn, Hôm nay, Sắp tới (ba ngày kế tiếp), Sau đó và Chưa có ngày. |
 | **Project** | Task chưa hoàn thành thuộc project đã chọn, sắp xếp theo due date; task chưa có ngày nằm cuối. |
 
 Đối với note, các view thời gian dùng due date tương tự task; note không bị loại bởi trạng thái hoàn thành vì note không có checkbox.
+
+Mọi view có một bộ lọc hiển thị chung để ẩn/hiện note. Khi ẩn, note chỉ bị loại khỏi danh sách đang nhìn và số liệu quá hạn hiển thị; dữ liệu note không bị sửa hoặc xóa, và lựa chọn tiếp tục áp dụng khi chuyển view trong phiên hiện tại.
 
 ### Smart filters
 
 | Bộ lọc | Quy tắc |
 |---|---|
 | **Quan Trọng** | Task chưa hoàn thành và note có `is_important = true`. |
-| **Urgent** | Task chưa hoàn thành và note có `is_urgent = true`. |
+| **Ưu tiên** | Task chưa hoàn thành và note có `is_urgent = true`. |
 
 Item có cả hai cờ xuất hiện trong cả hai smart filter.
 
@@ -96,7 +100,7 @@ Quy ước ngày:
 - Múi giờ mặc định: `Asia/Ho_Chi_Minh`.
 - Tuần bắt đầu từ Thứ Hai.
 - So sánh theo calendar date trong múi giờ người dùng, không dùng khoảng 24 giờ trượt.
-- Task không có due date không xuất hiện trong ba master filter thời gian, nhưng xuất hiện trong project tương ứng.
+- Task không có due date không xuất hiện trong Hôm nay, Sắp tới hoặc Theo ngày; task vẫn xuất hiện ở nhóm Chưa có ngày trong Tất cả và trong project tương ứng.
 
 ### Completed tasks
 
@@ -112,16 +116,19 @@ Spark
 ├── Sắp tới
 ├── Theo ngày
 │   └── Date picker / calendar strip
+├── Tất cả
 ├── Smart filters
 │   ├── Quan Trọng
-│   └── Urgent
+│   └── Ưu tiên
 └── Projects
     ├── Project A
     ├── Project B
     └── + Tạo project
 ```
 
-Desktop dùng sidebar đầy đủ và cho phép thu gọn thành compact rail bằng một nút chevron luôn nhìn thấy hoặc phím `[`. Trạng thái thu gọn được ghi nhớ trên thiết bị. Mobile dùng header + sheet điều hướng; các view chính vẫn truy cập tối đa trong hai thao tác.
+Desktop mở mặc định ở view Hôm nay với sidebar thu gọn thành compact rail; người dùng có thể mở sidebar bằng nút panel luôn nhìn thấy hoặc phím `[`. Lựa chọn sau đó được ghi nhớ trên thiết bị. Mobile dùng header + sheet điều hướng; các view chính vẫn truy cập tối đa trong hai thao tác.
+
+Hai nhóm **Cần lưu ý** và **Dự án** có thể thu gọn độc lập. Cần lưu ý gồm smart filter Quan Trọng/Ưu tiên và các project được gắn sao; trạng thái nhóm được ghi nhớ trên thiết bị.
 
 ### Keyboard shortcuts
 
@@ -129,9 +136,13 @@ Phím tắt filter dùng chuỗi hai phím để tránh xung đột với trình
 
 | Phím | Hành động |
 |---|---|
-| `G`, sau đó `T` | Mở **Hôm nay**. |
-| `G`, sau đó `U` | Mở **Sắp tới**. |
-| `G`, sau đó `D` | Mở **Theo ngày**. |
+| `S`, sau đó `T` | Mở **Hôm nay**. |
+| `S`, sau đó `S` | Mở **Sắp tới**. |
+| `S`, sau đó `D` | Mở **Theo ngày**. |
+| `S`, sau đó `A` | Mở **Tất cả**. |
+| `S`, sau đó `I` | Mở **Quan Trọng**. |
+| `S`, sau đó `U` | Mở **Ưu tiên**. |
+| `S`, sau đó `1–9` | Mở dự án tương ứng theo thứ tự đang hiển thị trong sidebar. |
 | `[` | Thu gọn/mở rộng sidebar. |
 | `?` | Mở bảng trợ giúp phím tắt. |
 | `Escape` | Hủy chuỗi phím đang chờ hoặc đóng bảng trợ giúp. |
@@ -139,7 +150,7 @@ Phím tắt filter dùng chuỗi hai phím để tránh xung đột với trình
 Quy tắc:
 
 - Không kích hoạt shortcut khi focus nằm trong input, textarea, select hoặc vùng `contenteditable`.
-- Sau khi nhấn `G`, UI hiển thị một gợi ý nhỏ về các phím tiếp theo; trạng thái chờ tự hủy sau khoảng một giây.
+- Sau khi nhấn `S`, UI hiển thị một gợi ý nhỏ về các phím tiếp theo; trạng thái chờ tự hủy sau khoảng một giây.
 - Shortcut phải được hiển thị trong tooltip/menu trợ giúp, không yêu cầu người dùng ghi nhớ để sử dụng app.
 
 ## 7. Luồng chính
@@ -199,9 +210,12 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Ngày chuyển đúng tại nửa đêm ở múi giờ cấu hình.
 - Một task chỉ thuộc tối đa một project trong MVP.
 - Note hiển thị bằng bullet point, không có checkbox hoặc completed state.
-- Task/note có thể bật đồng thời Quan Trọng và Urgent; smart filters bao gồm đúng item phù hợp.
+- Task/note có thể bật đồng thời Quan Trọng và Ưu tiên; smart filters bao gồm đúng item phù hợp.
+- Bộ lọc ẩn ghi chú hoạt động nhất quán ở mọi view và không làm thay đổi dữ liệu note.
 - Layout hoạt động từ 320px đến desktop; không có horizontal scroll ngoài thành phần lịch chủ đích.
 - Tất cả thao tác chính dùng được bằng touch và keyboard.
 - Sidebar desktop chuyển đổi được giữa full và compact; lựa chọn được giữ sau khi reload.
-- Các shortcut `G T`, `G U`, `G D`, `[` và `?` hoạt động đúng, không kích hoạt khi đang nhập task.
+- Cần lưu ý/Dự án có thể thu gọn; project gắn sao xuất hiện trong Cần lưu ý và trạng thái này được lưu cùng dữ liệu project.
+- Các shortcut `S T`, `S S`, `S D`, `S A`, `S I`, `S U`, `S 1–9`, `[` và `?` hoạt động đúng, không kích hoạt khi đang nhập task.
+- Compact sidebar hiển thị tooltip tên hạng mục/project ngay khi hover hoặc focus vào icon/dot.
 - App cài được lên Home Screen với tên/icon riêng và mở ở chế độ standalone khi nền tảng hỗ trợ.

@@ -4,6 +4,7 @@ export type Project = {
   id: string;
   name: string;
   color: string;
+  isStarred: boolean;
   archivedAt: string | null;
 };
 
@@ -23,6 +24,7 @@ export type View =
   | { type: "today" }
   | { type: "upcoming" }
   | { type: "calendar"; date: string }
+  | { type: "all" }
   | { type: "important" }
   | { type: "urgent" }
   | { type: "project"; projectId: string };
