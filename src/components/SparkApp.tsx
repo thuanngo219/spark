@@ -814,7 +814,9 @@ function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
   onSignedOut: () => void;
 }) {
   const [email, setEmail] = useState("");
+  const [token, setToken] = useState("");
   const [sending, setSending] = useState(false);
+  const [verifying, setVerifying] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
 
@@ -826,11 +828,33 @@ function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
     setError("");
     const result = await client.auth.signInWithOtp({
       email: email.trim(),
-      options: { emailRedirectTo: `${window.location.origin}/` },
     });
     setSending(false);
-    if (result.error) setError("Chưa gửi được liên kết. Hãy kiểm tra email và thử lại.");
+    if (result.error) {
+      setError(
+        result.error.message.toLowerCase().includes("rate")
+          ? "Bạn vừa yêu cầu mã. Hãy đợi một phút rồi thử lại."
+          : "Chưa gửi được mã. Hãy kiểm tra email và thử lại.",
+      );
+    }
     else setSent(true);
+  };
+
+  const verify = async (event: FormEvent) => {
+    event.preventDefault();
+    const client = getSupabaseBrowserClient();
+    if (!client || token.trim().length < 6) return;
+    setVerifying(true);
+    setError("");
+    const result = await client.auth.verifyOtp({
+      email: email.trim(),
+      token: token.trim(),
+      type: "email",
+    });
+    setVerifying(false);
+    if (result.error) {
+      setError("Mã không đúng hoặc đã hết hạn. Hãy dùng mã mới nhất trong email.");
+    }
   };
 
   return (
@@ -844,15 +868,25 @@ function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
           <div className="sync-message warning"><Icon name="zap" /><div><strong>Chưa kết nối Supabase</strong><p>Thêm hai biến môi trường trong <code>.env.local</code> và chạy migration để bật đồng bộ.</p></div></div>
         ) : user ? (
           <>
-            <div className="sync-hero"><span><Icon name="check" size={27} /></span><h3>{status === "error" ? "Đồng bộ đang gián đoạn" : "Đã đồng bộ an toàn"}</h3><p>Task, note và dự án của bạn sẽ xuất hiện trên mọi browser sau khi mở magic link bằng cùng email.</p></div>
+            <div className="sync-hero"><span><Icon name="check" size={27} /></span><h3>{status === "error" ? "Đồng bộ đang gián đoạn" : "Đã đồng bộ an toàn"}</h3><p>Task, note và dự án của bạn sẽ xuất hiện trên mọi browser sau khi đăng nhập bằng cùng email.</p></div>
             <div className="signed-in-row"><div><small>Đang dùng</small><strong>{user.email}</strong></div><button className="text-button" onClick={onSignedOut}>Ngắt kết nối</button></div>
           </>
         ) : sent ? (
-          <div className="sync-hero"><span><Icon name="check" size={27} /></span><h3>Kiểm tra hộp thư</h3><p>Mình đã gửi magic link tới <strong>{email}</strong>. Mở liên kết đó trên browser này để kết nối dữ liệu.</p><button className="text-button" onClick={() => setSent(false)}>Dùng email khác</button></div>
+          <div className="sync-hero otp-step">
+            <span><Icon name="check" size={27} /></span>
+            <h3>Nhập mã trong email</h3>
+            <p>Mình đã gửi mã đăng nhập tới <strong>{email}</strong>. Nhập mã mới nhất ngay tại đây; không cần mở liên kết.</p>
+            <form className="sync-form" onSubmit={verify}>
+              <label className="field"><span>Mã đăng nhập</span><input className="otp-input" autoFocus autoComplete="one-time-code" inputMode="numeric" maxLength={8} value={token} onChange={(event) => setToken(event.target.value.replace(/\D/g, ""))} placeholder="000000" /></label>
+              {error && <p className="form-error">{error}</p>}
+              <button className="primary-button" disabled={verifying || token.trim().length < 6}>{verifying ? "Đang xác nhận…" : "Xác nhận và đồng bộ"}</button>
+            </form>
+            <button className="text-button" onClick={() => { setSent(false); setToken(""); setError(""); }}>Gửi lại hoặc dùng email khác</button>
+          </div>
         ) : (
           <>
-            <div className="sync-benefits"><div><span>01</span><p><strong>Website vẫn mở public</strong>Ai cũng xem được giao diện, không có màn hình login chặn lối vào.</p></div><div><span>02</span><p><strong>Dữ liệu của bạn vẫn riêng tư</strong>Magic link nhận diện bạn; RLS ngăn người khác đọc hoặc sửa danh sách.</p></div></div>
-            <form className="sync-form" onSubmit={submit}><label className="field"><span>Email nhận magic link</span><input type="email" required autoComplete="email" placeholder="ban@example.com" value={email} onChange={(event) => setEmail(event.target.value)} /></label>{error && <p className="form-error">{error}</p>}<button className="primary-button" disabled={sending || !email.trim()}>{sending ? "Đang gửi…" : "Bật đồng bộ"}</button></form>
+            <div className="sync-benefits"><div><span>01</span><p><strong>Website vẫn mở public</strong>Ai cũng xem được giao diện, không có màn hình login chặn lối vào.</p></div><div><span>02</span><p><strong>Dữ liệu của bạn vẫn riêng tư</strong>Mã email nhận diện bạn; RLS ngăn người khác đọc hoặc sửa danh sách.</p></div></div>
+            <form className="sync-form" onSubmit={submit}><label className="field"><span>Email nhận mã đăng nhập</span><input type="email" required autoComplete="email" placeholder="ban@example.com" value={email} onChange={(event) => setEmail(event.target.value)} /></label>{error && <p className="form-error">{error}</p>}<button className="primary-button" disabled={sending || !email.trim()}>{sending ? "Đang gửi…" : "Gửi mã và bật đồng bộ"}</button></form>
           </>
         )}
       </div>

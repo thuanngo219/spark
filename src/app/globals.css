@@ -199,6 +199,8 @@ kbd { font-family: inherit; }
 .sync-benefits strong { display: block; color: var(--navy-900); font-size: 12px; margin-bottom: 2px; }
 .sync-form { border-top: 1px solid var(--line); padding-top: 18px; }
 .sync-form .primary-button { width: 100%; }
+.otp-step .sync-form { margin: 17px 0 11px; text-align: left; }
+.otp-input { text-align: center; font-size: 23px !important; font-weight: 750; letter-spacing: .28em; font-variant-numeric: tabular-nums; }
 .form-error { color: var(--coral); margin: -5px 0 12px; font-size: 11px; }
 .sync-hero { text-align: center; padding: 9px 13px 21px; }
 .sync-hero > span { width: 60px; height: 60px; margin: 0 auto 14px; display: grid; place-items: center; color: #1ca5a3; background: var(--turquoise-soft); border-radius: 19px; }

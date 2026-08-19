@@ -29,6 +29,7 @@ File này ghi lại các quyết định sản phẩm/kỹ thuật để các ph
 | D-021 | D-020 được điều chỉnh: website vẫn mở public và có demo cục bộ, nhưng dữ liệu cá nhân đồng bộ qua Supabase sau khi xác thực nhẹ bằng email magic link. | Đồng bộ trên mọi browser cần một danh tính ổn định; magic link + RLS đáp ứng yêu cầu này mà không đặt màn hình login chặn việc xem website. |
 | D-022 | Chốt hai màu mở rộng là Muted Coral `#D9776A` và Deep Purple `#65458A`; palette chromatic đầy đủ gồm navy `#111742`, turquoise `#44D4CD`, violet `#8951C7`, Muted Coral và Deep Purple. | Muted Coral thêm một accent ấm vừa phải; Deep Purple tối hơn violet nhưng không gần navy, giúp phân tầng màu mà không tăng tương phản quá gắt. Quyết định này chốt lựa chọn mở ở Q-005. |
 | D-023 | Logo chính thức là lockup lowercase bold `spark` với icon check-burst tách riêng. Wordmark và dấu tick cùng Deep Purple `#65458A`; ba tia lần lượt dùng turquoise `#44D4CD`, Muted Coral `#D9776A` và violet `#8951C7`. | Giữ khả năng đọc mạnh của wordmark đã chọn, thống nhất tick với chữ và đưa ba accent chính vào icon mà không biến burst thành star. |
+| D-025 | D-021 được điều chỉnh về trải nghiệm xác thực: Spark gửi mã OTP qua email và cho nhập mã ngay trong ứng dụng, thay cho việc yêu cầu mở magic link. Website vẫn mở public; chỉ dữ liệu đồng bộ mới cần xác thực. | OTP tránh trường hợp magic link bị mở hoặc tiêu thụ ở browser khác trên mobile, đồng thời vẫn giữ Supabase Auth và RLS để dữ liệu riêng tư. |
 
 ## Cần chủ dự án xác nhận
 
