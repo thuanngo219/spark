@@ -31,6 +31,14 @@ export function formatLongDate(dateKey: string): string {
   }).format(new Date(`${dateKey}T12:00:00.000Z`));
 }
 
+export function formatDateRange(startDateKey: string, endDateKey: string): string {
+  const formatter = new Intl.DateTimeFormat("vi-VN", {
+    day: "numeric",
+    month: "long",
+  });
+  return `${formatter.format(new Date(`${startDateKey}T12:00:00.000Z`))} – ${formatter.format(new Date(`${endDateKey}T12:00:00.000Z`))}`;
+}
+
 export function formatShortDate(dateKey: string, todayKey: string): string {
   if (dateKey === todayKey) return "Hôm nay";
   if (dateKey === addCalendarDays(todayKey, -1)) return "Hôm qua";

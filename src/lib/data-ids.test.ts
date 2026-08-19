@@ -10,7 +10,7 @@ const ids = [
 
 function legacyData(): SparkData {
   return {
-    projects: [{ id: "work", name: "Công việc", color: "#32C8C7", archivedAt: null }],
+    projects: [{ id: "work", name: "Công việc", color: "#32C8C7", isStarred: false, archivedAt: null }],
     items: [
       {
         id: "welcome-1",
@@ -53,9 +53,20 @@ describe("normalizeDataIds", () => {
   it("removes references to missing projects before upload", () => {
     const data = legacyData();
     data.items[0].projectId = "missing";
+    let index = 0;
 
-    const normalized = normalizeDataIds(data, () => ids.shift()!);
+    const normalized = normalizeDataIds(data, () => ids[index++]);
 
     expect(normalized.items[0].projectId).toBeNull();
+  });
+
+  it("defaults legacy projects to an unstarred state", () => {
+    const data = legacyData();
+    delete (data.projects[0] as Partial<(typeof data.projects)[number]>).isStarred;
+    let index = 0;
+
+    const normalized = normalizeDataIds(data, () => ids[index++]);
+
+    expect(normalized.projects[0].isStarred).toBe(false);
   });
 });

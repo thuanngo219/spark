@@ -24,6 +24,7 @@ npm run dev
 
 ## Tài liệu nguồn
 
+- [Brand guideline](brand-guideline.md): nền tảng thương hiệu, logo, màu sắc, typography, voice, iconography và cách áp dụng.
 - [Product brief](docs/PROJECT_BRIEF.md): mục tiêu, phạm vi MVP, hành vi và tiêu chí nghiệm thu.
 - [UI directions](docs/UI_OPTIONS.md): ba phương án giao diện và quyết định đề xuất.
 - [Implementation guide](docs/IMPLEMENTATION_GUIDE.md): kiến trúc, dữ liệu, lộ trình triển khai, publish và cài lên iPhone.

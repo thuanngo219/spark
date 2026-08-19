@@ -99,22 +99,39 @@ Ba phương án cùng dùng một information architecture và data model. Khác
 
 Chủ dự án đã chọn **Option C — Compact Canvas** vì sự gọn gàng. Visual direction dùng navy `#111742` làm nền/chrome chính, turquoise `#44D4CD` làm màu tương tác, violet `#8951C7` làm màu hỗ trợ, Muted Coral `#D9776A` làm accent ấm và Deep Purple `#65458A` làm màu nhận diện trầm hơn violet nhưng tách biệt rõ với navy; content surface giữ sáng và sạch. Tổng palette chromatic là năm màu; trắng, xám và đen được xem là neutral và không tính vào giới hạn này.
 
-Palette mở rộng đang đề xuất: **Soft Amber `#D6A84F`** dành cho Quan Trọng/star và **Muted Coral `#D9776A`** dành cho Urgent/điện xẹt. Hai màu chỉ dùng ở icon, trạng thái và highlight nhỏ; không dùng làm mảng nền lớn.
+Palette mở rộng đang đề xuất: **Soft Amber `#D6A84F`** dành cho Quan Trọng/star và **Muted Coral `#D9776A`** dành cho Ưu tiên/điện xẹt. Hai màu chỉ dùng ở icon, trạng thái và highlight nhỏ; không dùng làm mảng nền lớn.
 
 Trong task list, project chỉ được biểu diễn bằng **dot màu cỡ lớn**, không lặp lại tên project. Tên project vẫn xuất hiện trong navigation, màn hình project và task editor để bảo đảm người dùng có thể hiểu/chỉnh quan hệ này.
 
 Navigation desktop đã chốt là **sidebar đầy đủ theo cấu trúc Option A**, giữ danh sách theo Compact Canvas. Người dùng có thể thu gọn sidebar thành icon rail bằng nút chevron hiển thị rõ hoặc phím `[`, rồi mở lại khi cần. Top navigation không dùng trong phiên bản hiện tại.
 
-Filter có thể truy cập bằng chuỗi phím `G T`, `G U`, `G D`; phím `[` chuyển trạng thái sidebar và `?` mở bảng trợ giúp.
+Mật độ đã được tinh chỉnh: rail thu gọn rộng khoảng `56px`, navigation desktop cao `32–34px`, item list khoảng `35px` với khoảng cách thoáng giữa các hàng và không dùng đường phân cách. Content dùng một canvas phẳng, hạn chế card trắng/xám lồng nhau. Nút thu gọn là rounded-square có icon panel; compact rail dùng logo negative màu trắng trên nền navy.
+
+Nhóm **Tập trung** được đổi tên thành **Cần lưu ý**. Cần lưu ý và Dự án có thể thu gọn độc lập; project được gắn sao sẽ được đẩy lên Cần lưu ý.
+
+Project editor đặt nút star icon-only ở đầu hàng chọn màu, sau đó là palette tám màu nhận diện: Turquoise, Violet, Muted Coral, Deep Purple, Soft Amber, Cornflower, Sage và Dusty Rose. Bốn màu dẫn xuất chỉ dùng cho nhận diện project, không mở rộng palette CTA hay trạng thái hệ thống.
+
+Trong project view, nút edit nằm ngay bên phải tên dự án và mở Project Editor hiện có để đổi tên, màu nhận diện hoặc trạng thái Cần lưu ý.
+
+CTA và utility button chính dùng nền turquoise, hover chuyển navy. Search/Help ở page header là secondary icon button theo kiểu Hủy: nền trong suốt, icon xám, hover neutral nhẹ. Các control có ý nghĩa semantic như Xóa, Quan Trọng, Ưu tiên, navigation và swatch màu giữ hệ màu riêng. Focus state không dùng glow; nền field/control tối hơn khoảng 12%.
+
+Ứng dụng mở mặc định ở Hôm nay với sidebar compact; khi người dùng đổi trạng thái sidebar, lựa chọn mới tiếp tục được ghi nhớ.
+
+Filter có thể truy cập bằng chuỗi phím `S T`, `S S`, `S D`, `S A`, `S I`, `S U`; `S 1–9` mở project theo thứ tự compact sidebar. Phím `[` chuyển trạng thái sidebar và `?` mở bảng trợ giúp. Compact sidebar hiện tooltip tức thời khi hover/focus icon hoặc project dot.
+
+Navigation chính có **Tất cả** ngay dưới **Theo ngày**. View này giữ canvas phẳng và chia item đang hoạt động thành Quá hạn, Hôm nay, Sắp tới, Sau đó và Chưa có ngày để quét theo thời gian mà không cần đổi filter.
+
+Mọi view dùng chung một secondary icon button **Ẩn ghi chú / Hiện ghi chú** trong view actions, đặt bên trái Search. Trên mobile chỉ icon filter này còn hiển thị cạnh headline vì Search/Help được ẩn. Trạng thái ẩn được giữ khi chuyển view trong phiên, chỉ tác động presentation và dùng neutral selected background thay cho focus glow.
 
 ## Shared component inventory
 
 - App shell / sidebar / mobile navigation sheet.
 - View header và open-task count.
 - Quick-add composer có lựa chọn Task/Note.
-- Item row: task dùng checkbox, note dùng bullet point; cả hai có title, project dot lớn, star/điện xẹt và due label; không hiện tên project trong danh sách.
+- Quick-add đóng dùng CTA turquoise “Thêm công việc”; khi mở dùng một surface trắng duy nhất với field có label, nền nhẹ, bo góc và spacing đồng bộ project editor. Hủy là secondary text button; Thêm là primary turquoise.
+- Item row: task dùng checkbox, note dùng một rounded dash mark xám; project dot nằm giữa marker và title; cả hai có star/điện xẹt luôn nhìn thấy; không hiện chip loại item hoặc tên project trong danh sách, và view Hôm nay không lặp nhãn ngày “Hôm nay” trên từng item.
 - Item edit sheet/popover.
-- Smart filters Quan Trọng và Urgent.
+- Smart filters Quan Trọng và Ưu tiên.
 - Project row và project editor.
 - Date strip/date picker.
 - Completed disclosure.

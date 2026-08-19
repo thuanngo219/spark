@@ -5,19 +5,22 @@
 Đọc theo thứ tự:
 
 1. `README.md`
-2. `docs/PROJECT_BRIEF.md`
-3. `docs/UI_OPTIONS.md`
-4. `docs/DECISIONS.md`
-5. `docs/IMPLEMENTATION_GUIDE.md` nếu công việc liên quan kỹ thuật hoặc deploy
+2. `brand-guideline.md`
+3. `docs/PROJECT_BRIEF.md`
+4. `docs/UI_OPTIONS.md`
+5. `docs/DECISIONS.md`
+6. `docs/IMPLEMENTATION_GUIDE.md` nếu công việc liên quan kỹ thuật hoặc deploy
 
 ## Nguyên tắc sản phẩm
 
 - Đây là công cụ cá nhân, không phải phần mềm quản trị nhóm.
-- Một item trong MVP là `task` hoặc `note`; cả hai có tên, due date/project tùy chọn và cờ Quan Trọng/Urgent. Chỉ task có checkbox/trạng thái hoàn thành; note hiển thị bằng bullet point.
+- Một item trong MVP là `task` hoặc `note`; cả hai có tên, due date/project tùy chọn và cờ Quan Trọng/Ưu tiên (`is_urgent` trong data model). Chỉ task có checkbox/trạng thái hoàn thành; note hiển thị bằng bullet point.
+- Bộ lọc hiển thị Ẩn/Hiện ghi chú áp dụng nhất quán cho mọi view và không được sửa/xóa dữ liệu note.
 - Giữ thao tác thêm task nhanh; không mở form/modal dài khi chưa cần.
 - Ưu tiên mobile-first, bàn phím trên desktop và vùng chạm tối thiểu 44px trên mobile.
-- Không thêm priority ngoài hai cờ Quan Trọng/Urgent, tag, rich-text note, subtask, reminder, recurring task, AI hoặc collaboration nếu chưa được chủ dự án duyệt.
+- Không thêm priority ngoài hai cờ Quan Trọng/Ưu tiên, tag, rich-text note, subtask, reminder, recurring task, AI hoặc collaboration nếu chưa được chủ dự án duyệt.
 - Không sao chép asset, logo hoặc pixel-level UI của Superlist/Things. Chỉ sử dụng mood và nguyên tắc thiết kế làm tham khảo.
+- Mọi thay đổi về logo, màu, typography, voice, iconography hoặc hình ảnh phải đối chiếu `brand-guideline.md`.
 - Ngôn ngữ giao diện mặc định: tiếng Việt. Date logic mặc định: múi giờ `Asia/Ho_Chi_Minh`, tuần bắt đầu từ Thứ Hai.
 - UI direction đã chốt: Compact Canvas với sidebar đầy đủ có thể thu gọn thành compact rail; không thay bằng top navigation nếu chưa được duyệt lại.
 - Phím tắt filter phải hoạt động ngoài input/editor và không chặn thao tác nhập văn bản.
@@ -34,8 +37,8 @@
 ## Definition of done cho MVP
 
 - Tạo, sửa, chọn ngày/project và xóa task/note hoạt động; task có thể hoàn thành, note không có checkbox.
-- Quan Trọng và Urgent có thể bật độc lập trên task/note; các smart filter trả đúng nội dung.
-- Các filter Hôm nay, Sắp tới và Theo ngày trả đúng dữ liệu theo quy tắc đã chốt.
+- Quan Trọng và Ưu tiên có thể bật độc lập trên task/note; các smart filter trả đúng nội dung.
+- Các filter Hôm nay, Sắp tới, Theo ngày và Tất cả trả đúng dữ liệu theo quy tắc đã chốt.
 - Sidebar có thể thu gọn/mở rộng, ghi nhớ lựa chọn; bộ phím tắt filter và bảng trợ giúp hoạt động bằng keyboard.
 - Dữ liệu của người dùng được bảo vệ bằng xác thực và Row Level Security nếu dùng backend đồng bộ.
 - App responsive, dùng tốt trên iPhone, có manifest/icon và chạy qua HTTPS.

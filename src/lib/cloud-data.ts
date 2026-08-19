@@ -5,6 +5,7 @@ type ProjectRow = {
   id: string;
   name: string;
   color: string;
+  is_starred: boolean;
   archived_at: string | null;
 };
 
@@ -21,7 +22,13 @@ type ItemRow = {
 };
 
 function toProject(row: ProjectRow): Project {
-  return { id: row.id, name: row.name, color: row.color, archivedAt: row.archived_at };
+  return {
+    id: row.id,
+    name: row.name,
+    color: row.color,
+    isStarred: row.is_starred,
+    archivedAt: row.archived_at,
+  };
 }
 
 function toItem(row: ItemRow): SparkItem {
@@ -40,7 +47,7 @@ function toItem(row: ItemRow): SparkItem {
 
 export async function fetchCloudData(client: SupabaseClient) {
   const [projectsResult, itemsResult] = await Promise.all([
-    client.from("projects").select("id,name,color,archived_at").order("position"),
+    client.from("projects").select("id,name,color,is_starred,archived_at").order("position"),
     client
       .from("items")
       .select("id,type,title,due_date,project_id,completed_at,is_important,is_urgent,created_at")
@@ -60,6 +67,7 @@ export async function upsertProject(client: SupabaseClient, project: Project, us
     user_id: userId,
     name: project.name,
     color: project.color,
+    is_starred: project.isStarred,
     archived_at: project.archivedAt,
   });
   if (error) throw error;

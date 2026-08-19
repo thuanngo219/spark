@@ -12,19 +12,41 @@ import {
 } from "@/lib/cloud-data";
 import {
   addCalendarDays,
+  formatDateRange,
   formatLongDate,
   formatShortDate,
   getLocalDateKey,
 } from "@/lib/dates";
 import { normalizeDataIds, type SparkData } from "@/lib/data-ids";
-import { completedForView, filterItems } from "@/lib/task-filters";
+import { completedForView, filterItems, groupItemsByTime, type TimeGroup } from "@/lib/task-filters";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase";
 import type { ItemType, Project, SparkItem, View } from "@/lib/types";
 
 const STORAGE_KEY = "spark:data:v1";
-const SIDEBAR_KEY = "spark:sidebar";
+const SIDEBAR_KEY = "spark:sidebar:v2";
+const SIDEBAR_SECTIONS_KEY = "spark:sidebar-sections";
+const SPARK_LOGO_SRC = "/brand/spark-logo.svg";
+const SPARK_LOGO_NEGATIVE_SRC = "/brand/spark-logo-negative.svg";
+const SPARK_MARK_NEGATIVE_SRC = "/spark-mark-negative.svg";
 
-const projectColors = ["#32C8C7", "#8461D5", "#D6A84F", "#D9776A", "#5C78D6"];
+const timeGroupLabels: Record<TimeGroup, string> = {
+  overdue: "Quá hạn",
+  today: "Hôm nay",
+  upcoming: "Sắp tới",
+  later: "Sau đó",
+  undated: "Chưa có ngày",
+};
+
+const projectColors = [
+  "#44D4CD",
+  "#8951C7",
+  "#D9776A",
+  "#65458A",
+  "#D6A84F",
+  "#5C78D6",
+  "#6FA889",
+  "#C56F8C",
+];
 type SyncStatus = "demo" | "loading" | "syncing" | "synced" | "error" | "not-configured";
 type CloudUser = { id: string; email: string };
 
@@ -33,9 +55,9 @@ function seedData(today: string): SparkData {
   const personalProjectId = crypto.randomUUID();
   const sparkProjectId = crypto.randomUUID();
   const projects: Project[] = [
-    { id: workProjectId, name: "Công việc", color: "#32C8C7", archivedAt: null },
-    { id: personalProjectId, name: "Cá nhân", color: "#8461D5", archivedAt: null },
-    { id: sparkProjectId, name: "Spark", color: "#D6A84F", archivedAt: null },
+    { id: workProjectId, name: "Công việc", color: "#44D4CD", isStarred: false, archivedAt: null },
+    { id: personalProjectId, name: "Cá nhân", color: "#8951C7", isStarred: false, archivedAt: null },
+    { id: sparkProjectId, name: "Spark", color: "#D6A84F", isStarred: false, archivedAt: null },
   ];
   const createdAt = new Date().toISOString();
   const items: SparkItem[] = [
@@ -110,14 +132,25 @@ function viewKey(view: View) {
   return view.type;
 }
 
+function orderProjectsForSidebar(projects: Project[]) {
+  return [
+    ...projects.filter((project) => project.isStarred),
+    ...projects.filter((project) => !project.isStarred),
+  ];
+}
+
 export function SparkApp() {
   const today = getLocalDateKey();
   const [data, setData] = useState<SparkData | null>(null);
   const [view, setView] = useState<View>({ type: "today" });
-  const [sidebarCompact, setSidebarCompact] = useState(false);
+  const [sidebarCompact, setSidebarCompact] = useState(true);
+  const [preferencesLoaded, setPreferencesLoaded] = useState(false);
+  const [attentionOpen, setAttentionOpen] = useState(true);
+  const [projectsOpen, setProjectsOpen] = useState(true);
   const [mobileNav, setMobileNav] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
-  const [pendingG, setPendingG] = useState(false);
+  const [pendingS, setPendingS] = useState(false);
+  const [hideNotes, setHideNotes] = useState(false);
   const [completedOpen, setCompletedOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<SparkItem | null>(null);
   const [projectEditor, setProjectEditor] = useState<Project | "new" | null>(null);
@@ -138,7 +171,17 @@ export function SparkApp() {
       const localData = readLocalData(today);
       dataRef.current = localData;
       setData(localData);
-      setSidebarCompact(window.localStorage.getItem(SIDEBAR_KEY) === "compact");
+      const sidebarPreference = window.localStorage.getItem(SIDEBAR_KEY);
+      setSidebarCompact(sidebarPreference === null || sidebarPreference === "compact");
+      try {
+        const sections = JSON.parse(window.localStorage.getItem(SIDEBAR_SECTIONS_KEY) ?? "{}");
+        setAttentionOpen(sections.attention !== false);
+        setProjectsOpen(sections.projects !== false);
+      } catch {
+        setAttentionOpen(true);
+        setProjectsOpen(true);
+      }
+      setPreferencesLoaded(true);
     });
   }, [today]);
 
@@ -240,14 +283,22 @@ export function SparkApp() {
   }, [cloudUser]);
 
   useEffect(() => {
+    if (!preferencesLoaded) return;
     window.localStorage.setItem(SIDEBAR_KEY, sidebarCompact ? "compact" : "expanded");
-  }, [sidebarCompact]);
+  }, [preferencesLoaded, sidebarCompact]);
+
+  useEffect(() => {
+    window.localStorage.setItem(
+      SIDEBAR_SECTIONS_KEY,
+      JSON.stringify({ attention: attentionOpen, projects: projectsOpen }),
+    );
+  }, [attentionOpen, projectsOpen]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (isTypingTarget(event.target)) return;
       if (event.key === "Escape") {
-        setPendingG(false);
+        setPendingS(false);
         setHelpOpen(false);
         setMobileNav(false);
         setEditingItem(null);
@@ -264,24 +315,36 @@ export function SparkApp() {
         return;
       }
       const key = event.key.toLowerCase();
-      if (pendingG) {
+      if (pendingS) {
+        let handled = true;
         if (key === "t") setView({ type: "today" });
-        if (key === "u") setView({ type: "upcoming" });
-        if (key === "d") setView({ type: "calendar", date: today });
-        setPendingG(false);
-        if (["t", "u", "d"].includes(key)) event.preventDefault();
+        else if (key === "s") setView({ type: "upcoming" });
+        else if (key === "d") setView({ type: "calendar", date: today });
+        else if (key === "a") setView({ type: "all" });
+        else if (key === "i") setView({ type: "important" });
+        else if (key === "u") setView({ type: "urgent" });
+        else if (/^[1-9]$/.test(key)) {
+          const shortcutProjects = orderProjectsForSidebar(
+            (dataRef.current?.projects ?? []).filter((project) => !project.archivedAt),
+          );
+          const project = shortcutProjects[Number(key) - 1];
+          if (project) setView({ type: "project", projectId: project.id });
+          else handled = false;
+        } else handled = false;
+        setPendingS(false);
+        if (handled) event.preventDefault();
         return;
       }
-      if (key === "g") {
+      if (key === "s") {
         event.preventDefault();
-        setPendingG(true);
+        setPendingS(true);
         if (pendingTimer.current) clearTimeout(pendingTimer.current);
-        pendingTimer.current = setTimeout(() => setPendingG(false), 1000);
+        pendingTimer.current = setTimeout(() => setPendingS(false), 1000);
       }
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [pendingG, today]);
+  }, [pendingS, today]);
 
   const projects = data?.projects.filter((project) => !project.archivedAt) ?? [];
   const openItems = useMemo(
@@ -292,9 +355,20 @@ export function SparkApp() {
     () => (data ? completedForView(data.items, view, today) : []),
     [data, view, today],
   );
-  const overdue = view.type === "today" ? openItems.filter((item) => item.dueDate! < today) : [];
-  const current = view.type === "today" ? openItems.filter((item) => item.dueDate === today) : openItems;
+  const visibleOpenItems = useMemo(
+    () => hideNotes ? openItems.filter((item) => item.type === "task") : openItems,
+    [hideNotes, openItems],
+  );
+  const overdue = view.type === "today" ? visibleOpenItems.filter((item) => item.dueDate! < today) : [];
+  const current = view.type === "today" ? visibleOpenItems.filter((item) => item.dueDate === today) : view.type === "all" ? [] : visibleOpenItems;
+  const allTimeGroups = useMemo(
+    () => view.type === "all" ? groupItemsByTime(visibleOpenItems, today) : [],
+    [today, view.type, visibleOpenItems],
+  );
   const activeProject = view.type === "project" ? projects.find((project) => project.id === view.projectId) : null;
+  const taskCount = openItems.filter((item) => item.type === "task").length;
+  const noteCount = openItems.filter((item) => item.type === "note").length;
+  const overdueCount = visibleOpenItems.filter((item) => item.dueDate && item.dueDate < today).length;
 
   const navigate = (next: View) => {
     setView(next);
@@ -324,6 +398,21 @@ export function SparkApp() {
     setData((value) => value ? { ...value, items: [...value.items, item] } : value);
     const client = getSupabaseBrowserClient();
     if (client && cloudUser) writeCloud(() => upsertItem(client, item, cloudUser.id));
+  };
+
+  const saveProject = (project: Project) => {
+    setData((value) => {
+      if (!value) return value;
+      const exists = value.projects.some((entry) => entry.id === project.id);
+      return {
+        ...value,
+        projects: exists
+          ? value.projects.map((entry) => entry.id === project.id ? project : entry)
+          : [...value.projects, project],
+      };
+    });
+    const client = getSupabaseBrowserClient();
+    if (client && cloudUser) writeCloud(() => upsertProject(client, project, cloudUser.id));
   };
 
   const toggleComplete = (item: SparkItem) => {
@@ -360,20 +449,22 @@ export function SparkApp() {
         ? "Sắp tới"
         : view.type === "calendar"
           ? "Theo ngày"
+          : view.type === "all"
+            ? "Tất cả"
           : view.type === "important"
             ? "Quan Trọng"
             : view.type === "urgent"
-              ? "Urgent"
+              ? "Ưu tiên"
               : activeProject?.name ?? "Dự án";
 
-  const subtitle =
+  const headerContext =
     view.type === "today"
       ? formatLongDate(today)
       : view.type === "upcoming"
-        ? "Ba ngày tiếp theo"
+        ? formatDateRange(addCalendarDays(today, 1), addCalendarDays(today, 3))
         : view.type === "calendar"
           ? formatLongDate(view.date)
-          : `${openItems.length} mục đang mở`;
+          : null;
 
   if (!data) return <LoadingShell />;
 
@@ -382,14 +473,19 @@ export function SparkApp() {
       <Sidebar
         compact={sidebarCompact}
         currentView={view}
+        attentionOpen={attentionOpen}
         items={data.items}
         onCloseMobile={() => setMobileNav(false)}
         onEditProject={setProjectEditor}
         onHelp={() => setHelpOpen(true)}
         onNavigate={navigate}
+        onToggleAttention={() => setAttentionOpen((value) => !value)}
+        onToggleProjects={() => setProjectsOpen((value) => !value)}
+        onToggleProjectStar={(project) => saveProject({ ...project, isStarred: !project.isStarred })}
         onSync={() => setSyncDialogOpen(true)}
         onToggle={() => setSidebarCompact((value) => !value)}
         projects={projects}
+        projectsOpen={projectsOpen}
         syncStatus={syncStatus}
         today={today}
       />
@@ -400,15 +496,20 @@ export function SparkApp() {
             <Sidebar
               compact={false}
               currentView={view}
+              attentionOpen={attentionOpen}
               items={data.items}
               mobile
               onCloseMobile={() => setMobileNav(false)}
               onEditProject={setProjectEditor}
               onHelp={() => setHelpOpen(true)}
               onNavigate={navigate}
+              onToggleAttention={() => setAttentionOpen((value) => !value)}
+              onToggleProjects={() => setProjectsOpen((value) => !value)}
+              onToggleProjectStar={(project) => saveProject({ ...project, isStarred: !project.isStarred })}
               onSync={() => setSyncDialogOpen(true)}
               onToggle={() => setMobileNav(false)}
               projects={projects}
+              projectsOpen={projectsOpen}
               syncStatus={syncStatus}
               today={today}
             />
@@ -421,27 +522,49 @@ export function SparkApp() {
           <button className="icon-button" onClick={() => setMobileNav(true)} aria-label="Mở điều hướng">
             <Icon name="menu" />
           </button>
-          <Image src="/brand/spark-logo.png" width={120} height={45} alt="Spark" priority />
+          <Image className="mobile-logo" src={SPARK_LOGO_SRC} width={120} height={45} alt="Spark" priority unoptimized />
           <button className={`public-badge ${syncStatus}`} onClick={() => setSyncDialogOpen(true)}>{cloudUser ? "Đã sync" : "Public"}</button>
         </header>
 
         <section className="canvas" aria-labelledby="view-title">
           <div className="view-header">
             <div>
-              <div className="eyebrow">
+              {(headerContext || (view.type === "project" && activeProject)) && <div className="eyebrow">
                 {view.type === "project" && activeProject && (
                   <span className="project-dot header-dot" style={{ background: activeProject.color }} />
                 )}
-                {subtitle}
+                {headerContext}
+              </div>}
+              <div className="view-title-row">
+                <h1 id="view-title">{title}</h1>
+                {view.type === "project" && activeProject && (
+                  <button
+                    className="project-edit-button"
+                    onClick={() => setProjectEditor(activeProject)}
+                    aria-label={`Chỉnh sửa dự án ${activeProject.name}`}
+                    title="Chỉnh sửa dự án"
+                  >
+                    <Icon name="edit" size={18} />
+                  </button>
+                )}
               </div>
-              <h1 id="view-title">{title}</h1>
-              <p>{openItems.length} mục · {overdue.length ? `${overdue.length} quá hạn` : "mọi thứ trong tầm tay"}</p>
+              <p>{taskCount} việc cần xử lý <span aria-hidden="true">—</span> {overdueCount} quá hạn <span aria-hidden="true">—</span> {noteCount} ghi chú{hideNotes ? " đang ẩn" : ""}</p>
             </div>
             <div className="view-actions">
-              <button className="icon-button" aria-label="Tìm kiếm" title="Tìm kiếm sẽ có trong bản tiếp theo">
+              <button
+                className={`icon-button note-visibility-button ${hideNotes ? "notes-hidden" : ""}`}
+                type="button"
+                aria-label={hideNotes ? "Hiện ghi chú" : "Ẩn ghi chú"}
+                aria-pressed={hideNotes}
+                title={hideNotes ? "Hiện ghi chú" : "Ẩn ghi chú"}
+                onClick={() => setHideNotes((value) => !value)}
+              >
+                <Icon name="note" />
+              </button>
+              <button className="icon-button search-action" aria-label="Tìm kiếm" title="Tìm kiếm sẽ có trong bản tiếp theo">
                 <Icon name="search" />
               </button>
-              <button className="icon-button" onClick={() => setHelpOpen(true)} aria-label="Phím tắt">
+              <button className="icon-button help-action" onClick={() => setHelpOpen(true)} aria-label="Phím tắt">
                 <Icon name="help" />
               </button>
             </div>
@@ -458,6 +581,7 @@ export function SparkApp() {
                 items={overdue}
                 projects={projects}
                 today={today}
+                hideTodayDue={view.type === "today"}
                 onComplete={toggleComplete}
                 onEdit={setEditingItem}
                 onFlag={mutateItem}
@@ -469,12 +593,26 @@ export function SparkApp() {
                 items={current}
                 projects={projects}
                 today={today}
+                hideTodayDue={view.type === "today"}
                 onComplete={toggleComplete}
                 onEdit={setEditingItem}
                 onFlag={mutateItem}
               />
             )}
-            {openItems.length === 0 && <EmptyState view={view} />}
+            {view.type === "all" && allTimeGroups.map((group) => (
+              <ItemGroup
+                key={group.key}
+                label={timeGroupLabels[group.key]}
+                items={group.items}
+                projects={projects}
+                today={today}
+                hideTodayDue={group.key === "today"}
+                onComplete={toggleComplete}
+                onEdit={setEditingItem}
+                onFlag={mutateItem}
+              />
+            ))}
+            {visibleOpenItems.length === 0 && <EmptyState view={view} />}
 
             <QuickAdd
               key={viewKey(view)}
@@ -495,6 +633,7 @@ export function SparkApp() {
                     items={completedItems}
                     projects={projects}
                     today={today}
+                    hideTodayDue={view.type === "today"}
                     onComplete={toggleComplete}
                     onEdit={setEditingItem}
                     onFlag={mutateItem}
@@ -532,23 +671,12 @@ export function SparkApp() {
           project={projectEditor === "new" ? null : projectEditor}
           onClose={() => setProjectEditor(null)}
           onSave={(project) => {
-            setData((value) => {
-              if (!value) return value;
-              const exists = value.projects.some((entry) => entry.id === project.id);
-              return {
-                ...value,
-                projects: exists
-                  ? value.projects.map((entry) => entry.id === project.id ? project : entry)
-                  : [...value.projects, project],
-              };
-            });
-            const client = getSupabaseBrowserClient();
-            if (client && cloudUser) writeCloud(() => upsertProject(client, project, cloudUser.id));
+            saveProject(project);
             setProjectEditor(null);
           }}
         />
       )}
-      {helpOpen && <ShortcutHelp onClose={() => setHelpOpen(false)} />}
+      {helpOpen && <ShortcutHelp projects={orderProjectsForSidebar(projects).slice(0, 9)} onClose={() => setHelpOpen(false)} />}
       {syncDialogOpen && (
         <SyncDialog
           configured={isSupabaseConfigured()}
@@ -561,7 +689,7 @@ export function SparkApp() {
           }}
         />
       )}
-      {pendingG && <div className="key-hint"><kbd>G</kbd><span>Tiếp theo:</span><kbd>T</kbd> Hôm nay <kbd>U</kbd> Sắp tới <kbd>D</kbd> Theo ngày</div>}
+      {pendingS && <div className="key-hint"><kbd>S</kbd><span>Tiếp theo:</span><kbd>T</kbd> Hôm nay <kbd>S</kbd> Sắp tới <kbd>D</kbd> Theo ngày <kbd>A</kbd> Tất cả <kbd>I</kbd> Quan Trọng <kbd>U</kbd> Ưu tiên <kbd>1–9</kbd> Dự án</div>}
       {deletedItem && (
         <div className="toast" role="status"><span>Đã xóa “{deletedItem.title}”</span><button onClick={undoDelete}>Hoàn tác</button></div>
       )}
@@ -570,6 +698,7 @@ export function SparkApp() {
 }
 
 function Sidebar({
+  attentionOpen,
   compact,
   currentView,
   items,
@@ -579,11 +708,16 @@ function Sidebar({
   onHelp,
   onNavigate,
   onSync,
+  onToggleAttention,
+  onToggleProjects,
+  onToggleProjectStar,
   onToggle,
   projects,
+  projectsOpen,
   syncStatus,
   today,
 }: {
+  attentionOpen: boolean;
   compact: boolean;
   currentView: View;
   items: SparkItem[];
@@ -593,8 +727,12 @@ function Sidebar({
   onHelp: () => void;
   onNavigate: (view: View) => void;
   onSync: () => void;
+  onToggleAttention: () => void;
+  onToggleProjects: () => void;
+  onToggleProjectStar: (project: Project) => void;
   onToggle: () => void;
   projects: Project[];
+  projectsOpen: boolean;
   syncStatus: SyncStatus;
   today: string;
 }) {
@@ -602,55 +740,68 @@ function Sidebar({
     { view: { type: "today" } as View, label: "Hôm nay", icon: "sun" as const, count: filterItems(items, { type: "today" }, today).length },
     { view: { type: "upcoming" } as View, label: "Sắp tới", icon: "clock" as const, count: filterItems(items, { type: "upcoming" }, today).length },
     { view: { type: "calendar", date: today } as View, label: "Theo ngày", icon: "calendar" as const },
+    { view: { type: "all" } as View, label: "Tất cả", icon: "list" as const, count: filterItems(items, { type: "all" }, today).length },
   ];
   const smartItems = [
     { view: { type: "important" } as View, label: "Quan Trọng", icon: "star" as const, className: "important" },
-    { view: { type: "urgent" } as View, label: "Urgent", icon: "zap" as const, className: "urgent" },
+    { view: { type: "urgent" } as View, label: "Ưu tiên", icon: "zap" as const, className: "urgent" },
   ];
+  const starredProjects = projects.filter((project) => project.isStarred);
+  const regularProjects = projects.filter((project) => !project.isStarred);
+  const orderedProjects = orderProjectsForSidebar(projects);
   const isActive = (candidate: View) => candidate.type === currentView.type;
+  const renderProject = (project: Project) => {
+    const shortcutNumber = orderedProjects.indexOf(project) + 1;
+    const tooltip = shortcutNumber >= 1 && shortcutNumber <= 9 ? `S ${shortcutNumber} · ${project.name}` : project.name;
+    return (
+      <div className="project-nav-row" key={project.id}>
+        <button className={`nav-item ${currentView.type === "project" && currentView.projectId === project.id ? "active" : ""}`} onClick={() => onNavigate({ type: "project", projectId: project.id })} aria-label={project.name} title={compact ? undefined : project.name} data-tooltip={compact ? tooltip : undefined}>
+          <span className="project-dot" style={{ background: project.color }} /><span className="nav-text">{project.name}</span>
+        </button>
+        {!compact && <div className="project-actions">
+          <button className={`project-star ${project.isStarred ? "selected" : ""}`} onClick={() => onToggleProjectStar(project)} aria-label={project.isStarred ? `Bỏ ${project.name} khỏi Cần lưu ý` : `Đưa ${project.name} vào Cần lưu ý`} title={project.isStarred ? "Bỏ gắn sao" : "Gắn sao"}><Icon name="star" size={15} /></button>
+          <button className="project-more" onClick={() => onEditProject(project)} aria-label={`Sửa ${project.name}`}><Icon name="more" size={17} /></button>
+        </div>}
+      </div>
+    );
+  };
 
   return (
     <aside className={`sidebar ${mobile ? "sidebar-mobile" : ""}`}>
       <div className="sidebar-brand">
-        <Image className="brand-full" src="/brand/spark-logo.png" width={151} height={57} alt="Spark" priority />
-        <Image className="brand-mark" src="/spark-mark.svg" width={40} height={40} alt="Spark" />
+        <span className="brand-full-wrap"><Image className="brand-full" src={SPARK_LOGO_NEGATIVE_SRC} width={151} height={57} alt="Spark" priority unoptimized /></span>
+        <span className="brand-mark"><Image className="brand-mark-art" src={SPARK_MARK_NEGATIVE_SRC} width={36} height={36} alt="" priority unoptimized /></span>
         {mobile && <button className="icon-button sidebar-close" onClick={onCloseMobile} aria-label="Đóng điều hướng"><Icon name="close" /></button>}
       </div>
       <nav aria-label="Điều hướng chính">
         <div className="nav-section">
-          {!compact && <span className="nav-label">Kế hoạch</span>}
           {navItems.map((entry) => (
-            <button key={entry.label} className={`nav-item ${isActive(entry.view) ? "active" : ""}`} onClick={() => onNavigate(entry.view)} title={entry.label}>
+            <button key={entry.label} className={`nav-item ${isActive(entry.view) ? "active" : ""}`} onClick={() => onNavigate(entry.view)} aria-label={entry.label} title={compact ? undefined : entry.label} data-tooltip={compact ? entry.label : undefined}>
               <Icon name={entry.icon} /><span className="nav-text">{entry.label}</span>{entry.count !== undefined && <span className="nav-count">{entry.count}</span>}
             </button>
           ))}
         </div>
-        <div className="nav-section">
-          {!compact && <span className="nav-label">Tập trung</span>}
-          {smartItems.map((entry) => (
-            <button key={entry.label} className={`nav-item ${entry.className} ${isActive(entry.view) ? "active" : ""}`} onClick={() => onNavigate(entry.view)} title={entry.label}>
+        <div className="nav-section attention-nav">
+          {!compact && <button className="section-toggle" onClick={onToggleAttention} aria-expanded={attentionOpen}><Icon name="chevron" size={13} className={attentionOpen ? "section-open" : ""} /><span className="nav-label">Cần lưu ý</span></button>}
+          {(compact || attentionOpen) && smartItems.map((entry) => (
+            <button key={entry.label} className={`nav-item ${entry.className} ${isActive(entry.view) ? "active" : ""}`} onClick={() => onNavigate(entry.view)} aria-label={entry.label} title={compact ? undefined : entry.label} data-tooltip={compact ? entry.label : undefined}>
               <Icon name={entry.icon} /><span className="nav-text">{entry.label}</span>
             </button>
           ))}
+          {(compact || attentionOpen) && starredProjects.map(renderProject)}
         </div>
         <div className="nav-section projects-nav">
           <div className="nav-heading">
-            {!compact && <span className="nav-label">Dự án</span>}
-            <button className="mini-button" onClick={() => onEditProject("new")} aria-label="Tạo dự án"><Icon name="plus" size={17} /></button>
+            {!compact && <button className="section-toggle" onClick={onToggleProjects} aria-expanded={projectsOpen}><Icon name="chevron" size={13} className={projectsOpen ? "section-open" : ""} /><span className="nav-label">Dự án</span></button>}
+            {!compact && <button className="mini-button" onClick={() => onEditProject("new")} aria-label="Tạo dự án"><Icon name="plus" size={16} /></button>}
           </div>
-          {projects.map((project) => (
-            <div className="project-nav-row" key={project.id}>
-              <button className={`nav-item ${currentView.type === "project" && currentView.projectId === project.id ? "active" : ""}`} onClick={() => onNavigate({ type: "project", projectId: project.id })} title={project.name}>
-                <span className="project-dot" style={{ background: project.color }} /><span className="nav-text">{project.name}</span>
-              </button>
-              {!compact && <button className="project-more" onClick={() => onEditProject(project)} aria-label={`Sửa ${project.name}`}><Icon name="more" size={18} /></button>}
-            </div>
-          ))}
+          {(compact || projectsOpen) && regularProjects.map(renderProject)}
         </div>
       </nav>
       <div className="sidebar-footer">
-        <button className="nav-item" onClick={onHelp}><Icon name="help" /><span className="nav-text">Phím tắt</span><kbd className="nav-kbd">?</kbd></button>
-        <button className="local-mode-card" onClick={onSync}>
+        {!mobile && <button className="sidebar-toggle" onClick={onToggle} aria-label={compact ? "Mở rộng sidebar" : "Thu gọn sidebar"} title={compact ? undefined : "Thu gọn sidebar"} data-tooltip={compact ? "Mở rộng sidebar" : undefined}><Icon name="panel" size={20} /></button>}
+        <button className="nav-item" onClick={onHelp} aria-label="Phím tắt" data-tooltip={compact ? "Phím tắt" : undefined}><Icon name="help" /><span className="nav-text">Phím tắt</span><kbd className="nav-kbd">?</kbd></button>
+        <button className="local-mode-card" onClick={onSync} aria-label={syncStatus === "synced" ? "Đã đồng bộ an toàn" : syncStatus === "syncing" || syncStatus === "loading" ? "Đang đồng bộ" : "Bật đồng bộ dữ liệu"} data-tooltip={compact ? syncStatus === "synced" ? "Đã đồng bộ an toàn" : syncStatus === "syncing" || syncStatus === "loading" ? "Đang đồng bộ" : "Bật đồng bộ dữ liệu" : undefined}>
           <span className={`local-mode-icon ${syncStatus}`}><Icon name={syncStatus === "error" ? "zap" : "check"} size={15} /></span>
           <span>
             <strong>{syncStatus === "synced" ? "Đã đồng bộ an toàn" : syncStatus === "syncing" || syncStatus === "loading" ? "Đang đồng bộ…" : "Bật đồng bộ dữ liệu"}</strong>
@@ -658,16 +809,16 @@ function Sidebar({
           </span>
         </button>
       </div>
-      {!mobile && <button className="sidebar-toggle" onClick={onToggle} aria-label={compact ? "Mở rộng sidebar" : "Thu gọn sidebar"}><Icon name="chevron" className={compact ? "flip" : ""} size={17} /></button>}
     </aside>
   );
 }
 
-function ItemGroup({ label, items, projects, today, onComplete, onEdit, onFlag }: {
+function ItemGroup({ label, items, projects, today, hideTodayDue = false, onComplete, onEdit, onFlag }: {
   label?: string;
   items: SparkItem[];
   projects: Project[];
   today: string;
+  hideTodayDue?: boolean;
   onComplete: (item: SparkItem) => void;
   onEdit: (item: SparkItem) => void;
   onFlag: (id: string, update: Partial<SparkItem>) => void;
@@ -685,18 +836,17 @@ function ItemGroup({ label, items, projects, today, onComplete, onEdit, onFlag }
                 <button className={`checkbox ${item.completedAt ? "checked" : ""}`} onClick={() => onComplete(item)} aria-label={item.completedAt ? `Đánh dấu chưa xong: ${item.title}` : `Hoàn thành: ${item.title}`}>
                   {item.completedAt && <Icon name="check" size={15} />}
                 </button>
-              ) : <span className="note-bullet" aria-label="Ghi chú"><span /></span>}
+              ) : <span className="note-bullet" aria-label="Ghi chú"><span className="note-mark" aria-hidden="true" /></span>}
+              {project ? <span className="project-dot item-project-dot" style={{ background: project.color }} title={project.name} /> : <span className="project-dot-spacer" />}
               <button className="item-main" onClick={() => onEdit(item)}>
                 <span className="item-title">{item.title}</span>
                 <span className="item-meta">
-                  {project && <span className="project-dot" style={{ background: project.color }} title={project.name} />}
-                  {item.type === "note" && <span className="type-label">Ghi chú</span>}
-                  {item.dueDate && <span className={overdue ? "due-overdue" : ""}>{formatShortDate(item.dueDate, today)}</span>}
+                  {item.dueDate && !(hideTodayDue && item.dueDate === today) && <span className={overdue ? "due-overdue" : ""}>{formatShortDate(item.dueDate, today)}</span>}
                 </span>
               </button>
               <div className="item-flags">
                 <button className={`flag-button important ${item.isImportant ? "selected" : ""}`} onClick={() => onFlag(item.id, { isImportant: !item.isImportant })} aria-label="Quan Trọng"><Icon name="star" size={18} /></button>
-                <button className={`flag-button urgent ${item.isUrgent ? "selected" : ""}`} onClick={() => onFlag(item.id, { isUrgent: !item.isUrgent })} aria-label="Urgent"><Icon name="zap" size={18} /></button>
+                <button className={`flag-button urgent ${item.isUrgent ? "selected" : ""}`} onClick={() => onFlag(item.id, { isUrgent: !item.isUrgent })} aria-label="Ưu tiên"><Icon name="zap" size={18} /></button>
               </div>
             </article>
           );
@@ -729,24 +879,27 @@ function QuickAdd({ projects, today, view, onAdd }: { projects: Project[]; today
       createdAt: new Date().toISOString(),
     });
     setTitle("");
+    setType("task");
     inputRef.current?.focus();
   };
 
   if (!expanded) {
-    return <button className="quick-add-trigger" onClick={() => setExpanded(true)}><span><Icon name="plus" size={19} /></span>Thêm mục mới</button>;
+    return <button className="quick-add-trigger" onClick={() => { setType("task"); setExpanded(true); }}><Icon name="plus" size={16} />Thêm công việc</button>;
   }
 
   return (
     <form className="quick-add" onSubmit={submit}>
-      <div className="type-switch" role="group" aria-label="Loại mục">
-        <button type="button" className={type === "task" ? "active" : ""} onClick={() => setType("task")}><Icon name="check" size={16} /> Task</button>
-        <button type="button" className={type === "note" ? "active" : ""} onClick={() => setType("note")}><Icon name="note" size={16} /> Note</button>
+      <div className="quick-add-entry">
+        <label className="quick-title-field">
+          <span>{type === "task" ? "Tên công việc" : "Nội dung ghi chú"}</span>
+          <input ref={inputRef} autoFocus maxLength={type === "task" ? 200 : 500} value={title} onChange={(event) => setTitle(event.target.value)} placeholder={type === "task" ? "Bạn muốn hoàn thành điều gì?" : "Ghi lại một điều cần nhớ…"} aria-label="Tên mục" />
+        </label>
+        <label className="note-toggle"><input type="checkbox" checked={type === "note"} onChange={(event) => setType(event.target.checked ? "note" : "task")} />Ghi chú</label>
       </div>
-      <input ref={inputRef} autoFocus maxLength={type === "task" ? 200 : 500} value={title} onChange={(event) => setTitle(event.target.value)} placeholder={type === "task" ? "Bạn muốn hoàn thành điều gì?" : "Ghi lại một điều cần nhớ…"} aria-label="Tên mục" />
       <div className="quick-add-controls">
-        <label><Icon name="calendar" size={16} /><input type="date" min={view.type === "upcoming" ? addCalendarDays(today, 1) : undefined} max={view.type === "upcoming" ? addCalendarDays(today, 3) : undefined} value={date} onChange={(event) => setDate(event.target.value)} required={view.type === "upcoming"} /></label>
-        <label><span className="project-dot empty" /><select value={projectId} onChange={(event) => setProjectId(event.target.value)}><option value="">Không có dự án</option>{projects.map((project) => <option value={project.id} key={project.id}>{project.name}</option>)}</select></label>
-        <div className="quick-add-actions"><button type="button" className="text-button" onClick={() => { setExpanded(false); setTitle(""); }}>Hủy</button><button className="primary-button" disabled={!title.trim()}>Thêm</button></div>
+        <label className="quick-add-field"><span>Ngày</span><span className="quick-add-control"><Icon name="calendar" size={16} /><input type="date" min={view.type === "upcoming" ? addCalendarDays(today, 1) : undefined} max={view.type === "upcoming" ? addCalendarDays(today, 3) : undefined} value={date} onChange={(event) => setDate(event.target.value)} required={view.type === "upcoming"} /></span></label>
+        <label className="quick-add-field"><span>Dự án</span><span className="quick-add-control"><span className="project-dot empty" /><select value={projectId} onChange={(event) => setProjectId(event.target.value)}><option value="">Không có dự án</option>{projects.map((project) => <option value={project.id} key={project.id}>{project.name}</option>)}</select></span></label>
+        <div className="quick-add-actions"><button type="button" className="text-button" onClick={() => { setExpanded(false); setTitle(""); setType("task"); }}>Hủy</button><button className="primary-button" disabled={!title.trim()}>Thêm</button></div>
       </div>
     </form>
   );
@@ -779,7 +932,7 @@ function ItemEditor({ item, projects, onClose, onDelete, onSave }: { item: Spark
         <div className="editor-header"><div><span>{item.type === "task" ? "Task" : "Ghi chú"}</span><h2>Chỉnh sửa mục</h2></div><button type="button" className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
         <label className="field"><span>Tên</span><textarea autoFocus maxLength={item.type === "task" ? 200 : 500} rows={3} value={title} onChange={(event) => setTitle(event.target.value)} /></label>
         <div className="field-grid"><label className="field"><span>Ngày</span><input type="date" value={dueDate} onChange={(event) => setDueDate(event.target.value)} /></label><label className="field"><span>Dự án</span><select value={projectId} onChange={(event) => setProjectId(event.target.value)}><option value="">Không có dự án</option>{projects.map((project) => <option key={project.id} value={project.id}>{project.name}</option>)}</select></label></div>
-        <div className="flag-options"><button type="button" className={`flag-option important ${important ? "selected" : ""}`} onClick={() => setImportant((value) => !value)}><Icon name="star" />Quan Trọng</button><button type="button" className={`flag-option urgent ${urgent ? "selected" : ""}`} onClick={() => setUrgent((value) => !value)}><Icon name="zap" />Urgent</button></div>
+        <div className="flag-options"><button type="button" className={`flag-option important ${important ? "selected" : ""}`} onClick={() => setImportant((value) => !value)}><Icon name="star" />Quan Trọng</button><button type="button" className={`flag-option urgent ${urgent ? "selected" : ""}`} onClick={() => setUrgent((value) => !value)}><Icon name="zap" />Ưu tiên</button></div>
         <div className="editor-actions"><button type="button" className="delete-button" onClick={onDelete}><Icon name="trash" size={17} /> Xóa</button><button className="primary-button" disabled={!title.trim()}>Lưu thay đổi</button></div>
       </form>
     </div>
@@ -789,21 +942,34 @@ function ItemEditor({ item, projects, onClose, onDelete, onSave }: { item: Spark
 function ProjectEditor({ project, onClose, onSave }: { project: Project | null; onClose: () => void; onSave: (project: Project) => void }) {
   const [name, setName] = useState(project?.name ?? "");
   const [color, setColor] = useState(project?.color ?? projectColors[0]);
+  const [isStarred, setIsStarred] = useState(project?.isStarred ?? false);
   return (
     <div className="dialog-backdrop" onClick={onClose}>
-      <form className="editor-sheet compact-editor" onClick={(event) => event.stopPropagation()} onSubmit={(event) => { event.preventDefault(); if (name.trim()) onSave(project ? { ...project, name: name.trim(), color } : { id: crypto.randomUUID(), name: name.trim(), color, archivedAt: null }); }}>
+      <form className="editor-sheet compact-editor" onClick={(event) => event.stopPropagation()} onSubmit={(event) => { event.preventDefault(); if (name.trim()) onSave(project ? { ...project, name: name.trim(), color, isStarred } : { id: crypto.randomUUID(), name: name.trim(), color, isStarred, archivedAt: null }); }}>
         <div className="editor-header"><div><span>Dự án</span><h2>{project ? "Chỉnh sửa dự án" : "Tạo dự án mới"}</h2></div><button type="button" className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
         <label className="field"><span>Tên dự án</span><input autoFocus maxLength={80} value={name} onChange={(event) => setName(event.target.value)} placeholder="Ví dụ: Ra mắt website" /></label>
-        <fieldset className="color-picker"><legend>Màu nhận diện</legend>{projectColors.map((entry) => <button type="button" aria-label={`Chọn màu ${entry}`} className={color === entry ? "selected" : ""} style={{ background: entry }} key={entry} onClick={() => setColor(entry)} />)}</fieldset>
+        <fieldset className="color-picker">
+          <legend>Màu nhận diện</legend>
+          <button
+            type="button"
+            className={`project-star-option ${isStarred ? "selected" : ""}`}
+            onClick={() => setIsStarred((value) => !value)}
+            aria-label={isStarred ? "Bỏ khỏi Cần lưu ý" : "Đưa vào Cần lưu ý"}
+            title={isStarred ? "Bỏ khỏi Cần lưu ý" : "Đưa vào Cần lưu ý"}
+          >
+            <Icon name="star" size={17} />
+          </button>
+          {projectColors.map((entry) => <button type="button" aria-label={`Chọn màu ${entry}`} className={color === entry ? "selected" : ""} style={{ background: entry }} key={entry} onClick={() => setColor(entry)} />)}
+        </fieldset>
         <div className="editor-actions"><button type="button" className="text-button" onClick={onClose}>Hủy</button><button className="primary-button" disabled={!name.trim()}>{project ? "Lưu thay đổi" : "Tạo dự án"}</button></div>
       </form>
     </div>
   );
 }
 
-function ShortcutHelp({ onClose }: { onClose: () => void }) {
-  const shortcuts = [["G T", "Mở Hôm nay"], ["G U", "Mở Sắp tới"], ["G D", "Mở Theo ngày"], ["[", "Thu gọn / mở sidebar"], ["?", "Mở bảng trợ giúp"], ["Esc", "Đóng hoặc hủy"]];
-  return <div className="dialog-backdrop" onClick={onClose}><div className="shortcut-dialog" role="dialog" aria-modal="true" aria-labelledby="shortcut-title" onClick={(event) => event.stopPropagation()}><div className="editor-header"><div><span>Đi nhanh hơn</span><h2 id="shortcut-title">Phím tắt</h2></div><button className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div><div className="shortcut-list">{shortcuts.map(([keys, label]) => <div key={keys}><span>{label}</span><span>{keys.split(" ").map((key) => <kbd key={key}>{key}</kbd>)}</span></div>)}</div><p>Phím tắt sẽ tạm dừng khi bạn đang nhập nội dung.</p></div></div>;
+function ShortcutHelp({ projects, onClose }: { projects: Project[]; onClose: () => void }) {
+  const shortcuts = [["S T", "Mở Hôm nay"], ["S S", "Mở Sắp tới"], ["S D", "Mở Theo ngày"], ["S A", "Mở Tất cả"], ["S I", "Mở Quan Trọng"], ["S U", "Mở Ưu tiên"], ...projects.map((project, index) => [`S ${index + 1}`, `Mở ${project.name}`]), ["[", "Thu gọn / mở sidebar"], ["?", "Mở bảng trợ giúp"], ["Esc", "Đóng hoặc hủy"]];
+  return <div className="dialog-backdrop" onClick={onClose}><div className="shortcut-dialog" role="dialog" aria-modal="true" aria-labelledby="shortcut-title" onClick={(event) => event.stopPropagation()}><div className="editor-header"><div><span>Đi nhanh hơn</span><h2 id="shortcut-title">Phím tắt</h2></div><button className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div><div className="shortcut-list">{shortcuts.map(([keys, label]) => <div key={keys}><span>{label}</span><span>{keys.split(" ").map((key, index) => <kbd key={`${key}-${index}`}>{key}</kbd>)}</span></div>)}</div><p>Phím tắt sẽ tạm dừng khi bạn đang nhập nội dung.</p></div></div>;
 }
 
 function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
