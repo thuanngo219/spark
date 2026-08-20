@@ -211,7 +211,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .today-button { min-height: 41px; border: 0; background: var(--turquoise); color: var(--navy-900); border-radius: 11px; padding: 0 12px; font-size: 0.6875rem; font-weight: 650; }
 .today-button:hover { background: var(--navy-900); color: white; }
 
-.dialog-backdrop, .mobile-nav-backdrop { position: fixed; inset: 0; background: rgba(11,16,57,.38); backdrop-filter: blur(3px); z-index: 80; display: flex; align-items: flex-end; justify-content: center; padding: 20px; animation: fade-in 160ms ease; }
+.dialog-backdrop, .mobile-nav-backdrop { position: fixed; inset: 0; background: rgba(11,16,57,.58); z-index: 80; display: flex; align-items: flex-end; justify-content: center; padding: 20px; animation: fade-in 160ms ease; }
 .dialog-backdrop.quick-add-backdrop { align-items: flex-end; justify-content: flex-end; }
 .editor-sheet, .shortcut-dialog { width: min(560px, 100%); background: white; border-radius: 24px; padding: 23px; box-shadow: 0 24px 70px rgba(11,16,57,.24); animation: slide-up 200ms var(--ease); }
 .compact-editor { width: min(440px, 100%); }
@@ -319,7 +319,7 @@ button:focus-visible { filter: brightness(.88); }
   .view-header p { font-size: 0.75rem; }
   .view-actions { display: flex; flex: 0 0 auto; }
   .view-actions .icon-button { width: 44px; height: 44px; }
-  .view-actions .note-visibility-button, .view-actions .search-action, .view-actions .help-action { display: none; }
+  .view-actions .note-visibility-button, .view-actions .help-action { display: none; }
   .list-area { padding: 0 0 74px; }
   .item-group h2 { padding-inline: 12px; }
   .item-list { gap: 2px; }

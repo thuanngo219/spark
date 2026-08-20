@@ -37,6 +37,7 @@ import { resolveItemSwipe, shouldOpenMobileSidebar } from "@/lib/mobile-gestures
 import { normalizeDataIds, type SparkData } from "@/lib/data-ids";
 import { completedForView, filterItems, groupItemsByTime, type TimeGroup } from "@/lib/task-filters";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase";
+import { resolveStandaloneShortcut } from "@/lib/keyboard-shortcuts";
 import type { ItemType, Project, SparkItem, View } from "@/lib/types";
 
 const LEGACY_STORAGE_KEY = "spark:data:v1";
@@ -211,6 +212,7 @@ export function SparkApp() {
   const [projectsOpen, setProjectsOpen] = useState(true);
   const [mobileNav, setMobileNav] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [quickAddOpen, setQuickAddOpen] = useState(false);
   const [pendingS, setPendingS] = useState(false);
   const [hideNotes, setHideNotes] = useState(false);
   const [completedOpen, setCompletedOpen] = useState(false);
@@ -602,24 +604,39 @@ export function SparkApp() {
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (isTypingTarget(event.target)) return;
+      const standaloneShortcut = resolveStandaloneShortcut(event.key);
       if (event.key === "Escape") {
         setPendingS(false);
         setHelpOpen(false);
         setMobileNav(false);
         setEditingItem(null);
+        setQuickAddOpen(false);
         return;
       }
-      if (event.key === "[") {
+      if (standaloneShortcut === "toggle-sidebar") {
         event.preventDefault();
         setSidebarCompact((value) => !value);
         return;
       }
-      if (event.key === "?") {
+      if (standaloneShortcut === "help") {
         event.preventDefault();
         setHelpOpen(true);
         return;
       }
       const key = event.key.toLowerCase();
+      if (
+        standaloneShortcut === "new-task" &&
+        !editingItem &&
+        !projectEditor &&
+        !helpOpen &&
+        !syncDialogOpen &&
+        !mobileNav
+      ) {
+        event.preventDefault();
+        setPendingS(false);
+        setQuickAddOpen(true);
+        return;
+      }
       if (pendingS) {
         let handled = true;
         if (key === "t") setView({ type: "today" });
@@ -649,7 +666,7 @@ export function SparkApp() {
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [pendingS, today]);
+  }, [editingItem, helpOpen, mobileNav, pendingS, projectEditor, syncDialogOpen, today]);
 
   const projects = data?.projects.filter((project) => !project.archivedAt) ?? [];
   const openItems = useMemo(
@@ -941,9 +958,6 @@ export function SparkApp() {
               >
                 <Icon name="note" />
               </button>
-              <button className="icon-button search-action" aria-label="Tìm kiếm" title="Tìm kiếm sẽ có trong bản tiếp theo">
-                <Icon name="search" />
-              </button>
               <button className="icon-button help-action" onClick={() => setHelpOpen(true)} aria-label="Phím tắt">
                 <Icon name="help" />
               </button>
@@ -1005,10 +1019,12 @@ export function SparkApp() {
 
             <QuickAdd
               key={viewKey(view)}
+              expanded={quickAddOpen}
               projects={projects}
               today={today}
               view={view}
               onAdd={addItem}
+              onExpandedChange={setQuickAddOpen}
             />
 
             {completedItems.length > 0 && (
@@ -1453,8 +1469,14 @@ function SwipeableItemRow({
   );
 }
 
-function QuickAdd({ projects, today, view, onAdd }: { projects: Project[]; today: string; view: View; onAdd: (item: SparkItem) => void }) {
-  const [expanded, setExpanded] = useState(false);
+function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: {
+  expanded: boolean;
+  projects: Project[];
+  today: string;
+  view: View;
+  onAdd: (item: SparkItem) => void;
+  onExpandedChange: (expanded: boolean) => void;
+}) {
   const [type, setType] = useState<ItemType>("task");
   const [title, setTitle] = useState("");
   const [date, setDate] = useState(view.type === "today" ? today : view.type === "calendar" ? view.date : "");
@@ -1464,11 +1486,11 @@ function QuickAdd({ projects, today, view, onAdd }: { projects: Project[]; today
   const backdropRef = useRef<HTMLDivElement>(null);
 
   const close = useCallback(() => {
-    setExpanded(false);
+    onExpandedChange(false);
     setTitle("");
     setType("task");
     window.requestAnimationFrame(() => triggerRef.current?.focus());
-  }, []);
+  }, [onExpandedChange]);
 
   useEffect(() => {
     if (!expanded) return;
@@ -1541,7 +1563,7 @@ function QuickAdd({ projects, today, view, onAdd }: { projects: Project[]; today
       <button
         ref={triggerRef}
         className="quick-add-trigger"
-        onClick={() => { setType("task"); setExpanded(true); }}
+        onClick={() => { setType("task"); onExpandedChange(true); }}
         aria-label="Thêm công việc"
         title="Thêm công việc"
       >
@@ -1640,7 +1662,7 @@ function ProjectEditor({ project, onClose, onSave }: { project: Project | null; 
 }
 
 function ShortcutHelp({ projects, onClose }: { projects: Project[]; onClose: () => void }) {
-  const shortcuts = [["S T", "Mở Hôm nay"], ["S S", "Mở Sắp tới"], ["S D", "Mở Theo ngày"], ["S A", "Mở Tất cả"], ["S I", "Mở Quan Trọng"], ["S U", "Mở Ưu tiên"], ...projects.map((project, index) => [`S ${index + 1}`, `Mở ${project.name}`]), ["[", "Thu gọn / mở sidebar"], ["?", "Mở bảng trợ giúp"], ["Esc", "Đóng hoặc hủy"]];
+  const shortcuts = [["N", "Thêm task mới"], ["S T", "Mở Hôm nay"], ["S S", "Mở Sắp tới"], ["S D", "Mở Theo ngày"], ["S A", "Mở Tất cả"], ["S I", "Mở Quan Trọng"], ["S U", "Mở Ưu tiên"], ...projects.map((project, index) => [`S ${index + 1}`, `Mở ${project.name}`]), ["[", "Thu gọn / mở sidebar"], ["?", "Mở bảng trợ giúp"], ["Esc", "Đóng hoặc hủy"]];
   return <div className="dialog-backdrop" onClick={onClose}><div className="shortcut-dialog" role="dialog" aria-modal="true" aria-labelledby="shortcut-title" onClick={(event) => event.stopPropagation()}><div className="editor-header"><div><span>Đi nhanh hơn</span><h2 id="shortcut-title">Phím tắt</h2></div><button className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div><div className="shortcut-list">{shortcuts.map(([keys, label]) => <div key={keys}><span>{label}</span><span>{keys.split(" ").map((key, index) => <kbd key={`${key}-${index}`}>{key}</kbd>)}</span></div>)}</div><p>Phím tắt sẽ tạm dừng khi bạn đang nhập nội dung.</p></div></div>;
 }
 

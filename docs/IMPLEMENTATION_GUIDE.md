@@ -116,7 +116,7 @@ src/
 - Xóa dùng soft/undo ở UI; chỉ hard delete sau khi hết thời gian undo hoặc triển khai trường `deleted_at` nếu cần an toàn hơn.
 - Không dùng global state library ở MVP nếu server cache + component state đã đủ.
 - Giữ unsaved quick-add text khi app chuyển offline ngắn.
-- Quick-add overlay phải có `role="dialog"`, `aria-modal="true"`, đóng được bằng Hủy, click backdrop và phím Escape; khi đóng trả focus về nút “Thêm công việc”.
+- Quick-add overlay phải có `role="dialog"`, `aria-modal="true"`, đóng được bằng Hủy, click backdrop và phím Escape; khi đóng trả focus về nút “Thêm công việc”. Backdrop của mọi overlay chỉ dùng lớp Navy dim đủ đậm, không dùng blur.
 - Floating trigger dùng artwork `+` 32px trong hit target 48px, `position: fixed` ở góc dưới phải có safe-area mobile; list phải chừa bottom space để trigger không che item cuối.
 - Trên mobile, sau user gesture mở quick-add phải focus title input; dùng `window.visualViewport` resize/scroll để fit backdrop vào vùng còn thấy khi bàn phím mở và gọi `scrollIntoView` cho field. Cleanup listener/timer khi đóng; desktop giữ layout overlay hiện tại.
 
@@ -127,7 +127,7 @@ src/
 - Project có thể gắn sao; `is_starred` được đồng bộ cloud và project được hiển thị trong Cần lưu ý.
 - Ở compact state, filter dùng icon + count; project dùng dot màu lớn. Tất cả icon-only controls phải có accessible label và tooltip.
 - Dùng một keyboard shortcut handler tập trung, không gắn listener rải rác trong component.
-- Hỗ trợ chuỗi `S T` → Today, `S S` → Upcoming, `S D` → By date, `S A` → Tất cả, `S I` → Quan Trọng, `S U` → Ưu tiên và `S 1–9` → chín project đầu theo thứ tự compact sidebar; `[` toggle sidebar và `?` mở trợ giúp.
+- Hỗ trợ `N` → mở quick-add task mới; chuỗi `S T` → Today, `S S` → Upcoming, `S D` → By date, `S A` → Tất cả, `S I` → Quan Trọng, `S U` → Ưu tiên và `S 1–9` → chín project đầu theo thứ tự compact sidebar; `[` toggle sidebar và `?` mở trợ giúp.
 - Compact sidebar dùng tooltip tức thời cho navigation icon, project dot và footer action; tooltip project kèm shortcut `S 1–9` khi có.
 - Bỏ qua shortcut khi event phát sinh trong `input`, `textarea`, `select` hoặc phần tử `contenteditable`; `Escape` hủy pending sequence.
 - Hiển thị pending-key hint sau `S` và tự reset sau khoảng 1.000ms.
@@ -138,7 +138,8 @@ src/
 Để app có cảm giác native-like:
 
 - Có manifest với `name`, `short_name`, `start_url`, `display: "standalone"`, `background_color`, `theme_color` và icon 192/512px.
-- Thêm Apple touch icon và màu theme phù hợp.
+- Favicon, PWA icon và Apple Touch Icon dùng mark negative trắng trên Navy. Standard PWA icon dùng rounded-square; maskable/Apple dùng Navy full-bleed và giữ artwork trong safe zone.
+- Dùng filename mới khi đổi colorway icon để tránh cache cũ; sau deploy cần kiểm tra trực tiếp SVG/PNG, manifest và metadata production.
 - Deploy qua HTTPS; đây là yêu cầu quan trọng cho khả năng cài PWA.
 - Phase 1 có thể chưa offline hoàn toàn nhưng không được mất nội dung người dùng đang gõ.
 - Phase 2 thêm service worker/cache app shell và hàng đợi mutation nếu nhu cầu offline thực sự xuất hiện.
@@ -161,6 +162,8 @@ src/
 5. Đổi tên ngắn nếu muốn và nhấn **Add/Thêm**.
 
 Biểu tượng Spark sẽ xuất hiện cạnh các app khác và mở trực tiếp vào web app. Muốn cập nhật phiên bản, chỉ cần deploy web; không cần phát hành qua App Store.
+
+Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spark khỏi Home Screen rồi thêm lại để hệ điều hành lấy Apple Touch Icon mới. Chrome/PWA đã cài cũng có thể cần gỡ và cài lại nếu launcher cache icon cũ.
 
 ## 7. Kế hoạch triển khai
 

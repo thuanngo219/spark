@@ -140,6 +140,7 @@ Phím tắt filter dùng chuỗi hai phím để tránh xung đột với trình
 
 | Phím | Hành động |
 |---|---|
+| `N` | Mở quick-add ở chế độ task mới. |
 | `S`, sau đó `T` | Mở **Hôm nay**. |
 | `S`, sau đó `S` | Mở **Sắp tới**. |
 | `S`, sau đó `D` | Mở **Theo ngày**. |
@@ -220,6 +221,6 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Tất cả thao tác chính dùng được bằng touch và keyboard.
 - Sidebar desktop chuyển đổi được giữa full và compact; lựa chọn được giữ sau khi reload.
 - Cần lưu ý/Dự án có thể thu gọn; project gắn sao xuất hiện trong Cần lưu ý và trạng thái này được lưu cùng dữ liệu project.
-- Các shortcut `S T`, `S S`, `S D`, `S A`, `S I`, `S U`, `S 1–9`, `[` và `?` hoạt động đúng, không kích hoạt khi đang nhập task.
+- Các shortcut `N`, `S T`, `S S`, `S D`, `S A`, `S I`, `S U`, `S 1–9`, `[` và `?` hoạt động đúng, không kích hoạt khi đang nhập task.
 - Compact sidebar hiển thị tooltip tên hạng mục/project ngay khi hover hoặc focus vào icon/dot.
 - App cài được lên Home Screen với tên/icon riêng và mở ở chế độ standalone khi nền tảng hỗ trợ.

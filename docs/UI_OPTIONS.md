@@ -113,11 +113,11 @@ Project editor đặt nút star icon-only ở đầu hàng chọn màu, sau đó
 
 Trong project view, nút edit nằm ngay bên phải tên dự án và mở Project Editor hiện có để đổi tên, màu nhận diện hoặc trạng thái Cần lưu ý.
 
-CTA và utility button chính dùng nền turquoise, hover chuyển navy. Search/Help ở page header là secondary icon button theo kiểu Hủy: nền trong suốt, icon xám, hover neutral nhẹ. Các control có ý nghĩa semantic như Xóa, Quan Trọng, Ưu tiên, navigation và swatch màu giữ hệ màu riêng. Focus state không dùng glow; nền field/control tối hơn khoảng 12%.
+CTA và utility button chính dùng nền turquoise, hover chuyển navy. Help ở page header là secondary icon button theo kiểu Hủy: nền trong suốt, icon xám, hover neutral nhẹ; Search được ẩn cho đến khi tính năng tìm kiếm được triển khai. Các control có ý nghĩa semantic như Xóa, Quan Trọng, Ưu tiên, navigation và swatch màu giữ hệ màu riêng. Focus state không dùng glow; nền field/control tối hơn khoảng 12%.
 
 Ứng dụng mở mặc định ở Hôm nay với sidebar compact; khi người dùng đổi trạng thái sidebar, lựa chọn mới tiếp tục được ghi nhớ.
 
-Filter có thể truy cập bằng chuỗi phím `S T`, `S S`, `S D`, `S A`, `S I`, `S U`; `S 1–9` mở project theo thứ tự compact sidebar. Phím `[` chuyển trạng thái sidebar và `?` mở bảng trợ giúp. Compact sidebar hiện tooltip tức thời khi hover/focus icon hoặc project dot.
+Quick-add task có thể mở trực tiếp bằng phím `N`. Filter có thể truy cập bằng chuỗi phím `S T`, `S S`, `S D`, `S A`, `S I`, `S U`; `S 1–9` mở project theo thứ tự compact sidebar. Phím `[` chuyển trạng thái sidebar và `?` mở bảng trợ giúp. Compact sidebar hiện tooltip tức thời khi hover/focus icon hoặc project dot.
 
 Navigation chính có **Tất cả** ngay dưới **Theo ngày**. View này giữ canvas phẳng và chia item đang hoạt động thành Quá hạn, Hôm nay, Sắp tới, Sau đó và Chưa có ngày để quét theo thời gian mà không cần đổi filter.
 
@@ -133,7 +133,7 @@ Gesture chỉ áp dụng dưới breakpoint mobile: tap tiêu đề mở editor;
 
 - App shell / sidebar / mobile navigation sheet.
 - View header và open-task count.
-- Quick-add composer có lựa chọn Task/Note.
+- Quick-add composer có lựa chọn Task/Note. Các overlay dùng lớp nền Navy dim đủ đậm để giữ bối cảnh nhìn thấy rõ, không blur nội dung phía sau.
 - Quick-add đóng dùng floating icon-only button `+` 32px trong control turquoise 48px, neo góc dưới phải trên desktop/mobile và giữ accessible label “Thêm công việc”. Khi mở, overlay surface trắng neo cùng góc; trên mobile surface dùng gần trọn chiều rộng như bottom sheet. Field có label, nền nhẹ, bo góc và spacing đồng bộ project editor. Hủy là secondary text button; Thêm là primary turquoise.
 - Item row: task dùng checkbox, note dùng một rounded dash mark xám; marker và project dot căn theo dòng title đầu tiên thay vì giữa toàn row. Desktop luôn hiện nút star/điện xẹt; mobile dùng icon trạng thái nhỏ trong metadata và đưa các action 44px vào khay swipe để dành chiều rộng cho nội dung. Không hiện chip loại item hoặc tên project trong danh sách, và view Hôm nay không lặp nhãn ngày “Hôm nay” trên từng item.
 - Thứ tự listing luôn là task trước, note sau ở cả desktop/mobile. Trong view Tất cả, quy tắc này áp dụng bên trong từng nhóm thời gian; trong mỗi loại vẫn sort theo due date rồi created time.

@@ -12,9 +12,9 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#111742",
     lang: "vi",
     icons: [
-      { src: "/icons/spark-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
-      { src: "/icons/spark-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
-      { src: "/icons/spark-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+      { src: "/icons/spark-pwa-negative-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: "/icons/spark-pwa-negative-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: "/icons/spark-maskable-negative-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
   };
 }

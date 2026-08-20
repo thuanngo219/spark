@@ -101,19 +101,26 @@ Logo primary là lockup ngang gồm icon check-burst tách riêng và wordmark l
 
 ### App mark
 
-- App mark là check-burst chính thức không kèm wordmark, đặt trên nền neutral sáng `#F7F8FA`.
-- Giữ nguyên Deep Purple cho tick và thứ tự Muted Coral–Turquoise–Violet cho ba tia.
-- Bản standard dùng rounded-square để hiển thị trong web app, favicon và PWA icon.
-- Bản maskable dùng nền Navy `#111742` toàn khung và đặt mark trong vùng tròn neutral an toàn; không đưa chi tiết quan trọng ra ngoài safe zone.
-- Không tự rút gọn thêm tia, đổi màu hoặc dùng concept gradient cũ ở kích thước nhỏ.
+- App mark là check-burst chính thức không kèm wordmark. Favicon, Chrome/PWA icon và Apple Touch Icon dùng thống nhất mark negative trắng `#FFFFFF` trên nền Navy `#111742`.
+- Giữ nguyên hình học tick và ba tia của artwork chính thức; app icon negative không giữ các màu Deep Purple–Muted Coral–Turquoise–Violet của primary mark.
+- Bản favicon và PWA `purpose: any` dùng rounded-square Navy để hiển thị gọn trên nền desktop; phần góc bên ngoài trong suốt.
+- Bản maskable dùng Navy full-bleed toàn khung, bỏ vòng tròn neutral bên trong và giữ toàn bộ mark trong safe zone trung tâm.
+- Apple Touch Icon dùng canvas vuông Navy full-bleed; iOS tự áp dụng corner mask khi đưa lên Home Screen.
+- Không tự rút gọn thêm tia, đổi tỷ lệ, thêm gradient, outline, glow hoặc shadow ở kích thước nhỏ.
 
 Asset hiện tại:
 
 - `assets/logo/spark-logo-primary.svg`: ưu tiên cho website, web app và presentation hỗ trợ SVG.
 - `assets/logo/spark-logo-primary.png`: dùng khi định dạng đích không hỗ trợ vector.
 - `assets/logo/spark-logo-negative.svg` và `.png`: colorway trắng cho background tối.
-- `public/spark-mark.svg` và `public/spark-mark-maskable.svg`: app mark source dùng trong web app/PWA.
+- `public/spark-mark.svg` và `public/spark-mark-maskable.svg`: app mark primary cũ, chỉ giữ làm nguồn tham chiếu cho colorway nhiều màu.
 - `public/spark-mark-negative.svg`: mark trắng không nền dùng trong compact rail hoặc background tối.
+- `public/spark-favicon.svg`: favicon website dùng mark negative trắng trên rounded-square Navy.
+- `public/spark-app-icon-negative.svg`: source full-bleed cho Apple Touch Icon và PWA maskable icon.
+- `public/icons/spark-favicon-negative-32.png`: fallback raster cho favicon/shortcut icon.
+- `public/icons/spark-pwa-negative-192.png` và `spark-pwa-negative-512.png`: PWA `purpose: any` với rounded-square Navy.
+- `public/icons/spark-maskable-negative-512.png`: PWA maskable icon Navy full-bleed.
+- `public/icons/spark-apple-negative-180.png`: Apple Touch Icon Navy full-bleed.
 
 ## 4. Color system
 

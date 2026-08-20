@@ -7,6 +7,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "icons:generate": "node scripts/generate-app-icons.mjs",
+    "icons:verify": "node scripts/verify-app-icons.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"

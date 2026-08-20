@@ -31,7 +31,7 @@ Trắng, xám và đen là neutral, không tính vào năm màu chromatic.
 - `spark-logo-primary.svg`: SVG path 2048×768, nền trong suốt; không nhúng bitmap.
 - `spark-logo-negative.png`: PNG RGBA 2048×768, toàn bộ logo trắng trên nền trong suốt.
 - `spark-logo-negative.svg`: SVG colorway trắng cho background tối.
-- App icon đã được triển khai ở 32, 180, 192 và 512px; bước production tiếp theo là kiểm tra thêm favicon 16px và bản monochrome tối.
+- App icon production dùng check-burst negative trắng trên nền Navy ở 32, 180, 192 và 512px; không dùng gradient, outline hoặc shadow.
 - Không thay icon check-burst thành star; ba tia luôn là ba rounded bar tách rời.
 - Tick dùng stroke 57 đơn vị trong viewBox 2048×768, tương đương khoảng 68% độ dày của bản logo ban đầu.
 - Ba tia là ba capsule cùng kích thước 140×60 đơn vị, mỏng khoảng 82.5% so với tia ngang ban đầu; chỉ khác hướng xoay và màu.
@@ -40,12 +40,14 @@ Trắng, xám và đen là neutral, không tính vào năm màu chromatic.
 
 - `public/brand/spark-logo.svg` và `.png`: bản logo primary được phục vụ trực tiếp trong web app.
 - `public/brand/spark-logo-negative.svg` và `.png`: bản negative dùng trên sidebar/background tối.
-- `public/spark-mark.svg`: app mark standard trên nền neutral sáng.
-- `public/spark-mark-maskable.svg`: app mark maskable với safe zone trên nền navy.
+- `public/spark-mark.svg` và `public/spark-mark-maskable.svg`: source tham chiếu cho app mark primary nhiều màu trước đây.
 - `public/spark-mark-negative.svg`: app mark trắng nền trong suốt cho compact rail.
-- `public/icons/spark-32.png`, `spark-192.png`, `spark-512.png`: favicon/PWA raster sizes.
-- `public/icons/spark-apple-180.png`: Apple touch icon nền opaque.
-- `public/icons/spark-maskable-512.png`: PWA maskable icon.
+- `public/spark-favicon.svg`: favicon negative trên rounded-square Navy.
+- `public/spark-app-icon-negative.svg`: source negative Navy full-bleed cho Apple/maskable.
+- `public/icons/spark-favicon-negative-32.png`: favicon raster fallback.
+- `public/icons/spark-pwa-negative-192.png`, `spark-pwa-negative-512.png`: Chrome/PWA standard icon.
+- `public/icons/spark-apple-negative-180.png`: Apple Touch Icon Navy full-bleed.
+- `public/icons/spark-maskable-negative-512.png`: PWA maskable icon Navy full-bleed.
 
 ## Prompt/edit intent
 
