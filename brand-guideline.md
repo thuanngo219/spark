@@ -250,6 +250,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 - Item title mặc định dùng Inter base `13px`, render khoảng `14.6px` desktop và `15.6px` mobile, weight `400`; không tự động bold task/note.
 - List density: desktop row khoảng `35px` với gap `6px`; mobile row tối thiểu `52px` với gap `2px`, canvas tràn viền và title tối đa hai dòng. Marker/action mobile vẫn giữ vùng chạm tối thiểu `44px`.
 - Marker task/note và project dot luôn căn theo dòng chữ đầu tiên; không căn giữa toàn bộ row khi title hoặc metadata làm row cao hơn.
+- Trên desktop, due-date metadata và tâm artwork star/điện xẹt phải cùng trục giữa với dòng title; không căn theo mép trên của hit target icon.
 - Danh sách hỗn hợp luôn đặt task trước note; trong từng loại giữ thứ tự thời gian. Đây là phân cấp nội dung, không dùng divider hoặc card riêng để tách hai loại.
 - Heading trang dùng Navy, tracking âm nhẹ; label ngắn có thể uppercase với letter-spacing `0.10–0.13em`.
 - Label nhóm/disclosure như `Cần lưu ý`, `Dự án`, `Đã hoàn thành` dùng uppercase, weight `700` và letter-spacing khoảng `0.13em`.

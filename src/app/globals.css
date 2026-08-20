@@ -298,6 +298,8 @@ button:focus-visible { filter: brightness(.88); }
 
 @media (min-width: 700px) {
   .dialog-backdrop { align-items: center; }
+  .item-main { align-items: center; }
+  .item-flags { margin-top: -4px; }
 }
 
 @media (max-width: 699px) {

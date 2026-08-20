@@ -75,6 +75,13 @@ export function applyCloudMutations(
   }, base);
 }
 
+export function resolveCloudActivationData(
+  remote: SparkData,
+  pendingMutations: CloudMutation[],
+) {
+  return applyCloudMutations(remote, pendingMutations);
+}
+
 export function parseCloudMutations(value: unknown): CloudMutation[] {
   if (!Array.isArray(value)) return [];
 

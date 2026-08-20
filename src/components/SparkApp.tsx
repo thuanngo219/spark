@@ -23,6 +23,7 @@ import {
   DEMO_DATA_KEY,
   parseCloudMutations,
   pendingMutationsKey,
+  resolveCloudActivationData,
   type CloudMutation,
 } from "@/lib/cloud-sync";
 import {
@@ -444,34 +445,8 @@ export function SparkApp() {
             return;
           }
 
-          if (
-            remote.items.length === 0 &&
-            remote.projects.length === 0 &&
-            pendingMutationsRef.current.length === 0
-          ) {
-            const localData = cached ?? readDemoData(getLocalDateKey());
-            let queued: CloudMutation[] = [];
-            for (const project of localData.projects) {
-              queued = appendCloudMutation(queued, {
-                id: crypto.randomUUID(),
-                kind: "upsert-project",
-                project,
-              });
-            }
-            for (const item of localData.items) {
-              queued = appendCloudMutation(queued, {
-                id: crypto.randomUUID(),
-                kind: "upsert-item",
-                item,
-              });
-            }
-            pendingMutationsRef.current = queued;
-            syncRevisionRef.current += 1;
-            persistPendingMutations(user.id);
-          }
-
           replaceData(
-            applyCloudMutations(remote, pendingMutationsRef.current),
+            resolveCloudActivationData(remote, pendingMutationsRef.current),
             user.id,
           );
           if (pendingMutationsRef.current.length > 0) {
@@ -1486,6 +1461,7 @@ function QuickAdd({ projects, today, view, onAdd }: { projects: Project[]; today
   const [projectId, setProjectId] = useState(view.type === "project" ? view.projectId : "");
   const inputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
 
   const close = useCallback(() => {
     setExpanded(false);
@@ -1498,6 +1474,33 @@ function QuickAdd({ projects, today, view, onAdd }: { projects: Project[]; today
     if (!expanded) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const visualViewport = window.visualViewport;
+
+    const revealInput = () => {
+      inputRef.current?.focus({ preventScroll: true });
+      window.requestAnimationFrame(() => {
+        inputRef.current?.scrollIntoView({ block: "center", inline: "nearest" });
+      });
+    };
+
+    const fitOverlayToMobileViewport = () => {
+      const backdrop = backdropRef.current;
+      if (!backdrop || !visualViewport || !window.matchMedia("(max-width: 699px)").matches) return;
+      backdrop.style.top = `${visualViewport.offsetTop}px`;
+      backdrop.style.bottom = "auto";
+      backdrop.style.height = `${visualViewport.height}px`;
+      window.requestAnimationFrame(() => {
+        inputRef.current?.scrollIntoView({ block: "center", inline: "nearest" });
+      });
+    };
+
+    const focusFrame = window.requestAnimationFrame(revealInput);
+    const keyboardTimer = window.setTimeout(() => {
+      fitOverlayToMobileViewport();
+      revealInput();
+    }, 280);
+    visualViewport?.addEventListener("resize", fitOverlayToMobileViewport);
+    visualViewport?.addEventListener("scroll", fitOverlayToMobileViewport);
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       event.preventDefault();
@@ -1506,6 +1509,10 @@ function QuickAdd({ projects, today, view, onAdd }: { projects: Project[]; today
     window.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
+      window.cancelAnimationFrame(focusFrame);
+      window.clearTimeout(keyboardTimer);
+      visualViewport?.removeEventListener("resize", fitOverlayToMobileViewport);
+      visualViewport?.removeEventListener("scroll", fitOverlayToMobileViewport);
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [close, expanded]);
@@ -1544,7 +1551,7 @@ function QuickAdd({ projects, today, view, onAdd }: { projects: Project[]; today
   }
 
   return (
-    <div className="dialog-backdrop quick-add-backdrop" onClick={close}>
+    <div ref={backdropRef} className="dialog-backdrop quick-add-backdrop" onClick={close}>
       <form
         className="quick-add quick-add-dialog"
         role="dialog"

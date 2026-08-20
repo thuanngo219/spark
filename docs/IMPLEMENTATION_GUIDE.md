@@ -110,6 +110,7 @@ src/
 - Mỗi mutation cloud được lưu vào queue theo user trước khi gửi, ghi tuần tự và retry với exponential backoff tối đa 30 giây. Không xóa mutation khỏi queue trước khi server xác nhận.
 - Nếu server trả lỗi hoặc thiết bị offline, giữ optimistic state và mutation queue trên thiết bị, hiển thị trạng thái rõ; tự gửi lại khi có mạng thay vì rollback làm mất nội dung.
 - Khi nhận snapshot remote, overlay toàn bộ mutation chưa xác nhận trước khi cập nhật UI để snapshot cũ không ghi đè thay đổi local.
+- Snapshot remote rỗng là trạng thái có thẩm quyền; không tự upload cache cloud hoặc dữ liệu demo chỉ vì server đang rỗng. Chỉ mutation thật đang chờ của user được phép overlay và gửi tiếp.
 - Reconcile lại sau khi Realtime subscribe/reconnect, browser phát sự kiện `online`, tab/PWA trở lại foreground hoặc focus; chạy safety pull mỗi 60 giây khi tab đang visible.
 - Cache demo tách khỏi cache cloud và cache cloud được namespace theo user ID.
 - Xóa dùng soft/undo ở UI; chỉ hard delete sau khi hết thời gian undo hoặc triển khai trường `deleted_at` nếu cần an toàn hơn.
@@ -117,6 +118,7 @@ src/
 - Giữ unsaved quick-add text khi app chuyển offline ngắn.
 - Quick-add overlay phải có `role="dialog"`, `aria-modal="true"`, đóng được bằng Hủy, click backdrop và phím Escape; khi đóng trả focus về nút “Thêm công việc”.
 - Floating trigger dùng artwork `+` 32px trong hit target 48px, `position: fixed` ở góc dưới phải có safe-area mobile; list phải chừa bottom space để trigger không che item cuối.
+- Trên mobile, sau user gesture mở quick-add phải focus title input; dùng `window.visualViewport` resize/scroll để fit backdrop vào vùng còn thấy khi bàn phím mở và gọi `scrollIntoView` cho field. Cleanup listener/timer khi đóng; desktop giữ layout overlay hiện tại.
 
 ### Sidebar và keyboard shortcuts
 

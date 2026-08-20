@@ -5,6 +5,7 @@ import {
   cloudDataKey,
   parseCloudMutations,
   pendingMutationsKey,
+  resolveCloudActivationData,
   type CloudMutation,
 } from "@/lib/cloud-sync";
 import type { Project, SparkItem } from "@/lib/types";
@@ -65,6 +66,26 @@ describe("cloud mutation queue", () => {
     );
 
     expect(result.items).toEqual([]);
+  });
+
+  it("treats an empty remote snapshot as authoritative after a database reset", () => {
+    const staleCache = { projects: [project], items: [item] };
+    const remote = { projects: [], items: [] };
+
+    expect(staleCache.items).toHaveLength(1);
+    expect(resolveCloudActivationData(remote, [])).toEqual(remote);
+  });
+
+  it("keeps real pending offline writes over an empty remote snapshot", () => {
+    const pending: CloudMutation[] = [
+      { id: "m1", kind: "upsert-project", project },
+      { id: "m2", kind: "upsert-item", item },
+    ];
+
+    expect(resolveCloudActivationData({ projects: [], items: [] }, pending)).toEqual({
+      projects: [project],
+      items: [item],
+    });
   });
 
   it("ignores malformed persisted queue entries", () => {

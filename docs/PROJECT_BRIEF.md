@@ -107,6 +107,7 @@ Quy ước ngày:
 - Task vừa check biến đổi trạng thái ngay, sau đó thu gọn khỏi danh sách đang xem.
 - Có khu vực “Đã hoàn thành” thu gọn ở cuối mỗi view để xem và uncheck.
 - Nút thêm là floating `+` 48px ở góc dưới phải và mở quick-add dạng overlay gọn neo cùng góc trên desktop/mobile. Overlay vẫn chỉ giữ các trường thiết yếu để không làm chậm thao tác nhập.
+- Trên mobile, mở quick-add phải focus ngay title input và giữ field này trong vùng nhìn thấy khi bàn phím ảo xuất hiện; người dùng không cần kéo form để bắt đầu nhập.
 - Trên mobile, góc phải app header là nút Ẩn/Hiện ghi chú; trạng thái đồng bộ tiếp tục có trong navigation/footer.
 - Completed task không được tính trong số lượng task mở.
 - Trong mọi listing hỗn hợp, task hiển thị trước note trên cả desktop và mobile; view Tất cả vẫn chia theo nhóm thời gian rồi mới áp dụng thứ tự này trong từng nhóm.
