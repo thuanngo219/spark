@@ -70,6 +70,7 @@ Tạo một module thuần, ví dụ `src/lib/task-filters.ts`, không rải log
 - `byDate`: `due_date === selectedDate`.
 - `all`: lấy mọi item còn hiện hành rồi chia `overdue`, `today`, `upcoming` (ba ngày kế tiếp), `later` và `undated`; completed task vẫn ở disclosure riêng.
 - Trạng thái `hideNotes` là presentation filter dùng chung cho mọi view; áp dụng sau master/smart/project filter, trước khi chia nhóm và tính số quá hạn hiển thị. Không ghi thay đổi xuống item.
+- Presentation sort dùng `task` trước `note`; sau đó sort `due_date` tăng dần và `created_at`. Riêng view `all`, chia nhóm thời gian trước rồi áp dụng comparator này trong từng nhóm. Không ghi lại `position` chỉ để phản ánh thứ tự hiển thị.
 - Luôn truyền timezone vào hàm tạo `localToday` để test được.
 - Test đặc biệt: cuối tháng, cuối năm, năm nhuận và thời điểm quanh nửa đêm.
 
@@ -106,10 +107,16 @@ src/
 ## 5. Trạng thái và mutation
 
 - Dùng optimistic update cho check/uncheck task, create, rename và toggle Quan Trọng/Ưu tiên (`is_urgent`).
-- Nếu server trả lỗi, rollback và hiển thị thông báo rõ.
+- Mỗi mutation cloud được lưu vào queue theo user trước khi gửi, ghi tuần tự và retry với exponential backoff tối đa 30 giây. Không xóa mutation khỏi queue trước khi server xác nhận.
+- Nếu server trả lỗi hoặc thiết bị offline, giữ optimistic state và mutation queue trên thiết bị, hiển thị trạng thái rõ; tự gửi lại khi có mạng thay vì rollback làm mất nội dung.
+- Khi nhận snapshot remote, overlay toàn bộ mutation chưa xác nhận trước khi cập nhật UI để snapshot cũ không ghi đè thay đổi local.
+- Reconcile lại sau khi Realtime subscribe/reconnect, browser phát sự kiện `online`, tab/PWA trở lại foreground hoặc focus; chạy safety pull mỗi 60 giây khi tab đang visible.
+- Cache demo tách khỏi cache cloud và cache cloud được namespace theo user ID.
 - Xóa dùng soft/undo ở UI; chỉ hard delete sau khi hết thời gian undo hoặc triển khai trường `deleted_at` nếu cần an toàn hơn.
 - Không dùng global state library ở MVP nếu server cache + component state đã đủ.
 - Giữ unsaved quick-add text khi app chuyển offline ngắn.
+- Quick-add overlay phải có `role="dialog"`, `aria-modal="true"`, đóng được bằng Hủy, click backdrop và phím Escape; khi đóng trả focus về nút “Thêm công việc”.
+- Floating trigger dùng artwork `+` 32px trong hit target 48px, `position: fixed` ở góc dưới phải có safe-area mobile; list phải chừa bottom space để trigger không che item cuối.
 
 ### Sidebar và keyboard shortcuts
 

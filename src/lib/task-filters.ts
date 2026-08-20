@@ -9,6 +9,16 @@ export function isActive(item: SparkItem): boolean {
   return item.type === "note" || !item.completedAt;
 }
 
+export function sortItemsForDisplay(items: SparkItem[]): SparkItem[] {
+  return [...items].sort((a, b) => {
+    if (a.type !== b.type) return a.type === "task" ? -1 : 1;
+    if (!a.dueDate && !b.dueDate) return a.createdAt.localeCompare(b.createdAt);
+    if (!a.dueDate) return 1;
+    if (!b.dueDate) return -1;
+    return a.dueDate.localeCompare(b.dueDate) || a.createdAt.localeCompare(b.createdAt);
+  });
+}
+
 export function filterItems(
   items: SparkItem[],
   view: View,
@@ -39,12 +49,7 @@ export function filterItems(
     }
   });
 
-  return filtered.sort((a, b) => {
-    if (!a.dueDate && !b.dueDate) return a.createdAt.localeCompare(b.createdAt);
-    if (!a.dueDate) return 1;
-    if (!b.dueDate) return -1;
-    return a.dueDate.localeCompare(b.dueDate) || a.createdAt.localeCompare(b.createdAt);
-  });
+  return sortItemsForDisplay(filtered);
 }
 
 export function completedForView(
@@ -98,6 +103,6 @@ export function groupItemsByTime(
   }
 
   return timeGroupOrder
-    .map((key) => ({ key, items: groups.get(key) ?? [] }))
+    .map((key) => ({ key, items: sortItemsForDisplay(groups.get(key) ?? []) }))
     .filter((group) => group.items.length > 0);
 }

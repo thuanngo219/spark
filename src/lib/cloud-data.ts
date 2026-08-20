@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { CloudMutation } from "@/lib/cloud-sync";
 import type { Project, SparkItem } from "@/lib/types";
 
 type ProjectRow = {
@@ -94,11 +95,16 @@ export async function deleteCloudItem(client: SupabaseClient, itemId: string) {
   if (error) throw error;
 }
 
-export async function seedCloudData(
+export async function runCloudMutation(
   client: SupabaseClient,
-  data: { projects: Project[]; items: SparkItem[] },
+  mutation: CloudMutation,
   userId: string,
 ) {
-  await Promise.all(data.projects.map((project) => upsertProject(client, project, userId)));
-  await Promise.all(data.items.map((item) => upsertItem(client, item, userId)));
+  if (mutation.kind === "upsert-project") {
+    return upsertProject(client, mutation.project, userId);
+  }
+  if (mutation.kind === "upsert-item") {
+    return upsertItem(client, mutation.item, userId);
+  }
+  return deleteCloudItem(client, mutation.itemId);
 }

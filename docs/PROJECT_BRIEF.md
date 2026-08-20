@@ -106,7 +106,10 @@ Quy ước ngày:
 
 - Task vừa check biến đổi trạng thái ngay, sau đó thu gọn khỏi danh sách đang xem.
 - Có khu vực “Đã hoàn thành” thu gọn ở cuối mỗi view để xem và uncheck.
+- Nút thêm là floating `+` 48px ở góc dưới phải và mở quick-add dạng overlay gọn neo cùng góc trên desktop/mobile. Overlay vẫn chỉ giữ các trường thiết yếu để không làm chậm thao tác nhập.
+- Trên mobile, góc phải app header là nút Ẩn/Hiện ghi chú; trạng thái đồng bộ tiếp tục có trong navigation/footer.
 - Completed task không được tính trong số lượng task mở.
+- Trong mọi listing hỗn hợp, task hiển thị trước note trên cả desktop và mobile; view Tất cả vẫn chia theo nhóm thời gian rồi mới áp dụng thứ tự này trong từng nhóm.
 
 ## 6. Information architecture
 
@@ -126,7 +129,7 @@ Spark
     └── + Tạo project
 ```
 
-Desktop mở mặc định ở view Hôm nay với sidebar thu gọn thành compact rail; người dùng có thể mở sidebar bằng nút panel luôn nhìn thấy hoặc phím `[`. Lựa chọn sau đó được ghi nhớ trên thiết bị. Mobile dùng header + sheet điều hướng; các view chính vẫn truy cập tối đa trong hai thao tác.
+Desktop mở mặc định ở view Hôm nay với sidebar thu gọn thành compact rail; người dùng có thể mở sidebar bằng nút panel luôn nhìn thấy hoặc phím `[`. Lựa chọn sau đó được ghi nhớ trên thiết bị. Mobile dùng header + sheet điều hướng; sheet mở bằng nút menu hoặc swipe từ mép trái sang phải, và các view chính vẫn truy cập tối đa trong hai thao tác.
 
 Hai nhóm **Cần lưu ý** và **Dự án** có thể thu gọn độc lập. Cần lưu ý gồm smart filter Quan Trọng/Ưu tiên và các project được gắn sao; trạng thái nhóm được ghi nhớ trên thiết bị.
 

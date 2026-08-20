@@ -121,19 +121,23 @@ Filter có thể truy cập bằng chuỗi phím `S T`, `S S`, `S D`, `S A`, `S 
 
 Navigation chính có **Tất cả** ngay dưới **Theo ngày**. View này giữ canvas phẳng và chia item đang hoạt động thành Quá hạn, Hôm nay, Sắp tới, Sau đó và Chưa có ngày để quét theo thời gian mà không cần đổi filter.
 
-Mọi view dùng chung một secondary icon button **Ẩn ghi chú / Hiện ghi chú** trong view actions, đặt bên trái Search. Trên mobile chỉ icon filter này còn hiển thị cạnh headline vì Search/Help được ẩn. Trạng thái ẩn được giữ khi chuyển view trong phiên, chỉ tác động presentation và dùng neutral selected background thay cho focus glow.
+Mọi view dùng chung một secondary icon button **Ẩn ghi chú / Hiện ghi chú** trong view actions, đặt bên trái Search trên desktop. Trên mobile, icon filter chuyển lên góc phải header, thay vị trí badge Public và không lặp cạnh headline; trạng thái đồng bộ vẫn xem được trong sidebar/footer. Trạng thái ẩn được giữ khi chuyển view trong phiên, chỉ tác động presentation và dùng neutral selected background thay cho focus glow.
 
 Typography web app dùng base size bằng `rem`, scale root `112.5%` trên desktop và `120%` trên mobile. Cách này tăng độ đọc của navigation, item, metadata và editor nhưng giữ nguyên kích thước icon, sidebar, touch target và row geometry.
 
-Sau khi tăng type scale, danh sách mobile dùng row tối thiểu `44px` và gap `2px` giữa item. Đây là mật độ thấp nhất vẫn giữ touch target 44px; desktop tiếp tục dùng row khoảng `35px` và gap `6px`.
+Danh sách mobile dùng canvas tràn viền, row tối thiểu `52px` và gap `2px` giữa item; tiêu đề có thể hiển thị tối đa hai dòng để ưu tiên ít nhất khoảng tám từ khi nội dung đủ dài. Marker giữ vùng chạm tối thiểu 44px, project dot được thu gọn, còn desktop tiếp tục dùng row khoảng `35px` và gap `6px`.
+
+Gesture chỉ áp dụng dưới breakpoint mobile: tap tiêu đề mở editor; swipe phải bật/tắt Quan Trọng; swipe trái mở khay Quan Trọng, Ưu tiên và Xóa; swipe từ mép trái mở navigation sheet. Xóa vẫn dùng toast Hoàn tác và không kích hoạt ngay khi thả full-swipe. Không dùng touch-and-hold. Nút menu tiếp tục tồn tại làm fallback khi browser ưu tiên gesture hệ thống.
 
 ## Shared component inventory
 
 - App shell / sidebar / mobile navigation sheet.
 - View header và open-task count.
 - Quick-add composer có lựa chọn Task/Note.
-- Quick-add đóng dùng CTA turquoise “Thêm công việc”; khi mở dùng một surface trắng duy nhất với field có label, nền nhẹ, bo góc và spacing đồng bộ project editor. Hủy là secondary text button; Thêm là primary turquoise.
-- Item row: task dùng checkbox, note dùng một rounded dash mark xám; project dot nằm giữa marker và title; cả hai có star/điện xẹt luôn nhìn thấy; không hiện chip loại item hoặc tên project trong danh sách, và view Hôm nay không lặp nhãn ngày “Hôm nay” trên từng item.
+- Quick-add đóng dùng floating icon-only button `+` 32px trong control turquoise 48px, neo góc dưới phải trên desktop/mobile và giữ accessible label “Thêm công việc”. Khi mở, overlay surface trắng neo cùng góc; trên mobile surface dùng gần trọn chiều rộng như bottom sheet. Field có label, nền nhẹ, bo góc và spacing đồng bộ project editor. Hủy là secondary text button; Thêm là primary turquoise.
+- Item row: task dùng checkbox, note dùng một rounded dash mark xám; marker và project dot căn theo dòng title đầu tiên thay vì giữa toàn row. Desktop luôn hiện nút star/điện xẹt; mobile dùng icon trạng thái nhỏ trong metadata và đưa các action 44px vào khay swipe để dành chiều rộng cho nội dung. Không hiện chip loại item hoặc tên project trong danh sách, và view Hôm nay không lặp nhãn ngày “Hôm nay” trên từng item.
+- Thứ tự listing luôn là task trước, note sau ở cả desktop/mobile. Trong view Tất cả, quy tắc này áp dụng bên trong từng nhóm thời gian; trong mỗi loại vẫn sort theo due date rồi created time.
+- Disclosure **Đã hoàn thành** dùng uppercase, weight và letter-spacing cùng hệ section label của sidebar.
 - Item edit sheet/popover.
 - Smart filters Quan Trọng và Ưu tiên.
 - Project row và project editor.

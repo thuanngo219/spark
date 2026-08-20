@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { addCalendarDays, getLocalDateKey } from "@/lib/dates";
-import { filterItems, groupItemsByTime } from "@/lib/task-filters";
+import { filterItems, groupItemsByTime, sortItemsForDisplay } from "@/lib/task-filters";
 import type { SparkItem } from "@/lib/types";
 
 const item = (overrides: Partial<SparkItem>): SparkItem => ({
@@ -58,10 +58,26 @@ describe("master filters", () => {
     ]);
   });
 
-  it("project keeps undated items last", () => {
+  it("project keeps undated tasks before the note section", () => {
     const projectItems = items.map((entry) => ({ ...entry, projectId: "p1" }));
     const result = filterItems(projectItems, { type: "project", projectId: "p1" }, today);
-    expect(result.at(-1)?.id).toBe("undated");
+    expect(result.map((entry) => entry.id).slice(-2)).toEqual(["undated", "note"]);
+  });
+
+  it("always lists tasks before notes while preserving date order within each type", () => {
+    const mixedItems = [
+      item({ id: "note-early", type: "note", dueDate: "2026-08-18", createdAt: "2026-08-18T01:00:00Z" }),
+      item({ id: "task-late", dueDate: "2026-08-20", createdAt: "2026-08-18T03:00:00Z" }),
+      item({ id: "task-early", dueDate: "2026-08-19", createdAt: "2026-08-18T02:00:00Z" }),
+      item({ id: "note-late", type: "note", dueDate: "2026-08-21", createdAt: "2026-08-18T04:00:00Z" }),
+    ];
+
+    expect(sortItemsForDisplay(mixedItems).map((entry) => entry.id)).toEqual([
+      "task-early",
+      "task-late",
+      "note-early",
+      "note-late",
+    ]);
   });
 
   it("All includes every active item and groups it by time", () => {
@@ -69,11 +85,11 @@ describe("master filters", () => {
     expect(allItems.map((entry) => entry.id)).toEqual([
       "overdue",
       "today",
-      "note",
       "tomorrow",
       "day-three",
       "day-four",
       "undated",
+      "note",
     ]);
     expect(groupItemsByTime(allItems, today).map((group) => [group.key, group.items.map((entry) => entry.id)])).toEqual([
       ["overdue", ["overdue"]],

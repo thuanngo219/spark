@@ -1,15 +1,30 @@
 "use client";
 
 import Image from "next/image";
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import {
+  CSSProperties,
+  FormEvent,
+  PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Icon } from "@/components/ui/Icon";
 import {
-  deleteCloudItem,
   fetchCloudData,
-  seedCloudData,
-  upsertItem,
-  upsertProject,
+  runCloudMutation,
 } from "@/lib/cloud-data";
+import {
+  appendCloudMutation,
+  applyCloudMutations,
+  cloudDataKey,
+  DEMO_DATA_KEY,
+  parseCloudMutations,
+  pendingMutationsKey,
+  type CloudMutation,
+} from "@/lib/cloud-sync";
 import {
   addCalendarDays,
   formatDateRange,
@@ -17,12 +32,13 @@ import {
   formatShortDate,
   getLocalDateKey,
 } from "@/lib/dates";
+import { resolveItemSwipe, shouldOpenMobileSidebar } from "@/lib/mobile-gestures";
 import { normalizeDataIds, type SparkData } from "@/lib/data-ids";
 import { completedForView, filterItems, groupItemsByTime, type TimeGroup } from "@/lib/task-filters";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase";
 import type { ItemType, Project, SparkItem, View } from "@/lib/types";
 
-const STORAGE_KEY = "spark:data:v1";
+const LEGACY_STORAGE_KEY = "spark:data:v1";
 const SIDEBAR_KEY = "spark:sidebar:v2";
 const SIDEBAR_SECTIONS_KEY = "spark:sidebar-sections";
 const SPARK_LOGO_SRC = "/brand/spark-logo.svg";
@@ -47,7 +63,15 @@ const projectColors = [
   "#6FA889",
   "#C56F8C",
 ];
-type SyncStatus = "demo" | "loading" | "syncing" | "synced" | "error" | "not-configured";
+type SyncStatus =
+  | "demo"
+  | "loading"
+  | "syncing"
+  | "synced"
+  | "offline"
+  | "reconnecting"
+  | "error"
+  | "not-configured";
 type CloudUser = { id: string; email: string };
 
 function seedData(today: string): SparkData {
@@ -109,12 +133,30 @@ function seedData(today: string): SparkData {
   return { items, projects };
 }
 
-function readLocalData(today: string): SparkData {
+function readStoredData(key: string): SparkData | null {
   try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    return normalizeDataIds(stored ? JSON.parse(stored) : seedData(today));
+    const stored = window.localStorage.getItem(key);
+    return stored ? normalizeDataIds(JSON.parse(stored)) : null;
   } catch {
-    return seedData(today);
+    return null;
+  }
+}
+
+function readDemoData(today: string): SparkData {
+  return (
+    readStoredData(DEMO_DATA_KEY) ??
+    readStoredData(LEGACY_STORAGE_KEY) ??
+    seedData(today)
+  );
+}
+
+function readPendingMutations(userId: string) {
+  try {
+    return parseCloudMutations(
+      JSON.parse(window.localStorage.getItem(pendingMutationsKey(userId)) ?? "[]"),
+    );
+  } catch {
+    return [];
   }
 }
 
@@ -139,6 +181,25 @@ function orderProjectsForSidebar(projects: Project[]) {
   ];
 }
 
+function isSyncInProgress(status: SyncStatus) {
+  return status === "loading" || status === "syncing" || status === "reconnecting";
+}
+
+function syncStatusTitle(status: SyncStatus) {
+  if (status === "synced") return "Đã đồng bộ an toàn";
+  if (status === "offline") return "Đang offline";
+  if (status === "error") return "Đồng bộ đang gián đoạn";
+  if (isSyncInProgress(status)) return "Đang nối và đối soát…";
+  return "Bật đồng bộ dữ liệu";
+}
+
+function syncStatusDetail(status: SyncStatus) {
+  if (status === "synced") return "Cập nhật trên mọi thiết bị";
+  if (status === "offline") return "Thay đổi đang chờ mạng trở lại";
+  if (status === "error") return "Đã giữ thay đổi trên thiết bị để thử lại";
+  return "Public để xem · riêng tư khi dùng";
+}
+
 export function SparkApp() {
   const today = getLocalDateKey();
   const [data, setData] = useState<SparkData | null>(null);
@@ -155,12 +216,171 @@ export function SparkApp() {
   const [editingItem, setEditingItem] = useState<SparkItem | null>(null);
   const [projectEditor, setProjectEditor] = useState<Project | "new" | null>(null);
   const [deletedItem, setDeletedItem] = useState<SparkItem | null>(null);
+  const [openSwipeItemId, setOpenSwipeItemId] = useState<string | null>(null);
   const [cloudUser, setCloudUser] = useState<CloudUser | null>(null);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>(isSupabaseConfigured() ? "loading" : "not-configured");
   const [syncDialogOpen, setSyncDialogOpen] = useState(false);
   const pendingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const undoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dataRef = useRef(data);
+  const dataScopeRef = useRef<"demo" | string>("demo");
+  const cloudUserRef = useRef<CloudUser | null>(null);
+  const pendingMutationsRef = useRef<CloudMutation[]>([]);
+  const syncRevisionRef = useRef(0);
+  const pullRequestRef = useRef(0);
+  const activationRef = useRef(0);
+  const realtimeConnectedRef = useRef(false);
+  const flushPromiseRef = useRef<Promise<void> | null>(null);
+  const flushUserIdRef = useRef<string | null>(null);
+  const flushPendingRef = useRef<() => Promise<void>>(async () => undefined);
+  const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const retryDelayRef = useRef(1_000);
+  const navEdgeGestureRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+  } | null>(null);
+
+  const replaceData = useCallback((next: SparkData, scope?: "demo" | string) => {
+    if (scope) dataScopeRef.current = scope;
+    dataRef.current = next;
+    const key = dataScopeRef.current === "demo"
+      ? DEMO_DATA_KEY
+      : cloudDataKey(dataScopeRef.current);
+    try {
+      window.localStorage.setItem(key, JSON.stringify(next));
+    } catch (error) {
+      console.error("Spark local cache write failed", error);
+    }
+    setData(next);
+  }, []);
+
+  const persistPendingMutations = useCallback((userId: string) => {
+    window.localStorage.setItem(
+      pendingMutationsKey(userId),
+      JSON.stringify(pendingMutationsRef.current),
+    );
+  }, []);
+
+  const setIdleSyncStatus = useCallback(() => {
+    if (!cloudUserRef.current) {
+      setSyncStatus(isSupabaseConfigured() ? "demo" : "not-configured");
+    } else if (!navigator.onLine) {
+      setSyncStatus("offline");
+    } else if (pendingMutationsRef.current.length > 0) {
+      setSyncStatus("syncing");
+    } else if (!realtimeConnectedRef.current) {
+      setSyncStatus("reconnecting");
+    } else {
+      setSyncStatus("synced");
+    }
+  }, []);
+
+  const pullCloudData = useCallback(async (expectedUserId?: string) => {
+    const client = getSupabaseBrowserClient();
+    const user = cloudUserRef.current;
+    if (!client || !user || (expectedUserId && user.id !== expectedUserId)) return;
+
+    const requestId = ++pullRequestRef.current;
+    const revision = syncRevisionRef.current;
+    try {
+      const remote = await fetchCloudData(client);
+      if (
+        requestId !== pullRequestRef.current ||
+        revision !== syncRevisionRef.current ||
+        cloudUserRef.current?.id !== user.id
+      ) {
+        return;
+      }
+      replaceData(
+        applyCloudMutations(remote, pendingMutationsRef.current),
+        user.id,
+      );
+      setIdleSyncStatus();
+    } catch (error) {
+      console.error("Spark cloud refresh failed", error);
+      setSyncStatus(navigator.onLine ? "error" : "offline");
+    }
+  }, [replaceData, setIdleSyncStatus]);
+
+  const schedulePendingRetry = useCallback(() => {
+    if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
+    const delay = retryDelayRef.current;
+    retryDelayRef.current = Math.min(delay * 2, 30_000);
+    retryTimerRef.current = setTimeout(() => {
+      retryTimerRef.current = null;
+      void flushPendingRef.current();
+    }, delay);
+  }, []);
+
+  const flushPendingMutations = useCallback(async () => {
+    const user = cloudUserRef.current;
+    const client = getSupabaseBrowserClient();
+    if (!user || !client) return;
+    if (flushPromiseRef.current && flushUserIdRef.current === user.id) {
+      return flushPromiseRef.current;
+    }
+    if (!navigator.onLine) {
+      setSyncStatus("offline");
+      return;
+    }
+
+    const flush = (async () => {
+      while (pendingMutationsRef.current.length > 0) {
+        if (cloudUserRef.current?.id !== user.id) return;
+        const mutation = pendingMutationsRef.current[0];
+        setSyncStatus("syncing");
+        try {
+          await runCloudMutation(client, mutation, user.id);
+        } catch (error) {
+          console.error("Spark cloud mutation failed", error);
+          setSyncStatus(navigator.onLine ? "error" : "offline");
+          schedulePendingRetry();
+          return;
+        }
+
+        if (pendingMutationsRef.current[0]?.id === mutation.id) {
+          pendingMutationsRef.current = pendingMutationsRef.current.slice(1);
+          syncRevisionRef.current += 1;
+          persistPendingMutations(user.id);
+        }
+      }
+
+      retryDelayRef.current = 1_000;
+      if (retryTimerRef.current) {
+        clearTimeout(retryTimerRef.current);
+        retryTimerRef.current = null;
+      }
+      await pullCloudData(user.id);
+    })();
+
+    const trackedFlush = flush.finally(() => {
+      if (flushPromiseRef.current === trackedFlush) {
+        flushPromiseRef.current = null;
+        flushUserIdRef.current = null;
+      }
+    });
+    flushPromiseRef.current = trackedFlush;
+    flushUserIdRef.current = user.id;
+    return trackedFlush;
+  }, [persistPendingMutations, pullCloudData, schedulePendingRetry]);
+
+  useEffect(() => {
+    flushPendingRef.current = flushPendingMutations;
+  }, [flushPendingMutations]);
+
+  const enqueueCloudMutation = useCallback((mutation: CloudMutation) => {
+    const user = cloudUserRef.current;
+    if (!user) return;
+    pendingMutationsRef.current = appendCloudMutation(
+      pendingMutationsRef.current,
+      mutation,
+    );
+    syncRevisionRef.current += 1;
+    persistPendingMutations(user.id);
+    setSyncStatus(navigator.onLine ? "syncing" : "offline");
+    void flushPendingMutations();
+  }, [flushPendingMutations, persistPendingMutations]);
 
   useEffect(() => {
     dataRef.current = data;
@@ -168,9 +388,8 @@ export function SparkApp() {
 
   useEffect(() => {
     queueMicrotask(() => {
-      const localData = readLocalData(today);
-      dataRef.current = localData;
-      setData(localData);
+      const localData = readDemoData(today);
+      replaceData(localData, "demo");
       const sidebarPreference = window.localStorage.getItem(SIDEBAR_KEY);
       setSidebarCompact(sidebarPreference === null || sidebarPreference === "compact");
       try {
@@ -183,12 +402,7 @@ export function SparkApp() {
       }
       setPreferencesLoaded(true);
     });
-  }, [today]);
-
-  useEffect(() => {
-    if (!data) return;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }, [data]);
+  }, [replaceData, today]);
 
   useEffect(() => {
     const client = getSupabaseBrowserClient();
@@ -202,40 +416,94 @@ export function SparkApp() {
       if (activationUserId === user.id && activationPromise) return activationPromise;
 
       activationUserId = user.id;
+      const activationId = ++activationRef.current;
       activationPromise = (async () => {
-        setCloudUser({ id: user.id, email: user.email ?? "" });
+        const nextUser = { id: user.id, email: user.email ?? "" };
+        cloudUserRef.current = nextUser;
+        setCloudUser(nextUser);
+        realtimeConnectedRef.current = false;
+        pendingMutationsRef.current = readPendingMutations(user.id);
+        syncRevisionRef.current += 1;
         setSyncStatus("loading");
+
+        const cached = readStoredData(cloudDataKey(user.id));
+        if (cached) {
+          replaceData(
+            applyCloudMutations(cached, pendingMutationsRef.current),
+            user.id,
+          );
+        }
+
         try {
           const remote = await fetchCloudData(client);
-          if (!active) return;
-          if (remote.items.length === 0 && remote.projects.length === 0) {
-            const localData = normalizeDataIds(
-              dataRef.current ?? readLocalData(getLocalDateKey()),
-            );
-            dataRef.current = localData;
-            await seedCloudData(client, localData, user.id);
-            if (!active) return;
-            setData(localData);
-          } else {
-            dataRef.current = remote;
-            setData(remote);
+          if (
+            !active ||
+            activationId !== activationRef.current ||
+            cloudUserRef.current?.id !== user.id
+          ) {
+            return;
           }
-          setSyncStatus("synced");
+
+          if (
+            remote.items.length === 0 &&
+            remote.projects.length === 0 &&
+            pendingMutationsRef.current.length === 0
+          ) {
+            const localData = cached ?? readDemoData(getLocalDateKey());
+            let queued: CloudMutation[] = [];
+            for (const project of localData.projects) {
+              queued = appendCloudMutation(queued, {
+                id: crypto.randomUUID(),
+                kind: "upsert-project",
+                project,
+              });
+            }
+            for (const item of localData.items) {
+              queued = appendCloudMutation(queued, {
+                id: crypto.randomUUID(),
+                kind: "upsert-item",
+                item,
+              });
+            }
+            pendingMutationsRef.current = queued;
+            syncRevisionRef.current += 1;
+            persistPendingMutations(user.id);
+          }
+
+          replaceData(
+            applyCloudMutations(remote, pendingMutationsRef.current),
+            user.id,
+          );
+          if (pendingMutationsRef.current.length > 0) {
+            void flushPendingMutations();
+          } else {
+            setIdleSyncStatus();
+          }
         } catch (error) {
           console.error("Spark cloud activation failed", error);
-          if (active) setSyncStatus("error");
+          if (active && activationId === activationRef.current) {
+            setSyncStatus(navigator.onLine ? "error" : "offline");
+            if (pendingMutationsRef.current.length > 0) schedulePendingRetry();
+          }
         }
       })();
       return activationPromise;
     };
 
-    client.auth.getSession().then(({ data: sessionData }) => {
-      if (sessionData.session?.user) {
-        void activateSession(sessionData.session.user);
-      } else if (active) {
-        setSyncStatus("demo");
-      }
-    });
+    client.auth.getSession()
+      .then(({ data: sessionData, error }) => {
+        if (error) throw error;
+        if (sessionData.session?.user) {
+          void activateSession(sessionData.session.user);
+        } else if (active) {
+          cloudUserRef.current = null;
+          setSyncStatus("demo");
+        }
+      })
+      .catch((error) => {
+        console.error("Spark auth session restore failed", error);
+        if (active) setSyncStatus(navigator.onLine ? "error" : "offline");
+      });
 
     const { data: authListener } = client.auth.onAuthStateChange((_event, session) => {
       queueMicrotask(() => {
@@ -244,43 +512,105 @@ export function SparkApp() {
         } else if (active) {
           activationUserId = null;
           activationPromise = null;
+          activationRef.current += 1;
+          pullRequestRef.current += 1;
+          cloudUserRef.current = null;
+          pendingMutationsRef.current = [];
+          realtimeConnectedRef.current = false;
           setCloudUser(null);
           setSyncStatus("demo");
+          replaceData(readDemoData(getLocalDateKey()), "demo");
         }
       });
     });
 
     return () => {
       active = false;
+      activationRef.current += 1;
       authListener.subscription.unsubscribe();
     };
-  }, []);
+  }, [
+    flushPendingMutations,
+    persistPendingMutations,
+    replaceData,
+    schedulePendingRetry,
+    setIdleSyncStatus,
+  ]);
 
   useEffect(() => {
     const client = getSupabaseBrowserClient();
     if (!client || !cloudUser) return;
+    let active = true;
     let refreshTimer: ReturnType<typeof setTimeout> | null = null;
     const refresh = () => {
       if (refreshTimer) clearTimeout(refreshTimer);
       refreshTimer = setTimeout(() => {
-        fetchCloudData(client)
-          .then((remote) => {
-            setData(remote);
-            setSyncStatus("synced");
-          })
-          .catch(() => setSyncStatus("error"));
-      }, 120);
+        void pullCloudData(cloudUser.id);
+      }, 150);
     };
     const channel = client
       .channel(`spark-sync-${cloudUser.id}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "projects" }, refresh)
       .on("postgres_changes", { event: "*", schema: "public", table: "items" }, refresh)
-      .subscribe();
+      .subscribe((status, error) => {
+        if (!active) return;
+        if (status === "SUBSCRIBED") {
+          realtimeConnectedRef.current = true;
+          if (pendingMutationsRef.current.length > 0) {
+            void flushPendingMutations();
+          } else {
+            void pullCloudData(cloudUser.id);
+          }
+        } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+          realtimeConnectedRef.current = false;
+          console.error("Spark realtime subscription interrupted", status, error);
+          setSyncStatus(navigator.onLine ? "reconnecting" : "offline");
+        }
+      });
     return () => {
+      active = false;
+      realtimeConnectedRef.current = false;
       if (refreshTimer) clearTimeout(refreshTimer);
       void client.removeChannel(channel);
     };
-  }, [cloudUser]);
+  }, [cloudUser, flushPendingMutations, pullCloudData]);
+
+  useEffect(() => {
+    const recover = () => {
+      if (!cloudUserRef.current) return;
+      if (!navigator.onLine) {
+        setSyncStatus("offline");
+        return;
+      }
+      if (pendingMutationsRef.current.length > 0) {
+        void flushPendingMutations();
+      } else {
+        void pullCloudData(cloudUserRef.current.id);
+      }
+    };
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") recover();
+    };
+    const onOffline = () => {
+      if (cloudUserRef.current) setSyncStatus("offline");
+    };
+    const interval = window.setInterval(() => {
+      if (document.visibilityState === "visible") recover();
+    }, 60_000);
+
+    window.addEventListener("online", recover);
+    window.addEventListener("offline", onOffline);
+    window.addEventListener("focus", recover);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener("online", recover);
+      window.removeEventListener("offline", onOffline);
+      window.removeEventListener("focus", recover);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
+    };
+  }, [flushPendingMutations, pullCloudData]);
 
   useEffect(() => {
     if (!preferencesLoaded) return;
@@ -373,46 +703,53 @@ export function SparkApp() {
   const navigate = (next: View) => {
     setView(next);
     setMobileNav(false);
+    setOpenSwipeItemId(null);
     setCompletedOpen(false);
   };
 
-  const writeCloud = (operation: () => Promise<void>) => {
-    if (!cloudUser) return;
-    setSyncStatus("syncing");
-    operation()
-      .then(() => setSyncStatus("synced"))
-      .catch(() => setSyncStatus("error"));
-  };
-
   const mutateItem = (id: string, update: Partial<SparkItem>) => {
-    if (!data) return;
-    const existing = data.items.find((item) => item.id === id);
+    const currentData = dataRef.current;
+    if (!currentData) return;
+    const existing = currentData.items.find((item) => item.id === id);
     if (!existing) return;
     const nextItem = { ...existing, ...update };
-    setData({ ...data, items: data.items.map((item) => (item.id === id ? nextItem : item)) });
-    const client = getSupabaseBrowserClient();
-    if (client && cloudUser) writeCloud(() => upsertItem(client, nextItem, cloudUser.id));
+    replaceData({
+      ...currentData,
+      items: currentData.items.map((item) => (item.id === id ? nextItem : item)),
+    });
+    enqueueCloudMutation({
+      id: crypto.randomUUID(),
+      kind: "upsert-item",
+      item: nextItem,
+    });
   };
 
   const addItem = (item: SparkItem) => {
-    setData((value) => value ? { ...value, items: [...value.items, item] } : value);
-    const client = getSupabaseBrowserClient();
-    if (client && cloudUser) writeCloud(() => upsertItem(client, item, cloudUser.id));
+    const currentData = dataRef.current;
+    if (!currentData) return;
+    replaceData({ ...currentData, items: [...currentData.items, item] });
+    enqueueCloudMutation({
+      id: crypto.randomUUID(),
+      kind: "upsert-item",
+      item,
+    });
   };
 
   const saveProject = (project: Project) => {
-    setData((value) => {
-      if (!value) return value;
-      const exists = value.projects.some((entry) => entry.id === project.id);
-      return {
-        ...value,
-        projects: exists
-          ? value.projects.map((entry) => entry.id === project.id ? project : entry)
-          : [...value.projects, project],
-      };
+    const currentData = dataRef.current;
+    if (!currentData) return;
+    const exists = currentData.projects.some((entry) => entry.id === project.id);
+    replaceData({
+      ...currentData,
+      projects: exists
+        ? currentData.projects.map((entry) => entry.id === project.id ? project : entry)
+        : [...currentData.projects, project],
     });
-    const client = getSupabaseBrowserClient();
-    if (client && cloudUser) writeCloud(() => upsertProject(client, project, cloudUser.id));
+    enqueueCloudMutation({
+      id: crypto.randomUUID(),
+      kind: "upsert-project",
+      project,
+    });
   };
 
   const toggleComplete = (item: SparkItem) => {
@@ -423,22 +760,34 @@ export function SparkApp() {
   const removeItem = (item: SparkItem) => {
     setDeletedItem(item);
     setEditingItem(null);
-    setData((currentData) =>
-      currentData ? { ...currentData, items: currentData.items.filter((entry) => entry.id !== item.id) } : null,
-    );
-    const client = getSupabaseBrowserClient();
-    if (client && cloudUser) writeCloud(() => deleteCloudItem(client, item.id));
+    setOpenSwipeItemId(null);
+    const currentData = dataRef.current;
+    if (currentData) {
+      replaceData({
+        ...currentData,
+        items: currentData.items.filter((entry) => entry.id !== item.id),
+      });
+    }
+    enqueueCloudMutation({
+      id: crypto.randomUUID(),
+      kind: "delete-item",
+      itemId: item.id,
+    });
     if (undoTimer.current) clearTimeout(undoTimer.current);
     undoTimer.current = setTimeout(() => setDeletedItem(null), 6000);
   };
 
   const undoDelete = () => {
     if (!deletedItem) return;
-    setData((currentData) =>
-      currentData ? { ...currentData, items: [...currentData.items, deletedItem] } : currentData,
-    );
-    const client = getSupabaseBrowserClient();
-    if (client && cloudUser) writeCloud(() => upsertItem(client, deletedItem, cloudUser.id));
+    const currentData = dataRef.current;
+    if (currentData) {
+      replaceData({ ...currentData, items: [...currentData.items, deletedItem] });
+    }
+    enqueueCloudMutation({
+      id: crypto.randomUUID(),
+      kind: "upsert-item",
+      item: deletedItem,
+    });
     setDeletedItem(null);
   };
 
@@ -465,6 +814,47 @@ export function SparkApp() {
         : view.type === "calendar"
           ? formatLongDate(view.date)
           : null;
+
+  const startNavEdgeGesture = (event: ReactPointerEvent<HTMLElement>) => {
+    if (
+      mobileNav ||
+      !event.isPrimary ||
+      event.button !== 0 ||
+      event.clientX > 24 ||
+      !window.matchMedia("(max-width: 699px)").matches
+    ) {
+      navEdgeGestureRef.current = null;
+      return;
+    }
+    navEdgeGestureRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+    };
+  };
+
+  const moveNavEdgeGesture = (event: ReactPointerEvent<HTMLElement>) => {
+    const gesture = navEdgeGestureRef.current;
+    if (!gesture || gesture.pointerId !== event.pointerId) return;
+    const deltaX = event.clientX - gesture.startX;
+    const deltaY = event.clientY - gesture.startY;
+    if (deltaX < -8 || Math.abs(deltaY) > Math.abs(deltaX) * 1.4) {
+      navEdgeGestureRef.current = null;
+      return;
+    }
+    if (shouldOpenMobileSidebar(deltaX, deltaY)) {
+      event.preventDefault();
+      navEdgeGestureRef.current = null;
+      setOpenSwipeItemId(null);
+      setMobileNav(true);
+    }
+  };
+
+  const endNavEdgeGesture = (event: ReactPointerEvent<HTMLElement>) => {
+    if (navEdgeGestureRef.current?.pointerId === event.pointerId) {
+      navEdgeGestureRef.current = null;
+    }
+  };
 
   if (!data) return <LoadingShell />;
 
@@ -517,13 +907,28 @@ export function SparkApp() {
         </div>
       )}
 
-      <main className="content">
+      <main
+        className="content"
+        onPointerDownCapture={startNavEdgeGesture}
+        onPointerMoveCapture={moveNavEdgeGesture}
+        onPointerUpCapture={endNavEdgeGesture}
+        onPointerCancelCapture={endNavEdgeGesture}
+      >
         <header className="mobile-header">
           <button className="icon-button" onClick={() => setMobileNav(true)} aria-label="Mở điều hướng">
             <Icon name="menu" />
           </button>
           <Image className="mobile-logo" src={SPARK_LOGO_SRC} width={120} height={45} alt="Spark" priority unoptimized />
-          <button className={`public-badge ${syncStatus}`} onClick={() => setSyncDialogOpen(true)}>{cloudUser ? "Đã sync" : "Public"}</button>
+          <button
+            className={`icon-button mobile-note-toggle note-visibility-button ${hideNotes ? "notes-hidden" : ""}`}
+            type="button"
+            aria-label={hideNotes ? "Hiện ghi chú" : "Ẩn ghi chú"}
+            aria-pressed={hideNotes}
+            title={hideNotes ? "Hiện ghi chú" : "Ẩn ghi chú"}
+            onClick={() => setHideNotes((value) => !value)}
+          >
+            <Icon name="note" />
+          </button>
         </header>
 
         <section className="canvas" aria-labelledby="view-title">
@@ -548,7 +953,7 @@ export function SparkApp() {
                   </button>
                 )}
               </div>
-              <p>{taskCount} việc cần xử lý <span aria-hidden="true">—</span> {overdueCount} quá hạn <span aria-hidden="true">—</span> {noteCount} ghi chú{hideNotes ? " đang ẩn" : ""}</p>
+              <p>{taskCount} việc cần xử lý <span aria-hidden="true">|</span> {overdueCount} quá hạn <span aria-hidden="true">|</span> {noteCount} ghi chú{hideNotes ? " đang ẩn" : ""}</p>
             </div>
             <div className="view-actions">
               <button
@@ -583,8 +988,11 @@ export function SparkApp() {
                 today={today}
                 hideTodayDue={view.type === "today"}
                 onComplete={toggleComplete}
+                onDelete={removeItem}
                 onEdit={setEditingItem}
                 onFlag={mutateItem}
+                openSwipeItemId={openSwipeItemId}
+                onSwipeOpenChange={setOpenSwipeItemId}
               />
             )}
             {current.length > 0 && (
@@ -595,8 +1003,11 @@ export function SparkApp() {
                 today={today}
                 hideTodayDue={view.type === "today"}
                 onComplete={toggleComplete}
+                onDelete={removeItem}
                 onEdit={setEditingItem}
                 onFlag={mutateItem}
+                openSwipeItemId={openSwipeItemId}
+                onSwipeOpenChange={setOpenSwipeItemId}
               />
             )}
             {view.type === "all" && allTimeGroups.map((group) => (
@@ -608,8 +1019,11 @@ export function SparkApp() {
                 today={today}
                 hideTodayDue={group.key === "today"}
                 onComplete={toggleComplete}
+                onDelete={removeItem}
                 onEdit={setEditingItem}
                 onFlag={mutateItem}
+                openSwipeItemId={openSwipeItemId}
+                onSwipeOpenChange={setOpenSwipeItemId}
               />
             ))}
             {visibleOpenItems.length === 0 && <EmptyState view={view} />}
@@ -635,8 +1049,11 @@ export function SparkApp() {
                     today={today}
                     hideTodayDue={view.type === "today"}
                     onComplete={toggleComplete}
+                    onDelete={removeItem}
                     onEdit={setEditingItem}
                     onFlag={mutateItem}
+                    openSwipeItemId={openSwipeItemId}
+                    onSwipeOpenChange={setOpenSwipeItemId}
                   />
                 )}
               </div>
@@ -646,10 +1063,12 @@ export function SparkApp() {
         <p className={`storage-note ${syncStatus}`}><span /> {
           syncStatus === "synced"
             ? "Đã đồng bộ trên mọi thiết bị"
-            : syncStatus === "syncing" || syncStatus === "loading"
-              ? "Đang đồng bộ dữ liệu…"
+            : syncStatus === "offline"
+              ? "Đang offline · thay đổi sẽ tự đồng bộ khi có mạng"
+              : isSyncInProgress(syncStatus)
+                ? "Đang nối và đối soát dữ liệu…"
               : syncStatus === "error"
-                ? "Đồng bộ bị gián đoạn · dữ liệu vẫn còn trên thiết bị"
+                ? "Đồng bộ bị gián đoạn · thay đổi đã được giữ để thử lại"
                 : "Chỉ lưu trên thiết bị này · chưa đồng bộ"
         }</p>
       </main>
@@ -801,11 +1220,11 @@ function Sidebar({
       <div className="sidebar-footer">
         {!mobile && <button className="sidebar-toggle" onClick={onToggle} aria-label={compact ? "Mở rộng sidebar" : "Thu gọn sidebar"} title={compact ? undefined : "Thu gọn sidebar"} data-tooltip={compact ? "Mở rộng sidebar" : undefined}><Icon name="panel" size={20} /></button>}
         <button className="nav-item" onClick={onHelp} aria-label="Phím tắt" data-tooltip={compact ? "Phím tắt" : undefined}><Icon name="help" /><span className="nav-text">Phím tắt</span><kbd className="nav-kbd">?</kbd></button>
-        <button className="local-mode-card" onClick={onSync} aria-label={syncStatus === "synced" ? "Đã đồng bộ an toàn" : syncStatus === "syncing" || syncStatus === "loading" ? "Đang đồng bộ" : "Bật đồng bộ dữ liệu"} data-tooltip={compact ? syncStatus === "synced" ? "Đã đồng bộ an toàn" : syncStatus === "syncing" || syncStatus === "loading" ? "Đang đồng bộ" : "Bật đồng bộ dữ liệu" : undefined}>
-          <span className={`local-mode-icon ${syncStatus}`}><Icon name={syncStatus === "error" ? "zap" : "check"} size={15} /></span>
+        <button className="local-mode-card" onClick={onSync} aria-label={syncStatusTitle(syncStatus)} data-tooltip={compact ? syncStatusTitle(syncStatus) : undefined}>
+          <span className={`local-mode-icon ${syncStatus}`}><Icon name={syncStatus === "error" || syncStatus === "offline" ? "zap" : "check"} size={15} /></span>
           <span>
-            <strong>{syncStatus === "synced" ? "Đã đồng bộ an toàn" : syncStatus === "syncing" || syncStatus === "loading" ? "Đang đồng bộ…" : "Bật đồng bộ dữ liệu"}</strong>
-            <small>{syncStatus === "synced" ? "Cập nhật trên mọi thiết bị" : "Public để xem · riêng tư khi dùng"}</small>
+            <strong>{syncStatusTitle(syncStatus)}</strong>
+            <small>{syncStatusDetail(syncStatus)}</small>
           </span>
         </button>
       </div>
@@ -813,15 +1232,30 @@ function Sidebar({
   );
 }
 
-function ItemGroup({ label, items, projects, today, hideTodayDue = false, onComplete, onEdit, onFlag }: {
+function ItemGroup({
+  label,
+  items,
+  projects,
+  today,
+  hideTodayDue = false,
+  onComplete,
+  onDelete,
+  onEdit,
+  onFlag,
+  openSwipeItemId,
+  onSwipeOpenChange,
+}: {
   label?: string;
   items: SparkItem[];
   projects: Project[];
   today: string;
   hideTodayDue?: boolean;
   onComplete: (item: SparkItem) => void;
+  onDelete: (item: SparkItem) => void;
   onEdit: (item: SparkItem) => void;
   onFlag: (id: string, update: Partial<SparkItem>) => void;
+  openSwipeItemId: string | null;
+  onSwipeOpenChange: (id: string | null) => void;
 }) {
   return (
     <section className="item-group">
@@ -831,28 +1265,216 @@ function ItemGroup({ label, items, projects, today, hideTodayDue = false, onComp
           const project = projects.find((entry) => entry.id === item.projectId);
           const overdue = item.dueDate && item.dueDate < today && !item.completedAt;
           return (
-            <article className={`item-row ${item.completedAt ? "is-complete" : ""}`} key={item.id}>
-              {item.type === "task" ? (
-                <button className={`checkbox ${item.completedAt ? "checked" : ""}`} onClick={() => onComplete(item)} aria-label={item.completedAt ? `Đánh dấu chưa xong: ${item.title}` : `Hoàn thành: ${item.title}`}>
-                  {item.completedAt && <Icon name="check" size={15} />}
-                </button>
-              ) : <span className="note-bullet" aria-label="Ghi chú"><span className="note-mark" aria-hidden="true" /></span>}
-              {project ? <span className="project-dot item-project-dot" style={{ background: project.color }} title={project.name} /> : <span className="project-dot-spacer" />}
-              <button className="item-main" onClick={() => onEdit(item)}>
-                <span className="item-title">{item.title}</span>
-                <span className="item-meta">
-                  {item.dueDate && !(hideTodayDue && item.dueDate === today) && <span className={overdue ? "due-overdue" : ""}>{formatShortDate(item.dueDate, today)}</span>}
-                </span>
-              </button>
-              <div className="item-flags">
-                <button className={`flag-button important ${item.isImportant ? "selected" : ""}`} onClick={() => onFlag(item.id, { isImportant: !item.isImportant })} aria-label="Quan Trọng"><Icon name="star" size={18} /></button>
-                <button className={`flag-button urgent ${item.isUrgent ? "selected" : ""}`} onClick={() => onFlag(item.id, { isUrgent: !item.isUrgent })} aria-label="Ưu tiên"><Icon name="zap" size={18} /></button>
-              </div>
-            </article>
+            <SwipeableItemRow
+              item={item}
+              project={project}
+              overdue={Boolean(overdue)}
+              hideDue={Boolean(item.dueDate && hideTodayDue && item.dueDate === today)}
+              isSwipeOpen={openSwipeItemId === item.id}
+              key={item.id}
+              onComplete={onComplete}
+              onDelete={onDelete}
+              onEdit={onEdit}
+              onFlag={onFlag}
+              onSwipeOpenChange={onSwipeOpenChange}
+              today={today}
+            />
           );
         })}
       </div>
     </section>
+  );
+}
+
+const SWIPE_ACTIONS_WIDTH = 152;
+
+function SwipeableItemRow({
+  item,
+  project,
+  overdue,
+  hideDue,
+  isSwipeOpen,
+  onComplete,
+  onDelete,
+  onEdit,
+  onFlag,
+  onSwipeOpenChange,
+  today,
+}: {
+  item: SparkItem;
+  project?: Project;
+  overdue: boolean;
+  hideDue: boolean;
+  isSwipeOpen: boolean;
+  onComplete: (item: SparkItem) => void;
+  onDelete: (item: SparkItem) => void;
+  onEdit: (item: SparkItem) => void;
+  onFlag: (id: string, update: Partial<SparkItem>) => void;
+  onSwipeOpenChange: (id: string | null) => void;
+  today: string;
+}) {
+  const [dragOffset, setDragOffset] = useState<number | null>(null);
+  const gestureRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    wasOpen: boolean;
+    axis: "pending" | "horizontal" | "vertical";
+  } | null>(null);
+  const suppressClickRef = useRef(false);
+  const offset = dragOffset ?? (isSwipeOpen ? -SWIPE_ACTIONS_WIDTH : 0);
+
+  const closeActions = () => onSwipeOpenChange(null);
+
+  const onPointerDown = (event: ReactPointerEvent<HTMLElement>) => {
+    if (
+      !event.isPrimary ||
+      event.button !== 0 ||
+      event.clientX <= 24 ||
+      !window.matchMedia("(max-width: 699px)").matches
+    ) return;
+
+    gestureRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      wasOpen: isSwipeOpen,
+      axis: "pending",
+    };
+    setDragOffset(isSwipeOpen ? -SWIPE_ACTIONS_WIDTH : 0);
+    if (!isSwipeOpen) onSwipeOpenChange(null);
+  };
+
+  const onPointerMove = (event: ReactPointerEvent<HTMLElement>) => {
+    const gesture = gestureRef.current;
+    if (!gesture || gesture.pointerId !== event.pointerId) return;
+    const deltaX = event.clientX - gesture.startX;
+    const deltaY = event.clientY - gesture.startY;
+
+    if (gesture.axis === "pending" && Math.max(Math.abs(deltaX), Math.abs(deltaY)) >= 8) {
+      gesture.axis = Math.abs(deltaX) > Math.abs(deltaY) * 1.15 ? "horizontal" : "vertical";
+      if (gesture.axis === "horizontal") {
+        event.currentTarget.setPointerCapture(event.pointerId);
+        suppressClickRef.current = true;
+      }
+    }
+    if (gesture.axis !== "horizontal") return;
+
+    event.preventDefault();
+    const base = gesture.wasOpen ? -SWIPE_ACTIONS_WIDTH : 0;
+    const minimum = -SWIPE_ACTIONS_WIDTH - 12;
+    const maximum = gesture.wasOpen ? 0 : 88;
+    setDragOffset(Math.max(minimum, Math.min(maximum, base + deltaX)));
+  };
+
+  const finishPointerGesture = (event: ReactPointerEvent<HTMLElement>) => {
+    const gesture = gestureRef.current;
+    if (!gesture || gesture.pointerId !== event.pointerId) return;
+    const deltaX = event.clientX - gesture.startX;
+    const deltaY = event.clientY - gesture.startY;
+    const result = gesture.axis === "horizontal"
+      ? resolveItemSwipe(deltaX, deltaY, gesture.wasOpen)
+      : gesture.wasOpen ? "open-actions" : "closed";
+
+    gestureRef.current = null;
+    setDragOffset(null);
+    window.setTimeout(() => {
+      suppressClickRef.current = false;
+    }, 0);
+    if (result === "open-actions") onSwipeOpenChange(item.id);
+    else {
+      onSwipeOpenChange(null);
+      if (result === "toggle-important") {
+        onFlag(item.id, { isImportant: !item.isImportant });
+      }
+    }
+  };
+
+  const cancelPointerGesture = (event: ReactPointerEvent<HTMLElement>) => {
+    if (gestureRef.current?.pointerId !== event.pointerId) return;
+    gestureRef.current = null;
+    suppressClickRef.current = false;
+    setDragOffset(null);
+  };
+
+  return (
+    <div className={`swipe-row ${dragOffset !== null ? "is-dragging" : ""}`}>
+      <div className="swipe-leading-feedback" aria-hidden="true">
+        <Icon name="star" size={20} />
+        <span>{item.isImportant ? "Bỏ Quan Trọng" : "Quan Trọng"}</span>
+      </div>
+      <div className="swipe-actions" aria-hidden={!isSwipeOpen}>
+        <button
+          className={`swipe-action important ${item.isImportant ? "selected" : ""}`}
+          type="button"
+          tabIndex={isSwipeOpen ? 0 : -1}
+          onClick={() => {
+            onFlag(item.id, { isImportant: !item.isImportant });
+            closeActions();
+          }}
+          aria-label={item.isImportant ? "Bỏ Quan Trọng" : "Đánh dấu Quan Trọng"}
+        >
+          <Icon name="star" size={19} />
+        </button>
+        <button
+          className={`swipe-action urgent ${item.isUrgent ? "selected" : ""}`}
+          type="button"
+          tabIndex={isSwipeOpen ? 0 : -1}
+          onClick={() => {
+            onFlag(item.id, { isUrgent: !item.isUrgent });
+            closeActions();
+          }}
+          aria-label={item.isUrgent ? "Bỏ Ưu tiên" : "Đánh dấu Ưu tiên"}
+        >
+          <Icon name="zap" size={19} />
+        </button>
+        <button
+          className="swipe-action delete"
+          type="button"
+          tabIndex={isSwipeOpen ? 0 : -1}
+          onClick={() => onDelete(item)}
+          aria-label={`Xóa ${item.title}`}
+        >
+          <Icon name="trash" size={19} />
+        </button>
+      </div>
+
+      <article
+        className={`item-row ${item.completedAt ? "is-complete" : ""}`}
+        style={{ "--swipe-offset": `${offset}px` } as CSSProperties}
+        onClickCapture={(event) => {
+          if (!suppressClickRef.current) return;
+          suppressClickRef.current = false;
+          event.preventDefault();
+          event.stopPropagation();
+        }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={finishPointerGesture}
+        onPointerCancel={cancelPointerGesture}
+      >
+        {item.type === "task" ? (
+          <button className={`checkbox ${item.completedAt ? "checked" : ""}`} onClick={() => onComplete(item)} aria-label={item.completedAt ? `Đánh dấu chưa xong: ${item.title}` : `Hoàn thành: ${item.title}`}>
+            {item.completedAt && <Icon name="check" size={15} />}
+          </button>
+        ) : <span className="note-bullet" aria-label="Ghi chú"><span className="note-mark" aria-hidden="true" /></span>}
+        {project ? <span className="project-dot item-project-dot" style={{ background: project.color }} title={project.name} /> : <span className="project-dot-spacer" />}
+        <button className="item-main" onClick={() => isSwipeOpen ? closeActions() : onEdit(item)}>
+          <span className="item-title">{item.title}</span>
+          <span className="item-meta">
+            {item.dueDate && !hideDue && <span className={overdue ? "due-overdue" : ""}>{formatShortDate(item.dueDate, today)}</span>}
+            <span className="item-state-icons" aria-label={[item.isImportant ? "Quan Trọng" : "", item.isUrgent ? "Ưu tiên" : ""].filter(Boolean).join(", ")}>
+              {item.isImportant && <Icon className="item-state-important" name="star" size={14} />}
+              {item.isUrgent && <Icon className="item-state-urgent" name="zap" size={14} />}
+            </span>
+          </span>
+        </button>
+        <div className="item-flags">
+          <button className={`flag-button important ${item.isImportant ? "selected" : ""}`} onClick={() => onFlag(item.id, { isImportant: !item.isImportant })} aria-label="Quan Trọng"><Icon name="star" size={18} /></button>
+          <button className={`flag-button urgent ${item.isUrgent ? "selected" : ""}`} onClick={() => onFlag(item.id, { isUrgent: !item.isUrgent })} aria-label="Ưu tiên"><Icon name="zap" size={18} /></button>
+        </div>
+      </article>
+    </div>
   );
 }
 
@@ -863,6 +1485,30 @@ function QuickAdd({ projects, today, view, onAdd }: { projects: Project[]; today
   const [date, setDate] = useState(view.type === "today" ? today : view.type === "calendar" ? view.date : "");
   const [projectId, setProjectId] = useState(view.type === "project" ? view.projectId : "");
   const inputRef = useRef<HTMLInputElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  const close = useCallback(() => {
+    setExpanded(false);
+    setTitle("");
+    setType("task");
+    window.requestAnimationFrame(() => triggerRef.current?.focus());
+  }, []);
+
+  useEffect(() => {
+    if (!expanded) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      close();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [close, expanded]);
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -884,24 +1530,43 @@ function QuickAdd({ projects, today, view, onAdd }: { projects: Project[]; today
   };
 
   if (!expanded) {
-    return <button className="quick-add-trigger" onClick={() => { setType("task"); setExpanded(true); }}><Icon name="plus" size={16} />Thêm công việc</button>;
+    return (
+      <button
+        ref={triggerRef}
+        className="quick-add-trigger"
+        onClick={() => { setType("task"); setExpanded(true); }}
+        aria-label="Thêm công việc"
+        title="Thêm công việc"
+      >
+        <Icon name="plus" size={32} />
+      </button>
+    );
   }
 
   return (
-    <form className="quick-add" onSubmit={submit}>
-      <div className="quick-add-entry">
-        <label className="quick-title-field">
-          <span>{type === "task" ? "Tên công việc" : "Nội dung ghi chú"}</span>
-          <input ref={inputRef} autoFocus maxLength={type === "task" ? 200 : 500} value={title} onChange={(event) => setTitle(event.target.value)} placeholder={type === "task" ? "Bạn muốn hoàn thành điều gì?" : "Ghi lại một điều cần nhớ…"} aria-label="Tên mục" />
-        </label>
-        <label className="note-toggle"><input type="checkbox" checked={type === "note"} onChange={(event) => setType(event.target.checked ? "note" : "task")} />Ghi chú</label>
-      </div>
-      <div className="quick-add-controls">
-        <label className="quick-add-field"><span>Ngày</span><span className="quick-add-control"><Icon name="calendar" size={16} /><input type="date" min={view.type === "upcoming" ? addCalendarDays(today, 1) : undefined} max={view.type === "upcoming" ? addCalendarDays(today, 3) : undefined} value={date} onChange={(event) => setDate(event.target.value)} required={view.type === "upcoming"} /></span></label>
-        <label className="quick-add-field"><span>Dự án</span><span className="quick-add-control"><span className="project-dot empty" /><select value={projectId} onChange={(event) => setProjectId(event.target.value)}><option value="">Không có dự án</option>{projects.map((project) => <option value={project.id} key={project.id}>{project.name}</option>)}</select></span></label>
-        <div className="quick-add-actions"><button type="button" className="text-button" onClick={() => { setExpanded(false); setTitle(""); setType("task"); }}>Hủy</button><button className="primary-button" disabled={!title.trim()}>Thêm</button></div>
-      </div>
-    </form>
+    <div className="dialog-backdrop quick-add-backdrop" onClick={close}>
+      <form
+        className="quick-add quick-add-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="quick-add-title"
+        onClick={(event) => event.stopPropagation()}
+        onSubmit={submit}
+      >
+        <div className="quick-add-entry">
+          <label className="quick-title-field">
+            <span id="quick-add-title">{type === "task" ? "Tên công việc" : "Nội dung ghi chú"}</span>
+            <input ref={inputRef} autoFocus maxLength={type === "task" ? 200 : 500} value={title} onChange={(event) => setTitle(event.target.value)} placeholder={type === "task" ? "Bạn muốn hoàn thành điều gì?" : "Ghi lại một điều cần nhớ…"} aria-label="Tên mục" />
+          </label>
+          <label className="note-toggle"><input type="checkbox" checked={type === "note"} onChange={(event) => setType(event.target.checked ? "note" : "task")} />Ghi chú</label>
+        </div>
+        <div className="quick-add-controls">
+          <label className="quick-add-field"><span>Ngày</span><span className="quick-add-control"><Icon name="calendar" size={16} /><input type="date" min={view.type === "upcoming" ? addCalendarDays(today, 1) : undefined} max={view.type === "upcoming" ? addCalendarDays(today, 3) : undefined} value={date} onChange={(event) => setDate(event.target.value)} required={view.type === "upcoming"} /></span></label>
+          <label className="quick-add-field"><span>Dự án</span><span className="quick-add-control"><span className="project-dot empty" /><select value={projectId} onChange={(event) => setProjectId(event.target.value)}><option value="">Không có dự án</option>{projects.map((project) => <option value={project.id} key={project.id}>{project.name}</option>)}</select></span></label>
+          <div className="quick-add-actions"><button type="button" className="text-button" onClick={close}>Hủy</button><button className="primary-button" disabled={!title.trim()}>Thêm</button></div>
+        </div>
+      </form>
+    </div>
   );
 }
 
@@ -1034,7 +1699,7 @@ function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
           <div className="sync-message warning"><Icon name="zap" /><div><strong>Chưa kết nối Supabase</strong><p>Thêm hai biến môi trường trong <code>.env.local</code> và chạy migration để bật đồng bộ.</p></div></div>
         ) : user ? (
           <>
-            <div className="sync-hero"><span><Icon name="check" size={27} /></span><h3>{status === "error" ? "Đồng bộ đang gián đoạn" : "Đã đồng bộ an toàn"}</h3><p>Task, note và dự án của bạn sẽ xuất hiện trên mọi browser sau khi đăng nhập bằng cùng email.</p></div>
+            <div className="sync-hero"><span><Icon name={status === "error" || status === "offline" ? "zap" : "check"} size={27} /></span><h3>{syncStatusTitle(status)}</h3><p>{status === "offline" || status === "error" ? "Mọi thay đổi vẫn được giữ trên thiết bị và sẽ tự thử lại; bạn không cần nhập lại." : "Task, note và dự án của bạn sẽ xuất hiện trên mọi browser sau khi đăng nhập bằng cùng email."}</p></div>
             <div className="signed-in-row"><div><small>Đang dùng</small><strong>{user.email}</strong></div><button className="text-button" onClick={onSignedOut}>Ngắt kết nối</button></div>
           </>
         ) : sent ? (
