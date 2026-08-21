@@ -33,7 +33,10 @@ for (const target of targets) {
   }
 
   const totalPixels = info.width * info.height;
-  if (navyPixels / totalPixels < 0.45 || whitePixels / totalPixels < 0.03) {
+  // The 32px favicon has less fully-white coverage after the approved 80% mark
+  // treatment because antialiasing accounts for more of its smaller artwork.
+  const minimumWhiteCoverage = target.size === 32 ? 0.02 : 0.03;
+  if (navyPixels / totalPixels < 0.45 || whitePixels / totalPixels < minimumWhiteCoverage) {
     throw new Error(`Unexpected Navy/negative coverage for ${target.file}`);
   }
 

@@ -1,4 +1,5 @@
 import type { Project, SparkItem } from "@/lib/types";
+import { createUuid } from "@/lib/ids";
 
 export type SparkData = { items: SparkItem[]; projects: Project[] };
 
@@ -11,7 +12,7 @@ export function isUuid(value: string) {
 
 export function normalizeDataIds(
   data: SparkData,
-  createId: () => string = () => crypto.randomUUID(),
+  createId: () => string = createUuid,
 ): SparkData {
   const usedProjectIds = new Set<string>();
   const projectIdMap = new Map<string, string>();

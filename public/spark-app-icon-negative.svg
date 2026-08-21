@@ -2,10 +2,12 @@
   <title id="title">Spark app icon</title>
   <desc id="desc">White Spark check-burst mark on a full-bleed navy background.</desc>
   <rect width="512" height="512" fill="#111742"/>
-  <g transform="matrix(.72 0 0 .72 -21 -1)" fill="#FFFFFF">
-    <rect x="133" y="423" width="140" height="60" rx="30"/>
-    <rect x="180" y="281" width="140" height="60" rx="30" transform="rotate(45 250 311)"/>
-    <rect x="330" y="213" width="140" height="60" rx="30" transform="rotate(90 400 243)"/>
-    <path d="M355 452 412 510 606 323" fill="none" stroke="#FFFFFF" stroke-width="57" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(256 256) scale(.8) translate(-256 -256)">
+    <g transform="matrix(.72 0 0 .72 -21 -1)" fill="#FFFFFF">
+      <rect x="133" y="423" width="140" height="60" rx="30"/>
+      <rect x="180" y="281" width="140" height="60" rx="30" transform="rotate(45 250 311)"/>
+      <rect x="330" y="213" width="140" height="60" rx="30" transform="rotate(90 400 243)"/>
+      <path d="M355 452 412 510 606 323" fill="none" stroke="#FFFFFF" stroke-width="57" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
   </g>
 </svg>

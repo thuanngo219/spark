@@ -1,7 +1,6 @@
-export type ItemSwipeResult = "closed" | "open-actions" | "toggle-important";
+export type ItemSwipeResult = "closed" | "open-actions";
 
 const ITEM_HORIZONTAL_THRESHOLD = 48;
-const IMPORTANT_SWIPE_THRESHOLD = 64;
 const OPEN_ROW_CLOSE_THRESHOLD = 42;
 
 export function resolveItemSwipe(
@@ -20,7 +19,6 @@ export function resolveItemSwipe(
     return deltaX > OPEN_ROW_CLOSE_THRESHOLD ? "closed" : "open-actions";
   }
 
-  if (deltaX >= IMPORTANT_SWIPE_THRESHOLD) return "toggle-important";
   if (deltaX <= -ITEM_HORIZONTAL_THRESHOLD) return "open-actions";
   return "closed";
 }

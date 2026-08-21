@@ -2,12 +2,12 @@ import { describe, expect, it } from "vitest";
 import { resolveItemSwipe, shouldOpenMobileSidebar } from "./mobile-gestures";
 
 describe("mobile item gestures", () => {
-  it("toggles Important after a deliberate right swipe", () => {
-    expect(resolveItemSwipe(72, 8, false)).toBe("toggle-important");
+  it("opens the action tray after a deliberate left swipe", () => {
+    expect(resolveItemSwipe(-72, 8, false)).toBe("open-actions");
   });
 
-  it("opens the action tray after a deliberate left swipe", () => {
-    expect(resolveItemSwipe(-58, 6, false)).toBe("open-actions");
+  it("does not assign an item action to a right swipe", () => {
+    expect(resolveItemSwipe(58, 6, false)).toBe("closed");
   });
 
   it("does not turn vertical scrolling into an item action", () => {

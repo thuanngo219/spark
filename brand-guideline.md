@@ -106,6 +106,7 @@ Logo primary là lockup ngang gồm icon check-burst tách riêng và wordmark l
 - Bản favicon và PWA `purpose: any` dùng rounded-square Navy để hiển thị gọn trên nền desktop; phần góc bên ngoài trong suốt.
 - Bản maskable dùng Navy full-bleed toàn khung, bỏ vòng tròn neutral bên trong và giữ toàn bộ mark trong safe zone trung tâm.
 - Apple Touch Icon dùng canvas vuông Navy full-bleed; iOS tự áp dụng corner mask khi đưa lên Home Screen.
+- Trong favicon, Chrome/PWA và Apple Touch Icon, đặt artwork check-burst ở 80% treatment trước và căn giữa để tăng khoảng âm; không sửa hình học nội bộ của mark.
 - Không tự rút gọn thêm tia, đổi tỷ lệ, thêm gradient, outline, glow hoặc shadow ở kích thước nhỏ.
 
 Asset hiện tại:
@@ -192,7 +193,7 @@ Phần này là source of truth cho web app. Khi CSS/component mới khác bản
 | Semantic | Star, Ưu tiên, checkbox, project color | Màu theo ý nghĩa hoặc trạng thái | Chỉ đổi khi giúp nhận biết hành động | Phải giữ icon/shape/label làm tín hiệu bổ sung. |
 
 - Vùng chạm tối thiểu trên mobile là `44×44px`, kể cả khi artwork icon nhỏ hơn.
-- Floating quick-add là ngoại lệ Primary icon `48×48px`, dấu `+` 32px, neo góc dưới phải và luôn có accessible label/tooltip “Thêm công việc”.
+- Desktop floating quick-add là ngoại lệ Primary icon `48×48px`, dấu `+` 32px, neo góc dưới phải. Mobile dùng nút Primary icon 72px ở giữa dock 58px, cho phép trồi khỏi dock; cả hai luôn có accessible label/tooltip “Thêm công việc”.
 - Nút trong cùng một action row dùng cùng chiều cao và radius; Primary và Hủy vẫn giữ phân cấp màu khác nhau.
 - Navigation button, color swatch, date tile và project dot không bị ép vào màu Primary vì chúng là selection/navigation control.
 
@@ -256,6 +257,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 - CSS lưu type size bằng `rem` trên base 16px. Web app đặt root scale `112.5%` trên desktop và `120%` dưới 700px; nhờ vậy typography tăng đồng bộ mà không phóng to icon, rail hoặc control geometry.
 - Item title mặc định dùng Inter base `13px`, render khoảng `14.6px` desktop và `15.6px` mobile, weight `400`; không tự động bold task/note.
 - List density: desktop row khoảng `35px` với gap `6px`; mobile row tối thiểu `52px` với gap `2px`, canvas tràn viền và title tối đa hai dòng. Marker/action mobile vẫn giữ vùng chạm tối thiểu `44px`.
+- Mobile view header sticky giữ nguyên typography khi cuộn, có dải project/view 20px full-width; desktop dùng cùng hierarchy với padding nội dung 26px. Mobile bottom dock icon-only cao 58px và overlay trên canvas.
 - Marker task/note và project dot luôn căn theo dòng chữ đầu tiên; không căn giữa toàn bộ row khi title hoặc metadata làm row cao hơn.
 - Trên desktop, due-date metadata và tâm artwork star/điện xẹt phải cùng trục giữa với dòng title; không căn theo mép trên của hit target icon.
 - Danh sách hỗn hợp luôn đặt task trước note; trong từng loại giữ thứ tự thời gian. Đây là phân cấp nội dung, không dùng divider hoặc card riêng để tách hai loại.
@@ -276,7 +278,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 - Dùng outline/monoline với đầu nét và góc bo tròn.
 - Duy trì cùng optical size và stroke weight trong một bộ; ở lưới 24px, bắt đầu từ stroke khoảng 1.75–2px rồi cân chỉnh quang học.
 - Hình phải nhận ra được ở 16–20px và không phụ thuộc vào chi tiết trang trí nhỏ.
-- Active state ưu tiên nền neutral nhẹ, thay đổi weight hoặc một accent nhỏ; không tô nhiều màu cho toàn bộ sidebar.
+- Active state ưu tiên nền neutral nhẹ, thay đổi weight hoặc một accent nhỏ; riêng current destination trong mobile dock dùng nền Navy và icon trắng để tạo trạng thái đảo màu rõ ràng. Không tô nhiều màu cho toàn bộ sidebar.
 - Dùng màu chủ đạo neutral/Navy. Chỉ thêm Turquoise, Violet hoặc Muted Coral khi màu có ý nghĩa hoặc giúp dẫn mắt.
 - Luôn có accessible label hoặc tooltip cho icon-only control.
 - Các icon cùng nhóm phải thống nhất perspective, corner radius, khoảng âm và mức độ chi tiết.

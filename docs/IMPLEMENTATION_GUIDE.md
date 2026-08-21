@@ -117,34 +117,37 @@ src/
 - Không dùng global state library ở MVP nếu server cache + component state đã đủ.
 - Giữ unsaved quick-add text khi app chuyển offline ngắn.
 - Quick-add overlay phải có `role="dialog"`, `aria-modal="true"`, đóng được bằng Hủy, click backdrop và phím Escape; khi đóng trả focus về nút “Thêm công việc”. Backdrop của mọi overlay chỉ dùng lớp Navy dim đủ đậm, không dùng blur.
-- Floating trigger dùng artwork `+` 32px trong hit target 48px, `position: fixed` ở góc dưới phải có safe-area mobile; list phải chừa bottom space để trigger không che item cuối.
+- Desktop floating trigger dùng artwork `+` 32px trong hit target 48px ở góc dưới phải. Mobile dùng dock `position: fixed` cao 58px và nút `+` 72px ở giữa; list phải chừa bottom space cộng safe-area để dock không che item cuối.
 - Trên mobile, sau user gesture mở quick-add phải focus title input; dùng `window.visualViewport` resize/scroll để fit backdrop vào vùng còn thấy khi bàn phím mở và gọi `scrollIntoView` cho field. Cleanup listener/timer khi đóng; desktop giữ layout overlay hiện tại.
 
 ### Sidebar và keyboard shortcuts
 
 - Sidebar có hai trạng thái: `expanded` và `compact`; lưu lựa chọn cục bộ để giữ sau reload.
 - Rail compact rộng khoảng `56px`; hai nhóm Cần lưu ý và Dự án có trạng thái mở/đóng riêng được lưu cục bộ.
+- Mobile sidebar giữ full negative logo và nút đóng, nhưng ẩn nhóm view Hôm nay/Sắp tới/Theo ngày/Tất cả đã chuyển xuống dock. Drawer mở bằng dock hoặc drag từ mép trái sang phải và dùng transition `transform` ngắn để có motion liên tục.
 - Project có thể gắn sao; `is_starred` được đồng bộ cloud và project được hiển thị trong Cần lưu ý.
 - Ở compact state, filter dùng icon + count; project dùng dot màu lớn. Tất cả icon-only controls phải có accessible label và tooltip.
 - Dùng một keyboard shortcut handler tập trung, không gắn listener rải rác trong component.
-- Hỗ trợ `N` → mở quick-add task mới; chuỗi `S T` → Today, `S S` → Upcoming, `S D` → By date, `S A` → Tất cả, `S I` → Quan Trọng, `S U` → Ưu tiên và `S 1–9` → chín project đầu theo thứ tự compact sidebar; `[` toggle sidebar và `?` mở trợ giúp.
-- Compact sidebar dùng tooltip tức thời cho navigation icon, project dot và footer action; tooltip project kèm shortcut `S 1–9` khi có.
-- Bỏ qua shortcut khi event phát sinh trong `input`, `textarea`, `select` hoặc phần tử `contenteditable`; `Escape` hủy pending sequence.
-- Hiển thị pending-key hint sau `S` và tự reset sau khoảng 1.000ms.
-- Test: từng mapping điều hướng đúng, sequence hết hạn, Escape hủy, không chạy khi nhập task và sidebar preference được restore.
+- Hỗ trợ `N` → quick-add, `T` → Today, `S` → Upcoming, `D` → By date, `A` → Tất cả, `I` → Quan Trọng, `U` → Ưu tiên và `1–9` → chín project đầu; `[` toggle sidebar và `?` mở trợ giúp.
+- Compact sidebar dùng tooltip tức thời cho navigation icon, project dot và footer action; tooltip project kèm shortcut `1–9` khi có.
+- Bỏ qua shortcut khi event phát sinh trong `input`, `textarea`, `select` hoặc phần tử `contenteditable`; `Escape` đóng overlay/trợ giúp.
+- Bảng trợ giúp dùng layout hai cột, gộp project vào một dòng và có cả nút X lẫn `Escape` để đóng.
+- Test: từng mapping điều hướng đúng, Escape đóng, không chạy khi nhập task và sidebar preference được restore.
 
 ## 6. PWA và iPhone
 
 Để app có cảm giác native-like:
 
 - Có manifest với `name`, `short_name`, `start_url`, `display: "standalone"`, `background_color`, `theme_color` và icon 192/512px.
-- Favicon, PWA icon và Apple Touch Icon dùng mark negative trắng trên Navy. Standard PWA icon dùng rounded-square; maskable/Apple dùng Navy full-bleed và giữ artwork trong safe zone.
+- Favicon, PWA icon và Apple Touch Icon dùng mark negative trắng trên Navy. Standard PWA icon dùng rounded-square; maskable/Apple dùng Navy full-bleed, giữ artwork trong safe zone và scale mark còn 80% treatment trước để tăng khoảng thở.
 - Dùng filename mới khi đổi colorway icon để tránh cache cũ; sau deploy cần kiểm tra trực tiếp SVG/PNG, manifest và metadata production.
 - Deploy qua HTTPS; đây là yêu cầu quan trọng cho khả năng cài PWA.
 - Phase 1 có thể chưa offline hoàn toàn nhưng không được mất nội dung người dùng đang gõ.
 - Phase 2 thêm service worker/cache app shell và hàng đợi mutation nếu nhu cầu offline thực sự xuất hiện.
 
 ### Đưa app lên mạng
+
+Khi test dev server từ iPhone cùng Wi-Fi, chạy Next.js với `--hostname 0.0.0.0` và khai báo IP LAN hiện tại trong `allowedDevOrigins`; không mở wildcard origin rộng hơn phạm vi mạng thử nghiệm.
 
 1. Tạo repository Git và project Supabase.
 2. Cấu hình environment variables cục bộ, không commit secret.

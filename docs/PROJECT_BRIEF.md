@@ -106,9 +106,9 @@ Quy ước ngày:
 
 - Task vừa check biến đổi trạng thái ngay, sau đó thu gọn khỏi danh sách đang xem.
 - Có khu vực “Đã hoàn thành” thu gọn ở cuối mỗi view để xem và uncheck.
-- Nút thêm là floating `+` 48px ở góc dưới phải và mở quick-add dạng overlay gọn neo cùng góc trên desktop/mobile. Overlay vẫn chỉ giữ các trường thiết yếu để không làm chậm thao tác nhập.
+- Desktop giữ floating `+` 48px ở góc dưới phải. Mobile đưa `+` 72px vào chính giữa dock 58px, cho artwork trồi khỏi dock để dễ nhận biết; cả hai cùng mở quick-add dạng overlay gọn và chỉ giữ các trường thiết yếu.
 - Trên mobile, mở quick-add phải focus ngay title input và giữ field này trong vùng nhìn thấy khi bàn phím ảo xuất hiện; người dùng không cần kéo form để bắt đầu nhập.
-- Trên mobile, góc phải app header là nút Ẩn/Hiện ghi chú; trạng thái đồng bộ tiếp tục có trong navigation/footer.
+- Trên mobile, bỏ app header riêng. Nút mở sidebar và Ẩn/Hiện ghi chú nằm trong dock; trạng thái đồng bộ là pill nổi ở góc dưới phải, ngay trên dock, với màu semantic và nhãn trạng thái.
 - Completed task không được tính trong số lượng task mở.
 - Trong mọi listing hỗn hợp, task hiển thị trước note trên cả desktop và mobile; view Tất cả vẫn chia theo nhóm thời gian rồi mới áp dụng thứ tự này trong từng nhóm.
 
@@ -130,32 +130,34 @@ Spark
     └── + Tạo project
 ```
 
-Desktop mở mặc định ở view Hôm nay với sidebar thu gọn thành compact rail; người dùng có thể mở sidebar bằng nút panel luôn nhìn thấy hoặc phím `[`. Lựa chọn sau đó được ghi nhớ trên thiết bị. Mobile dùng header + sheet điều hướng; sheet mở bằng nút menu hoặc swipe từ mép trái sang phải, và các view chính vẫn truy cập tối đa trong hai thao tác.
+Desktop mở mặc định ở view Hôm nay với sidebar thu gọn thành compact rail; người dùng có thể mở sidebar bằng nút panel luôn nhìn thấy hoặc phím `[`. Lựa chọn sau đó được ghi nhớ trên thiết bị. Desktop header dùng padding nội dung 26px, sticky và có dải màu project/view cao 20px ở trên cùng.
+
+Mobile dùng canvas tràn viền, view header sticky giữ nguyên kích thước khi cuộn và dải màu project/view 20px chạy ngang toàn màn hình. Dock icon-only cao 58px overlay ở cuối màn hình gồm sidebar, Hôm nay, Sắp tới, thêm task, Theo ngày, Tất cả và Ẩn/Hiện ghi chú; icon điều hướng đang chọn dùng nền Navy/icon trắng và nút thêm có khoảng đệm ngang 10px với hai icon bên cạnh. Nút ghi chú là page state nên luôn giữ nền trong suốt: trạng thái ẩn dùng icon gạch chéo màu Turquoise. Sheet điều hướng mở bằng nút dock hoặc swipe từ mép trái sang phải, giữ full negative logo + nút đóng và không lặp các view chính đã có trong dock. Tap item mở editor; swipe trái trên item lộ Quan Trọng/Ưu tiên/Xóa, swipe phải trên item không có hành động và không dùng touch-and-hold.
 
 Hai nhóm **Cần lưu ý** và **Dự án** có thể thu gọn độc lập. Cần lưu ý gồm smart filter Quan Trọng/Ưu tiên và các project được gắn sao; trạng thái nhóm được ghi nhớ trên thiết bị.
 
 ### Keyboard shortcuts
 
-Phím tắt filter dùng chuỗi hai phím để tránh xung đột với trình duyệt:
+Phím tắt filter dùng một phím trực tiếp khi focus không nằm trong editor:
 
 | Phím | Hành động |
 |---|---|
 | `N` | Mở quick-add ở chế độ task mới. |
-| `S`, sau đó `T` | Mở **Hôm nay**. |
-| `S`, sau đó `S` | Mở **Sắp tới**. |
-| `S`, sau đó `D` | Mở **Theo ngày**. |
-| `S`, sau đó `A` | Mở **Tất cả**. |
-| `S`, sau đó `I` | Mở **Quan Trọng**. |
-| `S`, sau đó `U` | Mở **Ưu tiên**. |
-| `S`, sau đó `1–9` | Mở dự án tương ứng theo thứ tự đang hiển thị trong sidebar. |
+| `T` | Mở **Hôm nay**. |
+| `S` | Mở **Sắp tới**. |
+| `D` | Mở **Theo ngày**. |
+| `A` | Mở **Tất cả**. |
+| `I` | Mở **Quan Trọng**. |
+| `U` | Mở **Ưu tiên**. |
+| `1–9` | Mở dự án tương ứng theo thứ tự đang hiển thị trong sidebar. |
 | `[` | Thu gọn/mở rộng sidebar. |
 | `?` | Mở bảng trợ giúp phím tắt. |
-| `Escape` | Hủy chuỗi phím đang chờ hoặc đóng bảng trợ giúp. |
+| `Escape` | Đóng overlay hoặc bảng trợ giúp. |
 
 Quy tắc:
 
 - Không kích hoạt shortcut khi focus nằm trong input, textarea, select hoặc vùng `contenteditable`.
-- Sau khi nhấn `S`, UI hiển thị một gợi ý nhỏ về các phím tiếp theo; trạng thái chờ tự hủy sau khoảng một giây.
+- Bảng trợ giúp dùng hai nhóm Điều hướng/Tập trung, gộp dự án thành một dòng `1–9` không liệt kê tên dự án, có nút đóng rõ ràng và đóng được bằng `Escape` trên cả desktop/mobile.
 - Shortcut phải được hiển thị trong tooltip/menu trợ giúp, không yêu cầu người dùng ghi nhớ để sử dụng app.
 
 ## 7. Luồng chính
@@ -221,6 +223,6 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Tất cả thao tác chính dùng được bằng touch và keyboard.
 - Sidebar desktop chuyển đổi được giữa full và compact; lựa chọn được giữ sau khi reload.
 - Cần lưu ý/Dự án có thể thu gọn; project gắn sao xuất hiện trong Cần lưu ý và trạng thái này được lưu cùng dữ liệu project.
-- Các shortcut `N`, `S T`, `S S`, `S D`, `S A`, `S I`, `S U`, `S 1–9`, `[` và `?` hoạt động đúng, không kích hoạt khi đang nhập task.
+- Các shortcut `N`, `T`, `S`, `D`, `A`, `I`, `U`, `1–9`, `[` và `?` hoạt động đúng, không kích hoạt khi đang nhập task.
 - Compact sidebar hiển thị tooltip tên hạng mục/project ngay khi hover hoặc focus vào icon/dot.
 - App cài được lên Home Screen với tên/icon riêng và mở ở chế độ standalone khi nền tảng hỗ trợ.

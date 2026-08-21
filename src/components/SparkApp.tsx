@@ -35,15 +35,15 @@ import {
 } from "@/lib/dates";
 import { resolveItemSwipe, shouldOpenMobileSidebar } from "@/lib/mobile-gestures";
 import { normalizeDataIds, type SparkData } from "@/lib/data-ids";
+import { createUuid } from "@/lib/ids";
 import { completedForView, filterItems, groupItemsByTime, type TimeGroup } from "@/lib/task-filters";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase";
-import { resolveStandaloneShortcut } from "@/lib/keyboard-shortcuts";
+import { resolveProjectShortcut, resolveStandaloneShortcut } from "@/lib/keyboard-shortcuts";
 import type { ItemType, Project, SparkItem, View } from "@/lib/types";
 
 const LEGACY_STORAGE_KEY = "spark:data:v1";
 const SIDEBAR_KEY = "spark:sidebar:v2";
 const SIDEBAR_SECTIONS_KEY = "spark:sidebar-sections";
-const SPARK_LOGO_SRC = "/brand/spark-logo.svg";
 const SPARK_LOGO_NEGATIVE_SRC = "/brand/spark-logo-negative.svg";
 const SPARK_MARK_NEGATIVE_SRC = "/spark-mark-negative.svg";
 
@@ -77,9 +77,9 @@ type SyncStatus =
 type CloudUser = { id: string; email: string };
 
 function seedData(today: string): SparkData {
-  const workProjectId = crypto.randomUUID();
-  const personalProjectId = crypto.randomUUID();
-  const sparkProjectId = crypto.randomUUID();
+  const workProjectId = createUuid();
+  const personalProjectId = createUuid();
+  const sparkProjectId = createUuid();
   const projects: Project[] = [
     { id: workProjectId, name: "Công việc", color: "#44D4CD", isStarred: false, archivedAt: null },
     { id: personalProjectId, name: "Cá nhân", color: "#8951C7", isStarred: false, archivedAt: null },
@@ -88,7 +88,7 @@ function seedData(today: string): SparkData {
   const createdAt = new Date().toISOString();
   const items: SparkItem[] = [
     {
-      id: crypto.randomUUID(),
+      id: createUuid(),
       type: "task",
       title: "Chốt ba việc quan trọng cho hôm nay",
       dueDate: today,
@@ -99,7 +99,7 @@ function seedData(today: string): SparkData {
       createdAt,
     },
     {
-      id: crypto.randomUUID(),
+      id: createUuid(),
       type: "note",
       title: "Ý tưởng: dành 20 phút cuối ngày để thu gọn danh sách",
       dueDate: today,
@@ -110,7 +110,7 @@ function seedData(today: string): SparkData {
       createdAt,
     },
     {
-      id: crypto.randomUUID(),
+      id: createUuid(),
       type: "task",
       title: "Gửi bản cập nhật cho khách hàng",
       dueDate: addCalendarDays(today, -1),
@@ -121,7 +121,7 @@ function seedData(today: string): SparkData {
       createdAt,
     },
     {
-      id: crypto.randomUUID(),
+      id: createUuid(),
       type: "task",
       title: "Đặt lịch khám định kỳ",
       dueDate: addCalendarDays(today, 2),
@@ -202,6 +202,15 @@ function syncStatusDetail(status: SyncStatus) {
   return "Public để xem · riêng tư khi dùng";
 }
 
+function syncStatusShortLabel(status: SyncStatus) {
+  if (status === "synced") return "Đã sync";
+  if (status === "offline") return "Ngoại tuyến";
+  if (status === "error") return "Lỗi sync";
+  if (status === "reconnecting") return "Kết nối lại";
+  if (status === "loading" || status === "syncing") return "Đang sync";
+  return "Local";
+}
+
 export function SparkApp() {
   const today = getLocalDateKey();
   const [data, setData] = useState<SparkData | null>(null);
@@ -213,7 +222,6 @@ export function SparkApp() {
   const [mobileNav, setMobileNav] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
-  const [pendingS, setPendingS] = useState(false);
   const [hideNotes, setHideNotes] = useState(false);
   const [completedOpen, setCompletedOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<SparkItem | null>(null);
@@ -223,7 +231,6 @@ export function SparkApp() {
   const [cloudUser, setCloudUser] = useState<CloudUser | null>(null);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>(isSupabaseConfigured() ? "loading" : "not-configured");
   const [syncDialogOpen, setSyncDialogOpen] = useState(false);
-  const pendingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const undoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dataRef = useRef(data);
   const dataScopeRef = useRef<"demo" | string>("demo");
@@ -606,7 +613,6 @@ export function SparkApp() {
       if (isTypingTarget(event.target)) return;
       const standaloneShortcut = resolveStandaloneShortcut(event.key);
       if (event.key === "Escape") {
-        setPendingS(false);
         setHelpOpen(false);
         setMobileNav(false);
         setEditingItem(null);
@@ -623,7 +629,6 @@ export function SparkApp() {
         setHelpOpen(true);
         return;
       }
-      const key = event.key.toLowerCase();
       if (
         standaloneShortcut === "new-task" &&
         !editingItem &&
@@ -633,40 +638,37 @@ export function SparkApp() {
         !mobileNav
       ) {
         event.preventDefault();
-        setPendingS(false);
         setQuickAddOpen(true);
         return;
       }
-      if (pendingS) {
-        let handled = true;
-        if (key === "t") setView({ type: "today" });
-        else if (key === "s") setView({ type: "upcoming" });
-        else if (key === "d") setView({ type: "calendar", date: today });
-        else if (key === "a") setView({ type: "all" });
-        else if (key === "i") setView({ type: "important" });
-        else if (key === "u") setView({ type: "urgent" });
-        else if (/^[1-9]$/.test(key)) {
-          const shortcutProjects = orderProjectsForSidebar(
-            (dataRef.current?.projects ?? []).filter((project) => !project.archivedAt),
-          );
-          const project = shortcutProjects[Number(key) - 1];
-          if (project) setView({ type: "project", projectId: project.id });
-          else handled = false;
-        } else handled = false;
-        setPendingS(false);
-        if (handled) event.preventDefault();
+      const shortcutViews: Partial<Record<NonNullable<typeof standaloneShortcut>, View>> = {
+        today: { type: "today" },
+        upcoming: { type: "upcoming" },
+        calendar: { type: "calendar", date: today },
+        all: { type: "all" },
+        important: { type: "important" },
+        urgent: { type: "urgent" },
+      };
+      const shortcutView = standaloneShortcut ? shortcutViews[standaloneShortcut] : undefined;
+      if (shortcutView) {
+        event.preventDefault();
+        setView(shortcutView);
         return;
       }
-      if (key === "s") {
+      const projectIndex = resolveProjectShortcut(event.key);
+      if (projectIndex !== null) {
+        const shortcutProjects = orderProjectsForSidebar(
+          (dataRef.current?.projects ?? []).filter((project) => !project.archivedAt),
+        );
+        const project = shortcutProjects[projectIndex];
+        if (!project) return;
         event.preventDefault();
-        setPendingS(true);
-        if (pendingTimer.current) clearTimeout(pendingTimer.current);
-        pendingTimer.current = setTimeout(() => setPendingS(false), 1000);
+        setView({ type: "project", projectId: project.id });
       }
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [editingItem, helpOpen, mobileNav, pendingS, projectEditor, syncDialogOpen, today]);
+  }, [editingItem, helpOpen, mobileNav, projectEditor, syncDialogOpen, today]);
 
   const projects = data?.projects.filter((project) => !project.archivedAt) ?? [];
   const openItems = useMemo(
@@ -710,7 +712,7 @@ export function SparkApp() {
       items: currentData.items.map((item) => (item.id === id ? nextItem : item)),
     });
     enqueueCloudMutation({
-      id: crypto.randomUUID(),
+      id: createUuid(),
       kind: "upsert-item",
       item: nextItem,
     });
@@ -721,7 +723,7 @@ export function SparkApp() {
     if (!currentData) return;
     replaceData({ ...currentData, items: [...currentData.items, item] });
     enqueueCloudMutation({
-      id: crypto.randomUUID(),
+      id: createUuid(),
       kind: "upsert-item",
       item,
     });
@@ -738,7 +740,7 @@ export function SparkApp() {
         : [...currentData.projects, project],
     });
     enqueueCloudMutation({
-      id: crypto.randomUUID(),
+      id: createUuid(),
       kind: "upsert-project",
       project,
     });
@@ -761,7 +763,7 @@ export function SparkApp() {
       });
     }
     enqueueCloudMutation({
-      id: crypto.randomUUID(),
+      id: createUuid(),
       kind: "delete-item",
       itemId: item.id,
     });
@@ -776,7 +778,7 @@ export function SparkApp() {
       replaceData({ ...currentData, items: [...currentData.items, deletedItem] });
     }
     enqueueCloudMutation({
-      id: crypto.randomUUID(),
+      id: createUuid(),
       kind: "upsert-item",
       item: deletedItem,
     });
@@ -906,31 +908,16 @@ export function SparkApp() {
         onPointerUpCapture={endNavEdgeGesture}
         onPointerCancelCapture={endNavEdgeGesture}
       >
-        <header className="mobile-header">
-          <button className="icon-button" onClick={() => setMobileNav(true)} aria-label="Mở điều hướng">
-            <Icon name="menu" />
-          </button>
-          <Image className="mobile-logo" src={SPARK_LOGO_SRC} width={120} height={45} alt="Spark" priority unoptimized />
-          <button
-            className={`icon-button mobile-note-toggle note-visibility-button ${hideNotes ? "notes-hidden" : ""}`}
-            type="button"
-            aria-label={hideNotes ? "Hiện ghi chú" : "Ẩn ghi chú"}
-            aria-pressed={hideNotes}
-            title={hideNotes ? "Hiện ghi chú" : "Ẩn ghi chú"}
-            onClick={() => setHideNotes((value) => !value)}
-          >
-            <Icon name="note" />
-          </button>
-        </header>
-
         <section className="canvas" aria-labelledby="view-title">
           <div className="view-header">
+            <span
+              className="view-project-band"
+              style={{ background: activeProject?.color ?? "var(--turquoise)" }}
+              aria-hidden="true"
+            />
             <div>
-              {(headerContext || (view.type === "project" && activeProject)) && <div className="eyebrow">
-                {view.type === "project" && activeProject && (
-                  <span className="project-dot header-dot" style={{ background: activeProject.color }} />
-                )}
-                {headerContext}
+              {(headerContext || (view.type === "project" && activeProject)) && <div className={`eyebrow ${view.type === "project" ? "project-eyebrow" : ""}`}>
+                {view.type === "project" && activeProject ? "Dự án" : headerContext}
               </div>}
               <div className="view-title-row">
                 <h1 id="view-title">{title}</h1>
@@ -948,6 +935,15 @@ export function SparkApp() {
               <p>{taskCount} việc cần xử lý <span aria-hidden="true">|</span> {overdueCount} quá hạn <span aria-hidden="true">|</span> {noteCount} ghi chú{hideNotes ? " đang ẩn" : ""}</p>
             </div>
             <div className="view-actions">
+              <button
+                className={`sync-header-status ${syncStatus}`}
+                type="button"
+                onClick={() => setSyncDialogOpen(true)}
+                aria-label={`${syncStatusShortLabel(syncStatus)}. ${syncStatusDetail(syncStatus)}`}
+              >
+                <span aria-hidden="true" />
+                {syncStatusShortLabel(syncStatus)}
+              </button>
               <button
                 className={`icon-button note-visibility-button ${hideNotes ? "notes-hidden" : ""}`}
                 type="button"
@@ -1064,6 +1060,26 @@ export function SparkApp() {
         }</p>
       </main>
 
+      <button
+        className={`mobile-sync-status ${syncStatus}`}
+        type="button"
+        onClick={() => setSyncDialogOpen(true)}
+        aria-label={`${syncStatusShortLabel(syncStatus)}. ${syncStatusDetail(syncStatus)}`}
+      >
+        <span aria-hidden="true" />
+        {syncStatusShortLabel(syncStatus)}
+      </button>
+
+      <MobileDock
+        currentView={view}
+        hideNotes={hideNotes}
+        onAdd={() => setQuickAddOpen(true)}
+        onNavigate={navigate}
+        onOpenSidebar={() => setMobileNav(true)}
+        onToggleNotes={() => setHideNotes((value) => !value)}
+        today={today}
+      />
+
       {editingItem && (
         <ItemEditor
           item={editingItem}
@@ -1086,7 +1102,7 @@ export function SparkApp() {
           }}
         />
       )}
-      {helpOpen && <ShortcutHelp projects={orderProjectsForSidebar(projects).slice(0, 9)} onClose={() => setHelpOpen(false)} />}
+      {helpOpen && <ShortcutHelp onClose={() => setHelpOpen(false)} />}
       {syncDialogOpen && (
         <SyncDialog
           configured={isSupabaseConfigured()}
@@ -1099,11 +1115,78 @@ export function SparkApp() {
           }}
         />
       )}
-      {pendingS && <div className="key-hint"><kbd>S</kbd><span>Tiếp theo:</span><kbd>T</kbd> Hôm nay <kbd>S</kbd> Sắp tới <kbd>D</kbd> Theo ngày <kbd>A</kbd> Tất cả <kbd>I</kbd> Quan Trọng <kbd>U</kbd> Ưu tiên <kbd>1–9</kbd> Dự án</div>}
       {deletedItem && (
         <div className="toast" role="status"><span>Đã xóa “{deletedItem.title}”</span><button onClick={undoDelete}>Hoàn tác</button></div>
       )}
     </div>
+  );
+}
+
+function MobileDock({
+  currentView,
+  hideNotes,
+  onAdd,
+  onNavigate,
+  onOpenSidebar,
+  onToggleNotes,
+  today,
+}: {
+  currentView: View;
+  hideNotes: boolean;
+  onAdd: () => void;
+  onNavigate: (view: View) => void;
+  onOpenSidebar: () => void;
+  onToggleNotes: () => void;
+  today: string;
+}) {
+  const entries = [
+    { label: "Hôm nay", icon: "sun" as const, view: { type: "today" } as View },
+    { label: "Sắp tới", icon: "clock" as const, view: { type: "upcoming" } as View },
+    { label: "Theo ngày", icon: "calendar" as const, view: { type: "calendar", date: today } as View },
+    { label: "Tất cả", icon: "list" as const, view: { type: "all" } as View },
+  ];
+  const isActive = (candidate: View) => candidate.type === currentView.type;
+
+  return (
+    <nav className="mobile-dock" aria-label="Điều hướng mobile">
+      <button type="button" onClick={onOpenSidebar} aria-label="Mở sidebar"><Icon name="menu" size={27} /></button>
+      {entries.slice(0, 2).map((entry) => (
+        <button
+          type="button"
+          className={isActive(entry.view) ? "active" : ""}
+          onClick={() => onNavigate(entry.view)}
+          aria-label={entry.label}
+          aria-current={isActive(entry.view) ? "page" : undefined}
+          key={entry.label}
+        >
+          <Icon name={entry.icon} size={27} />
+        </button>
+      ))}
+      <button className="mobile-dock-add" type="button" onClick={onAdd} aria-label="Thêm công việc">
+        <span><Icon name="plus" size={31} /></span>
+      </button>
+      {entries.slice(2).map((entry) => (
+        <button
+          type="button"
+          className={isActive(entry.view) ? "active" : ""}
+          onClick={() => onNavigate(entry.view)}
+          aria-label={entry.label}
+          aria-current={isActive(entry.view) ? "page" : undefined}
+          key={entry.label}
+        >
+          <Icon name={entry.icon} size={27} />
+        </button>
+      ))}
+      <button
+        type="button"
+        className={`note-visibility-button ${hideNotes ? "notes-hidden" : ""}`}
+        onClick={onToggleNotes}
+        aria-label={hideNotes ? "Hiện ghi chú" : "Ẩn ghi chú"}
+        aria-pressed={hideNotes}
+      >
+        <Icon name="note" size={27} />
+      </button>
+    </nav>
   );
 }
 
@@ -1162,7 +1245,7 @@ function Sidebar({
   const isActive = (candidate: View) => candidate.type === currentView.type;
   const renderProject = (project: Project) => {
     const shortcutNumber = orderedProjects.indexOf(project) + 1;
-    const tooltip = shortcutNumber >= 1 && shortcutNumber <= 9 ? `S ${shortcutNumber} · ${project.name}` : project.name;
+    const tooltip = shortcutNumber >= 1 && shortcutNumber <= 9 ? `${shortcutNumber} · ${project.name}` : project.name;
     return (
       <div className="project-nav-row" key={project.id}>
         <button className={`nav-item ${currentView.type === "project" && currentView.projectId === project.id ? "active" : ""}`} onClick={() => onNavigate({ type: "project", projectId: project.id })} aria-label={project.name} title={compact ? undefined : project.name} data-tooltip={compact ? tooltip : undefined}>
@@ -1184,13 +1267,13 @@ function Sidebar({
         {mobile && <button className="icon-button sidebar-close" onClick={onCloseMobile} aria-label="Đóng điều hướng"><Icon name="close" /></button>}
       </div>
       <nav aria-label="Điều hướng chính">
-        <div className="nav-section">
+        {!mobile && <div className="nav-section">
           {navItems.map((entry) => (
             <button key={entry.label} className={`nav-item ${isActive(entry.view) ? "active" : ""}`} onClick={() => onNavigate(entry.view)} aria-label={entry.label} title={compact ? undefined : entry.label} data-tooltip={compact ? entry.label : undefined}>
               <Icon name={entry.icon} /><span className="nav-text">{entry.label}</span>{entry.count !== undefined && <span className="nav-count">{entry.count}</span>}
             </button>
           ))}
-        </div>
+        </div>}
         <div className="nav-section attention-nav">
           {!compact && <button className="section-toggle" onClick={onToggleAttention} aria-expanded={attentionOpen}><Icon name="chevron" size={13} className={attentionOpen ? "section-open" : ""} /><span className="nav-label">Cần lưu ý</span></button>}
           {(compact || attentionOpen) && smartItems.map((entry) => (
@@ -1211,13 +1294,13 @@ function Sidebar({
       <div className="sidebar-footer">
         {!mobile && <button className="sidebar-toggle" onClick={onToggle} aria-label={compact ? "Mở rộng sidebar" : "Thu gọn sidebar"} title={compact ? undefined : "Thu gọn sidebar"} data-tooltip={compact ? "Mở rộng sidebar" : undefined}><Icon name="panel" size={20} /></button>}
         <button className="nav-item" onClick={onHelp} aria-label="Phím tắt" data-tooltip={compact ? "Phím tắt" : undefined}><Icon name="help" /><span className="nav-text">Phím tắt</span><kbd className="nav-kbd">?</kbd></button>
-        <button className="local-mode-card" onClick={onSync} aria-label={syncStatusTitle(syncStatus)} data-tooltip={compact ? syncStatusTitle(syncStatus) : undefined}>
+        {!mobile && <button className="local-mode-card" onClick={onSync} aria-label={syncStatusTitle(syncStatus)} data-tooltip={compact ? syncStatusTitle(syncStatus) : undefined}>
           <span className={`local-mode-icon ${syncStatus}`}><Icon name={syncStatus === "error" || syncStatus === "offline" ? "zap" : "check"} size={15} /></span>
           <span>
             <strong>{syncStatusTitle(syncStatus)}</strong>
             <small>{syncStatusDetail(syncStatus)}</small>
           </span>
-        </button>
+        </button>}
       </div>
     </aside>
   );
@@ -1277,7 +1360,7 @@ function ItemGroup({
   );
 }
 
-const SWIPE_ACTIONS_WIDTH = 152;
+const SWIPE_ACTIONS_WIDTH = 144;
 
 function SwipeableItemRow({
   item,
@@ -1354,7 +1437,7 @@ function SwipeableItemRow({
     event.preventDefault();
     const base = gesture.wasOpen ? -SWIPE_ACTIONS_WIDTH : 0;
     const minimum = -SWIPE_ACTIONS_WIDTH - 12;
-    const maximum = gesture.wasOpen ? 0 : 88;
+    const maximum = 0;
     setDragOffset(Math.max(minimum, Math.min(maximum, base + deltaX)));
   };
 
@@ -1373,12 +1456,7 @@ function SwipeableItemRow({
       suppressClickRef.current = false;
     }, 0);
     if (result === "open-actions") onSwipeOpenChange(item.id);
-    else {
-      onSwipeOpenChange(null);
-      if (result === "toggle-important") {
-        onFlag(item.id, { isImportant: !item.isImportant });
-      }
-    }
+    else onSwipeOpenChange(null);
   };
 
   const cancelPointerGesture = (event: ReactPointerEvent<HTMLElement>) => {
@@ -1390,10 +1468,6 @@ function SwipeableItemRow({
 
   return (
     <div className={`swipe-row ${dragOffset !== null ? "is-dragging" : ""}`}>
-      <div className="swipe-leading-feedback" aria-hidden="true">
-        <Icon name="star" size={20} />
-        <span>{item.isImportant ? "Bỏ Quan Trọng" : "Quan Trọng"}</span>
-      </div>
       <div className="swipe-actions" aria-hidden={!isSwipeOpen}>
         <button
           className={`swipe-action important ${item.isImportant ? "selected" : ""}`}
@@ -1543,7 +1617,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
     event.preventDefault();
     if (!title.trim() || (view.type === "upcoming" && !date)) return;
     onAdd({
-      id: crypto.randomUUID(),
+      id: createUuid(),
       type,
       title: title.trim(),
       dueDate: date || null,
@@ -1639,7 +1713,7 @@ function ProjectEditor({ project, onClose, onSave }: { project: Project | null; 
   const [isStarred, setIsStarred] = useState(project?.isStarred ?? false);
   return (
     <div className="dialog-backdrop" onClick={onClose}>
-      <form className="editor-sheet compact-editor" onClick={(event) => event.stopPropagation()} onSubmit={(event) => { event.preventDefault(); if (name.trim()) onSave(project ? { ...project, name: name.trim(), color, isStarred } : { id: crypto.randomUUID(), name: name.trim(), color, isStarred, archivedAt: null }); }}>
+      <form className="editor-sheet compact-editor" onClick={(event) => event.stopPropagation()} onSubmit={(event) => { event.preventDefault(); if (name.trim()) onSave(project ? { ...project, name: name.trim(), color, isStarred } : { id: createUuid(), name: name.trim(), color, isStarred, archivedAt: null }); }}>
         <div className="editor-header"><div><span>Dự án</span><h2>{project ? "Chỉnh sửa dự án" : "Tạo dự án mới"}</h2></div><button type="button" className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
         <label className="field"><span>Tên dự án</span><input autoFocus maxLength={80} value={name} onChange={(event) => setName(event.target.value)} placeholder="Ví dụ: Ra mắt website" /></label>
         <fieldset className="color-picker">
@@ -1661,9 +1735,37 @@ function ProjectEditor({ project, onClose, onSave }: { project: Project | null; 
   );
 }
 
-function ShortcutHelp({ projects, onClose }: { projects: Project[]; onClose: () => void }) {
-  const shortcuts = [["N", "Thêm task mới"], ["S T", "Mở Hôm nay"], ["S S", "Mở Sắp tới"], ["S D", "Mở Theo ngày"], ["S A", "Mở Tất cả"], ["S I", "Mở Quan Trọng"], ["S U", "Mở Ưu tiên"], ...projects.map((project, index) => [`S ${index + 1}`, `Mở ${project.name}`]), ["[", "Thu gọn / mở sidebar"], ["?", "Mở bảng trợ giúp"], ["Esc", "Đóng hoặc hủy"]];
-  return <div className="dialog-backdrop" onClick={onClose}><div className="shortcut-dialog" role="dialog" aria-modal="true" aria-labelledby="shortcut-title" onClick={(event) => event.stopPropagation()}><div className="editor-header"><div><span>Đi nhanh hơn</span><h2 id="shortcut-title">Phím tắt</h2></div><button className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div><div className="shortcut-list">{shortcuts.map(([keys, label]) => <div key={keys}><span>{label}</span><span>{keys.split(" ").map((key, index) => <kbd key={`${key}-${index}`}>{key}</kbd>)}</span></div>)}</div><p>Phím tắt sẽ tạm dừng khi bạn đang nhập nội dung.</p></div></div>;
+function ShortcutHelp({ onClose }: { onClose: () => void }) {
+  const navigation = [["T", "Hôm nay"], ["S", "Sắp tới"], ["D", "Theo ngày"], ["A", "Tất cả"]];
+  const focus = [["I", "Quan Trọng"], ["U", "Ưu tiên"]];
+  return (
+    <div className="dialog-backdrop" onClick={onClose}>
+      <div className="shortcut-dialog" role="dialog" aria-modal="true" aria-labelledby="shortcut-title" onClick={(event) => event.stopPropagation()}>
+        <div className="editor-header">
+          <div><span>Đi nhanh hơn</span><h2 id="shortcut-title">Phím tắt</h2></div>
+          <button className="icon-button" onClick={onClose} aria-label="Đóng bảng phím tắt"><Icon name="close" /></button>
+        </div>
+        <div className="shortcut-columns">
+          <section className="shortcut-group" aria-labelledby="shortcut-navigation">
+            <h3 id="shortcut-navigation">Điều hướng</h3>
+            {navigation.map(([key, label]) => <div key={key}><kbd>{key}</kbd><span>{label}</span></div>)}
+          </section>
+          <section className="shortcut-group" aria-labelledby="shortcut-focus">
+            <h3 id="shortcut-focus">Tập trung</h3>
+            {focus.map(([key, label]) => <div key={key}><kbd>{key}</kbd><span>{label}</span></div>)}
+            <div><kbd>1–9</kbd><span>Dự án theo thứ tự</span></div>
+          </section>
+        </div>
+        <div className="shortcut-footer">
+          <span><kbd>N</kbd> Thêm task</span>
+          <span><kbd>[</kbd> Sidebar</span>
+          <span><kbd>?</kbd> Trợ giúp</span>
+          <span><kbd>Esc</kbd> Đóng</span>
+        </div>
+        <p>Phím tắt sẽ tạm dừng khi bạn đang nhập nội dung.</p>
+      </div>
+    </div>
+  );
 }
 
 function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
