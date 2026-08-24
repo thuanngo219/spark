@@ -43,33 +43,35 @@ Nếu muốn làm prototype cực nhanh, có thể dùng IndexedDB/local storage
 | `user_id` | uuid | owner |
 | `project_id` | uuid nullable | một item tối đa một project |
 | `type` | enum/text | `task` hoặc `note` |
-| `title` | text | task 1–200, note 1–500 ký tự |
+| `title` | text | task/note 1–100 ký tự, hiển thị một dòng |
+| `description` | text nullable | chỉ task, plain text 1–2.000 ký tự khi có giá trị; copy UI là “Nội dung” |
 | `due_date` | date nullable | date-only |
 | `completed_at` | timestamptz nullable | chỉ dùng cho task; note luôn null |
+| `archived_at` | timestamptz nullable | chỉ dùng cho note; task luôn null |
 | `is_important` | boolean | mặc định false |
 | `is_urgent` | boolean | mặc định false |
 | `position` | integer | ổn định thứ tự |
 | `created_at` | timestamptz | audit |
 | `updated_at` | timestamptz | audit/sync |
 
-Ràng buộc: `type = 'note'` thì `completed_at` phải null. Chỉ mục nên có: `(user_id, type, completed_at, due_date)`, `(user_id, project_id, completed_at)`, `(user_id, is_important)` và `(user_id, is_urgent)`.
+Ràng buộc: `type = 'note'` thì `completed_at` và `description` phải null; `type = 'task'` thì `archived_at` phải null. Constraint độ dài title mới dùng `NOT VALID` khi migration để không tự cắt dữ liệu cũ vượt 100 ký tự, nhưng vẫn chặn mọi lần ghi/cập nhật không hợp lệ sau đó. Chỉ mục nên có: `(user_id, type, completed_at, due_date)`, `(user_id, project_id, completed_at)`, `(user_id, archived_at)`, `(user_id, is_important)` và `(user_id, is_urgent)`.
 
 ### Bảo mật
 
 - Bật Row Level Security trên mọi bảng public.
 - Policy `select/insert/update/delete` chỉ cho phép khi `auth.uid() = user_id`.
 - Không đưa service-role key xuống client.
-- Validate title/date/project ownership ở boundary ghi dữ liệu.
+- Validate title/description/date/project ownership ở boundary ghi dữ liệu.
 
 ## 3. Date logic
 
 Tạo một module thuần, ví dụ `src/lib/task-filters.ts`, không rải logic ngày trong component.
 
-- `today`: `due_date <= localToday` và item còn hiện hành; với task yêu cầu chưa hoàn thành, note không kiểm tra completed state; chia `overdue` và `dueToday`.
+- `today`: task chưa hoàn thành có `due_date <= localToday`; note chưa lưu trữ có `due_date <= localToday` hoặc `due_date is null`; chia `overdue` và `dueToday`, trong đó note không ngày nằm cùng nhóm Hôm nay.
 - `upcoming`: `localTomorrow <= due_date <= localToday + 3 calendar days`.
 - `byDate`: `due_date === selectedDate`.
-- `all`: lấy mọi item còn hiện hành rồi chia `overdue`, `today`, `upcoming` (ba ngày kế tiếp), `later` và `undated`; completed task vẫn ở disclosure riêng.
-- Trạng thái `hideNotes` là presentation filter dùng chung cho mọi view; áp dụng sau master/smart/project filter, trước khi chia nhóm và tính số quá hạn hiển thị. Không ghi thay đổi xuống item.
+- `all`: lấy mọi item còn hiện hành rồi chia `overdue`, `today`, `upcoming` (ba ngày kế tiếp), `later` và `undated`; completed task và archived note nằm trong disclosure trạng thái riêng.
+- Trạng thái `itemDisplayMode: 'all' | 'task' | 'note'` là presentation filter dùng chung cho mọi view; áp dụng sau master/smart/project filter, trước khi chia nhóm và tính số quá hạn hiển thị. Không ghi thay đổi xuống item.
 - Presentation sort dùng `task` trước `note`; sau đó sort `due_date` tăng dần và `created_at`. Riêng view `all`, chia nhóm thời gian trước rồi áp dụng comparator này trong từng nhóm. Không ghi lại `position` chỉ để phản ánh thứ tự hiển thị.
 - Luôn truyền timezone vào hàm tạo `localToday` để test được.
 - Test đặc biệt: cuối tháng, cuối năm, năm nhuận và thời điểm quanh nửa đêm.
@@ -117,18 +119,21 @@ src/
 - Không dùng global state library ở MVP nếu server cache + component state đã đủ.
 - Giữ unsaved quick-add text khi app chuyển offline ngắn.
 - Quick-add overlay phải có `role="dialog"`, `aria-modal="true"`, đóng được bằng Hủy, click backdrop và phím Escape; khi đóng trả focus về nút “Thêm công việc”. Backdrop của mọi overlay chỉ dùng lớp Navy dim đủ đậm, không dùng blur.
+- Quick-add giữ checkbox Ghi chú. Secondary button **Thêm Nội dung** chỉ hoạt động với task và mở textarea tùy chọn; bật Ghi chú phải disable button, đóng field và xóa draft description để note không giữ dữ liệu không hợp lệ. Chọn ngày và dự án vẫn hoạt động cho cả hai loại item.
+- Tap item mở detail sheet ở trạng thái đọc. Tên/Nội dung chỉ chuyển sang input/textarea khi bấm edit icon kế text; metadata compact lưu từng thay đổi ngay mà không cần submit cả form.
 - Desktop floating trigger dùng artwork `+` 32px trong hit target 48px ở góc dưới phải. Mobile dùng dock `position: fixed` cao 58px và nút `+` 72px ở giữa; list phải chừa bottom space cộng safe-area để dock không che item cuối.
 - Trên mobile, sau user gesture mở quick-add phải focus title input; dùng `window.visualViewport` resize/scroll để fit backdrop vào vùng còn thấy khi bàn phím mở và gọi `scrollIntoView` cho field. Cleanup listener/timer khi đóng; desktop giữ layout overlay hiện tại.
 
 ### Sidebar và keyboard shortcuts
 
 - Sidebar có hai trạng thái: `expanded` và `compact`; lưu lựa chọn cục bộ để giữ sau reload.
+- Sidebar toggle dùng icon panel-chevron theo trạng thái: chevron trái khi expanded để collapse, chevron phải khi compact để mở lại; mobile header dùng trạng thái mở sidebar.
 - Rail compact rộng khoảng `56px`; hai nhóm Cần lưu ý và Dự án có trạng thái mở/đóng riêng được lưu cục bộ.
-- Mobile sidebar giữ full negative logo và nút đóng, nhưng ẩn nhóm view Hôm nay/Sắp tới/Theo ngày/Tất cả đã chuyển xuống dock. Drawer mở bằng dock hoặc drag từ mép trái sang phải và dùng transition `transform` ngắn để có motion liên tục.
+- Mobile sidebar giữ full negative logo và nút đóng, nhưng ẩn nhóm view Hôm nay/Sắp tới/Theo ngày/Tất cả đã chuyển xuống dock. Drawer mở bằng panel icon-only trong sticky header hoặc drag từ mép trái sang phải và dùng transition `transform` ngắn để có motion liên tục.
 - Project có thể gắn sao; `is_starred` được đồng bộ cloud và project được hiển thị trong Cần lưu ý.
 - Ở compact state, filter dùng icon + count; project dùng dot màu lớn. Tất cả icon-only controls phải có accessible label và tooltip.
 - Dùng một keyboard shortcut handler tập trung, không gắn listener rải rác trong component.
-- Hỗ trợ `N` → quick-add, `T` → Today, `S` → Upcoming, `D` → By date, `A` → Tất cả, `I` → Quan Trọng, `U` → Ưu tiên và `1–9` → chín project đầu; `[` toggle sidebar và `?` mở trợ giúp.
+- Hỗ trợ `N` → quick-add, `T` → Today, `S` → Upcoming, `D` → By date, `A` → Tất cả, `I` → Quan Trọng, `U` → Ưu tiên và `1–9` → chín project đầu; `-` → chỉ note, `=` → chỉ task, `\` → tất cả nội dung; `[` toggle sidebar và `?` mở trợ giúp. Resolver so khớp đúng `event.key`; `+` và `|` không phải shortcut.
 - Compact sidebar dùng tooltip tức thời cho navigation icon, project dot và footer action; tooltip project kèm shortcut `1–9` khi có.
 - Bỏ qua shortcut khi event phát sinh trong `input`, `textarea`, `select` hoặc phần tử `contenteditable`; `Escape` đóng overlay/trợ giúp.
 - Bảng trợ giúp dùng layout hai cột, gộp project vào một dòng và có cả nút X lẫn `Escape` để đóng.

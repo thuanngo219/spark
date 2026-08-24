@@ -2,11 +2,44 @@ import { addCalendarDays } from "@/lib/dates";
 import type { SparkItem, View } from "@/lib/types";
 
 export type TimeGroup = "overdue" | "today" | "upcoming" | "later" | "undated";
+export type ItemDisplayMode = "all" | "task" | "note";
 
 const timeGroupOrder: TimeGroup[] = ["overdue", "today", "upcoming", "later", "undated"];
 
 export function isActive(item: SparkItem): boolean {
-  return item.type === "note" || !item.completedAt;
+  return item.type === "note" ? !item.archivedAt : !item.completedAt;
+}
+
+export function filterItemsByDisplayMode(
+  items: SparkItem[],
+  mode: ItemDisplayMode,
+): SparkItem[] {
+  return mode === "all" ? items : items.filter((item) => item.type === mode);
+}
+
+function matchesView(item: SparkItem, view: View, todayKey: string): boolean {
+  switch (view.type) {
+    case "today":
+      return item.type === "note" && !item.dueDate
+        ? true
+        : Boolean(item.dueDate && item.dueDate <= todayKey);
+    case "upcoming":
+      return Boolean(
+        item.dueDate &&
+          item.dueDate >= addCalendarDays(todayKey, 1) &&
+          item.dueDate <= addCalendarDays(todayKey, 3),
+      );
+    case "calendar":
+      return item.dueDate === view.date;
+    case "all":
+      return true;
+    case "important":
+      return item.isImportant;
+    case "urgent":
+      return item.isUrgent;
+    case "project":
+      return item.projectId === view.projectId;
+  }
 }
 
 export function sortItemsForDisplay(items: SparkItem[]): SparkItem[] {
@@ -26,60 +59,20 @@ export function filterItems(
 ): SparkItem[] {
   const active = items.filter(isActive);
 
-  const filtered = active.filter((item) => {
-    switch (view.type) {
-      case "today":
-        return Boolean(item.dueDate && item.dueDate <= todayKey);
-      case "upcoming":
-        return Boolean(
-          item.dueDate &&
-            item.dueDate >= addCalendarDays(todayKey, 1) &&
-            item.dueDate <= addCalendarDays(todayKey, 3),
-        );
-      case "calendar":
-        return item.dueDate === view.date;
-      case "all":
-        return true;
-      case "important":
-        return item.isImportant;
-      case "urgent":
-        return item.isUrgent;
-      case "project":
-        return item.projectId === view.projectId;
-    }
-  });
+  const filtered = active.filter((item) => matchesView(item, view, todayKey));
 
   return sortItemsForDisplay(filtered);
 }
 
-export function completedForView(
+export function inactiveForView(
   items: SparkItem[],
   view: View,
   todayKey: string,
 ): SparkItem[] {
-  return items.filter((item) => {
-    if (item.type !== "task" || !item.completedAt) return false;
-    switch (view.type) {
-      case "today":
-        return Boolean(item.dueDate && item.dueDate <= todayKey);
-      case "upcoming":
-        return Boolean(
-          item.dueDate &&
-            item.dueDate >= addCalendarDays(todayKey, 1) &&
-            item.dueDate <= addCalendarDays(todayKey, 3),
-        );
-      case "calendar":
-        return item.dueDate === view.date;
-      case "all":
-        return true;
-      case "important":
-        return item.isImportant;
-      case "urgent":
-        return item.isUrgent;
-      case "project":
-        return item.projectId === view.projectId;
-    }
-  });
+  return sortItemsForDisplay(items.filter((item) => {
+    const inactive = item.type === "task" ? Boolean(item.completedAt) : Boolean(item.archivedAt);
+    return inactive && matchesView(item, view, todayKey);
+  }));
 }
 
 export function groupItemsByTime(

@@ -16,9 +16,11 @@ function legacyData(): SparkData {
         id: "welcome-1",
         type: "task",
         title: "Việc cũ",
+        description: null,
         dueDate: "2026-08-19",
         projectId: "work",
         completedAt: null,
+        archivedAt: null,
         isImportant: false,
         isUrgent: false,
         createdAt: "2026-08-19T00:00:00.000Z",
@@ -68,5 +70,44 @@ describe("normalizeDataIds", () => {
     const normalized = normalizeDataIds(data, () => ids[index++]);
 
     expect(normalized.projects[0].isStarred).toBe(false);
+  });
+
+  it("defaults legacy items to an unarchived state", () => {
+    const data = legacyData();
+    delete (data.items[0] as Partial<(typeof data.items)[number]>).archivedAt;
+    let index = 0;
+
+    const normalized = normalizeDataIds(data, () => ids[index++]);
+
+    expect(normalized.items[0].archivedAt).toBeNull();
+  });
+
+  it("defaults legacy task descriptions and removes descriptions from notes", () => {
+    const data = legacyData();
+    delete (data.items[0] as Partial<(typeof data.items)[number]>).description;
+    data.items.push({
+      ...data.items[0],
+      id: "legacy-note",
+      type: "note",
+      description: "Không được giữ trên note",
+    });
+    let index = 0;
+
+    const normalized = normalizeDataIds(data, () => ids[index++]);
+
+    expect(normalized.items[0].description).toBeNull();
+    expect(normalized.items[1].description).toBeNull();
+  });
+
+  it("trims task descriptions without changing existing titles", () => {
+    const data = legacyData();
+    data.items[0].description = "  Chi tiết cần giữ  ";
+    data.items[0].title = "Một title cũ dài vẫn được bảo toàn khi đọc cache";
+    let index = 0;
+
+    const normalized = normalizeDataIds(data, () => ids[index++]);
+
+    expect(normalized.items[0].description).toBe("Chi tiết cần giữ");
+    expect(normalized.items[0].title).toBe(data.items[0].title);
   });
 });

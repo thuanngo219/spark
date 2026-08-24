@@ -14,9 +14,11 @@ type ItemRow = {
   id: string;
   type: "task" | "note";
   title: string;
+  description: string | null;
   due_date: string | null;
   project_id: string | null;
   completed_at: string | null;
+  archived_at: string | null;
   is_important: boolean;
   is_urgent: boolean;
   created_at: string;
@@ -37,9 +39,11 @@ function toItem(row: ItemRow): SparkItem {
     id: row.id,
     type: row.type,
     title: row.title,
+    description: row.type === "task" ? row.description : null,
     dueDate: row.due_date,
     projectId: row.project_id,
     completedAt: row.completed_at,
+    archivedAt: row.archived_at,
     isImportant: row.is_important,
     isUrgent: row.is_urgent,
     createdAt: row.created_at,
@@ -51,7 +55,7 @@ export async function fetchCloudData(client: SupabaseClient) {
     client.from("projects").select("id,name,color,is_starred,archived_at").order("position"),
     client
       .from("items")
-      .select("id,type,title,due_date,project_id,completed_at,is_important,is_urgent,created_at")
+      .select("id,type,title,description,due_date,project_id,completed_at,archived_at,is_important,is_urgent,created_at")
       .order("position"),
   ]);
   if (projectsResult.error) throw projectsResult.error;
@@ -81,8 +85,10 @@ export async function upsertItem(client: SupabaseClient, item: SparkItem, userId
     project_id: item.projectId,
     type: item.type,
     title: item.title,
+    description: item.type === "task" ? item.description?.trim() || null : null,
     due_date: item.dueDate,
     completed_at: item.completedAt,
+    archived_at: item.archivedAt,
     is_important: item.isImportant,
     is_urgent: item.isUrgent,
     created_at: item.createdAt,

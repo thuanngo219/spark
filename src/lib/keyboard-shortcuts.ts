@@ -6,6 +6,9 @@ export type StandaloneShortcut =
   | "all"
   | "important"
   | "urgent"
+  | "display-notes"
+  | "display-tasks"
+  | "display-all"
   | "toggle-sidebar"
   | "help";
 
@@ -18,6 +21,9 @@ export function resolveStandaloneShortcut(key: string): StandaloneShortcut | nul
   if (normalized === "a") return "all";
   if (normalized === "i") return "important";
   if (normalized === "u") return "urgent";
+  if (key === "-") return "display-notes";
+  if (key === "=") return "display-tasks";
+  if (key === "\\") return "display-all";
   if (key === "[") return "toggle-sidebar";
   if (key === "?") return "help";
   return null;

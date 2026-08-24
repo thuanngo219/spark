@@ -35,7 +35,8 @@ Các công cụ quản lý công việc thường trở nên nặng vì có quá
 Mỗi task có:
 
 - Checkbox hoàn thành.
-- Tên task, bắt buộc, tối đa 200 ký tự.
+- Tên task, bắt buộc, một dòng, tối đa 100 ký tự.
+- Nội dung bổ sung, tùy chọn, plain text tối đa 2.000 ký tự; chỉ task có trường này.
 - Due date, tùy chọn, chỉ lưu **ngày** chứ không lưu giờ trong MVP.
 - Project, tùy chọn.
 
@@ -53,9 +54,9 @@ Hành động:
 Note là một item ghi chú ngắn, không phải task:
 
 - Hiển thị bằng bullet point thay cho checkbox.
-- Có tên/nội dung ngắn, tối đa 500 ký tự trong MVP.
+- Có nội dung ngắn trên một dòng, tối đa 100 ký tự trong MVP; note không có trường Nội dung bổ sung.
 - Có due date và project tùy chọn giống task để có thể xuất hiện trong view thời gian/dự án.
-- Không có trạng thái hoàn thành; có thể sửa, xóa hoặc lưu trữ.
+- Không có trạng thái hoàn thành; có thể sửa, xóa, lưu trữ và khôi phục.
 
 ### Quan Trọng và Ưu tiên
 
@@ -76,15 +77,15 @@ Note là một item ghi chú ngắn, không phải task:
 
 | Bộ lọc | Quy tắc |
 |---|---|
-| **Hôm nay** | Task chưa hoàn thành có due date hôm nay **hoặc đã quá hạn**. Task quá hạn nằm trong nhóm riêng ở đầu danh sách. |
+| **Hôm nay** | Task chưa hoàn thành có due date hôm nay **hoặc đã quá hạn**; note đang hoạt động có due date đến hôm nay **hoặc chưa có ngày**. Task/note quá hạn nằm trong nhóm riêng ở đầu danh sách. |
 | **Sắp tới** | Task chưa hoàn thành có due date từ ngày mai đến hết ngày thứ ba tính từ hôm nay. Ví dụ hôm nay 10/8 thì gồm 11/8, 12/8 và 13/8. |
 | **Theo ngày** | Chọn một ngày cụ thể để xem task chưa hoàn thành đến hạn ngày đó; có nút quay về hôm nay. |
 | **Tất cả** | Toàn bộ task chưa hoàn thành và note, chia theo thứ tự Quá hạn, Hôm nay, Sắp tới (ba ngày kế tiếp), Sau đó và Chưa có ngày. |
 | **Project** | Task chưa hoàn thành thuộc project đã chọn, sắp xếp theo due date; task chưa có ngày nằm cuối. |
 
-Đối với note, các view thời gian dùng due date tương tự task; note không bị loại bởi trạng thái hoàn thành vì note không có checkbox.
+Đối với note, các view thời gian dùng due date tương tự task, ngoại trừ note chưa có ngày luôn xuất hiện trong Hôm nay. Note đã lưu trữ rời mọi danh sách đang hoạt động nhưng vẫn có thể xem và khôi phục trong disclosure cuối view.
 
-Mọi view có một bộ lọc hiển thị chung để ẩn/hiện note. Khi ẩn, note chỉ bị loại khỏi danh sách đang nhìn và số liệu quá hạn hiển thị; dữ liệu note không bị sửa hoặc xóa, và lựa chọn tiếp tục áp dụng khi chuyển view trong phiên hiện tại.
+Mọi view có switcher icon-only ba chế độ theo thứ tự **Tất cả / Chỉ note / Chỉ task**. Đây là presentation filter: chỉ thay đổi danh sách và số liệu đang nhìn, không sửa hoặc xóa dữ liệu; lựa chọn tiếp tục áp dụng khi chuyển view trong phiên hiện tại.
 
 ### Smart filters
 
@@ -102,13 +103,14 @@ Quy ước ngày:
 - So sánh theo calendar date trong múi giờ người dùng, không dùng khoảng 24 giờ trượt.
 - Task không có due date không xuất hiện trong Hôm nay, Sắp tới hoặc Theo ngày; task vẫn xuất hiện ở nhóm Chưa có ngày trong Tất cả và trong project tương ứng.
 
-### Completed tasks
+### Task đã hoàn thành và note đã lưu trữ
 
 - Task vừa check biến đổi trạng thái ngay, sau đó thu gọn khỏi danh sách đang xem.
-- Có khu vực “Đã hoàn thành” thu gọn ở cuối mỗi view để xem và uncheck.
-- Desktop giữ floating `+` 48px ở góc dưới phải. Mobile đưa `+` 72px vào chính giữa dock 58px, cho artwork trồi khỏi dock để dễ nhận biết; cả hai cùng mở quick-add dạng overlay gọn và chỉ giữ các trường thiết yếu.
+- Note có thể lưu trữ bằng marker, editor hoặc action swipe trên mobile; thao tác khôi phục đưa note trở lại danh sách đang hoạt động.
+- Có disclosure thu gọn ở cuối mỗi view để xem/uncheck task đã hoàn thành và khôi phục note đã lưu trữ; nhãn thay đổi theo loại item đang có.
+- Desktop giữ floating `+` 48px ở góc dưới phải. Mobile đưa `+` 72px vào chính giữa dock 58px, cho artwork trồi khỏi dock để dễ nhận biết; cả hai cùng mở quick-add dạng overlay gọn. Checkbox Ghi chú giữ nguyên; task có nút **Thêm Nội dung** để mở field tùy chọn, còn khi Ghi chú được bật thì nút này disabled và Nội dung đang nhập được bỏ. Quick-add luôn giữ chọn ngày và dự án cho cả task lẫn note.
 - Trên mobile, mở quick-add phải focus ngay title input và giữ field này trong vùng nhìn thấy khi bàn phím ảo xuất hiện; người dùng không cần kéo form để bắt đầu nhập.
-- Trên mobile, bỏ app header riêng. Nút mở sidebar và Ẩn/Hiện ghi chú nằm trong dock; trạng thái đồng bộ là pill nổi ở góc dưới phải, ngay trên dock, với màu semantic và nhãn trạng thái.
+- Trên mobile, bỏ app header riêng. Nút mở sidebar là panel icon-only đứng trước tên view trong sticky header; switcher item nằm bên trái sync pill trong hàng control nổi ngay trên dock.
 - Completed task không được tính trong số lượng task mở.
 - Trong mọi listing hỗn hợp, task hiển thị trước note trên cả desktop và mobile; view Tất cả vẫn chia theo nhóm thời gian rồi mới áp dụng thứ tự này trong từng nhóm.
 
@@ -132,7 +134,7 @@ Spark
 
 Desktop mở mặc định ở view Hôm nay với sidebar thu gọn thành compact rail; người dùng có thể mở sidebar bằng nút panel luôn nhìn thấy hoặc phím `[`. Lựa chọn sau đó được ghi nhớ trên thiết bị. Desktop header dùng padding nội dung 26px, sticky và có dải màu project/view cao 20px ở trên cùng.
 
-Mobile dùng canvas tràn viền, view header sticky giữ nguyên kích thước khi cuộn và dải màu project/view 20px chạy ngang toàn màn hình. Dock icon-only cao 58px overlay ở cuối màn hình gồm sidebar, Hôm nay, Sắp tới, thêm task, Theo ngày, Tất cả và Ẩn/Hiện ghi chú; icon điều hướng đang chọn dùng nền Navy/icon trắng và nút thêm có khoảng đệm ngang 10px với hai icon bên cạnh. Trên iPhone có home indicator, dock nằm tại `safe-area - 10px` (tối thiểu 10px), thấp hơn treatment cũ khoảng 40px. Nút ghi chú là page state nên luôn giữ nền trong suốt: trạng thái ẩn dùng icon gạch chéo màu Turquoise. Sheet điều hướng mở bằng nút dock hoặc swipe từ mép trái sang phải, giữ full negative logo + nút đóng và không lặp các view chính đã có trong dock. Tap item mở editor; swipe trái trên item lộ Quan Trọng/Ưu tiên/Xóa, swipe phải trên item không có hành động và không dùng touch-and-hold.
+Mobile dùng canvas tràn viền và view header sticky. Panel icon-only nằm trong cùng title row, ngay trước tên view. Khi cuộn quá ngưỡng ngắn, header thu từ khoảng 149px xuống 92px, bỏ ngày/eyebrow nhưng giữ dòng thống kê, title còn 80% cỡ ban đầu, nền canvas còn 60% opacity kết hợp blur 14px và dải màu project/view giảm từ 20px xuống 10px; panel icon giữ nguyên kích thước. Dock icon-only cao 58px overlay ở cuối màn hình chỉ gồm Hôm nay, Sắp tới, thêm task, Theo ngày và Tất cả theo năm cột bằng nhau; active navigation dùng nền Navy rộng tối đa 64px. Trên iPhone có home indicator, dock nằm tại `safe-area - 10px` (tối thiểu 10px). Sheet điều hướng mở bằng panel icon trong header hoặc swipe từ mép trái sang phải, giữ full negative logo + nút đóng và không lặp các view chính đã có trong dock. Tap item mở editor; swipe trái lộ Quan Trọng/Ưu tiên/Xóa với task và Quan Trọng/Ưu tiên/Lưu trữ với note, swipe phải trên item không có hành động và không dùng touch-and-hold.
 
 Hai nhóm **Cần lưu ý** và **Dự án** có thể thu gọn độc lập. Cần lưu ý gồm smart filter Quan Trọng/Ưu tiên và các project được gắn sao; trạng thái nhóm được ghi nhớ trên thiết bị.
 
@@ -149,6 +151,9 @@ Phím tắt filter dùng một phím trực tiếp khi focus không nằm trong 
 | `A` | Mở **Tất cả**. |
 | `I` | Mở **Quan Trọng**. |
 | `U` | Mở **Ưu tiên**. |
+| `-` | Chỉ hiển thị note. |
+| `=` | Chỉ hiển thị task. |
+| `\` | Hiển thị tất cả task và note. |
 | `1–9` | Mở dự án tương ứng theo thứ tự đang hiển thị trong sidebar. |
 | `[` | Thu gọn/mở rộng sidebar. |
 | `?` | Mở bảng trợ giúp phím tắt. |
@@ -157,6 +162,7 @@ Phím tắt filter dùng một phím trực tiếp khi focus không nằm trong 
 Quy tắc:
 
 - Không kích hoạt shortcut khi focus nằm trong input, textarea, select hoặc vùng `contenteditable`.
+- Ba shortcut filter nội dung chỉ nhận đúng phím đơn `-`, `=` và `\`; ký tự có Shift `+` và `|` không kích hoạt filter.
 - Bảng trợ giúp dùng hai nhóm Điều hướng/Tập trung, gộp dự án thành một dòng `1–9` không liệt kê tên dự án, có nút đóng rõ ràng và đóng được bằng `Escape` trên cả desktop/mobile.
 - Shortcut phải được hiển thị trong tooltip/menu trợ giúp, không yêu cầu người dùng ghi nhớ để sử dụng app.
 
@@ -213,16 +219,18 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 
 - Refresh hoặc mở lại app không làm mất task.
 - Task quá hạn xuất hiện trong Hôm nay và có nhãn ngày dễ hiểu.
+- Note chưa có ngày xuất hiện trong Hôm nay; note đã lưu trữ không xuất hiện trong danh sách hoạt động và có thể khôi phục.
 - Sắp tới chỉ gồm ba ngày kế tiếp, không gồm hôm nay.
 - Ngày chuyển đúng tại nửa đêm ở múi giờ cấu hình.
 - Một task chỉ thuộc tối đa một project trong MVP.
 - Note hiển thị bằng bullet point, không có checkbox hoặc completed state.
 - Task/note có thể bật đồng thời Quan Trọng và Ưu tiên; smart filters bao gồm đúng item phù hợp.
-- Bộ lọc ẩn ghi chú hoạt động nhất quán ở mọi view và không làm thay đổi dữ liệu note.
+- Switcher Tất cả/Note/Task hoạt động nhất quán ở mọi view và không làm thay đổi dữ liệu item.
+- Toast Hoàn tác nằm ngoài vùng navigation/dock trên desktop và mobile.
 - Layout hoạt động từ 320px đến desktop; không có horizontal scroll ngoài thành phần lịch chủ đích.
 - Tất cả thao tác chính dùng được bằng touch và keyboard.
 - Sidebar desktop chuyển đổi được giữa full và compact; lựa chọn được giữ sau khi reload.
 - Cần lưu ý/Dự án có thể thu gọn; project gắn sao xuất hiện trong Cần lưu ý và trạng thái này được lưu cùng dữ liệu project.
-- Các shortcut `N`, `T`, `S`, `D`, `A`, `I`, `U`, `1–9`, `[` và `?` hoạt động đúng, không kích hoạt khi đang nhập task.
+- Các shortcut `N`, `T`, `S`, `D`, `A`, `I`, `U`, `-`, `=`, `\`, `1–9`, `[` và `?` hoạt động đúng, không kích hoạt khi đang nhập task.
 - Compact sidebar hiển thị tooltip tên hạng mục/project ngay khi hover hoặc focus vào icon/dot.
 - App cài được lên Home Screen với tên/icon riêng và mở ở chế độ standalone khi nền tảng hỗ trợ.

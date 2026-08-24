@@ -282,6 +282,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 - Dùng màu chủ đạo neutral/Navy. Chỉ thêm Turquoise, Violet hoặc Muted Coral khi màu có ý nghĩa hoặc giúp dẫn mắt.
 - Luôn có accessible label hoặc tooltip cho icon-only control.
 - Các icon cùng nhóm phải thống nhất perspective, corner radius, khoảng âm và mức độ chi tiết.
+- Sidebar toggle dùng cùng khung panel bo tròn có divider trái: chevron hướng trái khi sidebar đang mở để biểu thị collapse, chevron hướng phải khi compact để biểu thị mở lại.
 
 ## 7. Imagery, illustration and gradients
 

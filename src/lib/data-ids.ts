@@ -40,6 +40,8 @@ export function normalizeDataIds(
     ...item,
     id: nextUniqueId(item.id, usedItemIds),
     projectId: item.projectId ? projectIdMap.get(item.projectId) ?? null : null,
+    description: item.type === "task" ? item.description?.trim() || null : null,
+    archivedAt: item.type === "note" ? item.archivedAt ?? null : null,
   }));
 
   return { items, projects };

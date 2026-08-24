@@ -12,9 +12,11 @@ export type SparkItem = {
   id: string;
   type: ItemType;
   title: string;
+  description: string | null;
   dueDate: string | null;
   projectId: string | null;
   completedAt: string | null;
+  archivedAt: string | null;
   isImportant: boolean;
   isUrgent: boolean;
   createdAt: string;

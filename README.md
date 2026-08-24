@@ -20,7 +20,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Để bật cloud sync, tạo Supabase project, chạy migration trong `supabase/migrations/202608190001_initial_schema.sql`, điền project URL và publishable key vào `.env.local`, rồi thêm `http://localhost:3000` và `https://spark.thuanngo.com` vào Auth redirect URLs. Không đưa service-role key xuống client.
+Để bật cloud sync, tạo Supabase project, chạy lần lượt toàn bộ migration trong `supabase/migrations/`, điền project URL và publishable key vào `.env.local`, rồi thêm `http://localhost:3000` và `https://spark.thuanngo.com` vào Auth redirect URLs. Không đưa service-role key xuống client.
 
 ## Tài liệu nguồn
 
@@ -29,6 +29,7 @@ npm run dev
 - [UI directions](docs/UI_OPTIONS.md): ba phương án giao diện và quyết định đề xuất.
 - [Implementation guide](docs/IMPLEMENTATION_GUIDE.md): kiến trúc, dữ liệu, lộ trình triển khai, publish và cài lên iPhone.
 - [Decision log](docs/DECISIONS.md): quyết định đã chốt và các câu hỏi còn mở.
+- [Product backlog](docs/BACKLOG.md): ý tưởng đang cân nhắc, chưa phải hành vi hoặc phạm vi đã chốt.
 - [AGENTS.md](AGENTS.md): quy tắc bàn giao cho các phiên Codex tiếp theo.
 - [Logo concepts](assets/logo-concepts/README.md): năm hướng nhận diện ban đầu cho Spark.
 - [Official logo](assets/logo/README.md): logo chính thức, palette và quy tắc sử dụng hiện tại.

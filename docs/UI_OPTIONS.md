@@ -113,37 +113,37 @@ Project editor đặt nút star icon-only ở đầu hàng chọn màu, sau đó
 
 Trong project view, nút edit nằm ngay bên phải tên dự án và mở Project Editor hiện có để đổi tên, màu nhận diện hoặc trạng thái Cần lưu ý.
 
-CTA và utility button chính dùng nền turquoise, hover chuyển navy. Help ở page header là secondary icon button theo kiểu Hủy: nền trong suốt, icon xám, hover neutral nhẹ; Search được ẩn cho đến khi tính năng tìm kiếm được triển khai. Các control có ý nghĩa semantic như Xóa, Quan Trọng, Ưu tiên, navigation và swatch màu giữ hệ màu riêng. Focus state không dùng glow; nền field/control tối hơn khoảng 12%.
+CTA và utility button chính dùng nền turquoise, hover chuyển navy. Search được ẩn cho đến khi tính năng tìm kiếm được triển khai. Help không lặp trong page header desktop; vẫn mở được bằng mục Phím tắt trong sidebar hoặc phím `?`. Các control có ý nghĩa semantic như Xóa, Quan Trọng, Ưu tiên, navigation và swatch màu giữ hệ màu riêng. Focus state không dùng glow; nền field/control tối hơn khoảng 12%.
 
 Ứng dụng mở mặc định ở Hôm nay với sidebar compact; khi người dùng đổi trạng thái sidebar, lựa chọn mới tiếp tục được ghi nhớ.
 
-Quick-add task có thể mở trực tiếp bằng phím `N`. Filter dùng phím trực tiếp `T`, `S`, `D`, `A`, `I`, `U`; `1–9` mở project theo thứ tự compact sidebar. Phím `[` chuyển trạng thái sidebar và `?` mở bảng trợ giúp. Bảng trợ giúp gộp project thành một dòng, đóng bằng X/Escape; compact sidebar hiện tooltip tức thời khi hover/focus icon hoặc project dot.
+Quick-add task có thể mở trực tiếp bằng phím `N`. Filter view dùng phím trực tiếp `T`, `S`, `D`, `A`, `I`, `U`; filter nội dung dùng đúng ba phím đơn `-` để chỉ note, `=` để chỉ task và `\` để hiện tất cả. `+` và `|` không kích hoạt filter; `1–9` mở project theo thứ tự compact sidebar. Phím `[` chuyển trạng thái sidebar và `?` mở bảng trợ giúp. Bảng trợ giúp gộp project thành một dòng, đóng bằng X/Escape; compact sidebar hiện tooltip tức thời khi hover/focus icon hoặc project dot.
 
 Navigation chính có **Tất cả** ngay dưới **Theo ngày**. View này giữ canvas phẳng và chia item đang hoạt động thành Quá hạn, Hôm nay, Sắp tới, Sau đó và Chưa có ngày để quét theo thời gian mà không cần đổi filter.
 
-Mọi view dùng chung một secondary icon button **Ẩn ghi chú / Hiện ghi chú** trong view actions, đặt bên trái Search trên desktop. Trên mobile, icon filter nằm trong dock cuối màn hình; trạng thái đồng bộ là pill nổi bên phải ngay trên dock. Trạng thái ẩn được giữ khi chuyển view trong phiên, chỉ tác động presentation và dùng neutral selected background thay cho focus glow.
+Mọi view dùng switcher icon-only kiểu segmented theo thứ tự **Tất cả / Chỉ note / Chỉ task**. Desktop đặt switcher đúng vị trí control Ẩn/Hiện note cũ và giữ nguyên nút sidebar hiện tại. Mobile đặt switcher bên trái sync pill trong hàng control nổi ngay trên dock; lựa chọn chỉ tác động presentation và được giữ khi chuyển view trong phiên.
 
 Typography web app dùng base size bằng `rem`, scale root `112.5%` trên desktop và `120%` trên mobile. Cách này tăng độ đọc của navigation, item, metadata và editor nhưng giữ nguyên kích thước icon, sidebar, touch target và row geometry.
 
-Danh sách mobile dùng canvas tràn viền, row tối thiểu `52px` và gap `2px` giữa item; tiêu đề có thể hiển thị tối đa hai dòng để ưu tiên ít nhất khoảng tám từ khi nội dung đủ dài. Marker giữ vùng chạm tối thiểu 44px, project dot được thu gọn, còn desktop tiếp tục dùng row khoảng `35px` và gap `6px`.
+Danh sách mobile dùng canvas tràn viền, row tối thiểu `52px` và gap `2px` giữa item; title task/note luôn là một dòng và ellipsis khi thiếu chỗ. Task có Nội dung bổ sung hiển thị icon hội thoại 15px ngay sau text, không neo ở mép phải; note không có icon này. Marker giữ vùng chạm tối thiểu 44px, project dot được thu gọn, còn desktop tiếp tục dùng row khoảng `35px` và gap `6px`.
 
-Mobile bỏ app header riêng; view header sticky có dải màu 20px và dock icon-only 58px overlay cuối màn hình. Nút thêm 72px nằm giữa dock và trồi khỏi thanh; sidebar giữ full negative logo + X nhưng không lặp nhóm view chính đã có trong dock.
+Mobile bỏ app header riêng; view header sticky đặt panel icon-only trong cùng title row, ngay trước title. Khi scroll, header còn khoảng 62% chiều cao, title còn 80%, bỏ eyebrow nhưng giữ dòng thống kê, nền canvas 60% opacity kết hợp blur 14px và dải màu giảm từ 20px xuống 10px. Dock icon-only 58px dùng năm segment bằng nhau cho Hôm nay/Sắp tới/Thêm/Theo ngày/Tất cả; nút thêm 72px nằm giữa và trồi khỏi thanh, còn active navigation dùng nền Navy rộng tối đa 64px.
 
-Gesture chỉ áp dụng dưới breakpoint mobile: tap tiêu đề mở editor; swipe trái mở khay Quan Trọng, Ưu tiên và Xóa; swipe phải trên item không có hành động; swipe từ mép trái sang phải mở navigation sheet với motion transform. Xóa vẫn dùng toast Hoàn tác và không kích hoạt ngay khi thả full-swipe. Không dùng touch-and-hold. Nút menu trong dock tiếp tục tồn tại làm fallback khi browser ưu tiên gesture hệ thống.
+Gesture chỉ áp dụng dưới breakpoint mobile: tap tiêu đề mở editor; swipe trái mở khay Quan Trọng, Ưu tiên và action cuối theo loại item — Xóa với task, Lưu trữ/Khôi phục với note; swipe phải trên item không có hành động; swipe từ mép trái sang phải mở navigation sheet với motion transform. Xóa vẫn dùng toast Hoàn tác và không kích hoạt ngay khi thả full-swipe. Toast nằm trên hàng switcher/sync và dock/safe area, không che navigation; desktop né floating `+`. Không dùng touch-and-hold. Panel icon trong header là fallback khi browser ưu tiên gesture hệ thống.
 
 ## Shared component inventory
 
 - App shell / sidebar / mobile navigation sheet.
 - View header và open-task count.
-- Quick-add composer có lựa chọn Task/Note. Các overlay dùng lớp nền Navy dim đủ đậm để giữ bối cảnh nhìn thấy rõ, không blur nội dung phía sau.
+- Quick-add composer giữ checkbox Ghi chú hiện tại. Task có secondary button **Thêm Nội dung** để mở field “Nội dung (nếu cần)”; khi checkbox Ghi chú được bật, button bị disabled và field đang mở đóng lại. Ngày và dự án luôn khả dụng cho cả task lẫn note. Các overlay dùng lớp nền Navy dim đủ đậm để giữ bối cảnh nhìn thấy rõ, không blur nội dung phía sau.
 - Quick-add đóng dùng floating icon-only button `+` 32px trong control turquoise 48px ở desktop; mobile dùng nút turquoise 72px giữa dock 58px. Cả hai giữ accessible label “Thêm công việc”. Khi mở, overlay surface trắng neo cùng góc; trên mobile surface dùng gần trọn chiều rộng như bottom sheet. Field có label, nền nhẹ, bo góc và spacing đồng bộ project editor. Hủy là secondary text button; Thêm là primary turquoise.
-- Item row: task dùng checkbox, note dùng một rounded dash mark xám; marker và project dot căn theo dòng title đầu tiên thay vì giữa toàn row. Desktop luôn hiện nút star/điện xẹt; mobile dùng icon trạng thái nhỏ trong metadata và đưa các action 44px vào khay swipe để dành chiều rộng cho nội dung. Không hiện chip loại item hoặc tên project trong danh sách, và view Hôm nay không lặp nhãn ngày “Hôm nay” trên từng item.
+- Item row: task dùng checkbox; note đang hoạt động dùng rounded dash mark xám có thể bấm để lưu trữ, note đã lưu trữ dùng icon archive để khôi phục. Task có description hiển thị icon hội thoại nhỏ ngay sau text title; icon chỉ báo trạng thái và tap row mở detail sheet. Detail sheet ưu tiên trạng thái đọc, dùng edit icon cạnh Tên/Nội dung để sửa inline; metadata ngày/dự án/Quan Trọng/Ưu tiên được gom gọn và lưu ngay. Marker và project dot căn theo dòng title thay vì giữa toàn row. Desktop luôn hiện nút star/điện xẹt; mobile dùng icon trạng thái nhỏ trong metadata và đưa các action 44px vào khay swipe để dành chiều rộng cho nội dung. Không hiện chip loại item hoặc tên project trong danh sách, và view Hôm nay không lặp nhãn ngày “Hôm nay” trên từng item.
 - Thứ tự listing luôn là task trước, note sau ở cả desktop/mobile. Trong view Tất cả, quy tắc này áp dụng bên trong từng nhóm thời gian; trong mỗi loại vẫn sort theo due date rồi created time.
-- Disclosure **Đã hoàn thành** dùng uppercase, weight và letter-spacing cùng hệ section label của sidebar.
-- Item edit sheet/popover.
+- Disclosure trạng thái dùng nhãn **Đã hoàn thành**, **Đã lưu trữ** hoặc **Đã hoàn thành & lưu trữ** theo nội dung; giữ uppercase, weight và letter-spacing cùng hệ section label của sidebar.
+- Item detail sheet/popover với edit inline.
 - Smart filters Quan Trọng và Ưu tiên.
 - Project row và project editor.
 - Date strip/date picker.
 - Completed disclosure.
-- Toast có Undo.
+- Toast có Undo và luôn chừa navigation/dock.
 - Empty, skeleton, error và offline banner.

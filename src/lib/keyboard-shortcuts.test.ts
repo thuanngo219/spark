@@ -12,6 +12,18 @@ describe("standalone keyboard shortcuts", () => {
   });
 
   it.each([
+    ["-", "display-notes"],
+    ["=", "display-tasks"],
+    ["\\", "display-all"],
+  ] as const)("maps %s to the %s content filter", (key, expected) => {
+    expect(resolveStandaloneShortcut(key)).toBe(expected);
+  });
+
+  it.each(["+", "|"])("does not map shifted symbol %s", (key) => {
+    expect(resolveStandaloneShortcut(key)).toBeNull();
+  });
+
+  it.each([
     ["t", "today"],
     ["S", "upcoming"],
     ["d", "calendar"],
