@@ -36,6 +36,7 @@ import {
 import { resolveItemSwipe, shouldOpenMobileSidebar } from "@/lib/mobile-gestures";
 import { normalizeDataIds, type SparkData } from "@/lib/data-ids";
 import { createUuid } from "@/lib/ids";
+import { linkifyText } from "@/lib/linkify";
 import {
   filterItems,
   filterItemsByDisplayMode,
@@ -61,6 +62,23 @@ const timeGroupLabels: Record<TimeGroup, string> = {
   later: "Sau đó",
   undated: "Chưa có ngày",
 };
+
+function LinkifiedText({ value }: { value: string }) {
+  return linkifyText(value).map((segment, index) =>
+    segment.type === "link" ? (
+      <a
+        key={`${segment.href}-${index}`}
+        href={segment.href}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {segment.value}
+      </a>
+    ) : (
+      <span key={`text-${index}`}>{segment.value}</span>
+    ),
+  );
+}
 
 const projectColors = [
   "#44D4CD",
@@ -1556,7 +1574,7 @@ function SwipeableItemRow({
   };
 
   return (
-    <div className={`swipe-row ${dragOffset !== null ? "is-dragging" : ""}`}>
+    <div className={`swipe-row ${isSwipeOpen ? "is-open" : ""} ${dragOffset !== null ? "is-dragging" : ""}`}>
       <div className="swipe-actions" aria-hidden={!isSwipeOpen}>
         <button
           className={`swipe-action important ${item.isImportant ? "selected" : ""}`}
@@ -1881,7 +1899,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
               </div>
             ) : (
               <div className="detail-read-row">
-                <p>{title}</p>
+                <p>{item.type === "note" ? <LinkifiedText value={title} /> : title}</p>
                 <button type="button" className="detail-icon-action edit" onClick={() => setEditingField("title")} aria-label={item.type === "task" ? "Sửa tên" : "Sửa nội dung"}><Icon name="edit" size={17} /></button>
               </div>
             )}
@@ -1900,7 +1918,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
                 </div>
               ) : (
                 <div className="detail-read-row align-start">
-                  <p className={description ? "" : "empty"}>{description || "Chưa có nội dung"}</p>
+                  <p className={description ? "" : "empty"}>{description ? <LinkifiedText value={description} /> : "Chưa có nội dung"}</p>
                   <button type="button" className="detail-icon-action edit" onClick={() => setEditingField("content")} aria-label="Sửa Nội dung"><Icon name="edit" size={17} /></button>
                 </div>
               )}

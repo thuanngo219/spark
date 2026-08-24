@@ -170,7 +170,7 @@ Phần này là source of truth cho web app. Khi CSS/component mới khác bản
 
 | Token | Giá trị | Vai trò |
 |---|---|---|
-| `ui-canvas` | `#F7F8FA` | Nền toàn ứng dụng và nền nút collapse sidebar. |
+| `ui-canvas` | `#F7F8FA` | Base nền toàn ứng dụng và nền nút collapse sidebar; app canvas có thể phủ radial glow Turquoise 16% ở góc trên trái và Violet 14% ở góc dưới phải. |
 | `ui-surface` | `#FFFFFF` | Dialog, editor và quick-add surface. |
 | `ui-field` | `#FAFBFC` | Nền input/select/textarea. |
 | `ui-field-border` | `#DDE0E8` | Border field mặc định. |
@@ -196,6 +196,12 @@ Phần này là source of truth cho web app. Khi CSS/component mới khác bản
 - Desktop floating quick-add là ngoại lệ Primary icon `48×48px`, dấu `+` 32px, neo góc dưới phải. Mobile dùng nút Primary icon 72px ở giữa dock 58px, cho phép trồi khỏi dock; cả hai luôn có accessible label/tooltip “Thêm công việc”.
 - Nút trong cùng một action row dùng cùng chiều cao và radius; Primary và Hủy vẫn giữ phân cấp màu khác nhau.
 - Navigation button, color swatch, date tile và project dot không bị ép vào màu Primary vì chúng là selection/navigation control.
+
+#### Link trong nội dung
+
+- URL trong Nội dung task/note giữ màu Navy `#19225F`, có underline Turquoise tiết chế để vẫn nhận ra khi không hover.
+- Hover chuyển chữ và underline sang teal đậm `#287A79`; keyboard focus dùng nền `turquoise-soft`, không dùng glow.
+- Link ngoài mở tab mới; underline là tín hiệu bắt buộc, không chỉ dùng màu để biểu đạt khả năng click.
 
 #### Form và interaction states
 

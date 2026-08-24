@@ -85,6 +85,41 @@ describe("master filters", () => {
     ]);
   });
 
+  it("ranks items with both flags before urgent, important and normal items", () => {
+    const rankedItems = [
+      item({ id: "normal", dueDate: "2026-08-18" }),
+      item({ id: "important", dueDate: "2026-08-20", isImportant: true }),
+      item({ id: "urgent", dueDate: "2026-08-21", isUrgent: true }),
+      item({ id: "urgent-and-important", dueDate: "2026-08-22", isImportant: true, isUrgent: true }),
+    ];
+
+    expect(sortItemsForDisplay(rankedItems).map((entry) => entry.id)).toEqual([
+      "urgent-and-important",
+      "urgent",
+      "important",
+      "normal",
+    ]);
+  });
+
+  it("returns to the normal type and date order after attention flags are disabled", () => {
+    const rankedItems = [
+      item({ id: "normal", dueDate: "2026-08-18" }),
+      item({ id: "important", dueDate: "2026-08-20", isImportant: true }),
+      item({ id: "urgent", dueDate: "2026-08-21", isUrgent: true }),
+    ];
+    const flagsDisabled = rankedItems.map((entry) => ({
+      ...entry,
+      isImportant: false,
+      isUrgent: false,
+    }));
+
+    expect(sortItemsForDisplay(flagsDisabled).map((entry) => entry.id)).toEqual([
+      "normal",
+      "important",
+      "urgent",
+    ]);
+  });
+
   it("All includes every active item and groups it by time", () => {
     const allItems = filterItems(items, { type: "all" }, today);
     expect(allItems.map((entry) => entry.id)).toEqual([

@@ -42,8 +42,17 @@ function matchesView(item: SparkItem, view: View, todayKey: string): boolean {
   }
 }
 
+function getAttentionRank(item: SparkItem): number {
+  if (item.isUrgent && item.isImportant) return 0;
+  if (item.isUrgent) return 1;
+  if (item.isImportant) return 2;
+  return 3;
+}
+
 export function sortItemsForDisplay(items: SparkItem[]): SparkItem[] {
   return [...items].sort((a, b) => {
+    const attentionDifference = getAttentionRank(a) - getAttentionRank(b);
+    if (attentionDifference !== 0) return attentionDifference;
     if (a.type !== b.type) return a.type === "task" ? -1 : 1;
     if (!a.dueDate && !b.dueDate) return a.createdAt.localeCompare(b.createdAt);
     if (!a.dueDate) return 1;

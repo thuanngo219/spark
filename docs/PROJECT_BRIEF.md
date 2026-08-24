@@ -37,6 +37,7 @@ Mỗi task có:
 - Checkbox hoàn thành.
 - Tên task, bắt buộc, một dòng, tối đa 100 ký tự.
 - Nội dung bổ sung, tùy chọn, plain text tối đa 2.000 ký tự; chỉ task có trường này.
+- URL bắt đầu bằng `http://`, `https://` hoặc `www.` trong Nội dung được hiển thị thành liên kết và mở ở tab mới; dữ liệu gốc vẫn là plain text.
 - Due date, tùy chọn, chỉ lưu **ngày** chứ không lưu giờ trong MVP.
 - Project, tùy chọn.
 
@@ -55,6 +56,7 @@ Note là một item ghi chú ngắn, không phải task:
 
 - Hiển thị bằng bullet point thay cho checkbox.
 - Có nội dung ngắn trên một dòng, tối đa 100 ký tự trong MVP; note không có trường Nội dung bổ sung.
+- URL trong Nội dung note được hiển thị thành liên kết và mở ở tab mới; dữ liệu gốc vẫn là plain text.
 - Có due date và project tùy chọn giống task để có thể xuất hiện trong view thời gian/dự án.
 - Không có trạng thái hoàn thành; có thể sửa, xóa, lưu trữ và khôi phục.
 
@@ -112,7 +114,7 @@ Quy ước ngày:
 - Trên mobile, mở quick-add phải focus ngay title input và giữ field này trong vùng nhìn thấy khi bàn phím ảo xuất hiện; người dùng không cần kéo form để bắt đầu nhập.
 - Trên mobile, bỏ app header riêng. Nút mở sidebar là panel icon-only đứng trước tên view trong sticky header; switcher item nằm bên trái sync pill trong hàng control nổi ngay trên dock.
 - Completed task không được tính trong số lượng task mở.
-- Trong mọi listing hỗn hợp, task hiển thị trước note trên cả desktop và mobile; view Tất cả vẫn chia theo nhóm thời gian rồi mới áp dụng thứ tự này trong từng nhóm.
+- Trong mọi listing, ưu tiên presentation order theo cờ đang bật: item có cả Quan Trọng và Ưu tiên → chỉ Ưu tiên → chỉ Quan Trọng → bình thường. Trong từng mức giữ task trước note, sau đó due date và thời điểm tạo; view Tất cả vẫn chia nhóm thời gian trước khi áp dụng thứ tự này trong từng nhóm. Tắt cờ làm item tự trở về vị trí theo thứ tự thông thường, không ghi thêm `position` vào dữ liệu.
 
 ## 6. Information architecture
 
@@ -225,6 +227,8 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Một task chỉ thuộc tối đa một project trong MVP.
 - Note hiển thị bằng bullet point, không có checkbox hoặc completed state.
 - Task/note có thể bật đồng thời Quan Trọng và Ưu tiên; smart filters bao gồm đúng item phù hợp.
+- Listing tự sắp theo cả hai cờ → Ưu tiên → Quan Trọng → bình thường; tắt cờ trả item về thứ tự loại/ngày/thời điểm tạo.
+- Detail sheet giữ edit button ở mép phải của từng khối đọc; URL trong Nội dung task/note là liên kết mở tab mới và không cho phép protocol ngoài HTTP(S).
 - Switcher Tất cả/Note/Task hoạt động nhất quán ở mọi view và không làm thay đổi dữ liệu item.
 - Toast Hoàn tác nằm ngoài vùng navigation/dock trên desktop và mobile.
 - Layout hoạt động từ 320px đến desktop; không có horizontal scroll ngoài thành phần lịch chủ đích.

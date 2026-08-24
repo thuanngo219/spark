@@ -121,6 +121,9 @@ src/
 - Quick-add overlay phải có `role="dialog"`, `aria-modal="true"`, đóng được bằng Hủy, click backdrop và phím Escape; khi đóng trả focus về nút “Thêm công việc”. Backdrop của mọi overlay chỉ dùng lớp Navy dim đủ đậm, không dùng blur.
 - Quick-add giữ checkbox Ghi chú. Secondary button **Thêm Nội dung** chỉ hoạt động với task và mở textarea tùy chọn; bật Ghi chú phải disable button, đóng field và xóa draft description để note không giữ dữ liệu không hợp lệ. Chọn ngày và dự án vẫn hoạt động cho cả hai loại item.
 - Tap item mở detail sheet ở trạng thái đọc. Tên/Nội dung chỉ chuyển sang input/textarea khi bấm edit icon kế text; metadata compact lưu từng thay đổi ngay mà không cần submit cả form.
+- Read row trong detail sheet dùng text column co giãn và edit action `flex: 0 0 auto` ở mép phải; khối Nội dung nhiều dòng căn action theo mép trên.
+- Linkify Nội dung bằng parser text thuần và React node, không dùng `dangerouslySetInnerHTML`. Chỉ nhận `http://`, `https://` và `www.`; link dùng `target="_blank"` cùng `rel="noopener noreferrer"`, còn giá trị lưu trong database vẫn là plain text.
+- Comparator hiển thị áp thứ hạng động `is_important && is_urgent` → `is_urgent` → `is_important` → bình thường, sau đó mới task/note, due date và created time. Không persist rank; cập nhật cờ phải làm list tự sort lại từ state hiện tại.
 - Desktop floating trigger dùng artwork `+` 32px trong hit target 48px ở góc dưới phải. Mobile dùng dock `position: fixed` cao 58px và nút `+` 72px ở giữa; list phải chừa bottom space cộng safe-area để dock không che item cuối.
 - Trên mobile, sau user gesture mở quick-add phải focus title input; dùng `window.visualViewport` resize/scroll để fit backdrop vào vùng còn thấy khi bàn phím mở và gọi `scrollIntoView` cho field. Cleanup listener/timer khi đóng; desktop giữ layout overlay hiện tại.
 
