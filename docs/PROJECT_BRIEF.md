@@ -74,6 +74,9 @@ Note là một item ghi chú ngắn, không phải task:
 - Có thể gắn sao project để đưa project lên nhóm **Cần lưu ý** trong sidebar.
 - Mở project để xem các task chưa hoàn thành của project đó.
 - Task trong project đã lưu trữ vẫn tồn tại; project không còn xuất hiện ở danh sách điều hướng chính.
+- Project Editor có Lưu trữ/Khôi phục và Xóa dự án. Mục **Dự án đã lưu trữ** trong sidebar/compact rail/mobile drawer cho phép xem lại, chỉnh sửa và khôi phục.
+- Lưu trữ không thay đổi task/note hay cờ gắn sao. Task/note thuộc dự án đã lưu trữ bị ẩn khỏi Hôm nay, Sắp tới, Theo ngày và Tất cả, bao gồm disclosure trạng thái và số đếm. Vẫn có thể xem trong dự án đã lưu trữ và smart filter; khôi phục dự án đưa item trở lại các view theo quy tắc ngày/trạng thái. Dự án đã lưu trữ không được gán cho item mới, nhưng quan hệ của item cũ vẫn được giữ.
+- Xóa dự án cần xác nhận, không thể hoàn tác. Chỉ xóa dự án: toàn bộ task/note (kể cả đã hoàn thành/lưu trữ) được giữ nguyên, bỏ liên kết dự án và chuyển về **Không có dự án**.
 
 ### Master filters
 
@@ -114,6 +117,7 @@ Quy ước ngày:
 - Trên mobile, mở quick-add phải focus ngay title input và giữ field này trong vùng nhìn thấy khi bàn phím ảo xuất hiện; người dùng không cần kéo form để bắt đầu nhập.
 - Trên mobile, bỏ app header riêng. Nút mở sidebar là panel icon-only đứng trước tên view trong sticky header; switcher item nằm bên trái sync pill trong hàng control nổi ngay trên dock.
 - Completed task không được tính trong số lượng task mở.
+- Riêng Hôm nay, disclosure chỉ hiển thị task có ngày hoàn thành là hôm nay theo `Asia/Ho_Chi_Minh`, không dựa vào due date (kể cả task không ngày hoặc đến hạn trong tương lai). Task hoàn thành ngày khác vẫn xem được ở các view phù hợp khác; quy tắc note đã lưu trữ không thay đổi.
 - Trong mọi listing, ưu tiên presentation order theo cờ đang bật: item có cả Quan Trọng và Ưu tiên → chỉ Ưu tiên → chỉ Quan Trọng → bình thường. Trong từng mức giữ task trước note, sau đó due date và thời điểm tạo; view Tất cả vẫn chia nhóm thời gian trước khi áp dụng thứ tự này trong từng nhóm. Tắt cờ làm item tự trở về vị trí theo thứ tự thông thường, không ghi thêm `position` vào dữ liệu.
 
 ## 6. Information architecture
@@ -219,7 +223,10 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 
 ## 11. Acceptance criteria
 
+- Lưu trữ/khôi phục/xóa dự án hoạt động trên desktop và mobile, lưu qua reload và hàng đợi cloud/offline. Xóa không làm mất task/note; cancel/Escape trong xác nhận không xóa gì.
 - Refresh hoặc mở lại app không làm mất task.
+- Bốn master view ẩn mọi item thuộc dự án đã lưu trữ và loại khỏi số đếm; khôi phục dự án làm các item xuất hiện lại theo filter, không sửa dữ liệu item.
+- Hôm nay không hiện task đã hoàn thành ngày khác; kiểm tra ranh giới nửa đêm theo múi giờ Việt Nam, không lấy ngày UTC hay due date.
 - Task quá hạn xuất hiện trong Hôm nay và có nhãn ngày dễ hiểu.
 - Note chưa có ngày xuất hiện trong Hôm nay; note đã lưu trữ không xuất hiện trong danh sách hoạt động và có thể khôi phục.
 - Sắp tới chỉ gồm ba ngày kế tiếp, không gồm hôm nay.

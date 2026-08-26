@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { addCalendarDays, getLocalDateKey } from "@/lib/dates";
 import { filterItems, filterItemsByDisplayMode, groupItemsByTime, inactiveForView, sortItemsForDisplay } from "@/lib/task-filters";
-import type { SparkItem } from "@/lib/types";
+import type { Project, SparkItem, View } from "@/lib/types";
 
 const item = (overrides: Partial<SparkItem>): SparkItem => ({
   id: crypto.randomUUID(),
@@ -155,6 +155,84 @@ describe("smart filters", () => {
     const both = item({ id: "both", isImportant: true, isUrgent: true });
     expect(filterItems([both], { type: "important" }, "2026-08-19")).toHaveLength(1);
     expect(filterItems([both], { type: "urgent" }, "2026-08-19")).toHaveLength(1);
+  });
+});
+
+describe("archived project visibility", () => {
+  const today = "2026-08-26";
+  const project: Project = { id: "archived-project", name: "Archived", color: "#44D4CD", isStarred: true, archivedAt: "2026-08-25T00:00:00Z" };
+  const masterViews: View[] = [{ type: "today" }, { type: "upcoming" }, { type: "calendar", date: "2026-08-27" }, { type: "all" }];
+
+  it.each(masterViews)("excludes every archived-project item from $type, including inactive items", (view) => {
+    const dueDate = view.type === "upcoming" || view.type === "calendar" ? "2026-08-27" : today;
+    const visible = [
+      item({ id: "task", dueDate, projectId: "active-project" }),
+      item({ id: "note", dueDate, type: "note" }),
+      item({ id: "done", dueDate, completedAt: "2026-08-26T01:00:00Z" }),
+      item({ id: "archived-note", dueDate, type: "note", archivedAt: "2026-08-25T01:00:00Z" }),
+    ];
+    const hidden = visible.map((entry) => ({ ...entry, id: `hidden-${entry.id}`, projectId: project.id }));
+    const items = [...visible, ...hidden];
+    const before = structuredClone(items);
+    const active = filterItems(items, view, today, [project]);
+    const inactive = inactiveForView(items, view, today, [project]);
+    expect(active.map((entry) => entry.id)).toEqual(["task", "note"]);
+    expect(inactive.map((entry) => entry.id)).toEqual(["done", "archived-note"]);
+    expect(filterItemsByDisplayMode(active, "task")).toHaveLength(1);
+    expect(filterItemsByDisplayMode(active, "note")).toHaveLength(1);
+    const restored = [{ ...project, archivedAt: null }];
+    expect(filterItems(items, view, today, restored)).toHaveLength(4);
+    expect(inactiveForView(items, view, today, restored)).toHaveLength(4);
+    expect(items).toEqual(before);
+  });
+
+  it.each<View>([{ type: "project", projectId: project.id }, { type: "important" }, { type: "urgent" }])("keeps archived-project items accessible in $type", (view) => {
+    const items = [
+      item({ id: "task", projectId: project.id, isImportant: true, isUrgent: true }),
+      item({ id: "note", type: "note", projectId: project.id, isImportant: true, isUrgent: true, archivedAt: "2026-08-25T01:00:00Z" }),
+    ];
+    expect(filterItems(items, view, today, [project]).map((entry) => entry.id)).toEqual(["task"]);
+    expect(inactiveForView(items, view, today, [project]).map((entry) => entry.id)).toEqual(["note"]);
+  });
+});
+
+describe("Today completed tasks", () => {
+  const today = "2026-08-26";
+
+  it("uses completion day, not due date, including undated and future-due tasks", () => {
+    const items = [
+      item({ id: "yesterday", dueDate: today, completedAt: "2026-08-25T01:00:00Z" }),
+      item({ id: "overdue-done-today", dueDate: "2026-08-20", completedAt: "2026-08-26T01:00:00Z" }),
+      item({ id: "future-done-today", dueDate: "2026-08-30", completedAt: "2026-08-26T01:00:00Z" }),
+      item({ id: "undated-done-today", completedAt: "2026-08-26T01:00:00Z" }),
+      item({ id: "invalid", dueDate: today, completedAt: "invalid" }),
+    ];
+    expect(inactiveForView(items, { type: "today" }, today).map((entry) => entry.id)).toEqual(["overdue-done-today", "future-done-today", "undated-done-today"]);
+    expect(inactiveForView(items, { type: "all" }, today)).toHaveLength(5);
+    expect(filterItems(items, { type: "today" }, today)).toEqual([]);
+  });
+
+  it("respects both midnight boundaries in Asia/Ho_Chi_Minh", () => {
+    const items = [
+      item({ id: "before", dueDate: today, completedAt: "2026-08-25T16:59:59.999Z" }),
+      item({ id: "start", dueDate: today, completedAt: "2026-08-25T17:00:00.000Z" }),
+      item({ id: "end", dueDate: today, completedAt: "2026-08-26T16:59:59.999Z" }),
+      item({ id: "after", dueDate: today, completedAt: "2026-08-26T17:00:00.000Z" }),
+    ];
+    expect(inactiveForView(items, { type: "today" }, today).map((entry) => entry.id)).toEqual(["start", "end"]);
+    expect(inactiveForView(items, { type: "today" }, "2026-08-27").map((entry) => entry.id)).toEqual(["after"]);
+  });
+
+  it("preserves due-date rules for inactive items in other views and for archived notes", () => {
+    const items = [
+      item({ id: "older-task", dueDate: today, completedAt: "2026-08-25T01:00:00Z" }),
+      item({ id: "older-note", type: "note", archivedAt: "2026-08-25T01:00:00Z" }),
+      item({ id: "future-note", type: "note", dueDate: "2026-08-27", archivedAt: "2026-08-25T01:00:00Z" }),
+    ];
+    expect(inactiveForView(items, { type: "today" }, today).map((entry) => entry.id)).toEqual(["older-note"]);
+    expect(inactiveForView(items, { type: "calendar", date: today }, today).map((entry) => entry.id)).toEqual(["older-task"]);
+    expect(inactiveForView(items, { type: "upcoming" }, today).map((entry) => entry.id)).toEqual(["future-note"]);
+    expect(inactiveForView(items, { type: "all" }, today)).toHaveLength(3);
   });
 });
 

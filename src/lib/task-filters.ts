@@ -1,5 +1,5 @@
-import { addCalendarDays } from "@/lib/dates";
-import type { SparkItem, View } from "@/lib/types";
+import { addCalendarDays, getLocalDateKey } from "@/lib/dates";
+import type { Project, SparkItem, View } from "@/lib/types";
 
 export type TimeGroup = "overdue" | "today" | "upcoming" | "later" | "undated";
 export type ItemDisplayMode = "all" | "task" | "note";
@@ -20,6 +20,10 @@ export function filterItemsByDisplayMode(
 function matchesView(item: SparkItem, view: View, todayKey: string): boolean {
   switch (view.type) {
     case "today":
+      if (item.type === "task" && item.completedAt) {
+        const completedDate = new Date(item.completedAt);
+        return !Number.isNaN(completedDate.getTime()) && getLocalDateKey(completedDate) === todayKey;
+      }
       return item.type === "note" && !item.dueDate
         ? true
         : Boolean(item.dueDate && item.dueDate <= todayKey);
@@ -40,6 +44,13 @@ function matchesView(item: SparkItem, view: View, todayKey: string): boolean {
     case "project":
       return item.projectId === view.projectId;
   }
+}
+
+function filterByProjectVisibility(items: SparkItem[], view: View, projects: Project[]): SparkItem[] {
+  // Archived projects remain accessible in their own view and the smart filters.
+  if (view.type === "project" || view.type === "important" || view.type === "urgent") return items;
+  const archivedIds = new Set(projects.filter((project) => project.archivedAt).map((project) => project.id));
+  return items.filter((item) => !item.projectId || !archivedIds.has(item.projectId));
 }
 
 function getAttentionRank(item: SparkItem): number {
@@ -65,8 +76,9 @@ export function filterItems(
   items: SparkItem[],
   view: View,
   todayKey: string,
+  projects: Project[] = [],
 ): SparkItem[] {
-  const active = items.filter(isActive);
+  const active = filterByProjectVisibility(items, view, projects).filter(isActive);
 
   const filtered = active.filter((item) => matchesView(item, view, todayKey));
 
@@ -77,8 +89,9 @@ export function inactiveForView(
   items: SparkItem[],
   view: View,
   todayKey: string,
+  projects: Project[] = [],
 ): SparkItem[] {
-  return sortItemsForDisplay(items.filter((item) => {
+  return sortItemsForDisplay(filterByProjectVisibility(items, view, projects).filter((item) => {
     const inactive = item.type === "task" ? Boolean(item.completedAt) : Boolean(item.archivedAt);
     return inactive && matchesView(item, view, todayKey);
   }));

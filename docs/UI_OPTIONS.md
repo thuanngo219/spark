@@ -113,6 +113,8 @@ Project editor đặt nút star icon-only ở đầu hàng chọn màu, sau đó
 
 Trong project view, nút edit nằm ngay bên phải tên dự án và mở Project Editor hiện có để đổi tên, màu nhận diện hoặc trạng thái Cần lưu ý.
 
+Project Editor có nhóm action riêng **Lưu trữ dự án / Xóa dự án** dưới palette và phía trên hàng Lưu/Hủy. Dự án đã lưu trữ đổi action thành **Khôi phục dự án**. Xóa mở bước xác nhận ngắn, nói rõ tên dự án, số task/note được giữ lại và việc không thể hoàn tác; mặc định focus nút Giữ lại. Mục **Đã lưu trữ** (icon archive, accessible label Dự án đã lưu trữ) nằm cuối nhóm dự án trên sidebar/rail/mobile drawer; mở sheet để xem hoặc sửa dự án. Các dialog hỗ trợ Escape, focus trap, trả focus và action 44px trên mobile.
+
 CTA và utility button chính dùng nền turquoise, hover chuyển navy. Search được ẩn cho đến khi tính năng tìm kiếm được triển khai. Help không lặp trong page header desktop; vẫn mở được bằng mục Phím tắt trong sidebar hoặc phím `?`. Các control có ý nghĩa semantic như Xóa, Quan Trọng, Ưu tiên, navigation và swatch màu giữ hệ màu riêng. Focus state không dùng glow; nền field/control tối hơn khoảng 12%.
 
 Ứng dụng mở mặc định ở Hôm nay với sidebar compact; khi người dùng đổi trạng thái sidebar, lựa chọn mới tiếp tục được ghi nhớ.
@@ -120,6 +122,8 @@ CTA và utility button chính dùng nền turquoise, hover chuyển navy. Search
 Quick-add task có thể mở trực tiếp bằng phím `N`. Filter view dùng phím trực tiếp `T`, `S`, `D`, `A`, `I`, `U`; filter nội dung dùng đúng ba phím đơn `-` để chỉ note, `=` để chỉ task và `\` để hiện tất cả. `+` và `|` không kích hoạt filter; `1–9` mở project theo thứ tự compact sidebar. Phím `[` chuyển trạng thái sidebar và `?` mở bảng trợ giúp. Bảng trợ giúp gộp project thành một dòng, đóng bằng X/Escape; compact sidebar hiện tooltip tức thời khi hover/focus icon hoặc project dot.
 
 Navigation chính có **Tất cả** ngay dưới **Theo ngày**. View này giữ canvas phẳng và chia item đang hoạt động thành Quá hạn, Hôm nay, Sắp tới, Sau đó và Chưa có ngày để quét theo thời gian mà không cần đổi filter.
+
+Hôm nay/Sắp tới/Theo ngày/Tất cả không hiển thị task/note của dự án đã lưu trữ, kể cả disclosure trạng thái; số đếm được tính cùng quy tắc. Riêng disclosure Hôm nay chỉ giữ task hoàn thành trong ngày hiện tại theo múi giờ Việt Nam, không theo due date. Nội dung cũ vẫn xem được từ dự án đã lưu trữ/các view phù hợp khác, không bị xóa.
 
 Mọi view dùng switcher icon-only kiểu segmented theo thứ tự **Tất cả / Chỉ note / Chỉ task**. Desktop đặt switcher đúng vị trí control Ẩn/Hiện note cũ và giữ nguyên nút sidebar hiện tại. Mobile đặt switcher bên trái sync pill trong hàng control nổi ngay trên dock; lựa chọn chỉ tác động presentation và được giữ khi chuyển view trong phiên.
 

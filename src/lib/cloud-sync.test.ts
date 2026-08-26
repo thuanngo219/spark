@@ -4,6 +4,7 @@ import {
   applyCloudMutations,
   cloudDataKey,
   parseCloudMutations,
+  removeProjectFromData,
   pendingMutationsKey,
   resolveCloudActivationData,
   type CloudMutation,
@@ -33,6 +34,46 @@ const item: SparkItem = {
 };
 
 describe("cloud mutation queue", () => {
+  it("archives and restores a project without touching any item or its star", () => {
+    const archived = { ...project, isStarred: true, archivedAt: "2026-08-26T00:00:00Z" };
+    const result = applyCloudMutations({ projects: [project], items: [item] }, [
+      { id: "archive", kind: "upsert-project", project: archived },
+    ]);
+    expect(result.projects).toEqual([archived]);
+    expect(result.items).toEqual([item]);
+    expect(applyCloudMutations(result, [{ id: "restore", kind: "upsert-project", project: { ...archived, archivedAt: null } }]).projects[0]).toEqual({ ...archived, archivedAt: null });
+  });
+
+  it("removes only the project and retains all active/completed/archived items", () => {
+    const items = [item, { ...item, id: "done", completedAt: "2026-08-26T00:00:00Z" }, { ...item, id: "note", type: "note" as const, archivedAt: "2026-08-26T00:00:00Z" }, { ...item, id: "other", projectId: "another-project" }];
+    const base = { projects: [project], items };
+    const result = removeProjectFromData(base, project.id);
+    expect(result.projects).toEqual([]);
+    expect(result.items).toEqual(items.map((entry) => ({ ...entry, projectId: entry.projectId === project.id ? null : entry.projectId })));
+    expect(base.items[0].projectId).toBe(project.id);
+    expect(removeProjectFromData(result, project.id)).toEqual(result);
+  });
+
+  it("preserves offline create dependencies and deletes the project last", () => {
+    const pending: CloudMutation[] = [
+      { id: "create-project", kind: "upsert-project", project },
+      { id: "create-item", kind: "upsert-item", item },
+    ];
+    const removal: CloudMutation = { id: "remove-project", kind: "delete-project", projectId: project.id };
+    const queue = appendCloudMutation(pending, removal);
+    expect(queue).toEqual([...pending, removal]);
+    expect(applyCloudMutations({ projects: [], items: [] }, queue)).toEqual({ projects: [], items: [{ ...item, projectId: null }] });
+  });
+
+  it("detaches pending item edits after deletion and replays deletion over stale snapshots", () => {
+    const removal: CloudMutation = { id: "delete", kind: "delete-project", projectId: project.id };
+    const queue = appendCloudMutation([removal], { id: "edit", kind: "upsert-item", item: { ...item, title: "Updated" } });
+    expect(queue[1]).toMatchObject({ item: { projectId: null, title: "Updated" } });
+    const reloaded = parseCloudMutations(JSON.parse(JSON.stringify(queue)));
+    expect(applyCloudMutations({ projects: [project], items: [item] }, reloaded)).toEqual({ projects: [], items: [{ ...item, projectId: null, title: "Updated" }] });
+    expect(parseCloudMutations([{ id: "bad", kind: "delete-project" }])).toEqual([]);
+  });
+
   it("keeps the newest pending change for the same entity", () => {
     const first: CloudMutation = { id: "m1", kind: "upsert-item", item };
     const second: CloudMutation = {

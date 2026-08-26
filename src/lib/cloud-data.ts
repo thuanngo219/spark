@@ -106,6 +106,12 @@ export async function runCloudMutation(
   mutation: CloudMutation,
   userId: string,
 ) {
+  if (mutation.kind === "delete-project") {
+    // The existing FK uses ON DELETE SET NULL: no task/note is deleted.
+    const { error } = await client.from("projects").delete().eq("id", mutation.projectId).eq("user_id", userId);
+    if (error) throw error;
+    return;
+  }
   if (mutation.kind === "upsert-project") {
     return upsertProject(client, mutation.project, userId);
   }

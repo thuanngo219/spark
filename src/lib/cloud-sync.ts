@@ -3,6 +3,7 @@ import type { SparkData } from "@/lib/data-ids";
 
 export type CloudMutation =
   | { id: string; kind: "upsert-project"; project: Project }
+  | { id: string; kind: "delete-project"; projectId: string }
   | { id: string; kind: "upsert-item"; item: SparkItem }
   | { id: string; kind: "delete-item"; itemId: string };
 
@@ -18,6 +19,7 @@ export function pendingMutationsKey(userId: string) {
 
 function mutationEntityKey(mutation: CloudMutation) {
   if (mutation.kind === "upsert-project") return `project:${mutation.project.id}`;
+  if (mutation.kind === "delete-project") return `delete-project:${mutation.projectId}`;
   if (mutation.kind === "upsert-item") return `item:${mutation.item.id}`;
   return `item:${mutation.itemId}`;
 }
@@ -26,6 +28,17 @@ export function appendCloudMutation(
   mutations: CloudMutation[],
   mutation: CloudMutation,
 ) {
+  // Keep project creation before queued item writes; deletion must run last.
+  if (mutation.kind === "delete-project") {
+    const projectId = mutation.projectId;
+    return [...mutations.filter((entry) => entry.kind !== "delete-project" || entry.projectId !== projectId), mutation];
+  }
+  if (mutation.kind === "upsert-item") {
+    const projectId = mutation.item.projectId;
+    if (mutations.some((entry) => entry.kind === "delete-project" && entry.projectId === projectId)) {
+      mutation = { ...mutation, item: { ...mutation.item, projectId: null } };
+    }
+  }
   const entityKey = mutationEntityKey(mutation);
   const previousIndex = mutations.findIndex(
     (entry) => mutationEntityKey(entry) === entityKey,
@@ -42,6 +55,9 @@ export function applyCloudMutations(
   mutations: CloudMutation[],
 ): SparkData {
   return mutations.reduce<SparkData>((current, mutation) => {
+    if (mutation.kind === "delete-project") {
+      return removeProjectFromData(current, mutation.projectId);
+    }
     if (mutation.kind === "upsert-project") {
       const exists = current.projects.some(
         (project) => project.id === mutation.project.id,
@@ -75,6 +91,13 @@ export function applyCloudMutations(
   }, base);
 }
 
+export function removeProjectFromData(data: SparkData, projectId: string): SparkData {
+  return {
+    projects: data.projects.filter((project) => project.id !== projectId),
+    items: data.items.map((item) => item.projectId === projectId ? { ...item, projectId: null } : item),
+  };
+}
+
 export function resolveCloudActivationData(
   remote: SparkData,
   pendingMutations: CloudMutation[],
@@ -90,6 +113,7 @@ export function parseCloudMutations(value: unknown): CloudMutation[] {
     const mutation = entry as Partial<CloudMutation> & Record<string, unknown>;
     if (typeof mutation.id !== "string") return false;
     if (mutation.kind === "delete-item") return typeof mutation.itemId === "string";
+    if (mutation.kind === "delete-project") return typeof mutation.projectId === "string";
     if (mutation.kind === "upsert-item") {
       return Boolean(
         mutation.item &&

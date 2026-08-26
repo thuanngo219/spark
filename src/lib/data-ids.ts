@@ -32,7 +32,7 @@ export function normalizeDataIds(
   const projects = data.projects.map((project) => {
     const id = nextUniqueId(project.id, usedProjectIds);
     projectIdMap.set(project.id, id);
-    return { ...project, id, isStarred: Boolean(project.isStarred) };
+    return { ...project, id, isStarred: Boolean(project.isStarred), archivedAt: project.archivedAt ?? null };
   });
 
   const usedItemIds = new Set<string>();

@@ -22,6 +22,7 @@ import {
   cloudDataKey,
   DEMO_DATA_KEY,
   parseCloudMutations,
+  removeProjectFromData,
   pendingMutationsKey,
   resolveCloudActivationData,
   type CloudMutation,
@@ -247,7 +248,9 @@ function syncStatusShortLabel(status: SyncStatus) {
 export function SparkApp() {
   const today = getLocalDateKey();
   const [data, setData] = useState<SparkData | null>(null);
-  const [view, setView] = useState<View>({ type: "today" });
+  const [selectedView, setView] = useState<View>({ type: "today" });
+  const view = useMemo<View>(() => selectedView.type === "project" && data && !data.projects.some((project) => project.id === selectedView.projectId)
+    ? { type: "today" } : selectedView, [data, selectedView]);
   const [sidebarCompact, setSidebarCompact] = useState(true);
   const [preferencesLoaded, setPreferencesLoaded] = useState(false);
   const [attentionOpen, setAttentionOpen] = useState(true);
@@ -260,6 +263,7 @@ export function SparkApp() {
   const [completedOpen, setCompletedOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<SparkItem | null>(null);
   const [projectEditor, setProjectEditor] = useState<Project | "new" | null>(null);
+  const [projectArchiveOpen, setProjectArchiveOpen] = useState(false);
   const [deletedItem, setDeletedItem] = useState<SparkItem | null>(null);
   const [openSwipeItemId, setOpenSwipeItemId] = useState<string | null>(null);
   const [cloudUser, setCloudUser] = useState<CloudUser | null>(null);
@@ -664,6 +668,7 @@ export function SparkApp() {
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
+      if (projectEditor || projectArchiveOpen) return;
       if (isTypingTarget(event.target)) return;
       const standaloneShortcut = resolveStandaloneShortcut(event.key);
       if (event.key === "Escape") {
@@ -735,15 +740,17 @@ export function SparkApp() {
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [editingItem, helpOpen, mobileNav, projectEditor, syncDialogOpen, today]);
+  }, [editingItem, helpOpen, mobileNav, projectEditor, projectArchiveOpen, syncDialogOpen, today]);
 
+  const allProjects = data?.projects ?? [];
   const projects = data?.projects.filter((project) => !project.archivedAt) ?? [];
+  const archivedProjects = allProjects.filter((project) => project.archivedAt);
   const openItems = useMemo(
-    () => (data ? filterItems(data.items, view, today) : []),
+    () => (data ? filterItems(data.items, view, today, data.projects) : []),
     [data, view, today],
   );
   const inactiveItems = useMemo(
-    () => (data ? inactiveForView(data.items, view, today) : []),
+    () => (data ? inactiveForView(data.items, view, today, data.projects) : []),
     [data, view, today],
   );
   const visibleOpenItems = useMemo(
@@ -762,7 +769,7 @@ export function SparkApp() {
     () => view.type === "all" ? groupItemsByTime(visibleOpenItems, today) : [],
     [today, view.type, visibleOpenItems],
   );
-  const activeProject = view.type === "project" ? projects.find((project) => project.id === view.projectId) : null;
+  const activeProject = view.type === "project" ? allProjects.find((project) => project.id === view.projectId) : null;
   const taskCount = visibleOpenItems.filter((item) => item.type === "task").length;
   const noteCount = visibleOpenItems.filter((item) => item.type === "note").length;
   const overdueCount = visibleOpenItems.filter((item) => item.dueDate && item.dueDate < today).length;
@@ -780,6 +787,7 @@ export function SparkApp() {
     const existing = currentData.items.find((item) => item.id === id);
     if (!existing) return;
     const nextItem = { ...existing, ...update };
+    if (nextItem.projectId && !currentData.projects.some((project) => project.id === nextItem.projectId)) nextItem.projectId = null;
     replaceData({
       ...currentData,
       items: currentData.items.map((item) => (item.id === id ? nextItem : item)),
@@ -794,11 +802,12 @@ export function SparkApp() {
   const addItem = (item: SparkItem) => {
     const currentData = dataRef.current;
     if (!currentData) return;
-    replaceData({ ...currentData, items: [...currentData.items, item] });
+    const nextItem = { ...item, projectId: currentData.projects.some((project) => project.id === item.projectId && !project.archivedAt) ? item.projectId : null };
+    replaceData({ ...currentData, items: [...currentData.items, nextItem] });
     enqueueCloudMutation({
       id: createUuid(),
       kind: "upsert-item",
-      item,
+      item: nextItem,
     });
   };
 
@@ -817,6 +826,33 @@ export function SparkApp() {
       kind: "upsert-project",
       project,
     });
+  };
+
+  const toggleProjectArchive = (project: Project) => {
+    const latest = dataRef.current?.projects.find((entry) => entry.id === project.id);
+    if (!latest) return;
+    saveProject({ ...latest, archivedAt: latest.archivedAt ? null : new Date().toISOString() });
+    setProjectEditor(null);
+    setMobileNav(false);
+    if (!latest.archivedAt && view.type === "project" && view.projectId === project.id) navigate({ type: "today" });
+  };
+
+  const removeProject = (project: Project) => {
+    const currentData = dataRef.current;
+    if (!currentData || !currentData.projects.some((entry) => entry.id === project.id)) return;
+    replaceData(removeProjectFromData(currentData, project.id));
+    // Undoing a previously deleted item must not resurrect a removed project link.
+    setDeletedItem((item) => item?.projectId === project.id ? { ...item, projectId: null } : item);
+    setEditingItem((item) => item?.projectId === project.id ? { ...item, projectId: null } : item);
+    enqueueCloudMutation({ id: createUuid(), kind: "delete-project", projectId: project.id });
+    setProjectEditor(null);
+    setMobileNav(false);
+    if (view.type === "project" && view.projectId === project.id) navigate({ type: "today" });
+  };
+
+  const openProjectArchive = () => {
+    setMobileNav(false);
+    setProjectArchiveOpen(true);
   };
 
   const toggleComplete = (item: SparkItem) => {
@@ -949,6 +985,8 @@ export function SparkApp() {
         onSync={() => setSyncDialogOpen(true)}
         onToggle={() => setSidebarCompact((value) => !value)}
         projects={projects}
+        archivedProjects={archivedProjects}
+        onOpenProjectArchive={openProjectArchive}
         projectsOpen={projectsOpen}
         syncStatus={syncStatus}
         today={today}
@@ -973,6 +1011,8 @@ export function SparkApp() {
               onSync={() => setSyncDialogOpen(true)}
               onToggle={() => setMobileNav(false)}
               projects={projects}
+              archivedProjects={archivedProjects}
+              onOpenProjectArchive={openProjectArchive}
               projectsOpen={projectsOpen}
               syncStatus={syncStatus}
               today={today}
@@ -997,7 +1037,7 @@ export function SparkApp() {
             />
             <div>
               {(headerContext || (view.type === "project" && activeProject)) && <div className={`eyebrow ${view.type === "project" ? "project-eyebrow" : ""}`}>
-                {view.type === "project" && activeProject ? "Dự án" : headerContext}
+                {view.type === "project" && activeProject ? (activeProject.archivedAt ? "Dự án đã lưu trữ" : "Dự án") : headerContext}
               </div>}
               <div className="view-title-row">
                 <button
@@ -1008,7 +1048,7 @@ export function SparkApp() {
                 >
                   <Icon name="sidebar-open" size={28} />
                 </button>
-                <h1 id="view-title">{title}</h1>
+                <h1 id="view-title" tabIndex={-1}>{title}</h1>
                 {view.type === "project" && activeProject && (
                   <button
                     className="project-edit-button"
@@ -1048,7 +1088,7 @@ export function SparkApp() {
               <ItemGroup
                 label="Quá hạn"
                 items={overdue}
-                projects={projects}
+                projects={allProjects}
                 today={today}
                 hideTodayDue={view.type === "today"}
                 onArchive={toggleNoteArchive}
@@ -1064,7 +1104,7 @@ export function SparkApp() {
               <ItemGroup
                 label={view.type === "today" ? "Hôm nay" : undefined}
                 items={current}
-                projects={projects}
+                projects={allProjects}
                 today={today}
                 hideTodayDue={view.type === "today"}
                 onArchive={toggleNoteArchive}
@@ -1081,7 +1121,7 @@ export function SparkApp() {
                 key={group.key}
                 label={timeGroupLabels[group.key]}
                 items={group.items}
-                projects={projects}
+                projects={allProjects}
                 today={today}
                 hideTodayDue={group.key === "today"}
                 onArchive={toggleNoteArchive}
@@ -1117,7 +1157,7 @@ export function SparkApp() {
                 {completedOpen && (
                   <ItemGroup
                     items={visibleInactiveItems}
-                    projects={projects}
+                    projects={allProjects}
                     today={today}
                     hideTodayDue={view.type === "today"}
                     onArchive={toggleNoteArchive}
@@ -1162,7 +1202,7 @@ export function SparkApp() {
       {editingItem && (
         <ItemEditor
           item={editingItem}
-          projects={projects}
+          projects={allProjects}
           onArchive={() => toggleNoteArchive(editingItem)}
           onClose={() => setEditingItem(null)}
           onDelete={() => removeItem(editingItem)}
@@ -1174,12 +1214,26 @@ export function SparkApp() {
       )}
       {projectEditor && (
         <ProjectEditor
+          key={projectEditor === "new" ? "new" : projectEditor.id}
           project={projectEditor === "new" ? null : projectEditor}
+          itemCount={projectEditor === "new" ? 0 : data.items.filter((item) => item.projectId === projectEditor.id).length}
+          onArchive={() => { if (projectEditor !== "new") toggleProjectArchive(projectEditor); }}
+          onDelete={() => { if (projectEditor !== "new") removeProject(projectEditor); }}
           onClose={() => setProjectEditor(null)}
           onSave={(project) => {
-            saveProject(project);
+            const latest = dataRef.current?.projects.find((entry) => entry.id === project.id);
+            if (projectEditor === "new") saveProject(project);
+            else if (latest) saveProject({ ...latest, name: project.name, color: project.color, isStarred: project.isStarred });
             setProjectEditor(null);
           }}
+        />
+      )}
+      {projectArchiveOpen && (
+        <ArchivedProjects
+          projects={archivedProjects}
+          onClose={() => setProjectArchiveOpen(false)}
+          onView={(project) => { setProjectArchiveOpen(false); navigate({ type: "project", projectId: project.id }); }}
+          onEdit={(project) => { setProjectArchiveOpen(false); setProjectEditor(project); }}
         />
       )}
       {helpOpen && <ShortcutHelp onClose={() => setHelpOpen(false)} />}
@@ -1293,6 +1347,8 @@ function MobileDock({
 }
 
 function Sidebar({
+  archivedProjects,
+  onOpenProjectArchive,
   attentionOpen,
   compact,
   currentView,
@@ -1312,6 +1368,8 @@ function Sidebar({
   syncStatus,
   today,
 }: {
+  archivedProjects: Project[];
+  onOpenProjectArchive: () => void;
   attentionOpen: boolean;
   compact: boolean;
   currentView: View;
@@ -1332,10 +1390,10 @@ function Sidebar({
   today: string;
 }) {
   const navItems = [
-    { view: { type: "today" } as View, label: "Hôm nay", icon: "sun" as const, count: filterItems(items, { type: "today" }, today).length },
-    { view: { type: "upcoming" } as View, label: "Sắp tới", icon: "clock" as const, count: filterItems(items, { type: "upcoming" }, today).length },
+    { view: { type: "today" } as View, label: "Hôm nay", icon: "sun" as const, count: filterItems(items, { type: "today" }, today, archivedProjects).length },
+    { view: { type: "upcoming" } as View, label: "Sắp tới", icon: "clock" as const, count: filterItems(items, { type: "upcoming" }, today, archivedProjects).length },
     { view: { type: "calendar", date: today } as View, label: "Theo ngày", icon: "calendar" as const },
-    { view: { type: "all" } as View, label: "Tất cả", icon: "list" as const, count: filterItems(items, { type: "all" }, today).length },
+    { view: { type: "all" } as View, label: "Tất cả", icon: "list" as const, count: filterItems(items, { type: "all" }, today, archivedProjects).length },
   ];
   const smartItems = [
     { view: { type: "important" } as View, label: "Quan Trọng", icon: "star" as const, className: "important" },
@@ -1391,6 +1449,9 @@ function Sidebar({
             {!compact && <button className="mini-button" onClick={() => onEditProject("new")} aria-label="Tạo dự án"><Icon name="plus" size={16} /></button>}
           </div>
           {(compact || projectsOpen) && regularProjects.map(renderProject)}
+          <button className="nav-item archived-projects-nav" onClick={onOpenProjectArchive} aria-label="Dự án đã lưu trữ" data-tooltip={compact ? "Dự án đã lưu trữ" : undefined}>
+            <Icon name="archive" /><span className="nav-text">Đã lưu trữ</span>{archivedProjects.length > 0 && <span className="nav-count">{archivedProjects.length}</span>}
+          </button>
         </div>
       </nav>
       <div className="sidebar-footer">
@@ -1684,7 +1745,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
   const [description, setDescription] = useState("");
   const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [date, setDate] = useState(view.type === "today" ? today : view.type === "calendar" ? view.date : "");
-  const [projectId, setProjectId] = useState(view.type === "project" ? view.projectId : "");
+  const [projectId, setProjectId] = useState(view.type === "project" && projects.some((project) => project.id === view.projectId) ? view.projectId : "");
   const inputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
@@ -1935,7 +1996,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
           </label>
           <label className="detail-meta-control project" title="Dự án">
             <span className={`project-dot ${project ? "" : "empty"}`} style={project ? { background: project.color } : undefined} />
-            <select value={projectId} aria-label="Dự án" onChange={(event) => { const value = event.target.value; setProjectId(value); onSave({ projectId: value || null }); }}><option value="">Không có dự án</option>{projects.map((entry) => <option key={entry.id} value={entry.id}>{entry.name}</option>)}</select>
+            <select value={project?.id ?? ""} aria-label="Dự án" onChange={(event) => { const value = event.target.value; setProjectId(value); onSave({ projectId: value || null }); }}><option value="">Không có dự án</option>{projects.filter((entry) => !entry.archivedAt || entry.id === projectId).map((entry) => <option key={entry.id} value={entry.id} disabled={Boolean(entry.archivedAt)}>{entry.name}{entry.archivedAt ? " (đã lưu trữ)" : ""}</option>)}</select>
           </label>
         </div>
 
@@ -1951,14 +2012,88 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
   );
 }
 
-function ProjectEditor({ project, onClose, onSave }: { project: Project | null; onClose: () => void; onSave: (project: Project) => void }) {
+function useProjectDialog(onClose: () => void) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef(onClose);
+  const [previous] = useState(() => typeof document !== "undefined" && document.activeElement instanceof HTMLElement ? document.activeElement : null);
+  useEffect(() => { closeRef.current = onClose; }, [onClose]);
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    const controls = () => Array.from(dialog?.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), [tabindex="0"]') ?? []);
+    if (!dialog?.contains(document.activeElement)) (dialog?.querySelector<HTMLInputElement>('input:not([disabled])') ?? controls()[0])?.focus();
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        closeRef.current();
+      } else if (event.key === "Tab") {
+        const focusable = controls();
+        const first = focusable[0];
+        const last = focusable.at(-1);
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }
+    };
+    window.addEventListener("keydown", handleKey, true);
+    return () => {
+      window.removeEventListener("keydown", handleKey, true);
+      if (previous?.isConnected) previous.focus();
+      else document.getElementById("view-title")?.focus();
+    };
+  }, [previous]);
+  return dialogRef;
+}
+
+function ArchivedProjects({ projects, onClose, onView, onEdit }: {
+  projects: Project[];
+  onClose: () => void;
+  onView: (project: Project) => void;
+  onEdit: (project: Project) => void;
+}) {
+  const dialogRef = useProjectDialog(onClose);
+  return (
+    <div ref={dialogRef} className="dialog-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="project-archive-title">
+      <section className="editor-sheet compact-editor project-archive-sheet" onClick={(event) => event.stopPropagation()}>
+        <div className="editor-header"><div><span>Dự án</span><h2 id="project-archive-title">Đã lưu trữ</h2></div><button className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
+        <p className="project-lifecycle-hint">Task và note vẫn được giữ nguyên. Mở dự án để xem, hoặc chỉnh sửa để khôi phục.</p>
+        {projects.length === 0 ? <p className="project-archive-empty">Chưa có dự án được lưu trữ.</p> : (
+          <div className="project-archive-list">
+            {projects.map((project) => <div className="project-archive-row" key={project.id}>
+              <button className="project-archive-name" onClick={() => onView(project)} aria-label={`Xem dự án ${project.name}`}><span className="project-dot" style={{ background: project.color }} /><span>{project.name}</span></button>
+              <button className="detail-icon-action" onClick={() => onEdit(project)} aria-label={`Chỉnh sửa dự án ${project.name}`}><Icon name="edit" size={18} /></button>
+            </div>)}
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
+
+function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose, onSave }: {
+  project: Project | null;
+  itemCount: number;
+  onArchive: () => void;
+  onDelete: () => void;
+  onClose: () => void;
+  onSave: (project: Project) => void;
+}) {
   const [name, setName] = useState(project?.name ?? "");
   const [color, setColor] = useState(project?.color ?? projectColors[0]);
   const [isStarred, setIsStarred] = useState(project?.isStarred ?? false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const dialogRef = useProjectDialog(onClose);
   return (
-    <div className="dialog-backdrop" onClick={onClose}>
+    <div ref={dialogRef} className="dialog-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="project-editor-title">
+      {confirmDelete && project ? (
+        <section className="editor-sheet compact-editor" onClick={(event) => event.stopPropagation()}>
+          <div className="editor-header"><div><span>Dự án</span><h2 id="project-editor-title">Xóa dự án này?</h2></div><button className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
+          <p className="project-delete-description">“{project.name}” sẽ bị xóa và không thể hoàn tác.</p>
+          <p className="project-lifecycle-hint">{itemCount > 0 ? `${itemCount} task/note bên trong (kể cả mục đã hoàn thành hoặc lưu trữ) vẫn được giữ nguyên và chuyển sang Không có dự án.` : "Không có task/note nào trong dự án này."}</p>
+          <div className="editor-actions"><button autoFocus className="text-button" onClick={() => setConfirmDelete(false)}>Giữ lại</button><button className="delete-button" onClick={onDelete}><Icon name="trash" size={17} /> Xóa dự án</button></div>
+        </section>
+      ) : (
       <form className="editor-sheet compact-editor" onClick={(event) => event.stopPropagation()} onSubmit={(event) => { event.preventDefault(); if (name.trim()) onSave(project ? { ...project, name: name.trim(), color, isStarred } : { id: createUuid(), name: name.trim(), color, isStarred, archivedAt: null }); }}>
-        <div className="editor-header"><div><span>Dự án</span><h2>{project ? "Chỉnh sửa dự án" : "Tạo dự án mới"}</h2></div><button type="button" className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
+        <div className="editor-header"><div><span>{project?.archivedAt ? "Đã lưu trữ" : "Dự án"}</span><h2 id="project-editor-title">{project ? "Chỉnh sửa dự án" : "Tạo dự án mới"}</h2></div><button type="button" className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
         <label className="field"><span>Tên dự án</span><input autoFocus maxLength={80} value={name} onChange={(event) => setName(event.target.value)} placeholder="Ví dụ: Ra mắt website" /></label>
         <fieldset className="color-picker">
           <legend>Màu nhận diện</legend>
@@ -1973,8 +2108,16 @@ function ProjectEditor({ project, onClose, onSave }: { project: Project | null; 
           </button>
           {projectColors.map((entry) => <button type="button" aria-label={`Chọn màu ${entry}`} className={color === entry ? "selected" : ""} style={{ background: entry }} key={entry} onClick={() => setColor(entry)} />)}
         </fieldset>
+        {project && <div className="project-lifecycle">
+          <p className="project-lifecycle-hint">{project.archivedAt ? "Khôi phục để đưa dự án trở lại sidebar và bộ chọn dự án." : "Lưu trữ để thu gọn sidebar. Task và note vẫn được giữ nguyên."}</p>
+          <div className="project-lifecycle-actions">
+            <button type="button" className="archive-button" onClick={onArchive}><Icon name="archive" size={17} />{project.archivedAt ? "Khôi phục dự án" : "Lưu trữ dự án"}</button>
+            <button type="button" className="delete-button" onClick={() => setConfirmDelete(true)}><Icon name="trash" size={17} />Xóa dự án</button>
+          </div>
+        </div>}
         <div className="editor-actions"><button type="button" className="text-button" onClick={onClose}>Hủy</button><button className="primary-button" disabled={!name.trim()}>{project ? "Lưu thay đổi" : "Tạo dự án"}</button></div>
       </form>
+      )}
     </div>
   );
 }

@@ -71,6 +71,8 @@ Tạo một module thuần, ví dụ `src/lib/task-filters.ts`, không rải log
 - `upcoming`: `localTomorrow <= due_date <= localToday + 3 calendar days`.
 - `byDate`: `due_date === selectedDate`.
 - `all`: lấy mọi item còn hiện hành rồi chia `overdue`, `today`, `upcoming` (ba ngày kế tiếp), `later` và `undated`; completed task và archived note nằm trong disclosure trạng thái riêng.
+- `filterItems` và `inactiveForView` nhận thêm metadata projects để loại item của project có `archivedAt` khỏi bốn master view trước khi sort/group/display filter và tính số đếm sidebar/header. Project view và smart filter không bị ảnh hưởng; không sửa item.
+- Trong `inactiveForView` của Hôm nay, task được chọn theo `getLocalDateKey(new Date(completedAt)) === localToday` (Asia/Ho_Chi_Minh), không theo due date; timestamp không hợp lệ không được hiển thị. Các view khác và archived note giữ quy tắc due date hiện tại.
 - Trạng thái `itemDisplayMode: 'all' | 'task' | 'note'` là presentation filter dùng chung cho mọi view; áp dụng sau master/smart/project filter, trước khi chia nhóm và tính số quá hạn hiển thị. Không ghi thay đổi xuống item.
 - Presentation sort dùng `task` trước `note`; sau đó sort `due_date` tăng dần và `created_at`. Riêng view `all`, chia nhóm thời gian trước rồi áp dụng comparator này trong từng nhóm. Không ghi lại `position` chỉ để phản ánh thứ tự hiển thị.
 - Luôn truyền timezone vào hàm tạo `localToday` để test được.
@@ -134,6 +136,8 @@ src/
 - Rail compact rộng khoảng `56px`; hai nhóm Cần lưu ý và Dự án có trạng thái mở/đóng riêng được lưu cục bộ.
 - Mobile sidebar giữ full negative logo và nút đóng, nhưng ẩn nhóm view Hôm nay/Sắp tới/Theo ngày/Tất cả đã chuyển xuống dock. Drawer mở bằng panel icon-only trong sticky header hoặc drag từ mép trái sang phải và dùng transition `transform` ngắn để có motion liên tục.
 - Project có thể gắn sao; `is_starred` được đồng bộ cloud và project được hiển thị trong Cần lưu ý.
+- Project archive/restore dùng mutation `upsert-project` với `archivedAt`. Sidebar/shortcut/quick-add chỉ dùng active projects; ItemGroup và item editor vẫn resolve cả archived project để không mất màu/tên liên kết cũ.
+- Project delete dùng mutation `delete-project`, request lọc cả `id` và `user_id`, dựa vào FK `items.project_id ON DELETE SET NULL` hiện có. Optimistic overlay xóa project và null liên kết item, không sửa nội dung/trạng thái item. Delete được xếp sau các pending create/update để giữ dependency khi offline; item edit mới có tham chiếu project đang chờ xóa được bỏ liên kết. Xóa có bước xác nhận rõ ràng, không có undo; không ảnh hưởng cơ chế undo xóa item.
 - Ở compact state, filter dùng icon + count; project dùng dot màu lớn. Tất cả icon-only controls phải có accessible label và tooltip.
 - Dùng một keyboard shortcut handler tập trung, không gắn listener rải rác trong component.
 - Hỗ trợ `N` → quick-add, `T` → Today, `S` → Upcoming, `D` → By date, `A` → Tất cả, `I` → Quan Trọng, `U` → Ưu tiên và `1–9` → chín project đầu; `-` → chỉ note, `=` → chỉ task, `\` → tất cả nội dung; `[` toggle sidebar và `?` mở trợ giúp. Resolver so khớp đúng `event.key`; `+` và `|` không phải shortcut.
