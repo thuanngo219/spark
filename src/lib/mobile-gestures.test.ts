@@ -1,5 +1,37 @@
 import { describe, expect, it } from "vitest";
-import { resolveItemSwipe, shouldOpenMobileSidebar } from "./mobile-gestures";
+import { createItemClickGuard, resolveItemSwipe, shouldOpenMobileSidebar } from "./mobile-gestures";
+
+describe("mobile item single-tap guard", () => {
+  it("allows the first click of an ordinary tap", () => {
+    const guard = createItemClickGuard();
+    guard.beginPointer();
+    expect(guard.shouldSuppressClick(1)).toBe(false);
+  });
+
+  it.each(["swipe", "scroll", "pointer cancellation"])("blocks compatibility clicks after %s", () => {
+    const guard = createItemClickGuard();
+    guard.beginPointer();
+    guard.blockPointerClick();
+    expect(guard.shouldSuppressClick(1)).toBe(true);
+    // Late/repeated compatibility clicks cannot open or mutate the item either.
+    expect(guard.shouldSuppressClick(2)).toBe(true);
+  });
+
+  it.each([true, false])("allows the very next tap whether the swipe emitted a click (%s)", (emittedClick) => {
+    const guard = createItemClickGuard();
+    guard.beginPointer();
+    guard.blockPointerClick();
+    if (emittedClick) expect(guard.shouldSuppressClick(1)).toBe(true);
+    guard.beginPointer();
+    expect(guard.shouldSuppressClick(1)).toBe(false);
+  });
+
+  it("preserves keyboard and assistive-technology activation after a swipe", () => {
+    const guard = createItemClickGuard();
+    guard.blockPointerClick();
+    expect(guard.shouldSuppressClick(0)).toBe(false);
+  });
+});
 
 describe("mobile item gestures", () => {
   it("opens the action tray after a deliberate left swipe", () => {

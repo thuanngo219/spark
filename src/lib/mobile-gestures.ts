@@ -3,6 +3,25 @@ export type ItemSwipeResult = "closed" | "open-actions";
 const ITEM_HORIZONTAL_THRESHOLD = 48;
 const OPEN_ROW_CLOSE_THRESHOLD = 42;
 
+// Keep swipe/scroll clicks blocked until a fresh pointer gesture starts.
+// A timer can expire before a browser delivers its compatibility click.
+export function createItemClickGuard() {
+  let blocked = false;
+
+  return {
+    beginPointer() {
+      blocked = false;
+    },
+    blockPointerClick() {
+      blocked = true;
+    },
+    shouldSuppressClick(detail: number) {
+      // Keyboard and assistive-technology activation have no pointer click count.
+      return detail > 0 && blocked;
+    },
+  };
+}
+
 export function resolveItemSwipe(
   deltaX: number,
   deltaY: number,

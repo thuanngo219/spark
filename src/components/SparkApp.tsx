@@ -34,7 +34,7 @@ import {
   formatShortDate,
   getLocalDateKey,
 } from "@/lib/dates";
-import { resolveItemSwipe, shouldOpenMobileSidebar } from "@/lib/mobile-gestures";
+import { createItemClickGuard, resolveItemSwipe, shouldOpenMobileSidebar } from "@/lib/mobile-gestures";
 import { normalizeDataIds, type SparkData } from "@/lib/data-ids";
 import { createUuid } from "@/lib/ids";
 import { linkifyText } from "@/lib/linkify";
@@ -1563,15 +1563,15 @@ function SwipeableItemRow({
     wasOpen: boolean;
     axis: "pending" | "horizontal" | "vertical";
   } | null>(null);
-  const suppressClickRef = useRef(false);
+  const clickGuardRef = useRef(createItemClickGuard());
   const offset = dragOffset ?? (isSwipeOpen ? -SWIPE_ACTIONS_WIDTH : 0);
 
   const closeActions = () => onSwipeOpenChange(null);
 
   const onPointerDown = (event: ReactPointerEvent<HTMLElement>) => {
+    if (!event.isPrimary || event.button !== 0) return;
+    clickGuardRef.current.beginPointer();
     if (
-      !event.isPrimary ||
-      event.button !== 0 ||
       event.clientX <= 24 ||
       !window.matchMedia("(max-width: 699px)").matches
     ) return;
@@ -1583,7 +1583,6 @@ function SwipeableItemRow({
       wasOpen: isSwipeOpen,
       axis: "pending",
     };
-    setDragOffset(isSwipeOpen ? -SWIPE_ACTIONS_WIDTH : 0);
     if (!isSwipeOpen) onSwipeOpenChange(null);
   };
 
@@ -1595,9 +1594,9 @@ function SwipeableItemRow({
 
     if (gesture.axis === "pending" && Math.max(Math.abs(deltaX), Math.abs(deltaY)) >= 8) {
       gesture.axis = Math.abs(deltaX) > Math.abs(deltaY) * 1.15 ? "horizontal" : "vertical";
+      clickGuardRef.current.blockPointerClick();
       if (gesture.axis === "horizontal") {
         event.currentTarget.setPointerCapture(event.pointerId);
-        suppressClickRef.current = true;
       }
     }
     if (gesture.axis !== "horizontal") return;
@@ -1620,9 +1619,6 @@ function SwipeableItemRow({
 
     gestureRef.current = null;
     setDragOffset(null);
-    window.setTimeout(() => {
-      suppressClickRef.current = false;
-    }, 0);
     if (result === "open-actions") onSwipeOpenChange(item.id);
     else onSwipeOpenChange(null);
   };
@@ -1630,7 +1626,7 @@ function SwipeableItemRow({
   const cancelPointerGesture = (event: ReactPointerEvent<HTMLElement>) => {
     if (gestureRef.current?.pointerId !== event.pointerId) return;
     gestureRef.current = null;
-    suppressClickRef.current = false;
+    clickGuardRef.current.blockPointerClick();
     setDragOffset(null);
   };
 
@@ -1678,8 +1674,7 @@ function SwipeableItemRow({
         className={`item-row ${item.completedAt ? "is-complete" : ""} ${item.archivedAt ? "is-archived" : ""}`}
         style={{ "--swipe-offset": `${offset}px` } as CSSProperties}
         onClickCapture={(event) => {
-          if (!suppressClickRef.current) return;
-          suppressClickRef.current = false;
+          if (!clickGuardRef.current.shouldSuppressClick(event.detail)) return;
           event.preventDefault();
           event.stopPropagation();
         }}
@@ -1706,7 +1701,10 @@ function SwipeableItemRow({
           </button>
         )}
         {project ? <span className="project-dot item-project-dot" style={{ background: project.color }} title={project.name} /> : <span className="project-dot-spacer" />}
-        <button className="item-main" onClick={() => isSwipeOpen ? closeActions() : onEdit(item)}>
+        <button className="item-main" onClick={() => {
+          closeActions();
+          onEdit(item);
+        }}>
           <span className="item-title-wrap">
             <span className="item-title">{item.title}</span>
             {item.type === "task" && item.description && (
