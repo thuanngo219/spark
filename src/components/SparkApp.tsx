@@ -34,7 +34,7 @@ import {
   formatShortDate,
   getLocalDateKey,
 } from "@/lib/dates";
-import { createItemClickGuard, resolveItemSwipe, shouldOpenMobileSidebar } from "@/lib/mobile-gestures";
+import { createItemClickGuard, resolveItemContentTap, resolveItemSwipe, shouldOpenMobileSidebar } from "@/lib/mobile-gestures";
 import { normalizeDataIds, type SparkData } from "@/lib/data-ids";
 import { createUuid } from "@/lib/ids";
 import { linkifyText } from "@/lib/linkify";
@@ -1509,7 +1509,7 @@ function ItemGroup({
               project={project}
               overdue={Boolean(overdue)}
               hideDue={Boolean(item.dueDate && hideTodayDue && item.dueDate === today)}
-              isSwipeOpen={openSwipeItemId === item.id}
+              openSwipeItemId={openSwipeItemId}
               key={item.id}
               onArchive={onArchive}
               onComplete={onComplete}
@@ -1533,7 +1533,7 @@ function SwipeableItemRow({
   project,
   overdue,
   hideDue,
-  isSwipeOpen,
+  openSwipeItemId,
   onArchive,
   onComplete,
   onDelete,
@@ -1546,7 +1546,7 @@ function SwipeableItemRow({
   project?: Project;
   overdue: boolean;
   hideDue: boolean;
-  isSwipeOpen: boolean;
+  openSwipeItemId: string | null;
   onArchive: (item: SparkItem) => void;
   onComplete: (item: SparkItem) => void;
   onDelete: (item: SparkItem) => void;
@@ -1555,6 +1555,7 @@ function SwipeableItemRow({
   onSwipeOpenChange: (id: string | null) => void;
   today: string;
 }) {
+  const isSwipeOpen = openSwipeItemId === item.id;
   const [dragOffset, setDragOffset] = useState<number | null>(null);
   const gestureRef = useRef<{
     pointerId: number;
@@ -1583,7 +1584,6 @@ function SwipeableItemRow({
       wasOpen: isSwipeOpen,
       axis: "pending",
     };
-    if (!isSwipeOpen) onSwipeOpenChange(null);
   };
 
   const onPointerMove = (event: ReactPointerEvent<HTMLElement>) => {
@@ -1611,14 +1611,14 @@ function SwipeableItemRow({
   const finishPointerGesture = (event: ReactPointerEvent<HTMLElement>) => {
     const gesture = gestureRef.current;
     if (!gesture || gesture.pointerId !== event.pointerId) return;
-    const deltaX = event.clientX - gesture.startX;
-    const deltaY = event.clientY - gesture.startY;
-    const result = gesture.axis === "horizontal"
-      ? resolveItemSwipe(deltaX, deltaY, gesture.wasOpen)
-      : gesture.wasOpen ? "open-actions" : "closed";
-
     gestureRef.current = null;
     setDragOffset(null);
+    // A tap must retain the global tray state until onClick decides whether
+    // to dismiss it, including when the tap lands on a different item.
+    if (gesture.axis !== "horizontal") return;
+    const deltaX = event.clientX - gesture.startX;
+    const deltaY = event.clientY - gesture.startY;
+    const result = resolveItemSwipe(deltaX, deltaY, gesture.wasOpen);
     if (result === "open-actions") onSwipeOpenChange(item.id);
     else onSwipeOpenChange(null);
   };
@@ -1702,8 +1702,12 @@ function SwipeableItemRow({
         )}
         {project ? <span className="project-dot item-project-dot" style={{ background: project.color }} title={project.name} /> : <span className="project-dot-spacer" />}
         <button className="item-main" onClick={() => {
+          const action = resolveItemContentTap(
+            openSwipeItemId,
+            window.matchMedia("(max-width: 699px)").matches,
+          );
           closeActions();
-          onEdit(item);
+          if (action === "open-details") onEdit(item);
         }}>
           <span className="item-title-wrap">
             <span className="item-title">{item.title}</span>

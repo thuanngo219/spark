@@ -1,5 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { createItemClickGuard, resolveItemSwipe, shouldOpenMobileSidebar } from "./mobile-gestures";
+import { createItemClickGuard, resolveItemContentTap, resolveItemSwipe, shouldOpenMobileSidebar } from "./mobile-gestures";
+
+describe("item content tap with a shared action tray", () => {
+  it("opens details with one tap when no tray is open", () => {
+    expect(resolveItemContentTap(null, true)).toBe("open-details");
+  });
+
+  it.each(["same-item", "another-item"])("only closes an open tray belonging to %s", (openId) => {
+    expect(resolveItemContentTap(openId, true)).toBe("close-actions");
+    expect(resolveItemContentTap(null, true)).toBe("open-details");
+  });
+
+  it("does not block desktop details with a hidden mobile tray", () => {
+    expect(resolveItemContentTap("some-item", false)).toBe("open-details");
+  });
+});
 
 describe("mobile item single-tap guard", () => {
   it("allows the first click of an ordinary tap", () => {

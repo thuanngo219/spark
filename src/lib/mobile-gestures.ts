@@ -3,6 +3,10 @@ export type ItemSwipeResult = "closed" | "open-actions";
 const ITEM_HORIZONTAL_THRESHOLD = 48;
 const OPEN_ROW_CLOSE_THRESHOLD = 42;
 
+export function resolveItemContentTap(openSwipeItemId: string | null, isMobile: boolean) {
+  return isMobile && openSwipeItemId !== null ? "close-actions" : "open-details";
+}
+
 // Keep swipe/scroll clicks blocked until a fresh pointer gesture starts.
 // A timer can expire before a browser delivers its compatibility click.
 export function createItemClickGuard() {
