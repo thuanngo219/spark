@@ -36,7 +36,7 @@ Mỗi task có:
 
 - Checkbox hoàn thành.
 - Tên task, bắt buộc, một dòng, tối đa 100 ký tự.
-- Nội dung bổ sung, tùy chọn, plain text tối đa 2.000 ký tự; chỉ task có trường này.
+- Nội dung chi tiết, tùy chọn, plain text tối đa 2.000 ký tự; task và note đều có trường này.
 - URL bắt đầu bằng `http://`, `https://` hoặc `www.` trong Nội dung được hiển thị thành liên kết và mở ở tab mới; dữ liệu gốc vẫn là plain text.
 - Due date, tùy chọn, chỉ lưu **ngày** chứ không lưu giờ trong MVP.
 - Project, tùy chọn.
@@ -55,7 +55,7 @@ Hành động:
 Note là một item ghi chú ngắn, không phải task:
 
 - Hiển thị bằng bullet point thay cho checkbox.
-- Có nội dung ngắn trên một dòng, tối đa 100 ký tự trong MVP; note không có trường Nội dung bổ sung.
+- Có Tên ngắn trên một dòng, tối đa 100 ký tự; Nội dung chi tiết tùy chọn tối đa 2.000 ký tự như task.
 - URL trong Nội dung note được hiển thị thành liên kết và mở ở tab mới; dữ liệu gốc vẫn là plain text.
 - Có due date và project tùy chọn giống task để có thể xuất hiện trong view thời gian/dự án.
 - Không có trạng thái hoàn thành; có thể sửa, xóa, lưu trữ và khôi phục.
@@ -113,7 +113,7 @@ Quy ước ngày:
 - Task vừa check biến đổi trạng thái ngay, sau đó thu gọn khỏi danh sách đang xem.
 - Note có thể lưu trữ bằng marker, editor hoặc action swipe trên mobile; thao tác khôi phục đưa note trở lại danh sách đang hoạt động.
 - Có disclosure thu gọn ở cuối mỗi view để xem/uncheck task đã hoàn thành và khôi phục note đã lưu trữ; nhãn thay đổi theo loại item đang có.
-- Desktop giữ floating `+` 48px ở góc dưới phải. Mobile đưa `+` 72px vào chính giữa dock 58px, cho artwork trồi khỏi dock để dễ nhận biết; cả hai cùng mở quick-add dạng overlay gọn. Checkbox Ghi chú giữ nguyên; task có nút **Thêm Nội dung** để mở field tùy chọn, còn khi Ghi chú được bật thì nút này disabled và Nội dung đang nhập được bỏ. Quick-add luôn giữ chọn ngày và dự án cho cả task lẫn note.
+- Desktop giữ floating `+` 48px ở góc dưới phải. Mobile đưa `+` 72px vào chính giữa dock 58px, cho artwork trồi khỏi dock để dễ nhận biết; cả hai cùng mở quick-add dạng overlay gọn. Checkbox Ghi chú giữ nguyên; task và note đều có nút **Thêm Nội dung** để mở field tùy chọn. Quick-add luôn giữ chọn ngày và dự án cho cả hai loại.
 - Trên mobile, mở quick-add phải focus ngay title input và giữ field này trong vùng nhìn thấy khi bàn phím ảo xuất hiện; người dùng không cần kéo form để bắt đầu nhập.
 - Trên mobile, bỏ app header riêng. Nút mở sidebar là panel icon-only đứng trước tên view trong sticky header; switcher item nằm bên trái sync pill trong hàng control nổi ngay trên dock.
 - Completed task không được tính trong số lượng task mở.

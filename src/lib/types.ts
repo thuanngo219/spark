@@ -6,6 +6,7 @@ export type Project = {
   color: string;
   isStarred: boolean;
   archivedAt: string | null;
+  position?: number;
 };
 
 export type SparkItem = {

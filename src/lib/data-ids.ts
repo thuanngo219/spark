@@ -29,10 +29,10 @@ export function normalizeDataIds(
     return next;
   };
 
-  const projects = data.projects.map((project) => {
+  const projects = data.projects.map((project, index) => {
     const id = nextUniqueId(project.id, usedProjectIds);
     projectIdMap.set(project.id, id);
-    return { ...project, id, isStarred: Boolean(project.isStarred), archivedAt: project.archivedAt ?? null };
+    return { ...project, id, isStarred: Boolean(project.isStarred), archivedAt: project.archivedAt ?? null, position: Number.isFinite(project.position) ? project.position : index };
   });
 
   const usedItemIds = new Set<string>();
@@ -40,7 +40,7 @@ export function normalizeDataIds(
     ...item,
     id: nextUniqueId(item.id, usedItemIds),
     projectId: item.projectId ? projectIdMap.get(item.projectId) ?? null : null,
-    description: item.type === "task" ? item.description?.trim() || null : null,
+    description: item.description?.trim() || null,
     archivedAt: item.type === "note" ? item.archivedAt ?? null : null,
   }));
 

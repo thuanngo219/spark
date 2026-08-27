@@ -38,6 +38,7 @@ import { createItemClickGuard, resolveItemContentTap, resolveItemSwipe, shouldOp
 import { normalizeDataIds, type SparkData } from "@/lib/data-ids";
 import { createUuid } from "@/lib/ids";
 import { linkifyText } from "@/lib/linkify";
+import { reorderProjectsForDrop, type ProjectDropPlacement } from "@/lib/project-order";
 import {
   filterItems,
   filterItemsByDisplayMode,
@@ -211,9 +212,10 @@ function viewKey(view: View) {
 }
 
 function orderProjectsForSidebar(projects: Project[]) {
+  const positioned = [...projects].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
   return [
-    ...projects.filter((project) => project.isStarred),
-    ...projects.filter((project) => !project.isStarred),
+    ...positioned.filter((project) => project.isStarred),
+    ...positioned.filter((project) => !project.isStarred),
   ];
 }
 
@@ -265,6 +267,7 @@ export function SparkApp() {
   const [projectEditor, setProjectEditor] = useState<Project | "new" | null>(null);
   const [projectArchiveOpen, setProjectArchiveOpen] = useState(false);
   const [deletedItem, setDeletedItem] = useState<SparkItem | null>(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<SparkItem | null>(null);
   const [openSwipeItemId, setOpenSwipeItemId] = useState<string | null>(null);
   const [cloudUser, setCloudUser] = useState<CloudUser | null>(null);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>(isSupabaseConfigured() ? "loading" : "not-configured");
@@ -815,17 +818,30 @@ export function SparkApp() {
     const currentData = dataRef.current;
     if (!currentData) return;
     const exists = currentData.projects.some((entry) => entry.id === project.id);
+    const nextProject = exists ? project : {
+      ...project,
+      position: Math.max(-1, ...currentData.projects.map((entry) => entry.position ?? 0)) + 1,
+    };
     replaceData({
       ...currentData,
       projects: exists
-        ? currentData.projects.map((entry) => entry.id === project.id ? project : entry)
-        : [...currentData.projects, project],
+        ? currentData.projects.map((entry) => entry.id === project.id ? nextProject : entry)
+        : [...currentData.projects, nextProject],
     });
     enqueueCloudMutation({
       id: createUuid(),
       kind: "upsert-project",
-      project,
+      project: nextProject,
     });
+  };
+
+  const reorderProjects = (sourceId: string, targetId: string, placement: ProjectDropPlacement) => {
+    const currentData = dataRef.current;
+    if (!currentData) return;
+    const nextProjects = reorderProjectsForDrop(currentData.projects, sourceId, targetId, placement);
+    if (!nextProjects) return;
+    replaceData({ ...currentData, projects: nextProjects });
+    nextProjects.forEach((project) => enqueueCloudMutation({ id: createUuid(), kind: "upsert-project", project }));
   };
 
   const toggleProjectArchive = (project: Project) => {
@@ -867,7 +883,13 @@ export function SparkApp() {
     setOpenSwipeItemId(null);
   };
 
+  const requestItemDelete = (item: SparkItem) => {
+    setOpenSwipeItemId(null);
+    setDeleteConfirmation(item);
+  };
+
   const removeItem = (item: SparkItem) => {
+    setDeleteConfirmation(null);
     setDeletedItem(item);
     setEditingItem(null);
     setOpenSwipeItemId(null);
@@ -982,6 +1004,7 @@ export function SparkApp() {
         onToggleAttention={() => setAttentionOpen((value) => !value)}
         onToggleProjects={() => setProjectsOpen((value) => !value)}
         onToggleProjectStar={(project) => saveProject({ ...project, isStarred: !project.isStarred })}
+        onReorderProjects={reorderProjects}
         onSync={() => setSyncDialogOpen(true)}
         onToggle={() => setSidebarCompact((value) => !value)}
         projects={projects}
@@ -1008,6 +1031,7 @@ export function SparkApp() {
               onToggleAttention={() => setAttentionOpen((value) => !value)}
               onToggleProjects={() => setProjectsOpen((value) => !value)}
               onToggleProjectStar={(project) => saveProject({ ...project, isStarred: !project.isStarred })}
+              onReorderProjects={reorderProjects}
               onSync={() => setSyncDialogOpen(true)}
               onToggle={() => setMobileNav(false)}
               projects={projects}
@@ -1093,7 +1117,7 @@ export function SparkApp() {
                 hideTodayDue={view.type === "today"}
                 onArchive={toggleNoteArchive}
                 onComplete={toggleComplete}
-                onDelete={removeItem}
+                onDelete={requestItemDelete}
                 onEdit={setEditingItem}
                 onFlag={mutateItem}
                 openSwipeItemId={openSwipeItemId}
@@ -1109,7 +1133,7 @@ export function SparkApp() {
                 hideTodayDue={view.type === "today"}
                 onArchive={toggleNoteArchive}
                 onComplete={toggleComplete}
-                onDelete={removeItem}
+                onDelete={requestItemDelete}
                 onEdit={setEditingItem}
                 onFlag={mutateItem}
                 openSwipeItemId={openSwipeItemId}
@@ -1126,7 +1150,7 @@ export function SparkApp() {
                 hideTodayDue={group.key === "today"}
                 onArchive={toggleNoteArchive}
                 onComplete={toggleComplete}
-                onDelete={removeItem}
+                onDelete={requestItemDelete}
                 onEdit={setEditingItem}
                 onFlag={mutateItem}
                 openSwipeItemId={openSwipeItemId}
@@ -1162,7 +1186,7 @@ export function SparkApp() {
                     hideTodayDue={view.type === "today"}
                     onArchive={toggleNoteArchive}
                     onComplete={toggleComplete}
-                    onDelete={removeItem}
+                    onDelete={requestItemDelete}
                     onEdit={setEditingItem}
                     onFlag={mutateItem}
                     openSwipeItemId={openSwipeItemId}
@@ -1205,7 +1229,7 @@ export function SparkApp() {
           projects={allProjects}
           onArchive={() => toggleNoteArchive(editingItem)}
           onClose={() => setEditingItem(null)}
-          onDelete={() => removeItem(editingItem)}
+          onDelete={() => requestItemDelete(editingItem)}
           onSave={(update) => {
             mutateItem(editingItem.id, update);
             setEditingItem((current) => current?.id === editingItem.id ? { ...current, ...update } : current);
@@ -1227,6 +1251,15 @@ export function SparkApp() {
             setProjectEditor(null);
           }}
         />
+      )}
+      {deleteConfirmation && (
+        <div className="dialog-backdrop confirm-delete-backdrop" onClick={() => setDeleteConfirmation(null)}>
+          <section className="editor-sheet confirm-delete-sheet" role="alertdialog" aria-modal="true" aria-labelledby="confirm-item-delete-title" onClick={(event) => event.stopPropagation()}>
+            <div className="editor-header"><div><span>Xác nhận</span><h2 id="confirm-item-delete-title">Xóa mục này?</h2></div><button type="button" className="icon-button" onClick={() => setDeleteConfirmation(null)} aria-label="Đóng"><Icon name="close" /></button></div>
+            <p>“{deleteConfirmation.title}” sẽ bị xóa. Bạn vẫn có thể Hoàn tác ngay sau đó.</p>
+            <div className="editor-actions"><button type="button" className="text-button" onClick={() => setDeleteConfirmation(null)}>Giữ lại</button><button type="button" className="delete-button" onClick={() => removeItem(deleteConfirmation)}><Icon name="trash" size={17} /> Xóa</button></div>
+          </section>
+        </div>
       )}
       {projectArchiveOpen && (
         <ArchivedProjects
@@ -1362,6 +1395,7 @@ function Sidebar({
   onToggleAttention,
   onToggleProjects,
   onToggleProjectStar,
+  onReorderProjects,
   onToggle,
   projects,
   projectsOpen,
@@ -1383,12 +1417,15 @@ function Sidebar({
   onToggleAttention: () => void;
   onToggleProjects: () => void;
   onToggleProjectStar: (project: Project) => void;
+  onReorderProjects: (sourceId: string, targetId: string, placement: ProjectDropPlacement) => void;
   onToggle: () => void;
   projects: Project[];
   projectsOpen: boolean;
   syncStatus: SyncStatus;
   today: string;
 }) {
+  const [draggingProjectId, setDraggingProjectId] = useState<string | null>(null);
+  const [projectDropTarget, setProjectDropTarget] = useState<{ id: string; placement: ProjectDropPlacement } | null>(null);
   const navItems = [
     { view: { type: "today" } as View, label: "Hôm nay", icon: "sun" as const, count: filterItems(items, { type: "today" }, today, archivedProjects).length },
     { view: { type: "upcoming" } as View, label: "Sắp tới", icon: "clock" as const, count: filterItems(items, { type: "upcoming" }, today, archivedProjects).length },
@@ -1407,7 +1444,44 @@ function Sidebar({
     const shortcutNumber = orderedProjects.indexOf(project) + 1;
     const tooltip = shortcutNumber >= 1 && shortcutNumber <= 9 ? `${shortcutNumber} · ${project.name}` : project.name;
     return (
-      <div className="project-nav-row" key={project.id}>
+      <div
+        className={`project-nav-row ${!mobile && !compact ? "is-draggable" : ""} ${draggingProjectId === project.id ? "is-dragging" : ""} ${projectDropTarget?.id === project.id ? `drop-${projectDropTarget.placement}` : ""}`}
+        draggable={!mobile && !compact}
+        onDragStart={(event) => {
+          event.dataTransfer.effectAllowed = "move";
+          event.dataTransfer.setData("text/x-spark-project", project.id);
+          setDraggingProjectId(project.id);
+          setProjectDropTarget(null);
+        }}
+        onDragOver={(event) => {
+          if (mobile || compact || !event.dataTransfer.types.includes("text/x-spark-project")) return;
+          const sourceProject = projects.find((entry) => entry.id === draggingProjectId);
+          if (!sourceProject || sourceProject.id === project.id || sourceProject.isStarred !== project.isStarred) return;
+          event.preventDefault();
+          event.dataTransfer.dropEffect = "move";
+          const bounds = event.currentTarget.getBoundingClientRect();
+          const placement = event.clientY < bounds.top + bounds.height / 2 ? "before" : "after";
+          setProjectDropTarget((current) => current?.id === project.id && current.placement === placement ? current : { id: project.id, placement });
+        }}
+        onDragLeave={(event) => {
+          const nextTarget = event.relatedTarget;
+          if (nextTarget instanceof Node && event.currentTarget.contains(nextTarget)) return;
+          setProjectDropTarget((current) => current?.id === project.id ? null : current);
+        }}
+        onDrop={(event) => {
+          event.preventDefault();
+          const sourceId = event.dataTransfer.getData("text/x-spark-project");
+          const placement = projectDropTarget?.id === project.id ? projectDropTarget.placement : "before";
+          setDraggingProjectId(null);
+          setProjectDropTarget(null);
+          if (sourceId) onReorderProjects(sourceId, project.id, placement);
+        }}
+        onDragEnd={() => {
+          setDraggingProjectId(null);
+          setProjectDropTarget(null);
+        }}
+        key={project.id}
+      >
         <button className={`nav-item ${currentView.type === "project" && currentView.projectId === project.id ? "active" : ""}`} onClick={() => onNavigate({ type: "project", projectId: project.id })} aria-label={project.name} title={compact ? undefined : project.name} data-tooltip={compact ? tooltip : undefined}>
           <span className="project-dot" style={{ background: project.color }} /><span className="nav-text">{project.name}</span>
         </button>
@@ -1711,7 +1785,7 @@ function SwipeableItemRow({
         }}>
           <span className="item-title-wrap">
             <span className="item-title">{item.title}</span>
-            {item.type === "task" && item.description && (
+            {item.description && (
               <span className="item-description-indicator" aria-label="Có nội dung" title="Có nội dung">
                 <Icon name="description" size={15} />
               </span>
@@ -1815,7 +1889,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
       id: createUuid(),
       type,
       title: title.trim(),
-      description: type === "task" ? description.trim() || null : null,
+      description: description.trim() || null,
       dueDate: date || null,
       projectId: projectId || null,
       completedAt: null,
@@ -1857,22 +1931,17 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
       >
         <div className="quick-add-entry">
           <label className="quick-title-field">
-            <span id="quick-add-title">{type === "task" ? "Tên công việc" : "Nội dung ghi chú"}</span>
-            <input ref={inputRef} autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} placeholder={type === "task" ? "Bạn muốn hoàn thành điều gì?" : "Ghi lại một điều cần nhớ…"} aria-label="Tên mục" />
+            <span id="quick-add-title">{type === "task" ? "Tên công việc" : "Tên ghi chú"}</span>
+            <input ref={inputRef} autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} placeholder={type === "task" ? "Bạn muốn hoàn thành điều gì?" : "Đặt tên ghi chú…"} aria-label="Tên mục" />
           </label>
           <div className="quick-add-entry-actions">
             <label className="note-toggle"><input type="checkbox" checked={type === "note"} onChange={(event) => {
               const nextType = event.target.checked ? "note" : "task";
               setType(nextType);
-              if (nextType === "note") {
-                setDescription("");
-                setDescriptionOpen(false);
-              }
             }} />Ghi chú</label>
             <button
               className="quick-description-toggle"
               type="button"
-              disabled={type === "note"}
               aria-expanded={descriptionOpen}
               onClick={() => setDescriptionOpen((value) => !value)}
             >
@@ -1881,7 +1950,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
             </button>
           </div>
         </div>
-        {descriptionOpen && type === "task" && (
+        {descriptionOpen && (
           <label className="quick-description-field">
             <span>Nội dung (nếu cần)</span>
             <textarea
@@ -1889,7 +1958,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
               rows={3}
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              placeholder="Bổ sung nội dung liên quan đến task…"
+              placeholder="Bổ sung nội dung chi tiết…"
             />
           </label>
         )}
@@ -1950,32 +2019,31 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
 
         <div className="detail-content">
           <section className={`detail-text-block ${editingField === "title" ? "editing" : ""}`}>
-            <span className="detail-label">{item.type === "task" ? "Tên" : "Nội dung"}</span>
+            <span className="detail-label">Tên</span>
             {editingField === "title" ? (
               <div className="detail-inline-editor">
                 <input autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} onKeyDown={(event) => {
                   if (event.key === "Enter") { event.preventDefault(); saveTitle(); }
                   if (event.key === "Escape") { setTitle(item.title); setEditingField(null); }
-                }} aria-label={item.type === "task" ? "Tên task" : "Nội dung ghi chú"} />
+                }} aria-label={item.type === "task" ? "Tên task" : "Tên ghi chú"} />
                 <button type="button" className="detail-icon-action save" onClick={saveTitle} aria-label="Lưu"><Icon name="check" size={18} /></button>
                 <button type="button" className="detail-icon-action" onClick={() => { setTitle(item.title); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
               </div>
             ) : (
               <div className="detail-read-row">
-                <p>{item.type === "note" ? <LinkifiedText value={title} /> : title}</p>
-                <button type="button" className="detail-icon-action edit" onClick={() => setEditingField("title")} aria-label={item.type === "task" ? "Sửa tên" : "Sửa nội dung"}><Icon name="edit" size={17} /></button>
+                <p>{title}</p>
+                <button type="button" className="detail-icon-action edit" onClick={() => setEditingField("title")} aria-label="Sửa tên"><Icon name="edit" size={17} /></button>
               </div>
             )}
           </section>
 
-          {item.type === "task" && (
-            <section className={`detail-text-block detail-description ${editingField === "content" ? "editing" : ""}`}>
+          <section className={`detail-text-block detail-description ${editingField === "content" ? "editing" : ""}`}>
               <span className="detail-label">Nội dung</span>
               {editingField === "content" ? (
                 <div className="detail-inline-editor align-start">
                   <textarea autoFocus maxLength={2000} rows={4} value={description} onChange={(event) => setDescription(event.target.value)} onKeyDown={(event) => {
                     if (event.key === "Escape") { setDescription(item.description ?? ""); setEditingField(null); }
-                  }} placeholder="Nội dung (nếu cần)" aria-label="Nội dung task" />
+                  }} placeholder="Nội dung chi tiết (nếu cần)" aria-label={item.type === "task" ? "Nội dung task" : "Nội dung ghi chú"} />
                   <button type="button" className="detail-icon-action save" onClick={saveContent} aria-label="Lưu Nội dung"><Icon name="check" size={18} /></button>
                   <button type="button" className="detail-icon-action" onClick={() => { setDescription(item.description ?? ""); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
                 </div>
@@ -1985,8 +2053,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
                   <button type="button" className="detail-icon-action edit" onClick={() => setEditingField("content")} aria-label="Sửa Nội dung"><Icon name="edit" size={17} /></button>
                 </div>
               )}
-            </section>
-          )}
+          </section>
         </div>
 
         <div className="detail-metadata" aria-label="Thông tin mục">
@@ -2000,14 +2067,9 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
             <span className={`project-dot ${project ? "" : "empty"}`} style={project ? { background: project.color } : undefined} />
             <select value={project?.id ?? ""} aria-label="Dự án" onChange={(event) => { const value = event.target.value; setProjectId(value); onSave({ projectId: value || null }); }}><option value="">Không có dự án</option>{projects.filter((entry) => !entry.archivedAt || entry.id === projectId).map((entry) => <option key={entry.id} value={entry.id} disabled={Boolean(entry.archivedAt)}>{entry.name}{entry.archivedAt ? " (đã lưu trữ)" : ""}</option>)}</select>
           </label>
-        </div>
-
-        <div className="editor-actions detail-actions">
-          <div className="editor-secondary-actions">
-            {item.type === "note" && <button type="button" className="archive-button" onClick={onArchive}><Icon name="archive" size={17} /> {item.archivedAt ? "Khôi phục" : "Lưu trữ"}</button>}
-            <button type="button" className="delete-button" onClick={onDelete}><Icon name="trash" size={17} /> Xóa</button>
-          </div>
-          <button type="button" className="text-button" onClick={onClose}>Đóng</button>
+          {item.type === "note" && <button type="button" className="detail-meta-button archive" onClick={onArchive}><Icon name="archive" size={16} /> {item.archivedAt ? "Khôi phục" : "Lưu trữ"}</button>}
+          <span className="detail-meta-danger-separator" aria-hidden="true" />
+          <button type="button" className="detail-meta-button delete" onClick={onDelete}><Icon name="trash" size={16} /> Xóa</button>
         </div>
       </section>
     </div>

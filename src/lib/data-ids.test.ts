@@ -10,7 +10,7 @@ const ids = [
 
 function legacyData(): SparkData {
   return {
-    projects: [{ id: "work", name: "Công việc", color: "#32C8C7", isStarred: false, archivedAt: null }],
+    projects: [{ id: "work", name: "Công việc", color: "#32C8C7", isStarred: false, archivedAt: null, position: 0 }],
     items: [
       {
         id: "welcome-1",
@@ -82,21 +82,21 @@ describe("normalizeDataIds", () => {
     expect(normalized.items[0].archivedAt).toBeNull();
   });
 
-  it("defaults legacy task descriptions and removes descriptions from notes", () => {
+  it("defaults missing descriptions and preserves note content", () => {
     const data = legacyData();
     delete (data.items[0] as Partial<(typeof data.items)[number]>).description;
     data.items.push({
       ...data.items[0],
       id: "legacy-note",
       type: "note",
-      description: "Không được giữ trên note",
+      description: "  Nội dung chi tiết của note  ",
     });
     let index = 0;
 
     const normalized = normalizeDataIds(data, () => ids[index++]);
 
     expect(normalized.items[0].description).toBeNull();
-    expect(normalized.items[1].description).toBeNull();
+    expect(normalized.items[1].description).toBe("Nội dung chi tiết của note");
   });
 
   it("trims task descriptions without changing existing titles", () => {

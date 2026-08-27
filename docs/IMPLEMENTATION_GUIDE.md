@@ -44,7 +44,7 @@ Nếu muốn làm prototype cực nhanh, có thể dùng IndexedDB/local storage
 | `project_id` | uuid nullable | một item tối đa một project |
 | `type` | enum/text | `task` hoặc `note` |
 | `title` | text | task/note 1–100 ký tự, hiển thị một dòng |
-| `description` | text nullable | chỉ task, plain text 1–2.000 ký tự khi có giá trị; copy UI là “Nội dung” |
+| `description` | text nullable | task/note, plain text 1–2.000 ký tự khi có giá trị; copy UI là “Nội dung” |
 | `due_date` | date nullable | date-only |
 | `completed_at` | timestamptz nullable | chỉ dùng cho task; note luôn null |
 | `archived_at` | timestamptz nullable | chỉ dùng cho note; task luôn null |
@@ -54,7 +54,7 @@ Nếu muốn làm prototype cực nhanh, có thể dùng IndexedDB/local storage
 | `created_at` | timestamptz | audit |
 | `updated_at` | timestamptz | audit/sync |
 
-Ràng buộc: `type = 'note'` thì `completed_at` và `description` phải null; `type = 'task'` thì `archived_at` phải null. Constraint độ dài title mới dùng `NOT VALID` khi migration để không tự cắt dữ liệu cũ vượt 100 ký tự, nhưng vẫn chặn mọi lần ghi/cập nhật không hợp lệ sau đó. Chỉ mục nên có: `(user_id, type, completed_at, due_date)`, `(user_id, project_id, completed_at)`, `(user_id, archived_at)`, `(user_id, is_important)` và `(user_id, is_urgent)`.
+Ràng buộc: `type = 'note'` thì `completed_at` phải null; `type = 'task'` thì `archived_at` phải null. Cả hai loại dùng title 1–100 ký tự và description nullable tối đa 2.000 ký tự. Constraint mới dùng `NOT VALID` để không làm migration thất bại vì dữ liệu cũ. Chỉ mục nên có: `(user_id, type, completed_at, due_date)`, `(user_id, project_id, completed_at)`, `(user_id, archived_at)`, `(user_id, is_important)` và `(user_id, is_urgent)`.
 
 ### Bảo mật
 
@@ -121,7 +121,7 @@ src/
 - Không dùng global state library ở MVP nếu server cache + component state đã đủ.
 - Giữ unsaved quick-add text khi app chuyển offline ngắn.
 - Quick-add overlay phải có `role="dialog"`, `aria-modal="true"`, đóng được bằng Hủy, click backdrop và phím Escape; khi đóng trả focus về nút “Thêm công việc”. Backdrop của mọi overlay chỉ dùng lớp Navy dim đủ đậm, không dùng blur.
-- Quick-add giữ checkbox Ghi chú. Secondary button **Thêm Nội dung** chỉ hoạt động với task và mở textarea tùy chọn; bật Ghi chú phải disable button, đóng field và xóa draft description để note không giữ dữ liệu không hợp lệ. Chọn ngày và dự án vẫn hoạt động cho cả hai loại item.
+- Quick-add giữ checkbox Ghi chú. Secondary button **Thêm Nội dung** mở textarea tùy chọn tối đa 2.000 ký tự cho cả task và note; chuyển loại không xóa draft. Chọn ngày và dự án vẫn hoạt động cho cả hai loại item.
 - Tap item mở detail sheet ở trạng thái đọc. Tên/Nội dung chỉ chuyển sang input/textarea khi bấm edit icon kế text; metadata compact lưu từng thay đổi ngay mà không cần submit cả form.
 - Vùng nội dung item kiểm tra `openSwipeItemId` chung: trên mobile, nếu bất kỳ khay nào mở thì `onClick` chỉ đóng khay; nếu không có khay mở thì một click mở chi tiết. Quy tắc áp dụng khi chạm cùng item hoặc item khác, kể cả khác nhóm. Pointer-down/up của tap thường không được xóa trạng thái khay trước `onClick`. Desktop vẫn mở bằng một click. Chỉ bật style kéo sau khi xác định gesture ngang, không đổi nền/transform ở pointer-down của tap thường. Click phát sinh từ vuốt/cuộn/cancel bị chặn đến pointer-down mới, không reset bằng timer; activation bàn phím/assistive technology (`detail === 0`) vẫn hoạt động. Checkbox/marker và action khay không mở chi tiết.
 - Read row trong detail sheet dùng text column co giãn và edit action `flex: 0 0 auto` ở mép phải; khối Nội dung nhiều dòng căn action theo mép trên.
@@ -137,6 +137,7 @@ src/
 - Rail compact rộng khoảng `56px`; hai nhóm Cần lưu ý và Dự án có trạng thái mở/đóng riêng được lưu cục bộ.
 - Mobile sidebar giữ full negative logo và nút đóng, nhưng ẩn nhóm view Hôm nay/Sắp tới/Theo ngày/Tất cả đã chuyển xuống dock. Drawer mở bằng panel icon-only trong sticky header hoặc drag từ mép trái sang phải và dùng transition `transform` ngắn để có motion liên tục.
 - Project có thể gắn sao; `is_starred` được đồng bộ cloud và project được hiển thị trong Cần lưu ý.
+- Sidebar desktop expanded cho kéo-thả project để đổi thứ tự. Trong lúc kéo, row nguồn giảm opacity; nửa trên/nửa dưới của row đích lần lượt chọn chèn trước/sau và hiển thị drop indicator Turquoise đúng cạnh tương ứng. Thứ tự mới được chuẩn hóa thành `position` liên tiếp, cập nhật optimistic và xếp vào durable mutation queue; mobile/compact rail không bật drag.
 - Project archive/restore dùng mutation `upsert-project` với `archivedAt`. Sidebar/shortcut/quick-add chỉ dùng active projects; ItemGroup và item editor vẫn resolve cả archived project để không mất màu/tên liên kết cũ.
 - Project delete dùng mutation `delete-project`, request lọc cả `id` và `user_id`, dựa vào FK `items.project_id ON DELETE SET NULL` hiện có. Optimistic overlay xóa project và null liên kết item, không sửa nội dung/trạng thái item. Delete được xếp sau các pending create/update để giữ dependency khi offline; item edit mới có tham chiếu project đang chờ xóa được bỏ liên kết. Xóa có bước xác nhận rõ ràng, không có undo; không ảnh hưởng cơ chế undo xóa item.
 - Ở compact state, filter dùng icon + count; project dùng dot màu lớn. Tất cả icon-only controls phải có accessible label và tooltip.
