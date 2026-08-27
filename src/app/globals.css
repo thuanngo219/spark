@@ -297,11 +297,11 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .detail-meta-button.important.selected svg { fill: currentColor; }
 .detail-meta-button.urgent.selected { color: #ad594e; border-color: rgba(217,119,106,.4); background: rgba(217,119,106,.1); }
 .detail-meta-button.urgent.selected svg { fill: currentColor; }
+.detail-item-actions { margin-left: auto; display: flex; align-items: center; gap: 7px; }
 .detail-meta-button.archive { color: var(--navy-800); }
-.detail-meta-button.delete { margin-left: auto; color: #b94e43; border-color: rgba(217,119,106,.38); background: rgba(217,119,106,.08); }
+.detail-meta-button.delete { color: #b94e43; border-color: rgba(217,119,106,.38); background: rgba(217,119,106,.08); }
 .detail-meta-button.delete:hover { color: white; border-color: var(--coral); background: var(--coral); }
-.detail-meta-danger-separator { width: 1px; min-height: 28px; margin-left: auto; background: #dfe2e8; }
-.detail-meta-danger-separator + .detail-meta-button.delete { margin-left: 0; }
+.detail-meta-danger-separator { width: 1px; min-height: 28px; background: #dfe2e8; }
 .confirm-delete-backdrop { z-index: 100; }
 .confirm-delete-sheet { align-self: center; width: min(440px, 100%); }
 .confirm-delete-sheet > p { margin: 0 0 20px; color: var(--muted); font-size: .8125rem; line-height: 1.55; overflow-wrap: anywhere; }
@@ -322,11 +322,18 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .delete-button { display: flex; align-items: center; gap: 6px; color: var(--coral); background: rgba(217,119,106,.08); }
 .archive-button { display: flex; align-items: center; gap: 6px; color: var(--navy-800); background: var(--control-hover); }
 .archive-button:hover { background: var(--navy-900); color: white; }
-.color-picker { border: 0; padding: 0; margin: 2px 0 27px; display: flex; gap: 10px; }
+.color-picker { min-width: 0; border: 0; padding: 0; margin: 2px 0 27px; }
 .color-picker legend { margin-bottom: 10px; }
-.color-picker button { width: 31px; height: 31px; border: 2px solid white; border-radius: 50%; box-shadow: none; }
+.color-picker-options { display: flex; gap: 10px; }
+.color-picker button { flex: 0 0 auto; width: 31px; height: 31px; border: 2px solid white; border-radius: 50%; box-shadow: none; }
 .color-picker button:not(.project-star-option) { outline: 1px solid #dfe1e7; outline-offset: -1px; }
 .color-picker button:not(.project-star-option).selected { border-color: var(--navy-900); outline: none; }
+.custom-color-option { --custom-project-color: var(--turquoise); position: relative; flex: 0 0 31px; width: 31px; height: 31px; border: 2px solid white; border-radius: 50%; outline: 1px solid #dfe1e7; outline-offset: -1px; cursor: pointer; overflow: hidden; }
+.custom-color-option > input { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; padding: 0; border: 0; opacity: 0; cursor: pointer; }
+.custom-color-option > span { position: absolute; inset: 0; border-radius: inherit; background: conic-gradient(from 25deg, #44d4cd, #5c78d6, #8951c7, #c56f8c, #d9776a, #d6a84f, #6fa889, #44d4cd); }
+.custom-color-option.selected { border-color: var(--navy-900); outline: none; }
+.custom-color-option.selected > span::after { content: ""; position: absolute; inset: 7px; border: 2px solid white; border-radius: 50%; background: var(--custom-project-color); box-shadow: 0 0 0 1px rgba(17,23,66,.18); }
+.custom-color-option:focus-within { filter: brightness(.88); }
 .shortcut-dialog { align-self: center; width: min(500px, 100%); }
 .shortcut-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 .shortcut-group { min-width: 0; display: grid; align-content: start; }
@@ -498,6 +505,10 @@ button:focus-visible { filter: brightness(.88); }
   .detail-meta-control input, .detail-meta-control select { width: 100%; max-width: none; }
   .detail-meta-control.project { grid-column: 1 / -1; }
   .detail-meta-control.project select { max-width: none; }
+  .detail-item-actions { grid-column: 1 / -1; margin-left: 0; padding-top: 2px; justify-content: flex-end; }
+  .detail-item-actions .detail-meta-button { flex: 0 0 44px; width: 44px; padding: 0; justify-content: center; }
+  .detail-item-actions .detail-meta-label { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .detail-item-actions .detail-meta-danger-separator { min-height: 30px; margin-inline: 1px; }
   .detail-actions { margin: 0 17px; bottom: 0; padding: 13px 0 15px; }
   .shortcut-dialog { width: 100%; max-height: 92dvh; overflow-y: auto; border-radius: 22px; padding: 19px; }
   .shortcut-columns { gap: 14px; }
@@ -507,7 +518,10 @@ button:focus-visible { filter: brightness(.88); }
   .sync-dialog { border-radius: 22px; padding: 19px; max-height: 92dvh; overflow-y: auto; }
   .editor-header h2 { font-size: 1.3125rem; }
   .field-grid { grid-template-columns: 1fr; gap: 0; }
-  .color-picker { gap: 7px; flex-wrap: wrap; }
+  .color-picker-options { gap: 7px; margin-inline: -2px; padding: 2px 2px 7px; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: none; }
+  .color-picker-options::-webkit-scrollbar { display: none; }
+  .color-picker-options > button, .color-picker .project-star-option, .custom-color-option { flex-basis: 44px; width: 44px; height: 44px; min-height: 44px; }
+  .custom-color-option.selected > span::after { inset: 10px; }
   .editor-actions { position: sticky; bottom: -19px; background: white; padding-bottom: 4px; }
   .toast { left: 14px; right: 14px; bottom: max(136px, calc(116px + env(safe-area-inset-bottom))); max-width: none; }
   .loading-shell { display: block; }.loading-sidebar { display: none; }

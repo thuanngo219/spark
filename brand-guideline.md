@@ -145,7 +145,7 @@ Brand palette của Spark có đúng năm màu chromatic. Trắng, đen và các
 
 ### Project identity palette
 
-Project có tám màu nhận diện để các dot vẫn phân biệt được khi danh sách dài. Bốn màu lấy trực tiếp từ brand palette và bốn màu dẫn xuất được giảm độ gắt để hòa với Compact Canvas.
+Project có bảy màu preset để các dot vẫn phân biệt được khi danh sách dài. Bốn màu lấy trực tiếp từ brand palette và ba màu dẫn xuất được giảm độ gắt để hòa với Compact Canvas; lựa chọn thứ tám trong editor là swatch đa sắc mở màu custom.
 
 | Tên | Màu | Nguồn |
 |---|---|---|
@@ -156,9 +156,9 @@ Project có tám màu nhận diện để các dot vẫn phân biệt được k
 | Soft Amber | `#D6A84F` | Dẫn xuất ấm |
 | Cornflower | `#5C78D6` | Dẫn xuất mát |
 | Sage | `#6FA889` | Dẫn xuất xanh dịu |
-| Dusty Rose | `#C56F8C` | Dẫn xuất hồng trầm |
 
-- Chỉ dùng bốn màu dẫn xuất cho project dot, bộ chọn màu dự án và chú giải trực tiếp của project.
+- Chỉ dùng ba màu dẫn xuất cho project dot, bộ chọn màu dự án và chú giải trực tiếp của project.
+- Người dùng có thể chọn màu tùy ý cho project qua color picker. Màu custom chỉ dùng cho project dot, swatch đang chọn và chú giải trực tiếp của project; không trở thành token thương hiệu hoặc màu control toàn cục.
 - Không dùng các màu dẫn xuất làm CTA, focus, trạng thái hệ thống, logo hoặc mảng nền thương hiệu.
 - Navy không dùng làm project dot vì thiếu tương phản trên sidebar navy.
 

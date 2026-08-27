@@ -90,7 +90,6 @@ const projectColors = [
   "#D6A84F",
   "#5C78D6",
   "#6FA889",
-  "#C56F8C",
 ];
 type SyncStatus =
   | "demo"
@@ -2067,9 +2066,11 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
             <span className={`project-dot ${project ? "" : "empty"}`} style={project ? { background: project.color } : undefined} />
             <select value={project?.id ?? ""} aria-label="Dự án" onChange={(event) => { const value = event.target.value; setProjectId(value); onSave({ projectId: value || null }); }}><option value="">Không có dự án</option>{projects.filter((entry) => !entry.archivedAt || entry.id === projectId).map((entry) => <option key={entry.id} value={entry.id} disabled={Boolean(entry.archivedAt)}>{entry.name}{entry.archivedAt ? " (đã lưu trữ)" : ""}</option>)}</select>
           </label>
-          {item.type === "note" && <button type="button" className="detail-meta-button archive" onClick={onArchive}><Icon name="archive" size={16} /> {item.archivedAt ? "Khôi phục" : "Lưu trữ"}</button>}
-          <span className="detail-meta-danger-separator" aria-hidden="true" />
-          <button type="button" className="detail-meta-button delete" onClick={onDelete}><Icon name="trash" size={16} /> Xóa</button>
+          <div className="detail-item-actions">
+            {item.type === "note" && <button type="button" className="detail-meta-button archive" onClick={onArchive} aria-label={item.archivedAt ? "Khôi phục ghi chú" : "Lưu trữ ghi chú"} title={item.archivedAt ? "Khôi phục" : "Lưu trữ"}><Icon name="archive" size={18} /><span className="detail-meta-label">{item.archivedAt ? "Khôi phục" : "Lưu trữ"}</span></button>}
+            <span className="detail-meta-danger-separator" aria-hidden="true" />
+            <button type="button" className="detail-meta-button delete" onClick={onDelete} aria-label="Xóa mục" title="Xóa"><Icon name="trash" size={18} /><span className="detail-meta-label">Xóa</span></button>
+          </div>
         </div>
       </section>
     </div>
@@ -2145,7 +2146,49 @@ function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose, onSav
   const [color, setColor] = useState(project?.color ?? projectColors[0]);
   const [isStarred, setIsStarred] = useState(project?.isStarred ?? false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const usesCustomColor = !projectColors.some((entry) => entry.toLowerCase() === color.toLowerCase());
+  const customPickerValue = /^#[0-9a-f]{6}$/i.test(color) ? color : projectColors[0];
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useProjectDialog(onClose);
+  useEffect(() => {
+    if (project || confirmDelete || !window.matchMedia("(max-width: 699px)").matches) return;
+    const input = nameInputRef.current;
+    const backdrop = dialogRef.current;
+    const visualViewport = window.visualViewport;
+    if (!input || !backdrop) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const revealNameInput = () => {
+      input.focus({ preventScroll: true });
+      window.requestAnimationFrame(() => input.scrollIntoView({ block: "center", inline: "nearest" }));
+    };
+    const fitToKeyboard = () => {
+      if (!visualViewport) return;
+      backdrop.style.top = `${visualViewport.offsetTop}px`;
+      backdrop.style.bottom = "auto";
+      backdrop.style.height = `${visualViewport.height}px`;
+      window.requestAnimationFrame(() => input.scrollIntoView({ block: "center", inline: "nearest" }));
+    };
+
+    const focusFrame = window.requestAnimationFrame(revealNameInput);
+    const keyboardTimer = window.setTimeout(() => {
+      fitToKeyboard();
+      revealNameInput();
+    }, 280);
+    visualViewport?.addEventListener("resize", fitToKeyboard);
+    visualViewport?.addEventListener("scroll", fitToKeyboard);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      backdrop.style.top = "";
+      backdrop.style.bottom = "";
+      backdrop.style.height = "";
+      window.cancelAnimationFrame(focusFrame);
+      window.clearTimeout(keyboardTimer);
+      visualViewport?.removeEventListener("resize", fitToKeyboard);
+      visualViewport?.removeEventListener("scroll", fitToKeyboard);
+    };
+  }, [confirmDelete, dialogRef, project]);
   return (
     <div ref={dialogRef} className="dialog-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="project-editor-title">
       {confirmDelete && project ? (
@@ -2158,19 +2201,25 @@ function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose, onSav
       ) : (
       <form className="editor-sheet compact-editor" onClick={(event) => event.stopPropagation()} onSubmit={(event) => { event.preventDefault(); if (name.trim()) onSave(project ? { ...project, name: name.trim(), color, isStarred } : { id: createUuid(), name: name.trim(), color, isStarred, archivedAt: null }); }}>
         <div className="editor-header"><div><span>{project?.archivedAt ? "Đã lưu trữ" : "Dự án"}</span><h2 id="project-editor-title">{project ? "Chỉnh sửa dự án" : "Tạo dự án mới"}</h2></div><button type="button" className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
-        <label className="field"><span>Tên dự án</span><input autoFocus maxLength={80} value={name} onChange={(event) => setName(event.target.value)} placeholder="Ví dụ: Ra mắt website" /></label>
+        <label className="field"><span>Tên dự án</span><input ref={nameInputRef} autoFocus maxLength={80} value={name} onChange={(event) => setName(event.target.value)} placeholder="Ví dụ: Ra mắt website" /></label>
         <fieldset className="color-picker">
           <legend>Màu nhận diện</legend>
-          <button
-            type="button"
-            className={`project-star-option ${isStarred ? "selected" : ""}`}
-            onClick={() => setIsStarred((value) => !value)}
-            aria-label={isStarred ? "Bỏ khỏi Cần lưu ý" : "Đưa vào Cần lưu ý"}
-            title={isStarred ? "Bỏ khỏi Cần lưu ý" : "Đưa vào Cần lưu ý"}
-          >
-            <Icon name="star" size={17} />
-          </button>
-          {projectColors.map((entry) => <button type="button" aria-label={`Chọn màu ${entry}`} className={color === entry ? "selected" : ""} style={{ background: entry }} key={entry} onClick={() => setColor(entry)} />)}
+          <div className="color-picker-options">
+            <button
+              type="button"
+              className={`project-star-option ${isStarred ? "selected" : ""}`}
+              onClick={() => setIsStarred((value) => !value)}
+              aria-label={isStarred ? "Bỏ khỏi Cần lưu ý" : "Đưa vào Cần lưu ý"}
+              title={isStarred ? "Bỏ khỏi Cần lưu ý" : "Đưa vào Cần lưu ý"}
+            >
+              <Icon name="star" size={17} />
+            </button>
+            {projectColors.map((entry) => <button type="button" aria-label={`Chọn màu ${entry}`} className={color.toLowerCase() === entry.toLowerCase() ? "selected" : ""} style={{ background: entry }} key={entry} onClick={() => setColor(entry)} />)}
+            <label className={`custom-color-option ${usesCustomColor ? "selected" : ""}`} style={{ "--custom-project-color": customPickerValue } as CSSProperties} title="Chọn màu tùy ý">
+              <input type="color" value={customPickerValue} onChange={(event) => setColor(event.target.value)} aria-label="Chọn màu tùy ý" />
+              <span aria-hidden="true" />
+            </label>
+          </div>
         </fieldset>
         {project && <div className="project-lifecycle">
           <p className="project-lifecycle-hint">{project.archivedAt ? "Khôi phục để đưa dự án trở lại sidebar và bộ chọn dự án." : "Lưu trữ để thu gọn sidebar. Task và note vẫn được giữ nguyên."}</p>
