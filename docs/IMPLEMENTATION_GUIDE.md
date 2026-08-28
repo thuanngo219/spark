@@ -17,6 +17,8 @@ Lý do chọn cấu hình này: một codebase chạy desktop lẫn iPhone, depl
 
 **Khuyến nghị cho MVP: cloud sync ngay từ đầu.** Đăng nhập passwordless bằng mã OTP gửi qua email, dữ liệu lưu ở Supabase và được bảo vệ theo user. Người dùng nhập mã ngay trong Spark để tránh magic link bị mở ở browser khác trên mobile. Cách này cho phép iPhone và desktop thấy cùng một danh sách.
 
+Email template của hosted Supabase phải dùng `{{ .Token }}` để gửi OTP 6 chữ số thay vì `{{ .ConfirmationURL }}`. Client chỉ giữ ký tự số, giới hạn đúng 6 ký tự và không gọi `verifyOtp` khi mã chưa khớp `^[0-9]{6}$`.
+
 Nếu muốn làm prototype cực nhanh, có thể dùng IndexedDB/local storage trước. Nhược điểm là dữ liệu gắn với từng trình duyệt và không tự đồng bộ giữa thiết bị; phải có migration path trước khi đưa vào dùng thật.
 
 ## 2. Data model tối thiểu
@@ -123,6 +125,7 @@ src/
 - Quick-add overlay phải có `role="dialog"`, `aria-modal="true"`, đóng được bằng Hủy, click backdrop và phím Escape; khi đóng trả focus về nút “Thêm công việc”. Backdrop của mọi overlay chỉ dùng lớp Navy dim đủ đậm, không dùng blur.
 - Quick-add giữ checkbox Ghi chú. Secondary button **Thêm Nội dung** mở textarea tùy chọn tối đa 2.000 ký tự cho cả task và note; chuyển loại không xóa draft. Chọn ngày và dự án vẫn hoạt động cho cả hai loại item.
 - Tap item mở detail sheet ở trạng thái đọc. Tên/Nội dung chỉ chuyển sang input/textarea khi bấm edit icon kế text; metadata compact lưu từng thay đổi ngay mà không cần submit cả form.
+- Canvas liệt kê task/note ở desktop dùng `width: clamp(940px, 80vw, 1200px)` cùng `max-width: 100%` để co theo vùng content khi viewport hẹp; mobile override về `width: 100%`. Detail sheet desktop giữ `width: min(780px, calc(100vw - 48px))`.
 - Vùng nội dung item kiểm tra `openSwipeItemId` chung: trên mobile, nếu bất kỳ khay nào mở thì `onClick` chỉ đóng khay; nếu không có khay mở thì một click mở chi tiết. Quy tắc áp dụng khi chạm cùng item hoặc item khác, kể cả khác nhóm. Pointer-down/up của tap thường không được xóa trạng thái khay trước `onClick`. Desktop vẫn mở bằng một click. Chỉ bật style kéo sau khi xác định gesture ngang, không đổi nền/transform ở pointer-down của tap thường. Click phát sinh từ vuốt/cuộn/cancel bị chặn đến pointer-down mới, không reset bằng timer; activation bàn phím/assistive technology (`detail === 0`) vẫn hoạt động. Checkbox/marker và action khay không mở chi tiết.
 - Read row trong detail sheet dùng text column co giãn và edit action `flex: 0 0 auto` ở mép phải; khối Nội dung nhiều dòng căn action theo mép trên.
 - Metadata detail mobile dùng grid ba cột: Quan Trọng, Ưu tiên, Ngày ở hàng đầu; Dự án full-width; cụm Lưu trữ/Xóa icon-only 44px căn phải ở hàng cuối. Label vẫn tồn tại qua `aria-label`/tooltip; Xóa tiếp tục qua confirm dialog.

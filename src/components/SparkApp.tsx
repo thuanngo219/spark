@@ -36,6 +36,7 @@ import {
 } from "@/lib/dates";
 import { createItemClickGuard, resolveItemContentTap, resolveItemSwipe, shouldOpenMobileSidebar } from "@/lib/mobile-gestures";
 import { normalizeDataIds, type SparkData } from "@/lib/data-ids";
+import { EMAIL_OTP_LENGTH, isCompleteEmailOtp, normalizeEmailOtp } from "@/lib/email-otp";
 import { createUuid } from "@/lib/ids";
 import { linkifyText } from "@/lib/linkify";
 import { reorderProjectsForDrop, type ProjectDropPlacement } from "@/lib/project-order";
@@ -2308,12 +2309,12 @@ function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
   const verify = async (event: FormEvent) => {
     event.preventDefault();
     const client = getSupabaseBrowserClient();
-    if (!client || token.trim().length < 6) return;
+    if (!client || !isCompleteEmailOtp(token)) return;
     setVerifying(true);
     setError("");
     const result = await client.auth.verifyOtp({
       email: email.trim(),
-      token: token.trim(),
+      token,
       type: "email",
     });
     setVerifying(false);
@@ -2342,9 +2343,9 @@ function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
             <h3>Nhập mã trong email</h3>
             <p>Mình đã gửi mã đăng nhập tới <strong>{email}</strong>. Nhập mã mới nhất ngay tại đây; không cần mở liên kết.</p>
             <form className="sync-form" onSubmit={verify}>
-              <label className="field"><span>Mã đăng nhập</span><input className="otp-input" autoFocus autoComplete="one-time-code" inputMode="numeric" maxLength={8} value={token} onChange={(event) => setToken(event.target.value.replace(/\D/g, ""))} placeholder="000000" /></label>
+              <label className="field"><span>Mã đăng nhập gồm 6 số</span><input className="otp-input" name="otp" type="text" autoFocus autoComplete="one-time-code" inputMode="numeric" enterKeyHint="done" minLength={EMAIL_OTP_LENGTH} maxLength={EMAIL_OTP_LENGTH} pattern="[0-9]{6}" required value={token} onChange={(event) => setToken(normalizeEmailOtp(event.target.value))} placeholder="000000" aria-label="Mã đăng nhập gồm 6 chữ số" /></label>
               {error && <p className="form-error">{error}</p>}
-              <button className="primary-button" disabled={verifying || token.trim().length < 6}>{verifying ? "Đang xác nhận…" : "Xác nhận và đồng bộ"}</button>
+              <button className="primary-button" disabled={verifying || !isCompleteEmailOtp(token)}>{verifying ? "Đang xác nhận…" : "Xác nhận và đồng bộ"}</button>
             </form>
             <button className="text-button" onClick={() => { setSent(false); setToken(""); setError(""); }}>Gửi lại hoặc dùng email khác</button>
           </div>

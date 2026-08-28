@@ -140,7 +140,7 @@ Spark
 
 Desktop mở mặc định ở view Hôm nay với sidebar thu gọn thành compact rail; người dùng có thể mở sidebar bằng nút panel luôn nhìn thấy hoặc phím `[`. Lựa chọn sau đó được ghi nhớ trên thiết bị. Desktop header dùng padding nội dung 26px, sticky và có dải màu project/view cao 20px ở trên cùng.
 
-Mobile dùng canvas tràn viền và view header sticky. Panel icon-only nằm trong cùng title row, ngay trước tên view. Khi cuộn quá ngưỡng ngắn, header thu từ khoảng 149px xuống 92px, bỏ ngày/eyebrow nhưng giữ dòng thống kê, title còn 80% cỡ ban đầu, nền canvas còn 60% opacity kết hợp blur 14px và dải màu project/view giảm từ 20px xuống 10px; panel icon giữ nguyên kích thước. Dock icon-only cao 58px overlay ở cuối màn hình chỉ gồm Hôm nay, Sắp tới, thêm task, Theo ngày và Tất cả theo năm cột bằng nhau; active navigation dùng nền Navy rộng tối đa 64px. Trên iPhone có home indicator, dock nằm tại `safe-area - 10px` (tối thiểu 10px). Sheet điều hướng mở bằng panel icon trong header hoặc swipe từ mép trái sang phải, giữ full negative logo + nút đóng và không lặp các view chính đã có trong dock. Tap item mở editor; swipe trái lộ Quan Trọng/Ưu tiên/Xóa với task và Quan Trọng/Ưu tiên/Lưu trữ với note, swipe phải trên item không có hành động và không dùng touch-and-hold.
+Mobile dùng canvas tràn viền và view header sticky. Panel icon-only nằm trong cùng title row, ngay trước tên view. Khi cuộn quá ngưỡng ngắn, header thu từ khoảng 149px xuống 92px, bỏ ngày/eyebrow nhưng giữ dòng thống kê, title còn 80% cỡ ban đầu, nền canvas còn 60% opacity kết hợp blur 14px và dải màu project/view giảm từ 20px xuống 10px; panel icon giữ nguyên kích thước. Dock icon-only cao 58px overlay ở cuối màn hình, bo dạng pill tròn hai đầu và chỉ gồm Hôm nay, Sắp tới, thêm task, Theo ngày và Tất cả theo năm cột bằng nhau; active navigation là pill Navy cao 52px, rộng tối đa 64px. Trên iPhone có home indicator, dock nằm tại `safe-area - 10px` (tối thiểu 10px). Sheet điều hướng mở bằng panel icon trong header hoặc swipe từ mép trái sang phải, giữ full negative logo + nút đóng và không lặp các view chính đã có trong dock. Tap item mở editor; swipe trái lộ Quan Trọng/Ưu tiên/Xóa với task và Quan Trọng/Ưu tiên/Lưu trữ với note, swipe phải trên item không có hành động và không dùng touch-and-hold.
 
 Hai nhóm **Cần lưu ý** và **Dự án** có thể thu gọn độc lập. Cần lưu ý gồm smart filter Quan Trọng/Ưu tiên và các project được gắn sao; trạng thái nhóm được ghi nhớ trên thiết bị.
 
@@ -236,6 +236,9 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Task/note có thể bật đồng thời Quan Trọng và Ưu tiên; smart filters bao gồm đúng item phù hợp.
 - Listing tự sắp theo cả hai cờ → Ưu tiên → Quan Trọng → bình thường; tắt cờ trả item về thứ tự loại/ngày/thời điểm tạo.
 - Detail sheet giữ edit button ở mép phải của từng khối đọc; URL trong Nội dung task/note là liên kết mở tab mới và không cho phép protocol ngoài HTTP(S).
+- Canvas liệt kê task/note trên desktop rộng responsive trong dải `940–1200px` khi vùng nội dung đủ chỗ; màn hình hẹp và mobile co vừa vùng hiển thị, không phát sinh horizontal scroll. Detail sheet desktop giữ chiều rộng `780px`.
+- Dock mobile bo tròn hai đầu; active navigation dùng pill đồng tâm và vẫn giữ vùng chạm tối thiểu 44px.
+- Email đồng bộ gửi OTP 6 chữ số; input chỉ nhận tối đa 6 số và nút xác nhận chỉ bật khi có đúng 6 số.
 - Switcher Tất cả/Note/Task hoạt động nhất quán ở mọi view và không làm thay đổi dữ liệu item.
 - Toast Hoàn tác nằm ngoài vùng navigation/dock trên desktop và mobile.
 - Layout hoạt động từ 320px đến desktop; không có horizontal scroll ngoài thành phần lịch chủ đích.
