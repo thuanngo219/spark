@@ -6,20 +6,25 @@ describe("standalone keyboard shortcuts", () => {
     expect(resolveStandaloneShortcut(key)).toBe("new-task");
   });
 
-  it("keeps the existing sidebar and help shortcuts", () => {
-    expect(resolveStandaloneShortcut("[")).toBe("toggle-sidebar");
+  it("toggles the sidebar with Command or Control + backslash", () => {
+    expect(resolveStandaloneShortcut("\\", { metaKey: true })).toBe("toggle-sidebar");
+    expect(resolveStandaloneShortcut("\\", { ctrlKey: true })).toBe("toggle-sidebar");
+    expect(resolveStandaloneShortcut("n", { metaKey: true })).toBeNull();
+  });
+
+  it("keeps the help shortcut", () => {
     expect(resolveStandaloneShortcut("?")).toBe("help");
   });
 
   it.each([
-    ["-", "display-notes"],
-    ["=", "display-tasks"],
+    ["[", "display-notes"],
+    ["]", "display-tasks"],
     ["\\", "display-all"],
   ] as const)("maps %s to the %s content filter", (key, expected) => {
     expect(resolveStandaloneShortcut(key)).toBe(expected);
   });
 
-  it.each(["+", "|"])("does not map shifted symbol %s", (key) => {
+  it.each(["-", "=", "+", "|", "{", "}"])("does not map retired or shifted symbol %s", (key) => {
     expect(resolveStandaloneShortcut(key)).toBeNull();
   });
 

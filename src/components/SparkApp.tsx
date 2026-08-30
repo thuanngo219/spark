@@ -673,7 +673,10 @@ export function SparkApp() {
     function onKeyDown(event: KeyboardEvent) {
       if (projectEditor || projectArchiveOpen) return;
       if (isTypingTarget(event.target)) return;
-      const standaloneShortcut = resolveStandaloneShortcut(event.key);
+      const standaloneShortcut = resolveStandaloneShortcut(event.key, {
+        ctrlKey: event.ctrlKey,
+        metaKey: event.metaKey,
+      });
       if (event.key === "Escape") {
         setHelpOpen(false);
         setMobileNav(false);
@@ -1300,8 +1303,8 @@ function ItemDisplaySwitcher({
 }) {
   const entries = [
     { mode: "all" as const, label: "Hiển thị tất cả", shortcut: "\\", icon: "layers" as const },
-    { mode: "note" as const, label: "Chỉ hiển thị note", shortcut: "-", icon: "note" as const },
-    { mode: "task" as const, label: "Chỉ hiển thị task", shortcut: "=", icon: "task" as const },
+    { mode: "note" as const, label: "Chỉ hiển thị note", shortcut: "[", icon: "note" as const },
+    { mode: "task" as const, label: "Chỉ hiển thị task", shortcut: "]", icon: "task" as const },
   ];
 
   return (
@@ -2258,11 +2261,11 @@ function ShortcutHelp({ onClose }: { onClose: () => void }) {
           </section>
         </div>
         <div className="shortcut-footer">
-          <span><kbd>-</kbd> Chỉ note</span>
-          <span><kbd>=</kbd> Chỉ task</span>
+          <span><kbd>[</kbd> Chỉ note</span>
+          <span><kbd>]</kbd> Chỉ task</span>
           <span><kbd>\</kbd> Tất cả nội dung</span>
           <span><kbd>N</kbd> Thêm task</span>
-          <span><kbd>[</kbd> Sidebar</span>
+          <span><kbd>⌘/Ctrl + \</kbd> Sidebar</span>
           <span><kbd>?</kbd> Trợ giúp</span>
           <span><kbd>Esc</kbd> Đóng</span>
         </div>

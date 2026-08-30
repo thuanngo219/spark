@@ -12,7 +12,19 @@ export type StandaloneShortcut =
   | "toggle-sidebar"
   | "help";
 
-export function resolveStandaloneShortcut(key: string): StandaloneShortcut | null {
+type ShortcutModifiers = {
+  ctrlKey?: boolean;
+  metaKey?: boolean;
+};
+
+export function resolveStandaloneShortcut(
+  key: string,
+  { ctrlKey = false, metaKey = false }: ShortcutModifiers = {},
+): StandaloneShortcut | null {
+  if (ctrlKey || metaKey) {
+    return key === "\\" ? "toggle-sidebar" : null;
+  }
+
   const normalized = key.toLowerCase();
   if (normalized === "n") return "new-task";
   if (normalized === "t") return "today";
@@ -21,10 +33,9 @@ export function resolveStandaloneShortcut(key: string): StandaloneShortcut | nul
   if (normalized === "a") return "all";
   if (normalized === "i") return "important";
   if (normalized === "u") return "urgent";
-  if (key === "-") return "display-notes";
-  if (key === "=") return "display-tasks";
+  if (key === "[") return "display-notes";
+  if (key === "]") return "display-tasks";
   if (key === "\\") return "display-all";
-  if (key === "[") return "toggle-sidebar";
   if (key === "?") return "help";
   return null;
 }

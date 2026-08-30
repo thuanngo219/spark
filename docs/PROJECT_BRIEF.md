@@ -138,7 +138,7 @@ Spark
     └── + Tạo project
 ```
 
-Desktop mở mặc định ở view Hôm nay với sidebar thu gọn thành compact rail; người dùng có thể mở sidebar bằng nút panel luôn nhìn thấy hoặc phím `[`. Lựa chọn sau đó được ghi nhớ trên thiết bị. Desktop header dùng padding nội dung 26px, sticky và có dải màu project/view cao 20px ở trên cùng.
+Desktop mở mặc định ở view Hôm nay với sidebar thu gọn thành compact rail; người dùng có thể mở sidebar bằng nút panel luôn nhìn thấy hoặc phím `⌘/Ctrl + \`. Lựa chọn sau đó được ghi nhớ trên thiết bị. Desktop header dùng padding nội dung 26px, sticky và có dải màu project/view cao 20px ở trên cùng.
 
 Mobile dùng canvas tràn viền và view header sticky. Panel icon-only nằm trong cùng title row, ngay trước tên view. Khi cuộn quá ngưỡng ngắn, header thu từ khoảng 149px xuống 92px, bỏ ngày/eyebrow nhưng giữ dòng thống kê, title còn 80% cỡ ban đầu, nền canvas còn 60% opacity kết hợp blur 14px và dải màu project/view giảm từ 20px xuống 10px; panel icon giữ nguyên kích thước. Dock icon-only cao 58px overlay ở cuối màn hình, bo dạng pill tròn hai đầu và chỉ gồm Hôm nay, Sắp tới, thêm task, Theo ngày và Tất cả theo năm cột bằng nhau; active navigation là pill Navy cao 52px, rộng tối đa 64px. Trên iPhone có home indicator, dock nằm tại `safe-area - 10px` (tối thiểu 10px). Sheet điều hướng mở bằng panel icon trong header hoặc swipe từ mép trái sang phải, giữ full negative logo + nút đóng và không lặp các view chính đã có trong dock. Tap item mở editor; swipe trái lộ Quan Trọng/Ưu tiên/Xóa với task và Quan Trọng/Ưu tiên/Lưu trữ với note, swipe phải trên item không có hành động và không dùng touch-and-hold.
 
@@ -157,18 +157,18 @@ Phím tắt filter dùng một phím trực tiếp khi focus không nằm trong 
 | `A` | Mở **Tất cả**. |
 | `I` | Mở **Quan Trọng**. |
 | `U` | Mở **Ưu tiên**. |
-| `-` | Chỉ hiển thị note. |
-| `=` | Chỉ hiển thị task. |
+| `[` | Chỉ hiển thị note. |
+| `]` | Chỉ hiển thị task. |
 | `\` | Hiển thị tất cả task và note. |
 | `1–9` | Mở dự án tương ứng theo thứ tự đang hiển thị trong sidebar. |
-| `[` | Thu gọn/mở rộng sidebar. |
+| `⌘/Ctrl + \` | Thu gọn/mở rộng sidebar. |
 | `?` | Mở bảng trợ giúp phím tắt. |
 | `Escape` | Đóng overlay hoặc bảng trợ giúp. |
 
 Quy tắc:
 
 - Không kích hoạt shortcut khi focus nằm trong input, textarea, select hoặc vùng `contenteditable`.
-- Ba shortcut filter nội dung chỉ nhận đúng phím đơn `-`, `=` và `\`; ký tự có Shift `+` và `|` không kích hoạt filter.
+- Ba shortcut filter nội dung chỉ nhận đúng phím đơn `[`, `]` và `\`; ký tự có Shift `{`, `}` và `|` không kích hoạt filter.
 - Bảng trợ giúp dùng hai nhóm Điều hướng/Tập trung, gộp dự án thành một dòng `1–9` không liệt kê tên dự án, có nút đóng rõ ràng và đóng được bằng `Escape` trên cả desktop/mobile.
 - Shortcut phải được hiển thị trong tooltip/menu trợ giúp, không yêu cầu người dùng ghi nhớ để sử dụng app.
 
@@ -245,6 +245,6 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Tất cả thao tác chính dùng được bằng touch và keyboard.
 - Sidebar desktop chuyển đổi được giữa full và compact; lựa chọn được giữ sau khi reload.
 - Cần lưu ý/Dự án có thể thu gọn; project gắn sao xuất hiện trong Cần lưu ý và trạng thái này được lưu cùng dữ liệu project.
-- Các shortcut `N`, `T`, `S`, `D`, `A`, `I`, `U`, `-`, `=`, `\`, `1–9`, `[` và `?` hoạt động đúng, không kích hoạt khi đang nhập task.
+- Các shortcut `N`, `T`, `S`, `D`, `A`, `I`, `U`, `[`, `]`, `\`, `⌘/Ctrl + \`, `1–9` và `?` hoạt động đúng, không kích hoạt khi đang nhập task.
 - Compact sidebar hiển thị tooltip tên hạng mục/project ngay khi hover hoặc focus vào icon/dot.
 - App cài được lên Home Screen với tên/icon riêng và mở ở chế độ standalone khi nền tảng hỗ trợ.

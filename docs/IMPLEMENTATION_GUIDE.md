@@ -148,7 +148,7 @@ src/
 - Project delete dùng mutation `delete-project`, request lọc cả `id` và `user_id`, dựa vào FK `items.project_id ON DELETE SET NULL` hiện có. Optimistic overlay xóa project và null liên kết item, không sửa nội dung/trạng thái item. Delete được xếp sau các pending create/update để giữ dependency khi offline; item edit mới có tham chiếu project đang chờ xóa được bỏ liên kết. Xóa có bước xác nhận rõ ràng, không có undo; không ảnh hưởng cơ chế undo xóa item.
 - Ở compact state, filter dùng icon + count; project dùng dot màu lớn. Tất cả icon-only controls phải có accessible label và tooltip.
 - Dùng một keyboard shortcut handler tập trung, không gắn listener rải rác trong component.
-- Hỗ trợ `N` → quick-add, `T` → Today, `S` → Upcoming, `D` → By date, `A` → Tất cả, `I` → Quan Trọng, `U` → Ưu tiên và `1–9` → chín project đầu; `-` → chỉ note, `=` → chỉ task, `\` → tất cả nội dung; `[` toggle sidebar và `?` mở trợ giúp. Resolver so khớp đúng `event.key`; `+` và `|` không phải shortcut.
+- Hỗ trợ `N` → quick-add, `T` → Today, `S` → Upcoming, `D` → By date, `A` → Tất cả, `I` → Quan Trọng, `U` → Ưu tiên và `1–9` → chín project đầu; `[` → chỉ note, `]` → chỉ task, `\` → tất cả nội dung; `⌘/Ctrl + \` toggle sidebar và `?` mở trợ giúp. Resolver so khớp đúng `event.key`; `{`, `}` và `|` không phải shortcut.
 - Compact sidebar dùng tooltip tức thời cho navigation icon, project dot và footer action; tooltip project kèm shortcut `1–9` khi có.
 - Bỏ qua shortcut khi event phát sinh trong `input`, `textarea`, `select` hoặc phần tử `contenteditable`; `Escape` đóng overlay/trợ giúp.
 - Bảng trợ giúp dùng layout hai cột, gộp project vào một dòng và có cả nút X lẫn `Escape` để đóng.
