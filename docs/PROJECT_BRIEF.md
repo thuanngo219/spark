@@ -88,7 +88,7 @@ Note là một item ghi chú ngắn, không phải task:
 | **Tất cả** | Toàn bộ task chưa hoàn thành và note, chia theo thứ tự Quá hạn, Hôm nay, Sắp tới (ba ngày kế tiếp), Sau đó và Chưa có ngày. |
 | **Project** | Task chưa hoàn thành thuộc project đã chọn, sắp xếp theo due date; task chưa có ngày nằm cuối. |
 
-Đối với note, các view thời gian luôn dựa trên due date; note chưa có ngày không xuất hiện trong Hôm nay. Note đã lưu trữ rời mọi danh sách đang hoạt động nhưng vẫn có thể xem và khôi phục trong disclosure cuối view phù hợp.
+Đối với note đang hoạt động, các view thời gian dựa trên due date; note chưa có ngày không xuất hiện trong Hôm nay. Note đã lưu trữ rời mọi danh sách đang hoạt động nhưng vẫn có thể xem và khôi phục trong disclosure cuối view phù hợp; riêng Hôm nay chọn note theo ngày lưu trữ thay vì due date.
 
 Mọi view có switcher icon-only ba chế độ theo thứ tự **Tất cả / Chỉ note / Chỉ task**. Đây là presentation filter: chỉ thay đổi danh sách và số liệu đang nhìn, không sửa hoặc xóa dữ liệu; lựa chọn tiếp tục áp dụng khi chuyển view trong phiên hiện tại.
 
@@ -117,7 +117,7 @@ Quy ước ngày:
 - Trên mobile, mở quick-add phải focus ngay title input và giữ field này trong vùng nhìn thấy khi bàn phím ảo xuất hiện; người dùng không cần kéo form để bắt đầu nhập.
 - Trên mobile, bỏ app header riêng. Nút mở sidebar là panel icon-only đứng trước tên view trong sticky header; switcher item nằm bên trái sync pill trong hàng control nổi ngay trên dock.
 - Completed task không được tính trong số lượng task mở.
-- Riêng Hôm nay, disclosure chỉ hiển thị task có ngày hoàn thành là hôm nay theo `Asia/Ho_Chi_Minh`, không dựa vào due date (kể cả task không ngày hoặc đến hạn trong tương lai). Task hoàn thành ngày khác vẫn xem được ở các view phù hợp khác; quy tắc note đã lưu trữ không thay đổi.
+- Riêng Hôm nay, disclosure chỉ hiển thị task hoàn thành hôm nay và note được lưu trữ hôm nay theo `Asia/Ho_Chi_Minh`, không dựa vào due date (kể cả không ngày hoặc đến hạn trong tương lai). Item chuyển trạng thái ngày khác vẫn xem được ở các view phù hợp khác.
 - Trong mọi listing, ưu tiên presentation order theo cờ đang bật: item có cả Quan Trọng và Ưu tiên → chỉ Ưu tiên → chỉ Quan Trọng → bình thường. Trong từng mức giữ task trước note, sau đó due date và thời điểm tạo; view Tất cả vẫn chia nhóm thời gian trước khi áp dụng thứ tự này trong từng nhóm. Tắt cờ làm item tự trở về vị trí theo thứ tự thông thường, không ghi thêm `position` vào dữ liệu.
 
 ## 6. Information architecture

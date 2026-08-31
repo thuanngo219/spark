@@ -28,13 +28,15 @@ function getDateBounds(todayKey: string): DateBounds {
 
 function matchesView(item: SparkItem, view: View, todayKey: string, bounds: DateBounds): boolean {
   switch (view.type) {
-    case "today":
-      if (item.type === "task" && item.completedAt) {
-        const completedDate = new Date(item.completedAt);
-        return !Number.isNaN(completedDate.getTime()) && getLocalDateKey(completedDate) === todayKey;
+    case "today": {
+      const inactiveAt = item.type === "task" ? item.completedAt : item.archivedAt;
+      if (inactiveAt) {
+        const inactiveDate = new Date(inactiveAt);
+        return !Number.isNaN(inactiveDate.getTime()) && getLocalDateKey(inactiveDate) === todayKey;
       }
       if (!item.dueDate) return item.type === "task";
       return item.dueDate <= todayKey;
+    }
     case "upcoming":
       return Boolean(
         item.dueDate &&
