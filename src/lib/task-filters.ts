@@ -33,9 +33,8 @@ function matchesView(item: SparkItem, view: View, todayKey: string, bounds: Date
         const completedDate = new Date(item.completedAt);
         return !Number.isNaN(completedDate.getTime()) && getLocalDateKey(completedDate) === todayKey;
       }
-      return item.type === "note" && !item.dueDate
-        ? true
-        : Boolean(item.dueDate && item.dueDate <= todayKey);
+      if (!item.dueDate) return item.type === "task";
+      return item.dueDate <= todayKey;
     case "upcoming":
       return Boolean(
         item.dueDate &&

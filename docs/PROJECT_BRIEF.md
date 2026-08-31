@@ -82,13 +82,13 @@ Note là một item ghi chú ngắn, không phải task:
 
 | Bộ lọc | Quy tắc |
 |---|---|
-| **Hôm nay** | Task chưa hoàn thành có due date hôm nay **hoặc đã quá hạn**; note đang hoạt động có due date đến hôm nay **hoặc chưa có ngày**. Task/note quá hạn nằm trong nhóm riêng ở đầu danh sách. |
+| **Hôm nay** | Task chưa hoàn thành có due date đến hôm nay **hoặc chưa có ngày**; note đang hoạt động chỉ xuất hiện khi có due date đến hôm nay. Task/note quá hạn nằm trong nhóm riêng ở đầu danh sách. |
 | **Sắp tới** | Task chưa hoàn thành có due date từ ngày mai đến hết ngày thứ ba tính từ hôm nay. Ví dụ hôm nay 10/8 thì gồm 11/8, 12/8 và 13/8. |
 | **Theo ngày** | Chọn một ngày cụ thể để xem task chưa hoàn thành đến hạn ngày đó; có nút quay về hôm nay. |
 | **Tất cả** | Toàn bộ task chưa hoàn thành và note, chia theo thứ tự Quá hạn, Hôm nay, Sắp tới (ba ngày kế tiếp), Sau đó và Chưa có ngày. |
 | **Project** | Task chưa hoàn thành thuộc project đã chọn, sắp xếp theo due date; task chưa có ngày nằm cuối. |
 
-Đối với note, các view thời gian dùng due date tương tự task, ngoại trừ note chưa có ngày luôn xuất hiện trong Hôm nay. Note đã lưu trữ rời mọi danh sách đang hoạt động nhưng vẫn có thể xem và khôi phục trong disclosure cuối view.
+Đối với note, các view thời gian luôn dựa trên due date; note chưa có ngày không xuất hiện trong Hôm nay. Note đã lưu trữ rời mọi danh sách đang hoạt động nhưng vẫn có thể xem và khôi phục trong disclosure cuối view phù hợp.
 
 Mọi view có switcher icon-only ba chế độ theo thứ tự **Tất cả / Chỉ note / Chỉ task**. Đây là presentation filter: chỉ thay đổi danh sách và số liệu đang nhìn, không sửa hoặc xóa dữ liệu; lựa chọn tiếp tục áp dụng khi chuyển view trong phiên hiện tại.
 
@@ -106,7 +106,7 @@ Quy ước ngày:
 - Múi giờ mặc định: `Asia/Ho_Chi_Minh`.
 - Tuần bắt đầu từ Thứ Hai.
 - So sánh theo calendar date trong múi giờ người dùng, không dùng khoảng 24 giờ trượt.
-- Task không có due date không xuất hiện trong Hôm nay, Sắp tới hoặc Theo ngày; task vẫn xuất hiện ở nhóm Chưa có ngày trong Tất cả và trong project tương ứng.
+- Task không có due date xuất hiện trong nhóm Hôm nay của view Hôm nay, nhóm Chưa có ngày trong Tất cả và project tương ứng; không xuất hiện trong Sắp tới hoặc Theo ngày.
 
 ### Task đã hoàn thành và note đã lưu trữ
 
@@ -229,7 +229,7 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Bốn master view ẩn mọi item thuộc dự án đã lưu trữ và loại khỏi số đếm; khôi phục dự án làm các item xuất hiện lại theo filter, không sửa dữ liệu item.
 - Hôm nay không hiện task đã hoàn thành ngày khác; kiểm tra ranh giới nửa đêm theo múi giờ Việt Nam, không lấy ngày UTC hay due date.
 - Task quá hạn xuất hiện trong Hôm nay và có nhãn ngày dễ hiểu.
-- Note chưa có ngày xuất hiện trong Hôm nay; note đã lưu trữ không xuất hiện trong danh sách hoạt động và có thể khôi phục.
+- Note chưa có ngày không xuất hiện trong Hôm nay; task chưa có ngày vẫn xuất hiện. Hai nhóm Quá hạn/Hôm nay đóng mở độc lập và mặc định mở.
 - Sắp tới chỉ gồm ba ngày kế tiếp, không gồm hôm nay.
 - Ngày chuyển đúng tại nửa đêm ở múi giờ cấu hình.
 - Một task chỉ thuộc tối đa một project trong MVP.

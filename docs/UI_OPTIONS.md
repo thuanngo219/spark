@@ -127,6 +127,8 @@ Navigation chính có **Tất cả** ngay dưới **Theo ngày**. View này gi�
 
 Hôm nay/Sắp tới/Theo ngày/Tất cả không hiển thị task/note của dự án đã lưu trữ, kể cả disclosure trạng thái; số đếm được tính cùng quy tắc. Riêng disclosure Hôm nay chỉ giữ task hoàn thành trong ngày hiện tại theo múi giờ Việt Nam, không theo due date. Nội dung cũ vẫn xem được từ dự án đã lưu trữ/các view phù hợp khác, không bị xóa.
 
+View Hôm nay chỉ nhận task/note quá hạn, task/note có ngày hôm nay và task chưa có ngày; note chưa có ngày bị ẩn. Header Quá hạn và Hôm nay là disclosure độc lập, mặc định mở, dùng cùng chevron và nhịp typography với Đã hoàn thành.
+
 Mọi view dùng switcher icon-only kiểu segmented theo thứ tự **Tất cả / Chỉ note / Chỉ task**. Desktop đặt switcher đúng vị trí control Ẩn/Hiện note cũ và giữ nguyên nút sidebar hiện tại. Mobile đặt switcher bên trái sync pill trong hàng control nổi ngay trên dock; lựa chọn chỉ tác động presentation và được giữ khi chuyển view trong phiên.
 
 Typography web app dùng base size bằng `rem`, scale root `112.5%` trên desktop và `120%` trên mobile. Cách này tăng độ đọc của navigation, item, metadata và editor nhưng giữ nguyên kích thước icon, sidebar, touch target và row geometry.

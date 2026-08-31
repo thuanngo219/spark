@@ -70,12 +70,13 @@ Ràng buộc: `type = 'note'` thì `completed_at` phải null; `type = 'task'` t
 
 Tạo một module thuần, ví dụ `src/lib/task-filters.ts`, không rải logic ngày trong component.
 
-- `today`: task chưa hoàn thành có `due_date <= localToday`; note chưa lưu trữ có `due_date <= localToday` hoặc `due_date is null`; chia `overdue` và `dueToday`, trong đó note không ngày nằm cùng nhóm Hôm nay.
+- `today`: task chưa hoàn thành có `due_date <= localToday` hoặc chưa có ngày; note chưa lưu trữ chỉ xuất hiện khi có `due_date <= localToday`. Chia thành `overdue` và `dueToday`, trong đó task không ngày nằm cùng nhóm Hôm nay; note không ngày bị ẩn.
 - `upcoming`: `localTomorrow <= due_date <= localToday + 3 calendar days`.
 - `byDate`: `due_date === selectedDate`.
 - `all`: lấy mọi item còn hiện hành rồi chia `overdue`, `today`, `upcoming` (ba ngày kế tiếp), `later` và `undated`; completed task và archived note nằm trong disclosure trạng thái riêng.
 - `filterItems` và `inactiveForView` nhận thêm metadata projects để loại item của project có `archivedAt` khỏi bốn master view trước khi sort/group/display filter và tính số đếm sidebar/header. Project view và smart filter không bị ảnh hưởng; không sửa item.
 - Trong `inactiveForView` của Hôm nay, task được chọn theo `getLocalDateKey(new Date(completedAt)) === localToday` (Asia/Ho_Chi_Minh), không theo due date; timestamp không hợp lệ không được hiển thị. Các view khác và archived note giữ quy tắc due date hiện tại.
+- Riêng view Hôm nay, header nhóm Quá hạn và Hôm nay là disclosure độc lập, mặc định mở, dùng cùng icon/kiểu tương tác với disclosure trạng thái cuối danh sách.
 - Trạng thái `itemDisplayMode: 'all' | 'task' | 'note'` là presentation filter dùng chung cho mọi view; áp dụng sau master/smart/project filter, trước khi chia nhóm và tính số quá hạn hiển thị. Không ghi thay đổi xuống item.
 - Presentation sort dùng `task` trước `note`; sau đó sort `due_date` tăng dần và `created_at`. Riêng view `all`, chia nhóm thời gian trước rồi áp dụng comparator này trong từng nhóm. Không ghi lại `position` chỉ để phản ánh thứ tự hiển thị.
 - Luôn truyền timezone vào hàm tạo `localToday` để test được.

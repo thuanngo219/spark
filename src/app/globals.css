@@ -230,6 +230,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .completed-toggle span { margin-left: auto; }
 .completed-toggle svg { transition: transform 160ms ease; }
 .completed-toggle .rotate-down { transform: rotate(-90deg); }
+.item-group-toggle { padding-inline: 4px; }
 .empty-state { text-align: center; padding: 58px 24px 45px; }
 .empty-state > span { width: 55px; height: 55px; margin: 0 auto 15px; border-radius: 18px; color: var(--turquoise); background: var(--turquoise-soft); display: grid; place-items: center; }
 .empty-state h2 { margin: 0 0 8px; color: var(--navy-900); font-size: 1.0625rem; }

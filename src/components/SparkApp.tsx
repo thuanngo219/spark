@@ -8,6 +8,7 @@ import {
   PointerEvent as ReactPointerEvent,
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -250,6 +251,8 @@ export function SparkApp() {
   const [itemDisplayMode, setItemDisplayMode] = useState<ItemDisplayMode>("all");
   const [mobileHeaderCompact, setMobileHeaderCompact] = useState(false);
   const [completedOpen, setCompletedOpen] = useState(false);
+  const [todayOverdueOpen, setTodayOverdueOpen] = useState(true);
+  const [todayCurrentOpen, setTodayCurrentOpen] = useState(true);
   const [editingItem, setEditingItem] = useState<SparkItem | null>(null);
   const [projectEditor, setProjectEditor] = useState<Project | "new" | null>(null);
   const [projectArchiveOpen, setProjectArchiveOpen] = useState(false);
@@ -838,7 +841,7 @@ export function SparkApp() {
       if (item.dueDate && item.dueDate < today) overdueTotal += 1;
       if (view.type === "today") {
         if (item.dueDate && item.dueDate < today) overdueItems.push(item);
-        else if (item.dueDate === today || (item.type === "note" && !item.dueDate)) currentItems.push(item);
+        else if (item.dueDate === today || (item.type === "task" && !item.dueDate)) currentItems.push(item);
       }
     }
 
@@ -1198,6 +1201,9 @@ export function SparkApp() {
                 projectById={projectById}
                 today={today}
                 hideTodayDue={view.type === "today"}
+                collapsible={view.type === "today"}
+                open={todayOverdueOpen}
+                onToggle={() => setTodayOverdueOpen((value) => !value)}
                 onArchive={toggleNoteArchive}
                 onComplete={toggleComplete}
                 onDelete={requestItemDelete}
@@ -1214,6 +1220,9 @@ export function SparkApp() {
                 projectById={projectById}
                 today={today}
                 hideTodayDue={view.type === "today"}
+                collapsible={view.type === "today"}
+                open={todayCurrentOpen}
+                onToggle={() => setTodayCurrentOpen((value) => !value)}
                 onArchive={toggleNoteArchive}
                 onComplete={toggleComplete}
                 onDelete={requestItemDelete}
@@ -1543,6 +1552,9 @@ function ItemGroup({
   projectById,
   today,
   hideTodayDue = false,
+  collapsible = false,
+  open = true,
+  onToggle,
   onArchive,
   onComplete,
   onDelete,
@@ -1556,6 +1568,9 @@ function ItemGroup({
   projectById: Map<string, Project>;
   today: string;
   hideTodayDue?: boolean;
+  collapsible?: boolean;
+  open?: boolean;
+  onToggle?: () => void;
   onArchive: (item: SparkItem) => void;
   onComplete: (item: SparkItem) => void;
   onDelete: (item: SparkItem) => void;
@@ -1564,10 +1579,23 @@ function ItemGroup({
   openSwipeItemId: string | null;
   onSwipeOpenChange: (id: string | null) => void;
 }) {
+  const listId = useId();
   return (
     <section className="item-group">
-      {label && <h2>{label}<span>{items.length}</span></h2>}
-      <div className="item-list">
+      {label && (collapsible ? (
+        <button
+          type="button"
+          className="completed-toggle item-group-toggle"
+          aria-controls={listId}
+          aria-expanded={open}
+          onClick={onToggle}
+        >
+          <Icon name="chevron" className={open ? "rotate-down" : ""} size={17} />
+          {label}
+          <span>{items.length}</span>
+        </button>
+      ) : <h2>{label}<span>{items.length}</span></h2>)}
+      {(!collapsible || open) && <div className="item-list" id={listId}>
         {items.map((item) => {
           const project = item.projectId ? projectById.get(item.projectId) : undefined;
           const overdue = item.dueDate && item.dueDate < today && !item.completedAt;
@@ -1590,7 +1618,7 @@ function ItemGroup({
             />
           );
         })}
-      </div>
+      </div>}
     </section>
   );
 }

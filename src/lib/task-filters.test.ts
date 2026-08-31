@@ -47,12 +47,12 @@ describe("master filters", () => {
     item({ id: "archived-note", type: "note", archivedAt: "2026-08-19T05:00:00Z" }),
   ];
 
-  it("includes overdue, today and notes in Today, but not completed tasks", () => {
+  it("includes overdue and today items plus undated tasks in Today, but excludes undated notes", () => {
     expect(filterItems(items, { type: "today" }, today).map((entry) => entry.id)).toEqual([
       "overdue",
       "today",
+      "undated",
       "note",
-      "undated-note",
     ]);
   });
 
@@ -153,7 +153,6 @@ describe("master filters", () => {
     expect(filterItems(items, { type: "all" }, today).some((entry) => entry.id === "archived-note")).toBe(false);
     expect(inactiveForView(items, { type: "today" }, today).map((entry) => entry.id)).toEqual([
       "done",
-      "archived-note",
     ]);
   });
 });
@@ -231,13 +230,13 @@ describe("Today completed tasks", () => {
     expect(inactiveForView(items, { type: "today" }, "2026-08-27").map((entry) => entry.id)).toEqual(["after"]);
   });
 
-  it("preserves due-date rules for inactive items in other views and for archived notes", () => {
+  it("preserves due-date rules for inactive items in other views and hides undated archived notes from Today", () => {
     const items = [
       item({ id: "older-task", dueDate: today, completedAt: "2026-08-25T01:00:00Z" }),
       item({ id: "older-note", type: "note", archivedAt: "2026-08-25T01:00:00Z" }),
       item({ id: "future-note", type: "note", dueDate: "2026-08-27", archivedAt: "2026-08-25T01:00:00Z" }),
     ];
-    expect(inactiveForView(items, { type: "today" }, today).map((entry) => entry.id)).toEqual(["older-note"]);
+    expect(inactiveForView(items, { type: "today" }, today)).toEqual([]);
     expect(inactiveForView(items, { type: "calendar", date: today }, today).map((entry) => entry.id)).toEqual(["older-task"]);
     expect(inactiveForView(items, { type: "upcoming" }, today).map((entry) => entry.id)).toEqual(["future-note"]);
     expect(inactiveForView(items, { type: "all" }, today)).toHaveLength(3);
