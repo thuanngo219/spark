@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isUuid, normalizeDataIds } from "@/lib/data-ids";
+import { areSparkDataEqual, isUuid, normalizeDataIds } from "@/lib/data-ids";
 import type { SparkData } from "@/lib/data-ids";
 
 const ids = [
@@ -49,6 +49,9 @@ describe("normalizeDataIds", () => {
     const normalized = normalizeDataIds(data, () => ids[2]);
 
     expect(normalized).toEqual(data);
+    expect(normalized).toBe(data);
+    expect(normalized.projects[0]).toBe(data.projects[0]);
+    expect(normalized.items[0]).toBe(data.items[0]);
     expect(isUuid(normalized.items[0].id)).toBe(true);
   });
 
@@ -109,5 +112,23 @@ describe("normalizeDataIds", () => {
 
     expect(normalized.items[0].description).toBe("Chi tiết cần giữ");
     expect(normalized.items[0].title).toBe(data.items[0].title);
+  });
+});
+
+describe("areSparkDataEqual", () => {
+  it("recognizes equivalent snapshots without relying on object identity", () => {
+    const data = legacyData();
+    expect(areSparkDataEqual(data, structuredClone(data))).toBe(true);
+  });
+
+  it("detects a changed item or project", () => {
+    const data = legacyData();
+    const changedItem = structuredClone(data);
+    changedItem.items[0].title = "Đã đổi";
+    expect(areSparkDataEqual(data, changedItem)).toBe(false);
+
+    const changedProject = structuredClone(data);
+    changedProject.projects[0].isStarred = true;
+    expect(areSparkDataEqual(data, changedProject)).toBe(false);
   });
 });

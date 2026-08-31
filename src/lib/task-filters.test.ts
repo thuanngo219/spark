@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { addCalendarDays, getLocalDateKey } from "@/lib/dates";
-import { filterItems, filterItemsByDisplayMode, groupItemsByTime, inactiveForView, sortItemsForDisplay } from "@/lib/task-filters";
+import { filterItems, filterItemsByDisplayMode, getSidebarCounts, groupItemsByTime, inactiveForView, sortItemsForDisplay } from "@/lib/task-filters";
 import type { Project, SparkItem, View } from "@/lib/types";
 
 const item = (overrides: Partial<SparkItem>): SparkItem => ({
@@ -61,6 +61,14 @@ describe("master filters", () => {
       "tomorrow",
       "day-three",
     ]);
+  });
+
+  it("computes sidebar counts in one pass with the same visibility rules", () => {
+    expect(getSidebarCounts(items, today)).toEqual({
+      today: 4,
+      upcoming: 2,
+      all: 8,
+    });
   });
 
   it("project keeps undated tasks before the note section", () => {

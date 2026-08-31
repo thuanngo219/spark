@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { OfflineBootstrap } from "@/components/OfflineBootstrap";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -39,7 +40,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="vi">
-      <body>{children}</body>
+      <body>
+        {children}
+        <OfflineBootstrap />
+      </body>
     </html>
   );
 }

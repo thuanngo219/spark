@@ -8,7 +8,8 @@
 - **Styling:** Tailwind CSS hoặc CSS Modules + CSS variables. Dùng design tokens, không hard-code màu lặp lại trong component.
 - **Backend đồng bộ:** Supabase Postgres + Supabase Auth.
 - **Deploy:** Vercel.
-- **PWA:** Web App Manifest, icon set, standalone display; service worker/offline cache triển khai theo phase.
+- **PWA:** Web App Manifest, icon set, standalone display và service worker cache app shell để cold-start offline.
+- **Local database:** IndexedDB giữ snapshot theo scope và mutation queue theo user; tự migrate dữ liệu `localStorage` cũ, có fallback nếu IndexedDB không khả dụng.
 - **Testing:** Vitest cho date/filter logic; Playwright cho luồng chính và responsive.
 
 Lý do chọn cấu hình này: một codebase chạy desktop lẫn iPhone, deploy qua HTTPS nhanh, hỗ trợ đăng nhập và đồng bộ dữ liệu mà không cần tự vận hành server.
@@ -113,12 +114,12 @@ src/
 ## 5. Trạng thái và mutation
 
 - Dùng optimistic update cho check/uncheck task, create, rename và toggle Quan Trọng/Ưu tiên (`is_urgent`).
-- Mỗi mutation cloud được lưu vào queue theo user trước khi gửi, ghi tuần tự và retry với exponential backoff tối đa 30 giây. Không xóa mutation khỏi queue trước khi server xác nhận.
+- Mỗi mutation cloud được lưu vào queue theo user trước khi gửi, ghi tuần tự và retry với exponential backoff tối đa 30 giây. Flush dùng single-flight theo user và chỉ bắt đầu sau transaction snapshot + queue mới nhất; không xóa mutation khỏi queue trước khi server xác nhận.
 - Nếu server trả lỗi hoặc thiết bị offline, giữ optimistic state và mutation queue trên thiết bị, hiển thị trạng thái rõ; tự gửi lại khi có mạng thay vì rollback làm mất nội dung.
 - Khi nhận snapshot remote, overlay toàn bộ mutation chưa xác nhận trước khi cập nhật UI để snapshot cũ không ghi đè thay đổi local.
 - Snapshot remote rỗng là trạng thái có thẩm quyền; không tự upload cache cloud hoặc dữ liệu demo chỉ vì server đang rỗng. Chỉ mutation thật đang chờ của user được phép overlay và gửi tiếp.
-- Reconcile lại sau khi Realtime subscribe/reconnect, browser phát sự kiện `online`, tab/PWA trở lại foreground hoặc focus; chạy safety pull mỗi 60 giây khi tab đang visible.
-- Cache demo tách khỏi cache cloud và cache cloud được namespace theo user ID.
+- Reconcile lại sau khi Realtime subscribe/reconnect, browser phát sự kiện `online`, tab/PWA trở lại foreground hoặc focus; chạy safety pull mỗi 60 giây khi tab đang visible. Các trigger pull trùng nhau dùng chung request đang chạy và snapshot không đổi không cập nhật lại state/IndexedDB.
+- Cache demo tách khỏi cache cloud và cache cloud được namespace theo user ID. Snapshot cùng queue hiện tại phải được ghi trong một transaction IndexedDB trước khi bắt đầu gửi mutation; preferences nhỏ không liên quan dữ liệu vẫn có thể dùng `localStorage`.
 - Xóa dùng soft/undo ở UI; chỉ hard delete sau khi hết thời gian undo hoặc triển khai trường `deleted_at` nếu cần an toàn hơn.
 - Không dùng global state library ở MVP nếu server cache + component state đã đủ.
 - Giữ unsaved quick-add text khi app chuyển offline ngắn.
@@ -126,6 +127,7 @@ src/
 - Quick-add giữ checkbox Ghi chú. Secondary button **Thêm Nội dung** mở textarea tùy chọn tối đa 2.000 ký tự cho cả task và note; chuyển loại không xóa draft. Chọn ngày và dự án vẫn hoạt động cho cả hai loại item.
 - Tap item mở detail sheet ở trạng thái đọc. Tên/Nội dung chỉ chuyển sang input/textarea khi bấm edit icon kế text; metadata compact lưu từng thay đổi ngay mà không cần submit cả form.
 - Canvas liệt kê task/note ở desktop dùng `width: clamp(940px, 80vw, 1200px)` cùng `max-width: 100%` để co theo vùng content khi viewport hẹp; mobile override về `width: 100%`. Detail sheet desktop giữ `width: min(780px, calc(100vw - 48px))`.
+- Textarea Nội dung của task và note dùng chung kích thước: desktop edit đặt `height/min-height: 300px`, desktop quick-add đặt `160px`; media mobile override cả `.detail-inline-editor textarea` và `.quick-description-field textarea` về `160px`. Trong edit Tên/Nội dung, đặt action ✓ và × trong `.detail-field-heading` cạnh nhãn, còn `.detail-inline-editor` dùng toàn chiều rộng bên dưới. Action control là `28px`/icon `16px` trên desktop; mobile giữ touch target `44px`/icon `18px`.
 - Vùng nội dung item kiểm tra `openSwipeItemId` chung: trên mobile, nếu bất kỳ khay nào mở thì `onClick` chỉ đóng khay; nếu không có khay mở thì một click mở chi tiết. Quy tắc áp dụng khi chạm cùng item hoặc item khác, kể cả khác nhóm. Pointer-down/up của tap thường không được xóa trạng thái khay trước `onClick`. Desktop vẫn mở bằng một click. Chỉ bật style kéo sau khi xác định gesture ngang, không đổi nền/transform ở pointer-down của tap thường. Click phát sinh từ vuốt/cuộn/cancel bị chặn đến pointer-down mới, không reset bằng timer; activation bàn phím/assistive technology (`detail === 0`) vẫn hoạt động. Checkbox/marker và action khay không mở chi tiết.
 - Read row trong detail sheet dùng text column co giãn và edit action `flex: 0 0 auto` ở mép phải; khối Nội dung nhiều dòng căn action theo mép trên.
 - Metadata detail mobile dùng grid ba cột: Quan Trọng, Ưu tiên, Ngày ở hàng đầu; Dự án full-width; cụm Lưu trữ/Xóa icon-only 44px căn phải ở hàng cuối. Label vẫn tồn tại qua `aria-label`/tooltip; Xóa tiếp tục qua confirm dialog.
@@ -162,8 +164,10 @@ src/
 - Favicon, PWA icon và Apple Touch Icon dùng mark negative trắng trên Navy. Standard PWA icon dùng rounded-square; maskable/Apple dùng Navy full-bleed, giữ artwork trong safe zone và scale mark còn 80% treatment trước để tăng khoảng thở.
 - Dùng filename mới khi đổi colorway icon để tránh cache cũ; sau deploy cần kiểm tra trực tiếp SVG/PNG, manifest và metadata production.
 - Deploy qua HTTPS; đây là yêu cầu quan trọng cho khả năng cài PWA.
-- Phase 1 có thể chưa offline hoàn toàn nhưng không được mất nội dung người dùng đang gõ.
-- Phase 2 thêm service worker/cache app shell và hàng đợi mutation nếu nhu cầu offline thực sự xuất hiện.
+- Service worker chỉ đăng ký ở production. Navigation dùng network-first với fallback app shell; Next static asset dùng cache-first; font/ảnh/CSS/script cùng origin dùng stale-while-revalidate.
+- Cache Storage không cache request Supabase, auth/session hoặc snapshot task/note. Dữ liệu người dùng nằm trong IndexedDB và Supabase.
+- Sau lần mở production online đầu tiên, app phải cold-start và CRUD được khi offline; thay đổi tự gửi lại khi mạng trở lại.
+- Chi tiết schema, migration, lifecycle và test matrix nằm trong `docs/OFFLINE_SYNC.md`.
 
 ### Đưa app lên mạng
 
@@ -207,13 +211,14 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 ### Phase 2 — Ship as PWA
 
 - Manifest, icons, metadata và standalone behavior.
+- Service worker app shell, IndexedDB migration và durable offline mutation queue.
 - Deploy Vercel, kiểm thử trên iPhone thật.
 - Sửa safe-area, virtual keyboard, touch targets và viewport issues.
 
 ### Phase 3 — Học từ sử dụng thật
 
 - Dùng hai tuần, ghi lại friction.
-- Chỉ sau đó đánh giá reminder, recurring tasks, quick capture/Shortcuts và offline sync.
+- Chỉ sau đó đánh giá reminder, recurring tasks, quick capture/Shortcuts và conflict resolution đa thiết bị.
 
 ## 8. Checklist trước khi production
 

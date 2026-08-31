@@ -1,6 +1,6 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
-let browserClient: SupabaseClient | null = null;
+let browserClientPromise: Promise<SupabaseClient> | null = null;
 
 export function isSupabaseConfigured() {
   return Boolean(
@@ -9,20 +9,25 @@ export function isSupabaseConfigured() {
   );
 }
 
-export function getSupabaseBrowserClient(): SupabaseClient | null {
+export async function getSupabaseBrowserClient(): Promise<SupabaseClient | null> {
   if (!isSupabaseConfigured()) return null;
-  if (!browserClient) {
-    browserClient = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-      {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true,
+  if (!browserClientPromise) {
+    browserClientPromise = import("@supabase/supabase-js")
+      .then(({ createClient }) => createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+        {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+          },
         },
-      },
-    );
+      ))
+      .catch((error) => {
+        browserClientPromise = null;
+        throw error;
+      });
   }
-  return browserClient;
+  return browserClientPromise;
 }

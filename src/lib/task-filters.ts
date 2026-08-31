@@ -17,7 +17,16 @@ export function filterItemsByDisplayMode(
   return mode === "all" ? items : items.filter((item) => item.type === mode);
 }
 
-function matchesView(item: SparkItem, view: View, todayKey: string): boolean {
+type DateBounds = { upcomingStart: string; upcomingEnd: string };
+
+function getDateBounds(todayKey: string): DateBounds {
+  return {
+    upcomingStart: addCalendarDays(todayKey, 1),
+    upcomingEnd: addCalendarDays(todayKey, 3),
+  };
+}
+
+function matchesView(item: SparkItem, view: View, todayKey: string, bounds: DateBounds): boolean {
   switch (view.type) {
     case "today":
       if (item.type === "task" && item.completedAt) {
@@ -30,8 +39,8 @@ function matchesView(item: SparkItem, view: View, todayKey: string): boolean {
     case "upcoming":
       return Boolean(
         item.dueDate &&
-          item.dueDate >= addCalendarDays(todayKey, 1) &&
-          item.dueDate <= addCalendarDays(todayKey, 3),
+          item.dueDate >= bounds.upcomingStart &&
+          item.dueDate <= bounds.upcomingEnd,
       );
     case "calendar":
       return item.dueDate === view.date;
@@ -78,9 +87,10 @@ export function filterItems(
   todayKey: string,
   projects: Project[] = [],
 ): SparkItem[] {
+  const bounds = getDateBounds(todayKey);
   const active = filterByProjectVisibility(items, view, projects).filter(isActive);
 
-  const filtered = active.filter((item) => matchesView(item, view, todayKey));
+  const filtered = active.filter((item) => matchesView(item, view, todayKey, bounds));
 
   return sortItemsForDisplay(filtered);
 }
@@ -91,10 +101,32 @@ export function inactiveForView(
   todayKey: string,
   projects: Project[] = [],
 ): SparkItem[] {
+  const bounds = getDateBounds(todayKey);
   return sortItemsForDisplay(filterByProjectVisibility(items, view, projects).filter((item) => {
     const inactive = item.type === "task" ? Boolean(item.completedAt) : Boolean(item.archivedAt);
-    return inactive && matchesView(item, view, todayKey);
+    return inactive && matchesView(item, view, todayKey, bounds);
   }));
+}
+
+export function getSidebarCounts(
+  items: SparkItem[],
+  todayKey: string,
+  projects: Project[] = [],
+) {
+  const bounds = getDateBounds(todayKey);
+  const archivedIds = new Set(
+    projects.filter((project) => project.archivedAt).map((project) => project.id),
+  );
+  const counts = { today: 0, upcoming: 0, all: 0 };
+
+  for (const item of items) {
+    if (!isActive(item) || (item.projectId && archivedIds.has(item.projectId))) continue;
+    counts.all += 1;
+    if (matchesView(item, { type: "today" }, todayKey, bounds)) counts.today += 1;
+    if (matchesView(item, { type: "upcoming" }, todayKey, bounds)) counts.upcoming += 1;
+  }
+
+  return counts;
 }
 
 export function groupItemsByTime(

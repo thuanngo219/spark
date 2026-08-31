@@ -4,7 +4,7 @@ Web app quản lý task và note cá nhân hằng ngày, ưu tiên tốc độ, 
 
 ## Trạng thái hiện tại
 
-Ứng dụng MVP đang được triển khai bằng Next.js App Router + TypeScript. Website mở public; chế độ demo lưu cục bộ, còn dữ liệu cá nhân đồng bộ qua Supabase sau khi xác thực bằng mã OTP gửi qua email.
+Ứng dụng MVP được triển khai bằng Next.js App Router + TypeScript. Website mở public; chế độ demo lưu cục bộ, còn dữ liệu cá nhân đồng bộ qua Supabase sau khi xác thực bằng mã OTP gửi qua email. Bản production hỗ trợ cold-start offline sau lần mở online đầu tiên; snapshot và mutation queue lưu trong IndexedDB rồi tự đồng bộ khi có mạng.
 
 Hướng UI đã chọn: **Option C — Compact Canvas**, dùng palette navy–turquoise–violet–Muted Coral–Deep Purple và sidebar đầy đủ có thể thu gọn thành compact rail.
 
@@ -28,6 +28,7 @@ npm run dev
 - [Product brief](docs/PROJECT_BRIEF.md): mục tiêu, phạm vi MVP, hành vi và tiêu chí nghiệm thu.
 - [UI directions](docs/UI_OPTIONS.md): ba phương án giao diện và quyết định đề xuất.
 - [Implementation guide](docs/IMPLEMENTATION_GUIDE.md): kiến trúc, dữ liệu, lộ trình triển khai, publish và cài lên iPhone.
+- [Offline và đồng bộ](docs/OFFLINE_SYNC.md): app-shell cache, IndexedDB, migration, mutation lifecycle và checklist kiểm thử.
 - [Decision log](docs/DECISIONS.md): quyết định đã chốt và các câu hỏi còn mở.
 - [Product backlog](docs/BACKLOG.md): ý tưởng đang cân nhắc, chưa phải hành vi hoặc phạm vi đã chốt.
 - [AGENTS.md](AGENTS.md): quy tắc bàn giao cho các phiên Codex tiếp theo.
@@ -36,6 +37,6 @@ npm run dev
 
 ## Bước tiếp theo đề xuất
 
-1. Xác nhận có cần đồng bộ dữ liệu giữa iPhone và máy tính ngay trong MVP hay không.
-2. Phiên triển khai scaffold Next.js, dựng design tokens và màn hình tĩnh trước.
-3. Sau khi duyệt giao diện, kết nối Supabase, kiểm thử và deploy bản PWA.
+1. Build và chạy bản production qua HTTPS, sau đó kiểm thử cold-start offline trên iPhone thật.
+2. Chạy toàn bộ Supabase migration, xác nhận RLS và sync giữa hai thiết bị.
+3. Sau giai đoạn dùng thật, bổ sung version/conflict detection trước khi mở rộng phạm vi người dùng.

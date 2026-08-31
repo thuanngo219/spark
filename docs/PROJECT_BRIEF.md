@@ -218,13 +218,14 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 
 - Dùng app ít nhất 5 ngày/tuần sau hai tuần đầu.
 - Median time từ mở app đến tạo xong task dưới 10 giây.
-- Không có task bị mất khi refresh, offline ngắn hoặc đăng nhập lại.
+- Không có task bị mất khi refresh, offline, đóng/mở lại PWA hoặc đăng nhập lại; sau lần mở production online đầu tiên, app cold-start được khi không có mạng.
 - Chủ dự án có thể tìm mọi task đến hạn trong tối đa hai thao tác.
 
 ## 11. Acceptance criteria
 
 - Lưu trữ/khôi phục/xóa dự án hoạt động trên desktop và mobile, lưu qua reload và hàng đợi cloud/offline. Xóa không làm mất task/note; cancel/Escape trong xác nhận không xóa gì.
 - Refresh hoặc mở lại app không làm mất task.
+- Sau lần mở production online đầu tiên, PWA mở được khi offline; CRUD local sống qua reload và tự đồng bộ khi mạng trở lại.
 - Bốn master view ẩn mọi item thuộc dự án đã lưu trữ và loại khỏi số đếm; khôi phục dự án làm các item xuất hiện lại theo filter, không sửa dữ liệu item.
 - Hôm nay không hiện task đã hoàn thành ngày khác; kiểm tra ranh giới nửa đêm theo múi giờ Việt Nam, không lấy ngày UTC hay due date.
 - Task quá hạn xuất hiện trong Hôm nay và có nhãn ngày dễ hiểu.
@@ -237,6 +238,7 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Listing tự sắp theo cả hai cờ → Ưu tiên → Quan Trọng → bình thường; tắt cờ trả item về thứ tự loại/ngày/thời điểm tạo.
 - Detail sheet giữ edit button ở mép phải của từng khối đọc; URL trong Nội dung task/note là liên kết mở tab mới và không cho phép protocol ngoài HTTP(S).
 - Canvas liệt kê task/note trên desktop rộng responsive trong dải `940–1200px` khi vùng nội dung đủ chỗ; màn hình hẹp và mobile co vừa vùng hiển thị, không phát sinh horizontal scroll. Detail sheet desktop giữ chiều rộng `780px`.
+- Textarea Nội dung của task và note cao `300px` khi sửa trên desktop; khi tạo mới trên desktop cao `160px`; trên mobile cả sửa và tạo mới đều cao `160px`. Trong edit Tên/Nội dung, action ✓ và × nằm trên hàng nhãn để field dùng trọn chiều rộng; control desktop là `28px` với icon `16px`, mobile giữ touch target `44px`.
 - Dock mobile bo tròn hai đầu; active navigation dùng pill đồng tâm và vẫn giữ vùng chạm tối thiểu 44px.
 - Email đồng bộ gửi OTP 6 chữ số; input chỉ nhận tối đa 6 số và nút xác nhận chỉ bật khi có đúng 6 số.
 - Switcher Tất cả/Note/Task hoạt động nhất quán ở mọi view và không làm thay đổi dữ liệu item.

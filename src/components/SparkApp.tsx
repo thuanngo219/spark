@@ -4,6 +4,7 @@ import Image from "next/image";
 import {
   CSSProperties,
   FormEvent,
+  memo,
   PointerEvent as ReactPointerEvent,
   useCallback,
   useEffect,
@@ -12,6 +13,7 @@ import {
   useState,
 } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { ItemDisplaySwitcher, MobileDock } from "@/components/SparkNavigation";
 import {
   fetchCloudData,
   runCloudMutation,
@@ -19,11 +21,7 @@ import {
 import {
   appendCloudMutation,
   applyCloudMutations,
-  cloudDataKey,
-  DEMO_DATA_KEY,
-  parseCloudMutations,
   removeProjectFromData,
-  pendingMutationsKey,
   resolveCloudActivationData,
   type CloudMutation,
 } from "@/lib/cloud-sync";
@@ -32,17 +30,27 @@ import {
   formatDateRange,
   formatLongDate,
   formatShortDate,
+  formatShortWeekday,
   getLocalDateKey,
 } from "@/lib/dates";
 import { createItemClickGuard, resolveItemContentTap, resolveItemSwipe, shouldOpenMobileSidebar } from "@/lib/mobile-gestures";
-import { normalizeDataIds, type SparkData } from "@/lib/data-ids";
+import { areSparkDataEqual, normalizeDataIds, type SparkData } from "@/lib/data-ids";
 import { EMAIL_OTP_LENGTH, isCompleteEmailOtp, normalizeEmailOtp } from "@/lib/email-otp";
 import { createUuid } from "@/lib/ids";
 import { linkifyText } from "@/lib/linkify";
+import {
+  persistOfflineData,
+  persistOfflineMutations,
+  persistOfflineState,
+  readOfflineData,
+  readOfflineMutations,
+} from "@/lib/offline-storage";
 import { reorderProjectsForDrop, type ProjectDropPlacement } from "@/lib/project-order";
+import { SingleFlight } from "@/lib/single-flight";
 import {
   filterItems,
   filterItemsByDisplayMode,
+  getSidebarCounts,
   groupItemsByTime,
   inactiveForView,
   type ItemDisplayMode,
@@ -52,7 +60,6 @@ import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase";
 import { resolveProjectShortcut, resolveStandaloneShortcut } from "@/lib/keyboard-shortcuts";
 import type { ItemType, Project, SparkItem, View } from "@/lib/types";
 
-const LEGACY_STORAGE_KEY = "spark:data:v1";
 const SIDEBAR_KEY = "spark:sidebar:v2";
 const SIDEBAR_SECTIONS_KEY = "spark:sidebar-sections";
 const SPARK_LOGO_NEGATIVE_SRC = "/brand/spark-logo-negative.svg";
@@ -170,31 +177,11 @@ function seedData(today: string): SparkData {
   return { items, projects };
 }
 
-function readStoredData(key: string): SparkData | null {
-  try {
-    const stored = window.localStorage.getItem(key);
-    return stored ? normalizeDataIds(JSON.parse(stored)) : null;
-  } catch {
-    return null;
-  }
-}
-
-function readDemoData(today: string): SparkData {
-  return (
-    readStoredData(DEMO_DATA_KEY) ??
-    readStoredData(LEGACY_STORAGE_KEY) ??
-    seedData(today)
-  );
-}
-
-function readPendingMutations(userId: string) {
-  try {
-    return parseCloudMutations(
-      JSON.parse(window.localStorage.getItem(pendingMutationsKey(userId)) ?? "[]"),
-    );
-  } catch {
-    return [];
-  }
+async function readDemoData(today: string) {
+  const cached = await readOfflineData("demo");
+  const normalized = normalizeDataIds(cached ?? seedData(today));
+  if (normalized !== cached) await persistOfflineData("demo", normalized);
+  return normalized;
 }
 
 function isTypingTarget(target: EventTarget | null) {
@@ -279,13 +266,14 @@ export function SparkApp() {
   const pendingMutationsRef = useRef<CloudMutation[]>([]);
   const syncRevisionRef = useRef(0);
   const pullRequestRef = useRef(0);
+  const pullSingleFlightRef = useRef(new SingleFlight());
   const activationRef = useRef(0);
   const realtimeConnectedRef = useRef(false);
-  const flushPromiseRef = useRef<Promise<void> | null>(null);
-  const flushUserIdRef = useRef<string | null>(null);
+  const flushSingleFlightRef = useRef(new SingleFlight());
   const flushPendingRef = useRef<() => Promise<void>>(async () => undefined);
   const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retryDelayRef = useRef(1_000);
+  const mutationPersistenceRef = useRef<Promise<void> | null>(null);
   const navEdgeGestureRef = useRef<{
     pointerId: number;
     startX: number;
@@ -311,26 +299,36 @@ export function SparkApp() {
     };
   }, []);
 
-  const replaceData = useCallback((next: SparkData, scope?: "demo" | string) => {
-    if (scope) dataScopeRef.current = scope;
+  const setHydratedData = useCallback((next: SparkData, scope: "demo" | string) => {
+    dataScopeRef.current = scope;
     const normalized = normalizeDataIds(next);
+    if (areSparkDataEqual(dataRef.current, normalized)) return false;
     dataRef.current = normalized;
-    const key = dataScopeRef.current === "demo"
-      ? DEMO_DATA_KEY
-      : cloudDataKey(dataScopeRef.current);
-    try {
-      window.localStorage.setItem(key, JSON.stringify(normalized));
-    } catch (error) {
-      console.error("Spark local cache write failed", error);
-    }
     setData(normalized);
+    return true;
+  }, []);
+
+  const replaceData = useCallback((next: SparkData, scope: "demo" | string) => {
+    const scopeChanged = dataScopeRef.current !== scope;
+    dataScopeRef.current = scope;
+    const normalized = normalizeDataIds(next);
+    const changed = !areSparkDataEqual(dataRef.current, normalized);
+    if (changed) {
+      dataRef.current = normalized;
+      setData(normalized);
+    }
+    if (changed || scopeChanged) void persistOfflineData(scope, normalized);
+    return changed;
+  }, []);
+
+  const commitLocalData = useCallback((next: SparkData) => {
+    dataRef.current = next;
+    setData(next);
+    if (!cloudUserRef.current) void persistOfflineData("demo", next);
   }, []);
 
   const persistPendingMutations = useCallback((userId: string) => {
-    window.localStorage.setItem(
-      pendingMutationsKey(userId),
-      JSON.stringify(pendingMutationsRef.current),
-    );
+    return persistOfflineMutations(userId, pendingMutationsRef.current);
   }, []);
 
   const setIdleSyncStatus = useCallback(() => {
@@ -347,31 +345,33 @@ export function SparkApp() {
     }
   }, []);
 
-  const pullCloudData = useCallback(async (expectedUserId?: string) => {
-    const client = getSupabaseBrowserClient();
+  const pullCloudData = useCallback((expectedUserId?: string): Promise<void> => {
     const user = cloudUserRef.current;
-    if (!client || !user || (expectedUserId && user.id !== expectedUserId)) return;
-
-    const requestId = ++pullRequestRef.current;
-    const revision = syncRevisionRef.current;
-    try {
-      const remote = await fetchCloudData(client);
-      if (
-        requestId !== pullRequestRef.current ||
-        revision !== syncRevisionRef.current ||
-        cloudUserRef.current?.id !== user.id
-      ) {
-        return;
+    if (!user || (expectedUserId && user.id !== expectedUserId)) return Promise.resolve();
+    return pullSingleFlightRef.current.run(user.id, async () => {
+      const requestId = ++pullRequestRef.current;
+      const revision = syncRevisionRef.current;
+      try {
+        const client = await getSupabaseBrowserClient();
+        if (!client) return;
+        const remote = await fetchCloudData(client);
+        if (
+          requestId !== pullRequestRef.current ||
+          revision !== syncRevisionRef.current ||
+          cloudUserRef.current?.id !== user.id
+        ) {
+          return;
+        }
+        replaceData(
+          applyCloudMutations(remote, pendingMutationsRef.current),
+          user.id,
+        );
+        setIdleSyncStatus();
+      } catch (error) {
+        console.error("Spark cloud refresh failed", error);
+        setSyncStatus(navigator.onLine ? "error" : "offline");
       }
-      replaceData(
-        applyCloudMutations(remote, pendingMutationsRef.current),
-        user.id,
-      );
-      setIdleSyncStatus();
-    } catch (error) {
-      console.error("Spark cloud refresh failed", error);
-      setSyncStatus(navigator.onLine ? "error" : "offline");
-    }
+    });
   }, [replaceData, setIdleSyncStatus]);
 
   const schedulePendingRetry = useCallback(() => {
@@ -384,19 +384,17 @@ export function SparkApp() {
     }, delay);
   }, []);
 
-  const flushPendingMutations = useCallback(async () => {
+  const flushPendingMutations = useCallback((): Promise<void> => {
     const user = cloudUserRef.current;
-    const client = getSupabaseBrowserClient();
-    if (!user || !client) return;
-    if (flushPromiseRef.current && flushUserIdRef.current === user.id) {
-      return flushPromiseRef.current;
-    }
+    if (!user) return Promise.resolve();
     if (!navigator.onLine) {
       setSyncStatus("offline");
-      return;
+      return Promise.resolve();
     }
 
-    const flush = (async () => {
+    return flushSingleFlightRef.current.run(user.id, async () => {
+      const client = await getSupabaseBrowserClient();
+      if (!client) return;
       while (pendingMutationsRef.current.length > 0) {
         if (cloudUserRef.current?.id !== user.id) return;
         const mutation = pendingMutationsRef.current[0];
@@ -413,7 +411,7 @@ export function SparkApp() {
         if (pendingMutationsRef.current[0]?.id === mutation.id) {
           pendingMutationsRef.current = pendingMutationsRef.current.slice(1);
           syncRevisionRef.current += 1;
-          persistPendingMutations(user.id);
+          await persistPendingMutations(user.id);
         }
       }
 
@@ -423,44 +421,54 @@ export function SparkApp() {
         retryTimerRef.current = null;
       }
       await pullCloudData(user.id);
-    })();
-
-    const trackedFlush = flush.finally(() => {
-      if (flushPromiseRef.current === trackedFlush) {
-        flushPromiseRef.current = null;
-        flushUserIdRef.current = null;
-      }
     });
-    flushPromiseRef.current = trackedFlush;
-    flushUserIdRef.current = user.id;
-    return trackedFlush;
   }, [persistPendingMutations, pullCloudData, schedulePendingRetry]);
 
   useEffect(() => {
     flushPendingRef.current = flushPendingMutations;
   }, [flushPendingMutations]);
 
-  const enqueueCloudMutation = useCallback((mutation: CloudMutation) => {
+  const enqueueCloudMutations = useCallback((mutations: CloudMutation[]) => {
     const user = cloudUserRef.current;
-    if (!user) return;
-    pendingMutationsRef.current = appendCloudMutation(
+    if (!user || mutations.length === 0) return;
+    pendingMutationsRef.current = mutations.reduce(
+      (queue, mutation) => appendCloudMutation(queue, mutation),
       pendingMutationsRef.current,
-      mutation,
     );
     syncRevisionRef.current += 1;
-    persistPendingMutations(user.id);
+    const snapshot = dataRef.current;
     setSyncStatus(navigator.onLine ? "syncing" : "offline");
-    void flushPendingMutations();
+    const persisted = snapshot
+      ? persistOfflineState(user.id, snapshot, pendingMutationsRef.current)
+      : persistPendingMutations(user.id);
+    mutationPersistenceRef.current = persisted;
+    void persisted
+      .then(() => {
+        if (mutationPersistenceRef.current !== persisted) return;
+        mutationPersistenceRef.current = null;
+        return flushPendingMutations();
+      })
+      .catch((error) => {
+        if (mutationPersistenceRef.current === persisted) mutationPersistenceRef.current = null;
+        console.error("Spark could not persist a cloud mutation", error);
+        setSyncStatus("error");
+      });
   }, [flushPendingMutations, persistPendingMutations]);
+
+  const enqueueCloudMutation = useCallback((mutation: CloudMutation) => {
+    enqueueCloudMutations([mutation]);
+  }, [enqueueCloudMutations]);
 
   useEffect(() => {
     dataRef.current = data;
   }, [data]);
 
   useEffect(() => {
+    let active = true;
     queueMicrotask(() => {
-      const localData = readDemoData(today);
-      replaceData(localData, "demo");
+      void readDemoData(today).then((localData) => {
+        if (active && !cloudUserRef.current) setHydratedData(localData, "demo");
+      });
       const sidebarPreference = window.localStorage.getItem(SIDEBAR_KEY);
       setSidebarCompact(sidebarPreference === null || sidebarPreference === "compact");
       try {
@@ -473,40 +481,37 @@ export function SparkApp() {
       }
       setPreferencesLoaded(true);
     });
-  }, [replaceData, today]);
+    return () => {
+      active = false;
+    };
+  }, [setHydratedData, today]);
 
   useEffect(() => {
-    const client = getSupabaseBrowserClient();
-    if (!client) return;
     let active = true;
     let activationUserId: string | null = null;
     let activationPromise: Promise<void> | null = null;
+    let unsubscribeAuth: (() => void) | null = null;
 
-    const activateSession = (user: { id: string; email?: string }) => {
-      if (!active) return Promise.resolve();
-      if (activationUserId === user.id && activationPromise) return activationPromise;
+    const initialize = async () => {
+      const client = await getSupabaseBrowserClient();
+      if (!client || !active) return;
 
-      activationUserId = user.id;
-      const activationId = ++activationRef.current;
-      activationPromise = (async () => {
-        const nextUser = { id: user.id, email: user.email ?? "" };
-        cloudUserRef.current = nextUser;
-        setCloudUser(nextUser);
-        realtimeConnectedRef.current = false;
-        pendingMutationsRef.current = readPendingMutations(user.id);
-        syncRevisionRef.current += 1;
-        setSyncStatus("loading");
+      const activateSession = (user: { id: string; email?: string }) => {
+        if (!active) return Promise.resolve();
+        if (activationUserId === user.id && activationPromise) return activationPromise;
 
-        const cached = readStoredData(cloudDataKey(user.id));
-        if (cached) {
-          replaceData(
-            applyCloudMutations(cached, pendingMutationsRef.current),
-            user.id,
-          );
-        }
-
-        try {
-          const remote = await fetchCloudData(client);
+        activationUserId = user.id;
+        const activationId = ++activationRef.current;
+        activationPromise = (async () => {
+          const nextUser = { id: user.id, email: user.email ?? "" };
+          cloudUserRef.current = nextUser;
+          setCloudUser(nextUser);
+          realtimeConnectedRef.current = false;
+          setSyncStatus("loading");
+          const [pendingMutations, cached] = await Promise.all([
+            readOfflineMutations(user.id),
+            readOfflineData(user.id),
+          ]);
           if (
             !active ||
             activationId !== activationRef.current ||
@@ -514,109 +519,148 @@ export function SparkApp() {
           ) {
             return;
           }
+          pendingMutationsRef.current = pendingMutations;
+          syncRevisionRef.current += 1;
 
-          replaceData(
-            resolveCloudActivationData(remote, pendingMutationsRef.current),
-            user.id,
-          );
-          if (pendingMutationsRef.current.length > 0) {
-            void flushPendingMutations();
+          if (cached) {
+            setHydratedData(
+              applyCloudMutations(cached, pendingMutationsRef.current),
+              user.id,
+            );
           } else {
-            setIdleSyncStatus();
+            setHydratedData({ projects: [], items: [] }, user.id);
           }
-        } catch (error) {
-          console.error("Spark cloud activation failed", error);
-          if (active && activationId === activationRef.current) {
-            setSyncStatus(navigator.onLine ? "error" : "offline");
-            if (pendingMutationsRef.current.length > 0) schedulePendingRetry();
+
+          try {
+            const remote = await fetchCloudData(client);
+            if (
+              !active ||
+              activationId !== activationRef.current ||
+              cloudUserRef.current?.id !== user.id
+            ) {
+              return;
+            }
+
+            replaceData(
+              resolveCloudActivationData(remote, pendingMutationsRef.current),
+              user.id,
+            );
+            if (pendingMutationsRef.current.length > 0) {
+              void flushPendingMutations();
+            } else {
+              setIdleSyncStatus();
+            }
+          } catch (error) {
+            console.error("Spark cloud activation failed", error);
+            if (active && activationId === activationRef.current) {
+              setSyncStatus(navigator.onLine ? "error" : "offline");
+              if (pendingMutationsRef.current.length > 0) schedulePendingRetry();
+            }
           }
-        }
-      })();
-      return activationPromise;
+        })();
+        return activationPromise;
+      };
+
+      client.auth.getSession()
+        .then(({ data: sessionData, error }) => {
+          if (error) throw error;
+          if (sessionData.session?.user) {
+            void activateSession(sessionData.session.user);
+          } else if (active) {
+            cloudUserRef.current = null;
+            setSyncStatus("demo");
+          }
+        })
+        .catch((error) => {
+          console.error("Spark auth session restore failed", error);
+          if (active) setSyncStatus(navigator.onLine ? "error" : "offline");
+        });
+
+      const { data: authListener } = client.auth.onAuthStateChange((_event, session) => {
+        queueMicrotask(() => {
+          if (session?.user) {
+            void activateSession(session.user);
+          } else if (active) {
+            activationUserId = null;
+            activationPromise = null;
+            activationRef.current += 1;
+            pullRequestRef.current += 1;
+            cloudUserRef.current = null;
+            pendingMutationsRef.current = [];
+            mutationPersistenceRef.current = null;
+            realtimeConnectedRef.current = false;
+            setCloudUser(null);
+            setSyncStatus("demo");
+            void readDemoData(getLocalDateKey()).then((demoData) => {
+              if (active && !cloudUserRef.current) setHydratedData(demoData, "demo");
+            });
+          }
+        });
+      });
+      unsubscribeAuth = () => authListener.subscription.unsubscribe();
     };
 
-    client.auth.getSession()
-      .then(({ data: sessionData, error }) => {
-        if (error) throw error;
-        if (sessionData.session?.user) {
-          void activateSession(sessionData.session.user);
-        } else if (active) {
-          cloudUserRef.current = null;
-          setSyncStatus("demo");
-        }
-      })
-      .catch((error) => {
-        console.error("Spark auth session restore failed", error);
-        if (active) setSyncStatus(navigator.onLine ? "error" : "offline");
-      });
-
-    const { data: authListener } = client.auth.onAuthStateChange((_event, session) => {
-      queueMicrotask(() => {
-        if (session?.user) {
-          void activateSession(session.user);
-        } else if (active) {
-          activationUserId = null;
-          activationPromise = null;
-          activationRef.current += 1;
-          pullRequestRef.current += 1;
-          cloudUserRef.current = null;
-          pendingMutationsRef.current = [];
-          realtimeConnectedRef.current = false;
-          setCloudUser(null);
-          setSyncStatus("demo");
-          replaceData(readDemoData(getLocalDateKey()), "demo");
-        }
-      });
+    void initialize().catch((error) => {
+      console.error("Spark Supabase client initialization failed", error);
+      if (active) setSyncStatus(navigator.onLine ? "error" : "offline");
     });
 
     return () => {
       active = false;
       activationRef.current += 1;
-      authListener.subscription.unsubscribe();
+      unsubscribeAuth?.();
     };
   }, [
     flushPendingMutations,
-    persistPendingMutations,
     replaceData,
     schedulePendingRetry,
+    setHydratedData,
     setIdleSyncStatus,
   ]);
 
   useEffect(() => {
-    const client = getSupabaseBrowserClient();
-    if (!client || !cloudUser) return;
+    if (!cloudUser) return;
     let active = true;
     let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+    let removeChannel: (() => Promise<unknown>) | null = null;
     const refresh = () => {
       if (refreshTimer) clearTimeout(refreshTimer);
       refreshTimer = setTimeout(() => {
+        if (flushSingleFlightRef.current.isRunning(cloudUser.id)) return;
         void pullCloudData(cloudUser.id);
       }, 150);
     };
-    const channel = client
-      .channel(`spark-sync-${cloudUser.id}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "projects" }, refresh)
-      .on("postgres_changes", { event: "*", schema: "public", table: "items" }, refresh)
-      .subscribe((status, error) => {
-        if (!active) return;
-        if (status === "SUBSCRIBED") {
-          realtimeConnectedRef.current = true;
-          if (pendingMutationsRef.current.length > 0) {
-            void flushPendingMutations();
-          } else {
-            void pullCloudData(cloudUser.id);
+    void getSupabaseBrowserClient().then((client) => {
+      if (!client || !active) return;
+      const channel = client
+        .channel(`spark-sync-${cloudUser.id}`)
+        .on("postgres_changes", { event: "*", schema: "public", table: "projects" }, refresh)
+        .on("postgres_changes", { event: "*", schema: "public", table: "items" }, refresh)
+        .subscribe((status, error) => {
+          if (!active) return;
+          if (status === "SUBSCRIBED") {
+            realtimeConnectedRef.current = true;
+            if (pendingMutationsRef.current.length > 0) {
+              void flushPendingMutations();
+            } else {
+              void pullCloudData(cloudUser.id);
+            }
+          } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+            realtimeConnectedRef.current = false;
+            console.error("Spark realtime subscription interrupted", status, error);
+            setSyncStatus(navigator.onLine ? "reconnecting" : "offline");
           }
-        } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
-          realtimeConnectedRef.current = false;
-          console.error("Spark realtime subscription interrupted", status, error);
-          setSyncStatus(navigator.onLine ? "reconnecting" : "offline");
-        }
-      });
+        });
+      removeChannel = () => client.removeChannel(channel);
+    }).catch((error) => {
+      console.error("Spark realtime initialization failed", error);
+      if (active) setSyncStatus(navigator.onLine ? "reconnecting" : "offline");
+    });
     return () => {
       active = false;
       realtimeConnectedRef.current = false;
       if (refreshTimer) clearTimeout(refreshTimer);
-      void client.removeChannel(channel);
+      if (removeChannel) void removeChannel();
     };
   }, [cloudUser, flushPendingMutations, pullCloudData]);
 
@@ -748,9 +792,23 @@ export function SparkApp() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [editingItem, helpOpen, mobileNav, projectEditor, projectArchiveOpen, syncDialogOpen, today]);
 
-  const allProjects = data?.projects ?? [];
-  const projects = data?.projects.filter((project) => !project.archivedAt) ?? [];
-  const archivedProjects = allProjects.filter((project) => project.archivedAt);
+  const allProjects = useMemo(() => data?.projects ?? [], [data]);
+  const projects = useMemo(
+    () => allProjects.filter((project) => !project.archivedAt),
+    [allProjects],
+  );
+  const archivedProjects = useMemo(
+    () => allProjects.filter((project) => project.archivedAt),
+    [allProjects],
+  );
+  const projectById = useMemo(
+    () => new Map(allProjects.map((project) => [project.id, project])),
+    [allProjects],
+  );
+  const sidebarCounts = useMemo(
+    () => getSidebarCounts(data?.items ?? [], today, allProjects),
+    [allProjects, data?.items, today],
+  );
   const openItems = useMemo(
     () => (data ? filterItems(data.items, view, today, data.projects) : []),
     [data, view, today],
@@ -767,34 +825,52 @@ export function SparkApp() {
     () => filterItemsByDisplayMode(inactiveItems, itemDisplayMode),
     [inactiveItems, itemDisplayMode],
   );
-  const overdue = view.type === "today" ? visibleOpenItems.filter((item) => item.dueDate! < today) : [];
-  const current = view.type === "today"
-    ? visibleOpenItems.filter((item) => item.dueDate === today || (item.type === "note" && !item.dueDate))
-    : view.type === "all" ? [] : visibleOpenItems;
+  const { overdue, current, taskCount, noteCount, overdueCount } = useMemo(() => {
+    const overdueItems: SparkItem[] = [];
+    const currentItems: SparkItem[] = [];
+    let tasks = 0;
+    let notes = 0;
+    let overdueTotal = 0;
+
+    for (const item of visibleOpenItems) {
+      if (item.type === "task") tasks += 1;
+      else notes += 1;
+      if (item.dueDate && item.dueDate < today) overdueTotal += 1;
+      if (view.type === "today") {
+        if (item.dueDate && item.dueDate < today) overdueItems.push(item);
+        else if (item.dueDate === today || (item.type === "note" && !item.dueDate)) currentItems.push(item);
+      }
+    }
+
+    return {
+      overdue: overdueItems,
+      current: view.type === "today" ? currentItems : view.type === "all" ? [] : visibleOpenItems,
+      taskCount: tasks,
+      noteCount: notes,
+      overdueCount: overdueTotal,
+    };
+  }, [today, view.type, visibleOpenItems]);
   const allTimeGroups = useMemo(
     () => view.type === "all" ? groupItemsByTime(visibleOpenItems, today) : [],
     [today, view.type, visibleOpenItems],
   );
-  const activeProject = view.type === "project" ? allProjects.find((project) => project.id === view.projectId) : null;
-  const taskCount = visibleOpenItems.filter((item) => item.type === "task").length;
-  const noteCount = visibleOpenItems.filter((item) => item.type === "note").length;
-  const overdueCount = visibleOpenItems.filter((item) => item.dueDate && item.dueDate < today).length;
+  const activeProject = view.type === "project" ? projectById.get(view.projectId) ?? null : null;
 
-  const navigate = (next: View) => {
+  const navigate = useCallback((next: View) => {
     setView(next);
     setMobileNav(false);
     setOpenSwipeItemId(null);
     setCompletedOpen(false);
-  };
+  }, []);
 
-  const mutateItem = (id: string, update: Partial<SparkItem>) => {
+  const mutateItem = useCallback((id: string, update: Partial<SparkItem>) => {
     const currentData = dataRef.current;
     if (!currentData) return;
     const existing = currentData.items.find((item) => item.id === id);
     if (!existing) return;
     const nextItem = { ...existing, ...update };
     if (nextItem.projectId && !currentData.projects.some((project) => project.id === nextItem.projectId)) nextItem.projectId = null;
-    replaceData({
+    commitLocalData({
       ...currentData,
       items: currentData.items.map((item) => (item.id === id ? nextItem : item)),
     });
@@ -803,19 +879,19 @@ export function SparkApp() {
       kind: "upsert-item",
       item: nextItem,
     });
-  };
+  }, [commitLocalData, enqueueCloudMutation]);
 
-  const addItem = (item: SparkItem) => {
+  const addItem = useCallback((item: SparkItem) => {
     const currentData = dataRef.current;
     if (!currentData) return;
     const nextItem = { ...item, projectId: currentData.projects.some((project) => project.id === item.projectId && !project.archivedAt) ? item.projectId : null };
-    replaceData({ ...currentData, items: [...currentData.items, nextItem] });
+    commitLocalData({ ...currentData, items: [...currentData.items, nextItem] });
     enqueueCloudMutation({
       id: createUuid(),
       kind: "upsert-item",
       item: nextItem,
     });
-  };
+  }, [commitLocalData, enqueueCloudMutation]);
 
   const saveProject = (project: Project) => {
     const currentData = dataRef.current;
@@ -825,7 +901,7 @@ export function SparkApp() {
       ...project,
       position: Math.max(-1, ...currentData.projects.map((entry) => entry.position ?? 0)) + 1,
     };
-    replaceData({
+    commitLocalData({
       ...currentData,
       projects: exists
         ? currentData.projects.map((entry) => entry.id === project.id ? nextProject : entry)
@@ -843,8 +919,12 @@ export function SparkApp() {
     if (!currentData) return;
     const nextProjects = reorderProjectsForDrop(currentData.projects, sourceId, targetId, placement);
     if (!nextProjects) return;
-    replaceData({ ...currentData, projects: nextProjects });
-    nextProjects.forEach((project) => enqueueCloudMutation({ id: createUuid(), kind: "upsert-project", project }));
+    commitLocalData({ ...currentData, projects: nextProjects });
+    enqueueCloudMutations(nextProjects.map((project) => ({
+      id: createUuid(),
+      kind: "upsert-project" as const,
+      project,
+    })));
   };
 
   const toggleProjectArchive = (project: Project) => {
@@ -859,7 +939,7 @@ export function SparkApp() {
   const removeProject = (project: Project) => {
     const currentData = dataRef.current;
     if (!currentData || !currentData.projects.some((entry) => entry.id === project.id)) return;
-    replaceData(removeProjectFromData(currentData, project.id));
+    commitLocalData(removeProjectFromData(currentData, project.id));
     // Undoing a previously deleted item must not resurrect a removed project link.
     setDeletedItem((item) => item?.projectId === project.id ? { ...item, projectId: null } : item);
     setEditingItem((item) => item?.projectId === project.id ? { ...item, projectId: null } : item);
@@ -874,22 +954,22 @@ export function SparkApp() {
     setProjectArchiveOpen(true);
   };
 
-  const toggleComplete = (item: SparkItem) => {
+  const toggleComplete = useCallback((item: SparkItem) => {
     if (item.type === "note") return;
     mutateItem(item.id, { completedAt: item.completedAt ? null : new Date().toISOString() });
-  };
+  }, [mutateItem]);
 
-  const toggleNoteArchive = (item: SparkItem) => {
+  const toggleNoteArchive = useCallback((item: SparkItem) => {
     if (item.type !== "note") return;
     mutateItem(item.id, { archivedAt: item.archivedAt ? null : new Date().toISOString() });
     setEditingItem(null);
     setOpenSwipeItemId(null);
-  };
+  }, [mutateItem]);
 
-  const requestItemDelete = (item: SparkItem) => {
+  const requestItemDelete = useCallback((item: SparkItem) => {
     setOpenSwipeItemId(null);
     setDeleteConfirmation(item);
-  };
+  }, []);
 
   const removeItem = (item: SparkItem) => {
     setDeleteConfirmation(null);
@@ -898,7 +978,7 @@ export function SparkApp() {
     setOpenSwipeItemId(null);
     const currentData = dataRef.current;
     if (currentData) {
-      replaceData({
+      commitLocalData({
         ...currentData,
         items: currentData.items.filter((entry) => entry.id !== item.id),
       });
@@ -916,7 +996,7 @@ export function SparkApp() {
     if (!deletedItem) return;
     const currentData = dataRef.current;
     if (currentData) {
-      replaceData({ ...currentData, items: [...currentData.items, deletedItem] });
+      commitLocalData({ ...currentData, items: [...currentData.items, deletedItem] });
     }
     enqueueCloudMutation({
       id: createUuid(),
@@ -997,9 +1077,9 @@ export function SparkApp() {
     <div className={`app-shell ${sidebarCompact ? "sidebar-compact" : ""}`}>
       <Sidebar
         compact={sidebarCompact}
+        counts={sidebarCounts}
         currentView={view}
         attentionOpen={attentionOpen}
-        items={data.items}
         onCloseMobile={() => setMobileNav(false)}
         onEditProject={setProjectEditor}
         onHelp={() => setHelpOpen(true)}
@@ -1023,9 +1103,9 @@ export function SparkApp() {
           <div className="mobile-nav-panel" onClick={(event) => event.stopPropagation()}>
             <Sidebar
               compact={false}
+              counts={sidebarCounts}
               currentView={view}
               attentionOpen={attentionOpen}
-              items={data.items}
               mobile
               onCloseMobile={() => setMobileNav(false)}
               onEditProject={setProjectEditor}
@@ -1115,7 +1195,7 @@ export function SparkApp() {
               <ItemGroup
                 label="Quá hạn"
                 items={overdue}
-                projects={allProjects}
+                projectById={projectById}
                 today={today}
                 hideTodayDue={view.type === "today"}
                 onArchive={toggleNoteArchive}
@@ -1131,7 +1211,7 @@ export function SparkApp() {
               <ItemGroup
                 label={view.type === "today" ? "Hôm nay" : undefined}
                 items={current}
-                projects={allProjects}
+                projectById={projectById}
                 today={today}
                 hideTodayDue={view.type === "today"}
                 onArchive={toggleNoteArchive}
@@ -1148,7 +1228,7 @@ export function SparkApp() {
                 key={group.key}
                 label={timeGroupLabels[group.key]}
                 items={group.items}
-                projects={allProjects}
+                projectById={projectById}
                 today={today}
                 hideTodayDue={group.key === "today"}
                 onArchive={toggleNoteArchive}
@@ -1184,7 +1264,7 @@ export function SparkApp() {
                 {completedOpen && (
                   <ItemGroup
                     items={visibleInactiveItems}
-                    projects={allProjects}
+                    projectById={projectById}
                     today={today}
                     hideTodayDue={view.type === "today"}
                     onArchive={toggleNoteArchive}
@@ -1280,8 +1360,9 @@ export function SparkApp() {
           user={cloudUser}
           onClose={() => setSyncDialogOpen(false)}
           onSignedOut={() => {
-            const client = getSupabaseBrowserClient();
-            if (client) void client.auth.signOut();
+            void getSupabaseBrowserClient()
+              .then((client) => client?.auth.signOut())
+              .catch((error) => console.error("Spark sign out failed", error));
           }}
         />
       )}
@@ -1292,103 +1373,13 @@ export function SparkApp() {
   );
 }
 
-function ItemDisplaySwitcher({
-  mode,
-  mobile = false,
-  onChange,
-}: {
-  mode: ItemDisplayMode;
-  mobile?: boolean;
-  onChange: (mode: ItemDisplayMode) => void;
-}) {
-  const entries = [
-    { mode: "all" as const, label: "Hiển thị tất cả", shortcut: "\\", icon: "layers" as const },
-    { mode: "note" as const, label: "Chỉ hiển thị note", shortcut: "[", icon: "note" as const },
-    { mode: "task" as const, label: "Chỉ hiển thị task", shortcut: "]", icon: "task" as const },
-  ];
-
-  return (
-    <div
-      className={`item-display-switcher ${mobile ? "mobile" : ""}`}
-      role="group"
-      aria-label="Lọc loại nội dung"
-    >
-      {entries.map((entry) => (
-        <button
-          type="button"
-          className={mode === entry.mode ? "selected" : ""}
-          onClick={() => onChange(entry.mode)}
-          aria-label={entry.label}
-          aria-pressed={mode === entry.mode}
-          title={`${entry.label} (${entry.shortcut})`}
-          key={entry.mode}
-        >
-          <Icon name={entry.icon} size={18} />
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function MobileDock({
-  currentView,
-  onAdd,
-  onNavigate,
-  today,
-}: {
-  currentView: View;
-  onAdd: () => void;
-  onNavigate: (view: View) => void;
-  today: string;
-}) {
-  const entries = [
-    { label: "Hôm nay", icon: "sun" as const, view: { type: "today" } as View },
-    { label: "Sắp tới", icon: "clock" as const, view: { type: "upcoming" } as View },
-    { label: "Theo ngày", icon: "calendar" as const, view: { type: "calendar", date: today } as View },
-    { label: "Tất cả", icon: "list" as const, view: { type: "all" } as View },
-  ];
-  const isActive = (candidate: View) => candidate.type === currentView.type;
-
-  return (
-    <nav className="mobile-dock" aria-label="Điều hướng mobile">
-      {entries.slice(0, 2).map((entry) => (
-        <button
-          type="button"
-          className={isActive(entry.view) ? "active" : ""}
-          onClick={() => onNavigate(entry.view)}
-          aria-label={entry.label}
-          aria-current={isActive(entry.view) ? "page" : undefined}
-          key={entry.label}
-        >
-          <Icon name={entry.icon} size={27} />
-        </button>
-      ))}
-      <button className="mobile-dock-add" type="button" onClick={onAdd} aria-label="Thêm công việc">
-        <span><Icon name="plus" size={31} /></span>
-      </button>
-      {entries.slice(2).map((entry) => (
-        <button
-          type="button"
-          className={isActive(entry.view) ? "active" : ""}
-          onClick={() => onNavigate(entry.view)}
-          aria-label={entry.label}
-          aria-current={isActive(entry.view) ? "page" : undefined}
-          key={entry.label}
-        >
-          <Icon name={entry.icon} size={27} />
-        </button>
-      ))}
-    </nav>
-  );
-}
-
 function Sidebar({
   archivedProjects,
   onOpenProjectArchive,
   attentionOpen,
   compact,
+  counts,
   currentView,
-  items,
   mobile = false,
   onCloseMobile,
   onEditProject,
@@ -1409,8 +1400,8 @@ function Sidebar({
   onOpenProjectArchive: () => void;
   attentionOpen: boolean;
   compact: boolean;
+  counts: { today: number; upcoming: number; all: number };
   currentView: View;
-  items: SparkItem[];
   mobile?: boolean;
   onCloseMobile: () => void;
   onEditProject: (project: Project | "new") => void;
@@ -1430,10 +1421,10 @@ function Sidebar({
   const [draggingProjectId, setDraggingProjectId] = useState<string | null>(null);
   const [projectDropTarget, setProjectDropTarget] = useState<{ id: string; placement: ProjectDropPlacement } | null>(null);
   const navItems = [
-    { view: { type: "today" } as View, label: "Hôm nay", icon: "sun" as const, count: filterItems(items, { type: "today" }, today, archivedProjects).length },
-    { view: { type: "upcoming" } as View, label: "Sắp tới", icon: "clock" as const, count: filterItems(items, { type: "upcoming" }, today, archivedProjects).length },
+    { view: { type: "today" } as View, label: "Hôm nay", icon: "sun" as const, count: counts.today },
+    { view: { type: "upcoming" } as View, label: "Sắp tới", icon: "clock" as const, count: counts.upcoming },
     { view: { type: "calendar", date: today } as View, label: "Theo ngày", icon: "calendar" as const },
-    { view: { type: "all" } as View, label: "Tất cả", icon: "list" as const, count: filterItems(items, { type: "all" }, today, archivedProjects).length },
+    { view: { type: "all" } as View, label: "Tất cả", icon: "list" as const, count: counts.all },
   ];
   const smartItems = [
     { view: { type: "important" } as View, label: "Quan Trọng", icon: "star" as const, className: "important" },
@@ -1549,7 +1540,7 @@ function Sidebar({
 function ItemGroup({
   label,
   items,
-  projects,
+  projectById,
   today,
   hideTodayDue = false,
   onArchive,
@@ -1562,7 +1553,7 @@ function ItemGroup({
 }: {
   label?: string;
   items: SparkItem[];
-  projects: Project[];
+  projectById: Map<string, Project>;
   today: string;
   hideTodayDue?: boolean;
   onArchive: (item: SparkItem) => void;
@@ -1578,7 +1569,7 @@ function ItemGroup({
       {label && <h2>{label}<span>{items.length}</span></h2>}
       <div className="item-list">
         {items.map((item) => {
-          const project = projects.find((entry) => entry.id === item.projectId);
+          const project = item.projectId ? projectById.get(item.projectId) : undefined;
           const overdue = item.dueDate && item.dueDate < today && !item.completedAt;
           return (
             <SwipeableItemRow
@@ -1586,7 +1577,8 @@ function ItemGroup({
               project={project}
               overdue={Boolean(overdue)}
               hideDue={Boolean(item.dueDate && hideTodayDue && item.dueDate === today)}
-              openSwipeItemId={openSwipeItemId}
+              hasOpenSwipeItem={openSwipeItemId !== null}
+              isSwipeOpen={openSwipeItemId === item.id}
               key={item.id}
               onArchive={onArchive}
               onComplete={onComplete}
@@ -1605,12 +1597,13 @@ function ItemGroup({
 
 const SWIPE_ACTIONS_WIDTH = 144;
 
-function SwipeableItemRow({
+const SwipeableItemRow = memo(function SwipeableItemRow({
   item,
   project,
   overdue,
   hideDue,
-  openSwipeItemId,
+  hasOpenSwipeItem,
+  isSwipeOpen,
   onArchive,
   onComplete,
   onDelete,
@@ -1623,7 +1616,8 @@ function SwipeableItemRow({
   project?: Project;
   overdue: boolean;
   hideDue: boolean;
-  openSwipeItemId: string | null;
+  hasOpenSwipeItem: boolean;
+  isSwipeOpen: boolean;
   onArchive: (item: SparkItem) => void;
   onComplete: (item: SparkItem) => void;
   onDelete: (item: SparkItem) => void;
@@ -1632,7 +1626,6 @@ function SwipeableItemRow({
   onSwipeOpenChange: (id: string | null) => void;
   today: string;
 }) {
-  const isSwipeOpen = openSwipeItemId === item.id;
   const [dragOffset, setDragOffset] = useState<number | null>(null);
   const gestureRef = useRef<{
     pointerId: number;
@@ -1780,7 +1773,7 @@ function SwipeableItemRow({
         {project ? <span className="project-dot item-project-dot" style={{ background: project.color }} title={project.name} /> : <span className="project-dot-spacer" />}
         <button className="item-main" onClick={() => {
           const action = resolveItemContentTap(
-            openSwipeItemId,
+            hasOpenSwipeItem ? item.id : null,
             window.matchMedia("(max-width: 699px)").matches,
           );
           closeActions();
@@ -1809,7 +1802,7 @@ function SwipeableItemRow({
       </article>
     </div>
   );
-}
+});
 
 function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: {
   expanded: boolean;
@@ -1982,7 +1975,7 @@ function DateStrip({ selected, today, onSelect }: { selected: string; today: str
       <div className="date-strip">
         {dates.map((date) => {
           const object = new Date(`${date}T12:00:00Z`);
-          return <button key={date} className={date === selected ? "selected" : ""} onClick={() => onSelect(date)}><small>{new Intl.DateTimeFormat("vi-VN", { weekday: "short" }).format(object)}</small><strong>{object.getUTCDate()}</strong></button>;
+          return <button key={date} className={date === selected ? "selected" : ""} onClick={() => onSelect(date)}><small>{formatShortWeekday(date)}</small><strong>{object.getUTCDate()}</strong></button>;
         })}
       </div>
       {selected !== today && <button className="today-button" onClick={() => onSelect(today)}>Về hôm nay</button>}
@@ -2022,15 +2015,21 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
 
         <div className="detail-content">
           <section className={`detail-text-block ${editingField === "title" ? "editing" : ""}`}>
-            <span className="detail-label">Tên</span>
+            <div className="detail-field-heading">
+              <span className="detail-label">Tên</span>
+              {editingField === "title" && (
+                <div className="detail-edit-actions">
+                  <button type="button" className="detail-icon-action save" onClick={saveTitle} aria-label="Lưu"><Icon name="check" size={18} /></button>
+                  <button type="button" className="detail-icon-action" onClick={() => { setTitle(item.title); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
+                </div>
+              )}
+            </div>
             {editingField === "title" ? (
               <div className="detail-inline-editor">
                 <input autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} onKeyDown={(event) => {
                   if (event.key === "Enter") { event.preventDefault(); saveTitle(); }
                   if (event.key === "Escape") { setTitle(item.title); setEditingField(null); }
                 }} aria-label={item.type === "task" ? "Tên task" : "Tên ghi chú"} />
-                <button type="button" className="detail-icon-action save" onClick={saveTitle} aria-label="Lưu"><Icon name="check" size={18} /></button>
-                <button type="button" className="detail-icon-action" onClick={() => { setTitle(item.title); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
               </div>
             ) : (
               <div className="detail-read-row">
@@ -2041,14 +2040,20 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
           </section>
 
           <section className={`detail-text-block detail-description ${editingField === "content" ? "editing" : ""}`}>
-              <span className="detail-label">Nội dung</span>
+              <div className="detail-field-heading">
+                <span className="detail-label">Nội dung</span>
+                {editingField === "content" && (
+                  <div className="detail-edit-actions">
+                    <button type="button" className="detail-icon-action save" onClick={saveContent} aria-label="Lưu Nội dung"><Icon name="check" size={18} /></button>
+                    <button type="button" className="detail-icon-action" onClick={() => { setDescription(item.description ?? ""); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
+                  </div>
+                )}
+              </div>
               {editingField === "content" ? (
-                <div className="detail-inline-editor align-start">
+                <div className="detail-inline-editor">
                   <textarea autoFocus maxLength={2000} rows={4} value={description} onChange={(event) => setDescription(event.target.value)} onKeyDown={(event) => {
                     if (event.key === "Escape") { setDescription(item.description ?? ""); setEditingField(null); }
                   }} placeholder="Nội dung chi tiết (nếu cần)" aria-label={item.type === "task" ? "Nội dung task" : "Nội dung ghi chú"} />
-                  <button type="button" className="detail-icon-action save" onClick={saveContent} aria-label="Lưu Nội dung"><Icon name="check" size={18} /></button>
-                  <button type="button" className="detail-icon-action" onClick={() => { setDescription(item.description ?? ""); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
                 </div>
               ) : (
                 <div className="detail-read-row align-start">
@@ -2291,38 +2296,51 @@ function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
-    const client = getSupabaseBrowserClient();
-    if (!client || !email.trim()) return;
+    if (!email.trim()) return;
     setSending(true);
     setError("");
-    const result = await client.auth.signInWithOtp({
-      email: email.trim(),
-    });
-    setSending(false);
-    if (result.error) {
-      setError(
-        result.error.message.toLowerCase().includes("rate")
-          ? "Bạn vừa yêu cầu mã. Hãy đợi một phút rồi thử lại."
-          : "Chưa gửi được mã. Hãy kiểm tra email và thử lại.",
-      );
+    try {
+      const client = await getSupabaseBrowserClient();
+      if (!client) return;
+      const result = await client.auth.signInWithOtp({ email: email.trim() });
+      if (result.error) {
+        setError(
+          result.error.message.toLowerCase().includes("rate")
+            ? "Bạn vừa yêu cầu mã. Hãy đợi một phút rồi thử lại."
+            : "Chưa gửi được mã. Hãy kiểm tra email và thử lại.",
+        );
+      } else {
+        setSent(true);
+      }
+    } catch (error) {
+      console.error("Spark OTP request failed", error);
+      setError("Chưa tải được kết nối đồng bộ. Hãy kiểm tra mạng và thử lại.");
+    } finally {
+      setSending(false);
     }
-    else setSent(true);
   };
 
   const verify = async (event: FormEvent) => {
     event.preventDefault();
-    const client = getSupabaseBrowserClient();
-    if (!client || !isCompleteEmailOtp(token)) return;
+    if (!isCompleteEmailOtp(token)) return;
     setVerifying(true);
     setError("");
-    const result = await client.auth.verifyOtp({
-      email: email.trim(),
-      token,
-      type: "email",
-    });
-    setVerifying(false);
-    if (result.error) {
-      setError("Mã không đúng hoặc đã hết hạn. Hãy dùng mã mới nhất trong email.");
+    try {
+      const client = await getSupabaseBrowserClient();
+      if (!client) return;
+      const result = await client.auth.verifyOtp({
+        email: email.trim(),
+        token,
+        type: "email",
+      });
+      if (result.error) {
+        setError("Mã không đúng hoặc đã hết hạn. Hãy dùng mã mới nhất trong email.");
+      }
+    } catch (error) {
+      console.error("Spark OTP verification failed", error);
+      setError("Chưa tải được kết nối đồng bộ. Hãy kiểm tra mạng và thử lại.");
+    } finally {
+      setVerifying(false);
     }
   };
 
