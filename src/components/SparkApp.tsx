@@ -69,7 +69,7 @@ const SPARK_LOGO_NEGATIVE_SRC = "/brand/spark-logo-negative.svg";
 const SPARK_MARK_NEGATIVE_SRC = "/spark-mark-negative.svg";
 
 function projectPillWidth(name: string) {
-  return Math.min(160, Math.max(32, Math.ceil(22 + name.trim().length * 6.4)));
+  return Math.max(32, Math.ceil(22 + name.trim().length * 6.4));
 }
 
 const timeGroupLabels: Record<TimeGroup, string> = {
@@ -1870,26 +1870,33 @@ const SwipeableItemRow = memo(function SwipeableItemRow({
           </button>
         )}
         {project ? (projectLabelsEnabled ? (
-          <button
-            className={`item-project-chip ${projectLabelExpanded ? "expanded" : ""}`}
-            type="button"
-            style={{
-              "--project-color": project.color,
-              "--project-pill-width": `${projectPillWidth(project.name)}px`,
-            } as CSSProperties}
-            aria-expanded={projectLabelExpanded}
-            aria-label={`${projectLabelExpanded ? "Thu gọn" : "Mở rộng"} tên tất cả dự án`}
-            title={`${project.name} · ${projectLabelExpanded ? "Thu gọn" : "Mở rộng"} tên dự án`}
-            onClick={() => {
-              closeActions();
-              onProjectLabelExpandedChange(!projectLabelExpanded);
-            }}
-          >
-            <span className="item-project-chip-visual" aria-hidden="true">
-              <span className="item-project-chip-dot" />
-              <span className="item-project-chip-label">{project.name}</span>
-            </span>
-          </button>
+          <>
+            <button
+              className={`item-project-chip ${projectLabelExpanded ? "expanded" : ""}`}
+              type="button"
+              style={{
+                "--project-color": project.color,
+                "--project-pill-width": `${projectPillWidth(project.name)}px`,
+              } as CSSProperties}
+              aria-expanded={projectLabelExpanded}
+              aria-label={`${projectLabelExpanded ? "Thu gọn" : "Mở rộng"} tên tất cả dự án`}
+              title={`${project.name} · ${projectLabelExpanded ? "Thu gọn" : "Mở rộng"} tên dự án`}
+              onClick={() => {
+                closeActions();
+                onProjectLabelExpandedChange(!projectLabelExpanded);
+              }}
+            >
+              <span className="item-project-chip-visual" aria-hidden="true">
+                <span className="item-project-chip-dot" />
+                <span className="item-project-chip-label">{project.name}</span>
+              </span>
+            </button>
+            <span
+              className="project-dot item-project-dot mobile-project-dot"
+              style={{ background: project.color }}
+              title={project.name}
+            />
+          </>
         ) : (
           <span className="project-dot item-project-dot" style={{ background: project.color }} title={project.name} />
         )) : <span className="project-dot-spacer" />}

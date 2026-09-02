@@ -181,9 +181,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .item-project-chip { height: 24px; padding: 0; border: 0; background: transparent; display: grid; justify-items: start; }
 .item-project-chip-visual { width: 10px; height: 18px; margin: 3px 0 0 2.5px; padding-right: 0; border-radius: 999px; background: color-mix(in srgb, var(--project-color) 12%, white); display: flex; align-items: center; gap: 4px; overflow: hidden; transition: width 200ms var(--ease), padding-right 200ms var(--ease); }
 .item-project-chip-dot { width: 10px; height: 10px; border-radius: 999px; flex: 0 0 10px; background: var(--project-color); }
-.item-project-chip-label { min-width: 0; overflow: hidden; color: var(--navy-900); font-size: 0.5rem; font-weight: 400; letter-spacing: .075em; line-height: 1; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; opacity: 0; transition: opacity 100ms ease; }
+.item-project-chip-label { min-width: 0; color: var(--navy-900); font-size: 0.5rem; font-weight: 400; letter-spacing: .075em; line-height: 1; text-transform: uppercase; white-space: nowrap; opacity: 0; transition: opacity 100ms ease; }
 .item-project-chip.expanded .item-project-chip-visual { width: var(--project-pill-width, 80px); padding-right: 6px; }
 .item-project-chip.expanded .item-project-chip-label { opacity: 1; transition-delay: 80ms; }
+.mobile-project-dot { display: none; }
 .item-main { border: 0; background: transparent; min-width: 0; text-align: left; padding: 3px 7px; display: flex; align-items: flex-start; gap: 10px; }
 .item-title-wrap { min-width: 0; display: flex; align-items: center; gap: 4px; }
 .item-title { min-width: 0; flex: 0 1 auto; font-size: 0.8125rem; font-weight: 400; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -449,9 +450,7 @@ button:focus-visible { filter: brightness(.88); }
   .swipe-action.urgent.selected svg { fill: currentColor; }
   .swipe-action.delete { color: white; background: var(--coral); }
   .swipe-action.archive { color: white; background: var(--navy-800); }
-  .item-row { position: relative; z-index: 1; min-height: 52px; grid-template-columns: 44px 11px minmax(0, 1fr); align-items: start; padding: 0 6px 0 2px; border-radius: 0; background: transparent; touch-action: pan-y; transform: translate3d(var(--swipe-offset, 0), 0, 0); transition: transform 190ms var(--ease), background 160ms ease; }
-  .item-row.project-labels-enabled { grid-template-columns: 44px 44px minmax(0, 1fr); }
-  .item-row.project-labels-expanded { grid-template-columns: 44px min(138px, max(44px, calc(var(--project-chip-width, 80px) + 2.5px))) minmax(0, 1fr); }
+  .item-row, .item-row.project-labels-enabled, .item-row.project-labels-expanded { position: relative; z-index: 1; min-height: 52px; grid-template-columns: 44px 11px minmax(0, 1fr); align-items: start; padding: 0 6px 0 2px; border-radius: 0; background: transparent; touch-action: pan-y; transform: translate3d(var(--swipe-offset, 0), 0, 0); transition: transform 190ms var(--ease), background 160ms ease; }
   .swipe-row.is-open .item-row, .swipe-row.is-dragging .item-row { will-change: transform; }
   .swipe-row.is-dragging .item-row { transition: none; }
   .item-row:hover { background: transparent; }
@@ -464,10 +463,8 @@ button:focus-visible { filter: brightness(.88); }
   .note-bullet { width: 44px; height: 52px; margin-top: 0; padding-top: 14px; align-items: start; justify-self: center; }
   .item-project-dot { width: 9px; height: 9px; margin-top: 11px; }
   .project-dot-spacer { width: 9px; height: 9px; margin-top: 11px; }
-  .item-project-chip { height: 52px; }
-  .item-project-chip:not(.expanded) { justify-items: center; }
-  .item-project-chip-visual { margin: 7px 0 0; }
-  .item-project-chip.expanded .item-project-chip-visual { width: min(135.5px, max(44px, var(--project-pill-width, 80px))); }
+  .item-project-chip { display: none; }
+  .mobile-project-dot { display: block; }
   .item-main { min-height: 52px; display: grid; align-content: start; gap: 2px; padding: 5px 4px; }
   .item-title-wrap { width: 100%; }
   .item-title { display: block; overflow: hidden; font-size: 0.8125rem; line-height: 1.32; white-space: nowrap; text-overflow: ellipsis; }
