@@ -101,7 +101,7 @@ Chủ dự án đã chọn **Option C — Compact Canvas** vì sự gọn gàng.
 
 Palette mở rộng đang đề xuất: **Soft Amber `#D6A84F`** dành cho Quan Trọng/star và **Muted Coral `#D9776A`** dành cho Ưu tiên/điện xẹt. Hai màu chỉ dùng ở icon, trạng thái và highlight nhỏ; không dùng làm mảng nền lớn.
 
-Trong task list, project chỉ được biểu diễn bằng **dot màu cỡ lớn**, không lặp lại tên project. Tên project vẫn xuất hiện trong navigation, màn hình project và task editor để bảo đảm người dùng có thể hiểu/chỉnh quan hệ này.
+Trong task list, project mặc định được biểu diễn bằng **dot màu cỡ lớn**. Chạm bất kỳ dot nào sẽ animate mở hoặc thu gọn đồng loạt mọi project dot trong view thành pill compact hiển thị tên project uppercase với regular weight. Khi mở, nền mỗi pill chỉ ôm tên project; các pill nằm trong một cột chung theo pill dài nhất để title thẳng hàng và dot giữ cùng một trục. Pill tham gia layout, không overlay hoặc dùng shadow; trạng thái mở được giữ khi đổi view và lưu theo browser. Người dùng có thể tắt/mở hành vi này trong bảng Phím tắt & hiển thị. Tên project vẫn xuất hiện trong navigation, màn hình project và task editor để bảo đảm người dùng có thể hiểu/chỉnh quan hệ này.
 
 Navigation desktop đã chốt là **sidebar đầy đủ theo cấu trúc Option A**, giữ danh sách theo Compact Canvas. Người dùng có thể thu gọn sidebar thành icon rail bằng nút chevron hiển thị rõ hoặc phím `⌘/Ctrl + \`, rồi mở lại khi cần. Top navigation không dùng trong phiên bản hiện tại.
 

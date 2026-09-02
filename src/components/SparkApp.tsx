@@ -63,8 +63,14 @@ import type { ItemType, Project, SparkItem, View } from "@/lib/types";
 
 const SIDEBAR_KEY = "spark:sidebar:v2";
 const SIDEBAR_SECTIONS_KEY = "spark:sidebar-sections";
+const PROJECT_LABELS_KEY = "spark:project-labels:v1";
+const PROJECT_LABELS_EXPANDED_KEY = "spark:project-labels-expanded:v1";
 const SPARK_LOGO_NEGATIVE_SRC = "/brand/spark-logo-negative.svg";
 const SPARK_MARK_NEGATIVE_SRC = "/spark-mark-negative.svg";
+
+function projectPillWidth(name: string) {
+  return Math.min(160, Math.max(32, Math.ceil(22 + name.trim().length * 6.4)));
+}
 
 const timeGroupLabels: Record<TimeGroup, string> = {
   overdue: "Quá hạn",
@@ -243,6 +249,8 @@ export function SparkApp() {
     ? { type: "today" } : selectedView, [data, selectedView]);
   const [sidebarCompact, setSidebarCompact] = useState(true);
   const [preferencesLoaded, setPreferencesLoaded] = useState(false);
+  const [projectLabelsEnabled, setProjectLabelsEnabled] = useState(true);
+  const [projectLabelsExpanded, setProjectLabelsExpanded] = useState(false);
   const [attentionOpen, setAttentionOpen] = useState(true);
   const [projectsOpen, setProjectsOpen] = useState(true);
   const [mobileNav, setMobileNav] = useState(false);
@@ -282,6 +290,11 @@ export function SparkApp() {
     startX: number;
     startY: number;
   } | null>(null);
+
+  const updateProjectLabelsEnabled = (enabled: boolean) => {
+    setProjectLabelsEnabled(enabled);
+    if (!enabled) setProjectLabelsExpanded(false);
+  };
 
   useEffect(() => {
     let frame = 0;
@@ -474,6 +487,8 @@ export function SparkApp() {
       });
       const sidebarPreference = window.localStorage.getItem(SIDEBAR_KEY);
       setSidebarCompact(sidebarPreference === null || sidebarPreference === "compact");
+      setProjectLabelsEnabled(window.localStorage.getItem(PROJECT_LABELS_KEY) !== "off");
+      setProjectLabelsExpanded(window.localStorage.getItem(PROJECT_LABELS_EXPANDED_KEY) === "open");
       try {
         const sections = JSON.parse(window.localStorage.getItem(SIDEBAR_SECTIONS_KEY) ?? "{}");
         setAttentionOpen(sections.attention !== false);
@@ -710,6 +725,16 @@ export function SparkApp() {
   }, [preferencesLoaded, sidebarCompact]);
 
   useEffect(() => {
+    if (!preferencesLoaded) return;
+    window.localStorage.setItem(PROJECT_LABELS_KEY, projectLabelsEnabled ? "on" : "off");
+  }, [preferencesLoaded, projectLabelsEnabled]);
+
+  useEffect(() => {
+    if (!preferencesLoaded) return;
+    window.localStorage.setItem(PROJECT_LABELS_EXPANDED_KEY, projectLabelsExpanded ? "open" : "closed");
+  }, [preferencesLoaded, projectLabelsExpanded]);
+
+  useEffect(() => {
     window.localStorage.setItem(
       SIDEBAR_SECTIONS_KEY,
       JSON.stringify({ attention: attentionOpen, projects: projectsOpen }),
@@ -828,6 +853,16 @@ export function SparkApp() {
     () => filterItemsByDisplayMode(inactiveItems, itemDisplayMode),
     [inactiveItems, itemDisplayMode],
   );
+  const projectChipWidth = useMemo(() => {
+    const renderedItems = completedOpen
+      ? [...visibleOpenItems, ...visibleInactiveItems]
+      : visibleOpenItems;
+    return renderedItems.reduce((widest, item) => {
+      if (!item.projectId) return widest;
+      const project = projectById.get(item.projectId);
+      return project ? Math.max(widest, projectPillWidth(project.name)) : widest;
+    }, 0);
+  }, [completedOpen, projectById, visibleInactiveItems, visibleOpenItems]);
   const { overdue, current, taskCount, noteCount, overdueCount } = useMemo(() => {
     const overdueItems: SparkItem[] = [];
     const currentItems: SparkItem[] = [];
@@ -1193,7 +1228,10 @@ export function SparkApp() {
             <DateStrip selected={view.date} today={today} onSelect={(date) => setView({ type: "calendar", date })} />
           )}
 
-          <div className="list-area">
+          <div
+            className="list-area"
+            style={{ "--project-chip-width": `${projectChipWidth}px` } as CSSProperties}
+          >
             {overdue.length > 0 && (
               <ItemGroup
                 label="Quá hạn"
@@ -1209,8 +1247,11 @@ export function SparkApp() {
                 onDelete={requestItemDelete}
                 onEdit={setEditingItem}
                 onFlag={mutateItem}
+                projectLabelsExpanded={projectLabelsExpanded}
+                onProjectLabelsExpandedChange={setProjectLabelsExpanded}
                 openSwipeItemId={openSwipeItemId}
                 onSwipeOpenChange={setOpenSwipeItemId}
+                projectLabelsEnabled={projectLabelsEnabled}
               />
             )}
             {current.length > 0 && (
@@ -1228,8 +1269,11 @@ export function SparkApp() {
                 onDelete={requestItemDelete}
                 onEdit={setEditingItem}
                 onFlag={mutateItem}
+                projectLabelsExpanded={projectLabelsExpanded}
+                onProjectLabelsExpandedChange={setProjectLabelsExpanded}
                 openSwipeItemId={openSwipeItemId}
                 onSwipeOpenChange={setOpenSwipeItemId}
+                projectLabelsEnabled={projectLabelsEnabled}
               />
             )}
             {view.type === "all" && allTimeGroups.map((group) => (
@@ -1245,8 +1289,11 @@ export function SparkApp() {
                 onDelete={requestItemDelete}
                 onEdit={setEditingItem}
                 onFlag={mutateItem}
+                projectLabelsExpanded={projectLabelsExpanded}
+                onProjectLabelsExpandedChange={setProjectLabelsExpanded}
                 openSwipeItemId={openSwipeItemId}
                 onSwipeOpenChange={setOpenSwipeItemId}
+                projectLabelsEnabled={projectLabelsEnabled}
               />
             ))}
             {visibleOpenItems.length === 0 && <EmptyState view={view} />}
@@ -1281,8 +1328,11 @@ export function SparkApp() {
                     onDelete={requestItemDelete}
                     onEdit={setEditingItem}
                     onFlag={mutateItem}
+                    projectLabelsExpanded={projectLabelsExpanded}
+                    onProjectLabelsExpandedChange={setProjectLabelsExpanded}
                     openSwipeItemId={openSwipeItemId}
                     onSwipeOpenChange={setOpenSwipeItemId}
+                    projectLabelsEnabled={projectLabelsEnabled}
                   />
                 )}
               </div>
@@ -1361,7 +1411,13 @@ export function SparkApp() {
           onEdit={(project) => { setProjectArchiveOpen(false); setProjectEditor(project); }}
         />
       )}
-      {helpOpen && <ShortcutHelp onClose={() => setHelpOpen(false)} />}
+      {helpOpen && (
+        <ShortcutHelp
+          onClose={() => setHelpOpen(false)}
+          projectLabelsEnabled={projectLabelsEnabled}
+          onProjectLabelsEnabledChange={updateProjectLabelsEnabled}
+        />
+      )}
       {syncDialogOpen && (
         <SyncDialog
           configured={isSupabaseConfigured()}
@@ -1560,8 +1616,11 @@ function ItemGroup({
   onDelete,
   onEdit,
   onFlag,
+  projectLabelsExpanded,
+  onProjectLabelsExpandedChange,
   openSwipeItemId,
   onSwipeOpenChange,
+  projectLabelsEnabled,
 }: {
   label?: string;
   items: SparkItem[];
@@ -1576,8 +1635,11 @@ function ItemGroup({
   onDelete: (item: SparkItem) => void;
   onEdit: (item: SparkItem) => void;
   onFlag: (id: string, update: Partial<SparkItem>) => void;
+  projectLabelsExpanded: boolean;
+  onProjectLabelsExpandedChange: (expanded: boolean) => void;
   openSwipeItemId: string | null;
   onSwipeOpenChange: (id: string | null) => void;
+  projectLabelsEnabled: boolean;
 }) {
   const listId = useId();
   return (
@@ -1613,7 +1675,10 @@ function ItemGroup({
               onDelete={onDelete}
               onEdit={onEdit}
               onFlag={onFlag}
+              projectLabelExpanded={projectLabelsExpanded}
+              onProjectLabelExpandedChange={onProjectLabelsExpandedChange}
               onSwipeOpenChange={onSwipeOpenChange}
+              projectLabelsEnabled={projectLabelsEnabled}
               today={today}
             />
           );
@@ -1638,6 +1703,9 @@ const SwipeableItemRow = memo(function SwipeableItemRow({
   onEdit,
   onFlag,
   onSwipeOpenChange,
+  projectLabelExpanded,
+  onProjectLabelExpandedChange,
+  projectLabelsEnabled,
   today,
 }: {
   item: SparkItem;
@@ -1652,6 +1720,9 @@ const SwipeableItemRow = memo(function SwipeableItemRow({
   onEdit: (item: SparkItem) => void;
   onFlag: (id: string, update: Partial<SparkItem>) => void;
   onSwipeOpenChange: (id: string | null) => void;
+  projectLabelExpanded: boolean;
+  onProjectLabelExpandedChange: (expanded: boolean) => void;
+  projectLabelsEnabled: boolean;
   today: string;
 }) {
   const [dragOffset, setDragOffset] = useState<number | null>(null);
@@ -1769,7 +1840,7 @@ const SwipeableItemRow = memo(function SwipeableItemRow({
       </div>
 
       <article
-        className={`item-row ${item.completedAt ? "is-complete" : ""} ${item.archivedAt ? "is-archived" : ""}`}
+        className={`item-row ${project && projectLabelsEnabled ? "project-labels-enabled" : ""} ${project && projectLabelsEnabled && projectLabelExpanded ? "project-labels-expanded" : ""} ${item.completedAt ? "is-complete" : ""} ${item.archivedAt ? "is-archived" : ""}`}
         style={{ "--swipe-offset": `${offset}px` } as CSSProperties}
         onClickCapture={(event) => {
           if (!clickGuardRef.current.shouldSuppressClick(event.detail)) return;
@@ -1798,7 +1869,30 @@ const SwipeableItemRow = memo(function SwipeableItemRow({
               : <span className="note-mark" aria-hidden="true" />}
           </button>
         )}
-        {project ? <span className="project-dot item-project-dot" style={{ background: project.color }} title={project.name} /> : <span className="project-dot-spacer" />}
+        {project ? (projectLabelsEnabled ? (
+          <button
+            className={`item-project-chip ${projectLabelExpanded ? "expanded" : ""}`}
+            type="button"
+            style={{
+              "--project-color": project.color,
+              "--project-pill-width": `${projectPillWidth(project.name)}px`,
+            } as CSSProperties}
+            aria-expanded={projectLabelExpanded}
+            aria-label={`${projectLabelExpanded ? "Thu gọn" : "Mở rộng"} tên tất cả dự án`}
+            title={`${project.name} · ${projectLabelExpanded ? "Thu gọn" : "Mở rộng"} tên dự án`}
+            onClick={() => {
+              closeActions();
+              onProjectLabelExpandedChange(!projectLabelExpanded);
+            }}
+          >
+            <span className="item-project-chip-visual" aria-hidden="true">
+              <span className="item-project-chip-dot" />
+              <span className="item-project-chip-label">{project.name}</span>
+            </span>
+          </button>
+        ) : (
+          <span className="project-dot item-project-dot" style={{ background: project.color }} title={project.name} />
+        )) : <span className="project-dot-spacer" />}
         <button className="item-main" onClick={() => {
           const action = resolveItemContentTap(
             hasOpenSwipeItem ? item.id : null,
@@ -2272,14 +2366,22 @@ function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose, onSav
   );
 }
 
-function ShortcutHelp({ onClose }: { onClose: () => void }) {
+function ShortcutHelp({
+  onClose,
+  projectLabelsEnabled,
+  onProjectLabelsEnabledChange,
+}: {
+  onClose: () => void;
+  projectLabelsEnabled: boolean;
+  onProjectLabelsEnabledChange: (enabled: boolean) => void;
+}) {
   const navigation = [["T", "Hôm nay"], ["S", "Sắp tới"], ["D", "Theo ngày"], ["A", "Tất cả"]];
   const focus = [["I", "Quan Trọng"], ["U", "Ưu tiên"]];
   return (
     <div className="dialog-backdrop" onClick={onClose}>
       <div className="shortcut-dialog" role="dialog" aria-modal="true" aria-labelledby="shortcut-title" onClick={(event) => event.stopPropagation()}>
         <div className="editor-header">
-          <div><span>Đi nhanh hơn</span><h2 id="shortcut-title">Phím tắt</h2></div>
+          <div><span>Đi nhanh hơn</span><h2 id="shortcut-title">Phím tắt & hiển thị</h2></div>
           <button className="icon-button" onClick={onClose} aria-label="Đóng bảng phím tắt"><Icon name="close" /></button>
         </div>
         <div className="shortcut-columns">
@@ -2302,6 +2404,22 @@ function ShortcutHelp({ onClose }: { onClose: () => void }) {
           <span><kbd>?</kbd> Trợ giúp</span>
           <span><kbd>Esc</kbd> Đóng</span>
         </div>
+        <section className="display-preference" aria-labelledby="project-label-preference">
+          <span>
+            <strong id="project-label-preference">Mở tên dự án khi chạm</strong>
+            <small>Mở hoặc thu gọn đồng loạt trong mọi view.</small>
+          </span>
+          <button
+            className="preference-switch"
+            type="button"
+            role="switch"
+            aria-checked={projectLabelsEnabled}
+            aria-labelledby="project-label-preference"
+            onClick={() => onProjectLabelsEnabledChange(!projectLabelsEnabled)}
+          >
+            <span aria-hidden="true" />
+          </button>
+        </section>
         <p>Phím tắt sẽ tạm dừng khi bạn đang nhập nội dung.</p>
       </div>
     </div>

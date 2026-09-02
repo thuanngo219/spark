@@ -34,6 +34,14 @@
 - Kiểm tra ít nhất: lint, typecheck, test logic ngày và responsive ở 390px trước khi bàn giao.
 - Trong phần bàn giao, ghi rõ: đã làm gì, đã kiểm tra gì, còn thiếu gì và file nào thay đổi.
 
+## Quy tắc CSS
+
+- Trước khi thêm CSS, tìm và ưu tiên điều chỉnh style, selector hoặc token hiện có phù hợp.
+- Chỉ tạo style/selector mới khi chưa có cấu trúc tương đương hoặc khi thật sự cần thiết cho hành vi mới.
+- Giữ CSS tối ưu và có một nguồn quy tắc rõ ràng; không tạo nhiều style trùng lặp cho cùng một thành phần hoặc trạng thái.
+- Không sửa bằng cách chồng thêm rule ghi đè ở phía sau khi có thể chỉnh trực tiếp rule gốc.
+- Không dùng `!important`, force style hoặc tăng specificity không cần thiết để thắng cascade.
+
 ## Definition of done cho MVP
 
 - Tạo, sửa, chọn ngày/project và xóa task/note hoạt động; task có thể hoàn thành, note không có checkbox.
