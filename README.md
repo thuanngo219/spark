@@ -12,6 +12,10 @@ Logo chính thức là lockup check-burst với wordmark `spark` lowercase bold;
 
 Domain đích: **https://spark.thuanngo.com**.
 
+Vercel owner: team **Thuan Ngo** tại [vercel.com/thuanngo](https://vercel.com/thuanngo). Liên kết local trong `.vercel/repo.json` dùng team ID ổn định nên không phụ thuộc vào việc đổi tên hoặc URL slug của team.
+
+Supabase production nằm trong project hạ tầng dùng chung **WorkSpace**, giữ nguyên project ref `ukoowtpqztknbrgpyqdx`. Spark hiện tiếp tục dùng `public.projects` và `public.items`; việc đổi display name của Supabase project không thay đổi URL, API keys, schema, bảng hoặc dữ liệu của ứng dụng.
+
 ## Chạy local
 
 ```bash
@@ -20,7 +24,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Để bật cloud sync, tạo Supabase project, chạy lần lượt toàn bộ migration trong `supabase/migrations/`, điền project URL và publishable key vào `.env.local`, rồi thêm `http://localhost:3000` và `https://spark.thuanngo.com` vào Auth redirect URLs. Không đưa service-role key xuống client.
+Để bật cloud sync ở môi trường mới, tạo Supabase project, chạy lần lượt toàn bộ migration trong `supabase/migrations/`, điền project URL và publishable key vào `.env.local`, rồi thêm `http://localhost:3000` và `https://spark.thuanngo.com` vào Auth redirect URLs. Không đưa service-role key xuống client.
 
 ## Tài liệu nguồn
 

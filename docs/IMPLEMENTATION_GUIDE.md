@@ -14,6 +14,10 @@
 
 Lý do chọn cấu hình này: một codebase chạy desktop lẫn iPhone, deploy qua HTTPS nhanh, hỗ trợ đăng nhập và đồng bộ dữ liệu mà không cần tự vận hành server.
 
+### Supabase production
+
+Hosted Supabase project có display name **WorkSpace** và project ref ổn định `ukoowtpqztknbrgpyqdx`. Đây là container hạ tầng dùng chung, có thể chứa schema riêng cho nhiều ứng dụng. Spark hiện vẫn dùng hai bảng `public.projects` và `public.items`; lần đổi tên project này không đổi project ref, URL, API keys, schema, bảng, Auth hay dữ liệu. Nếu tách Spark sang schema riêng trong tương lai, phải thực hiện bằng migration và cập nhật Data API/client như một thay đổi độc lập.
+
 ### Hai chế độ dữ liệu
 
 **Khuyến nghị cho MVP: cloud sync ngay từ đầu.** Đăng nhập passwordless bằng mã OTP gửi qua email, dữ liệu lưu ở Supabase và được bảo vệ theo user. Người dùng nhập mã ngay trong Spark để tránh magic link bị mở ở browser khác trên mobile. Cách này cho phép iPhone và desktop thấy cùng một danh sách.
