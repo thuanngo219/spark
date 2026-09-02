@@ -15,6 +15,7 @@ import {
 } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { ItemDisplaySwitcher, MobileDock } from "@/components/SparkNavigation";
+import { createSparkEmailOtpRequest } from "@/lib/auth-email";
 import {
   fetchCloudData,
   runCloudMutation,
@@ -2455,7 +2456,12 @@ function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
     try {
       const client = await getSupabaseBrowserClient();
       if (!client) return;
-      const result = await client.auth.signInWithOtp({ email: email.trim() });
+      const result = await client.auth.signInWithOtp(
+        createSparkEmailOtpRequest(
+          email,
+          process.env.NEXT_PUBLIC_SPARK_AUTH_REDIRECT_ORIGIN,
+        ),
+      );
       if (result.error) {
         setError(
           result.error.message.toLowerCase().includes("rate")

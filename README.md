@@ -24,7 +24,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Để bật cloud sync ở môi trường mới, tạo Supabase project, chạy lần lượt toàn bộ migration trong `supabase/migrations/`, điền project URL và publishable key vào `.env.local`, rồi thêm `http://localhost:3000` và `https://spark.thuanngo.com` vào Auth redirect URLs. Không đưa service-role key xuống client.
+Để bật cloud sync ở môi trường mới, tạo Supabase project, chạy lần lượt toàn bộ migration trong `supabase/migrations/`, điền project URL, publishable key và `NEXT_PUBLIC_SPARK_AUTH_REDIRECT_ORIGIN=http://localhost:3000` vào `.env.local`, rồi thêm `http://localhost:3000` và `https://spark.thuanngo.com` vào Auth redirect URLs. Production/Preview dùng origin chính xác `https://spark.thuanngo.com`. Không đưa service-role key xuống client.
 
 ## Tài liệu nguồn
 

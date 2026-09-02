@@ -24,6 +24,8 @@ Hosted Supabase project có display name **WorkSpace** và project ref ổn đ�
 
 Email template của hosted Supabase phải dùng `{{ .Token }}` để gửi OTP 6 chữ số thay vì `{{ .ConfirmationURL }}`. Client chỉ giữ ký tự số, giới hạn đúng 6 ký tự và không gọi `verifyOtp` khi mã chưa khớp `^[0-9]{6}$`.
 
+Mọi request `signInWithOtp` của Spark phải truyền `options.emailRedirectTo` lấy từ `NEXT_PUBLIC_SPARK_AUTH_REDIRECT_ORIGIN`. Local development dùng `http://localhost:3000`; Vercel Production và Preview dùng origin chính xác `https://spark.thuanngo.com`. Shared Send Email Hook nhận diện thương hiệu qua `email_data.redirect_to` (và có thể fallback sang `site_url`), nên không dùng origin của ideaPOD hoặc The Atelier và không cấu hình Resend/SMTP/hook riêng trong Spark.
+
 Nếu muốn làm prototype cực nhanh, có thể dùng IndexedDB/local storage trước. Nhược điểm là dữ liệu gắn với từng trình duyệt và không tự đồng bộ giữa thiết bị; phải có migration path trước khi đưa vào dùng thật.
 
 ## 2. Data model tối thiểu
@@ -182,7 +184,7 @@ Khi test dev server từ iPhone cùng Wi-Fi, chạy Next.js với `--hostname 0.
 1. Tạo repository Git và project Supabase.
 2. Cấu hình environment variables cục bộ, không commit secret.
 3. Kết nối repository với Vercel hoặc chạy Vercel CLI từ project root.
-4. Cấu hình cùng environment variables trên Vercel.
+4. Cấu hình cùng environment variables trên Vercel; đặt `NEXT_PUBLIC_SPARK_AUTH_REDIRECT_ORIGIN=https://spark.thuanngo.com` cho Production và Preview.
 5. Deploy preview, test đầy đủ, sau đó promote/deploy production.
 6. Có thể dùng domain riêng; nếu chưa, URL `*.vercel.app` đã đủ để sử dụng.
 
