@@ -230,7 +230,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .quick-description-toggle:disabled { background: var(--field); color: #b7bac5; cursor: not-allowed; }
 .quick-description-field { min-width: 0; display: grid; gap: 7px; margin: -2px 0 16px; color: #777c8f; font-size: 0.6875rem; font-weight: 650; }
 .content-editor { min-width: 0; min-height: 0; display: flex; flex-direction: column; border: 1px solid var(--field-border); border-radius: 12px; background: var(--field); overflow: hidden; font-weight: 400; }
-.content-toolbar { flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 5px 8px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--field) 80%, black 20%); }
+.content-toolbar { flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 5px 8px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--field) 95%, black 5%); }
 .content-toolbar button { flex: 0 0 auto; display: grid; place-items: center; padding: 0; width: 32px; height: 32px; border: 0; border-radius: 7px; background: transparent; color: var(--muted); font: inherit; font-size: .8125rem; cursor: pointer; }
 .content-toolbar button:hover { background: var(--control-hover); color: var(--ink); }
 .content-toolbar button[aria-pressed="true"] { background: var(--navy-900); color: white; }
@@ -239,7 +239,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .content-editor-body { min-height: 0; }
 .content-editor-input { height: 160px; overflow-y: auto; overscroll-behavior: contain; padding: 11px 13px; outline: none; color: var(--ink); font-size: .8125rem; font-weight: 400; line-height: 1.6; overflow-wrap: anywhere; white-space: pre-wrap; }
 .content-editor-input p, .formatted-content p { margin: 0; }
-.content-editor-input ul, .content-editor-input ol, .formatted-content ul, .formatted-content ol { margin: 0 0 6px; padding-left: 24px; }
 .content-editor-input strong, .detail-description strong { font-weight: 700; }
 .content-editor .form-error { flex: 0 0 auto; margin: 0; padding: 5px 12px; }
 

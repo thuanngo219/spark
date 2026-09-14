@@ -139,6 +139,10 @@ File này ghi lại các quyết định sản phẩm/kỹ thuật để các ph
 
 Chỉ nền toolbar formatting đậm hơn 20%: pha nền field với 20% đen, không thay nền vùng nhập. Header desktop giảm blur xuống 8px cho cả backdrop-filter và -webkit-backdrop-filter; giữ cấu hình mobile riêng. Thay phần blur desktop của D-120.
 
+## D-123 — Giảm nền toolbar và bỏ danh sách (2026-09-14)
+
+Chỉ nền toolbar đậm hơn 5% thay 20% của D-122. Gỡ bullet/number khỏi toolbar, schema Tiptap, phím tắt và renderer; chỉ còn B/I/U. Nội dung danh sách cũ vẫn giữ văn bản, xuống dòng và B/I/U; bỏ qua metadata danh sách, không sửa/xóa dữ liệu cloud hàng loạt. Dán danh sách chuyển thành đoạn văn. Giữ desktop blur 8px và WebKit. Quyết định này thay phần danh sách của D-119.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

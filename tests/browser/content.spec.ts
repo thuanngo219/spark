@@ -110,7 +110,7 @@ test("mobile 390px: formatting toolbar, 160px editor and no overflow", async ({ 
   await expect(editor.locator("strong")).toHaveText("Nội dung mobile");
   const box = await editor.boundingBox();
   expect(box?.height).toBe(160);
-  for (const name of ["In đậm", "In nghiêng", "Gạch chân", "Danh sách dấu đầu dòng", "Danh sách đánh số"]) {
+  for (const name of ["In đậm", "In nghiêng", "Gạch chân"]) {
     const button = await page.getByRole("button", { name, exact: true }).boundingBox();
     expect(button!.height).toBeGreaterThanOrEqual(44);
     expect(button!.width).toBeGreaterThanOrEqual(44);
@@ -119,27 +119,20 @@ test("mobile 390px: formatting toolbar, 160px editor and no overflow", async ({ 
   await page.screenshot({ path: "/tmp/spark-content-mobile.png" });
 });
 
-test("lists persist, field switching saves drafts, dates reject invalid ranges, editor fills available height", async ({ page }) => {
+test("field switching saves drafts, dates reject invalid ranges, editor fills available height", async ({ page }) => {
   const editor = await openQuickAdd(page);
-  await page.getByRole("textbox", { name: "Tên mục" }).fill("Lists and draft test");
-  await editor.fill("Mục một");
-  await page.getByRole("button", { name: "Danh sách dấu đầu dòng" }).click();
-  await editor.press("End"); await editor.press("Enter"); await editor.pressSequentially("Mục hai");
-  await expect(editor.locator("ul li")).toHaveCount(2);
-  await editor.press("Meta+a");
-  await page.getByRole("button", { name: "Danh sách đánh số" }).click();
-  await expect(editor.locator("ol li")).toHaveCount(2);
+  await page.getByRole("textbox", { name: "Tên mục" }).fill("Draft switching test");
+  await editor.fill("Mục một\nMục hai");
   await page.getByRole("button", { name: "Thêm", exact: true }).click();
   await page.getByRole("button", { name: "Hủy", exact: true }).click();
-  await page.reload(); await openTestItem(page, "Lists and draft test");
-  await expect(page.locator(".detail-description ol li")).toHaveCount(2);
-  expect(await page.locator(".detail-description ol").evaluate((e) => getComputedStyle(e).marginBottom)).toBe("6px");
+  await page.reload(); await openTestItem(page, "Draft switching test");
+  await expect(page.locator(".detail-description .formatted-content")).toHaveText("Mục một\nMục hai");
   await expect(page.locator(".detail-field-heading").first().getByRole("button", { name: "Sửa tên" })).toBeVisible();
   await page.getByRole("button", { name: "Sửa Nội dung" }).click();
   const detail = page.getByRole("textbox", { name: "Nội dung task", exact: true });
-  await expect(detail.locator("ol li")).toHaveCount(2);
+  await expect(detail).toContainText("Mục hai");
   await expect(detail).toBeFocused();
-  await detail.locator("li p").last().click();
+  await detail.locator("p").last().click();
   await detail.pressSequentially(" đã sửa", { delay: 20 });
   await page.getByRole("button", { name: "Sửa tên" }).click();
   const title = page.getByRole("textbox", { name: "Tên task", exact: true });
@@ -158,7 +151,7 @@ test("lists persist, field switching saves drafts, dates reject invalid ranges, 
   await expect(page.getByRole("status")).toContainText("chưa được lưu");
   await page.getByRole("button", { name: "Đóng", exact: true }).click();
   await page.reload(); await openTestItem(page, "Saved switched title");
-  await expect(page.locator(".detail-description ol li").last()).toContainText("đã sửa");
+  await expect(page.locator(".detail-description .formatted-content")).toContainText("đã sửa");
   await expect(dates.first()).toHaveValue(originalStart);
   await expect(dates.nth(1)).toHaveValue(originalDue);
   await dates.first().fill("2099-10-20"); await dates.nth(1).fill("2099-10-21");
@@ -170,31 +163,27 @@ test("lists persist, field switching saves drafts, dates reject invalid ranges, 
   await expect(dates.first()).toHaveValue("2099-10-20"); await expect(dates.nth(1)).toHaveValue("2099-10-21");
 });
 
-test("bullet and number buttons work in an empty editor and exit on an empty line", async ({ page }) => {
-  for (const [name, tag] of [["Danh sách dấu đầu dòng", "ul"], ["Danh sách đánh số", "ol"]]) {
-    const editor = await openQuickAdd(page);
-    const button = page.getByRole("button", { name, exact: true });
-    await button.click();
-    await expect(editor).toBeFocused();
-    await expect(button).toHaveAttribute("aria-pressed", "true");
-    await editor.pressSequentially("Dòng một", { delay: 15 });
-    await editor.press("Enter");
-    await editor.pressSequentially("Dòng hai", { delay: 15 });
-    await expect(editor.locator(`${tag} li`)).toHaveCount(2);
-    await editor.press("Enter"); await editor.press("Enter");
-    await editor.pressSequentially("Ngoài danh sách", { delay: 15 });
-    await expect(editor.locator(":scope > p").last()).toHaveText("Ngoài danh sách");
-    await expect(button).toHaveAttribute("aria-pressed", "false");
-    await page.getByRole("button", { name: "Hủy", exact: true }).click();
-  }
+test("only B/I/U remain; pasted lists keep their text without list formatting", async ({ page }) => {
+  const editor = await openQuickAdd(page);
+  await expect(page.locator(".content-toolbar button")).toHaveCount(3);
+  await expect(page.getByRole("button", { name: "Danh sách dấu đầu dòng" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Danh sách đánh số" })).toHaveCount(0);
+  await editor.click();
+  await paste(page, "<ul><li><strong>Một</strong></li><li>Hai</li></ul><ol><li>Ba</li><li>Bốn</li></ol>");
+  await expect(editor.locator("ul, ol, li")).toHaveCount(0);
+  await expect(editor).toContainText("Một"); await expect(editor).toContainText("Hai");
+  await expect(editor).toContainText("Ba"); await expect(editor).toContainText("Bốn");
+  await expect(editor.locator("strong")).toHaveText("Một");
+  await editor.press("Meta+Shift+7"); await editor.press("Meta+Shift+8");
+  await expect(editor.locator("ul, ol, li")).toHaveCount(0);
 });
 
-test("mobile detail and quick-add focus styles remain light, lists fit narrow screens", async ({ page }) => {
+test("mobile detail and quick-add focus styles remain light on narrow screens", async ({ page }) => {
   const editor = await openQuickAdd(page);
   await page.getByRole("textbox", { name: "Tên mục" }).fill("Mobile list test");
   await editor.click();
   await paste(page, "<p>Trước</p><ul><li><strong>Một</strong></li><li>Hai</li></ul><p>Sau</p>");
-  await expect(editor.locator("ul li")).toHaveCount(2);
+  await expect(editor.locator("ul, ol, li")).toHaveCount(0);
   expect(await editor.evaluate(e => getComputedStyle(e).backgroundColor)).toBe("rgb(241, 242, 245)");
   await page.getByRole("button", { name: "Thêm", exact: true }).click();
   await page.getByRole("button", { name: "Hủy", exact: true }).click();
@@ -202,7 +191,8 @@ test("mobile detail and quick-add focus styles remain light, lists fit narrow sc
   expect(await page.locator(".view-header").evaluate(e => getComputedStyle(e).backdropFilter)).toBe("blur(8px)");
   await page.setViewportSize({ width: 390, height: 844 });
   await openTestItem(page, "Mobile list test");
-  await expect(page.locator(".detail-description ul li")).toHaveCount(2);
+  await expect(page.locator(".detail-description ul, .detail-description ol")).toHaveCount(0);
+  await expect(page.locator(".detail-description strong")).toHaveText("Một");
   await page.getByRole("button", { name: "Sửa Nội dung" }).click();
   const detail = page.getByRole("textbox", { name: "Nội dung task", exact: true });
   await expect(detail).toBeFocused();

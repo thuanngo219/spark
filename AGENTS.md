@@ -18,7 +18,7 @@
 - Bộ lọc hiển thị Ẩn/Hiện ghi chú áp dụng nhất quán cho mọi view và không được sửa/xóa dữ liệu note.
 - Giữ thao tác thêm task nhanh; không mở form/modal dài khi chưa cần.
 - Ưu tiên mobile-first, bàn phím trên desktop và vùng chạm tối thiểu 44px trên mobile.
-- Không thêm priority ngoài hai cờ Quan Trọng/Ưu tiên, tag, định dạng nội dung ngoài đậm/nghiêng/gạch chân và danh sách bullet/number, subtask, reminder, recurring task, AI hoặc collaboration nếu chưa được chủ dự án duyệt.
+- Không thêm priority ngoài hai cờ Quan Trọng/Ưu tiên, tag, định dạng nội dung ngoài đậm/nghiêng/gạch chân, subtask, reminder, recurring task, AI hoặc collaboration nếu chưa được chủ dự án duyệt.
 - Không sao chép asset, logo hoặc pixel-level UI của Superlist/Things. Chỉ sử dụng mood và nguyên tắc thiết kế làm tham khảo.
 - Mọi thay đổi về logo, màu, typography, voice, iconography hoặc hình ảnh phải đối chiếu `brand-guideline.md`.
 - Ngôn ngữ giao diện mặc định: tiếng Việt. Date logic mặc định: múi giờ `Asia/Ho_Chi_Minh`, tuần bắt đầu từ Thứ Hai.

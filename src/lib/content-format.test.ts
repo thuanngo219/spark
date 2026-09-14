@@ -5,16 +5,17 @@ import { FormattedContent } from "@/components/FormattedContent";
 import { contentLength, contentRuns, contentToDocument, documentToContent, normalizeContent } from "./content-format";
 
 describe("basic content formatting", () => {
-  it("round-trips bullet and numbered lists, start numbers, marks and soft breaks", () => {
-    const p = (text: string) => ({ type: "paragraph", content: [{ type: "text", text, marks: [{ type: "bold" }] }] });
-    const doc = { type: "doc", content: [p("Trước"), { type: "bulletList", content: [{ type: "listItem", content: [p("Một")] }, { type: "listItem", content: [p("Hai")] }] }, { type: "orderedList", attrs: { start: 3 }, content: [{ type: "listItem", content: [p("Ba")] }, { type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text: "Bốn", marks: [] }, { type: "hardBreak" }, { type: "hardBreak" }, { type: "text", text: "Tiếp", marks: [] }] }] }] }, p("Sau")] };
-    const content = documentToContent(doc);
-    const saved = normalizeContent(content.description, content.descriptionFormat);
-    expect(content.description).toBe("Trước\nMột\nHai\nBa\nBốn\n\nTiếp\nSau");
-    expect(contentToDocument(saved.description, saved.descriptionFormat)).toEqual(doc);
-    const html = renderToStaticMarkup(createElement(FormattedContent, { value: saved.description!, format: saved.descriptionFormat }));
-    expect(html).toContain('<ul><li><p><strong>Một</strong>');
-    expect(html).toContain('<ol start="3">');
+  it("removes legacy list formatting while preserving text, marks and line breaks", () => {
+    const description = "Một\nHai\nBa";
+    const format = [{ text: "Một", list: "bullet", bold: true }, { text: "\nHai", list: "bullet" }, { text: "\nBa", list: "ordered", listStart: 3, italic: true }];
+    const content = normalizeContent(description, format);
+    expect(content.description).toBe(description);
+    expect(content.descriptionFormat).toEqual([{ text: "Một", bold: true }, { text: "\nHai" }, { text: "\nBa", italic: true }]);
+    expect(contentToDocument(description, format).content?.every(node => node.type === "paragraph")).toBe(true);
+    const html = renderToStaticMarkup(createElement(FormattedContent, { value: description, format: content.descriptionFormat }));
+    expect(html).toContain("<strong>Một</strong>");
+    expect(html).not.toMatch(/<(ul|ol|li)[ >]/);
+    expect(documentToContent(contentToDocument(description, format)).description).toBe(description);
   });
   it("keeps list text at the 4000-character boundary and drops stale list metadata", () => {
     const description = "🙂".repeat(3998) + "\nB";

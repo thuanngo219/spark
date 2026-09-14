@@ -32,10 +32,10 @@ Spark là công cụ task/note cá nhân, tiếng Việt, desktop và iPhone. UI
 ## Thay đổi mới đã duyệt: D-117 và D-118
 
 1. Detail desktop rộng **880px**, chỉ vùng Nội dung cuộn. Nút Sửa Nội dung cùng hàng nhãn và đứng ngoài vùng cuộn. Mobile nội dung đọc dài có vùng cuộn riêng để nhãn/nút sửa vẫn hiện.
-2. Nội dung tối đa **4.000 Unicode code points**, tính cả xuống dòng, không tính metadata định dạng. Cả task/note, quick-add/detail đều hỗ trợ **bold, italic, underline, bullet/number list** bằng toolbar và **⌘/Ctrl+B/I/U**. Có undo/redo; vượt giới hạn bị từ chối và thông báo, không cắt âm thầm draft.
-3. Tiptap bật paragraph/text/hardBreak, bulletList/orderedList một cấp (mỗi listItem một paragraph), ba mark trên và undo/redo; tắt định dạng nâng cao. Nội dung gốc vẫn là `description`; `descriptionFormat`/`description_format` lưu text runs JSON; list/listStart/softBreak giữ danh sách và xuống dòng mềm. Chỉ render định dạng khi ghép text khớp description; bỏ mark lạ, không render HTML tùy ý. URL vẫn linkify an toàn kể cả có format giữa URL.
+2. Nội dung tối đa **4.000 Unicode code points**, tính cả xuống dòng, không tính metadata định dạng. Cả task/note, quick-add/detail đều hỗ trợ **bold, italic, underline** bằng toolbar và **⌘/Ctrl+B/I/U**. Có undo/redo; vượt giới hạn bị từ chối và thông báo, không cắt âm thầm draft.
+3. Tiptap bật paragraph/text/hardBreak, ba mark trên và undo/redo; tắt định dạng nâng cao. Nội dung gốc vẫn là `description`; `descriptionFormat`/`description_format` lưu text runs JSON; softBreak giữ xuống dòng mềm; metadata list/listStart cũ bị bỏ qua nhưng không mất text hoặc marks. Chỉ render định dạng khi ghép text khớp description; bỏ mark lạ, không render HTML tùy ý. URL vẫn linkify an toàn kể cả có format giữa URL.
 4. Nội dung cũ không có định dạng vẫn đọc/sửa bình thường. Snapshot equality, cloud mapping, queue và local persistence giữ formatting-only update. Editor đóng gói cùng client app shell để lần đầu mở editor vẫn dùng được offline.
-5. Khung desktop đang edit Nội dung cao min(86dvh, 820px), bằng giới hạn khung đọc nội dung dài; editor flex chiếm phần còn lại. Quick-add 160px; mobile edit 40dvh. Toolbar đứng ngoài vùng cuộn, các nút mobile 44px. Danh sách có margin-bottom 6px.
+5. Khung desktop đang edit Nội dung cao min(86dvh, 820px), bằng giới hạn khung đọc nội dung dài; editor flex chiếm phần còn lại. Quick-add 160px; mobile edit 40dvh. Toolbar đứng ngoài vùng cuộn, các nút mobile 44px.
 6. Quick-add mặc định start trống, **chỉ task mới trong Hôm nay** mặc định hôm nay. Note cũng để trống. Ngày chọn/xóa thủ công được giữ khi đổi task/note; due date giữ quy tắc cũ. Legacy backfill startDate thiếu vẫn giữ nguyên; explicit null không bị backfill.
 
 ## Database
@@ -100,3 +100,7 @@ Vitest hiện có 162 tests. Browser suite kiểm tra Command B/I/U, undo/redo, 
 - Regression mới kiểm tra danh sách, đổi trường tự lưu, ngày sai/đúng qua reload, màu focus, chiều cao editor và toolbar 320/390px.
 
 - D-122: Chỉ nền toolbar formatting pha 20% đen trên nền field; nền vùng nhập giữ nguyên. Desktop blur 8px với WebKit; mobile giữ blur 18px/14px theo trạng thái.
+
+## D-123 — Cập nhật mới nhất (2026-09-14)
+
+Toolbar chỉ đậm hơn 5% (field 95% + đen 5%), thay D-122. Gỡ hoàn toàn định dạng bullet/number ở toolbar/schema/phím tắt/renderer, thay phần danh sách của D-119. Nội dung danh sách đã lưu hiển thị như đoạn văn, giữ chữ/xuống dòng/B/I/U; không sửa hàng loạt cloud. Regression kiểm tra dán danh sách, nội dung cũ và toolbar chỉ có 3 nút. Desktop header vẫn blur 8px/WebKit.

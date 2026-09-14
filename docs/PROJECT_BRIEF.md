@@ -36,7 +36,7 @@ Mỗi task có:
 
 - Checkbox hoàn thành.
 - Tên task, bắt buộc, một dòng, tối đa 100 ký tự.
-- Nội dung chi tiết, tùy chọn, tối đa 4.000 ký tự, hỗ trợ đậm/nghiêng/gạch chân và danh sách bullet/number; task và note đều có trường này.
+- Nội dung chi tiết, tùy chọn, tối đa 4.000 ký tự, hỗ trợ đậm/nghiêng/gạch chân; task và note đều có trường này.
 - URL bắt đầu bằng `http://`, `https://` hoặc `www.` trong Nội dung được hiển thị thành liên kết và mở ở tab mới; dữ liệu gốc vẫn là plain text.
 - Ngày bắt đầu và ngày đến hạn, đều tùy chọn và chỉ lưu **ngày** chứ không lưu giờ trong MVP. Chỉ task mới trong Hôm nay mặc định ngày bắt đầu là hôm nay; các trường hợp khác để trống nhưng người dùng có thể xóa.
 - Project, tùy chọn.
@@ -210,7 +210,7 @@ Quy tắc:
 
 - Nhắc việc/push notification.
 - Giờ đến hạn.
-- Task lặp lại, priority nhiều cấp, tag, định dạng nâng cao ngoài đậm/nghiêng/gạch chân và danh sách bullet/number, file đính kèm, subtask.
+- Task lặp lại, priority nhiều cấp, tag, định dạng nâng cao ngoài đậm/nghiêng/gạch chân, file đính kèm, subtask.
 - Kéo thả phức tạp, collaboration, team workspace.
 - AI, natural-language parsing, calendar integration.
 - Native App Store app và native iOS widget.
@@ -245,7 +245,7 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Email OTP của Spark hiển thị mã 36px, một dòng trong ô nền nhạt; tiêu đề thư bắt đầu bằng mã rồi đến “Mã đăng nhập Spark”. Chỉ template Spark trong shared hook thay đổi, không đổi thương hiệu/template của ứng dụng khác.
 - Detail sheet giữ edit button ở mép phải của từng khối đọc; URL trong Nội dung task/note là liên kết mở tab mới và không cho phép protocol ngoài HTTP(S). Trên desktop, header, Tên và cụm metadata/control không dịch chuyển khi xem item dài; bánh xe chuột chỉ cuộn vùng Nội dung.
 - Canvas liệt kê task/note trên desktop rộng responsive trong dải `940–1200px` khi vùng nội dung đủ chỗ; màn hình hẹp và mobile co vừa vùng hiển thị, không phát sinh horizontal scroll. Detail sheet desktop giữ chiều rộng `880px`.
-- Khung sửa Nội dung desktop dùng chiều cao tối đa như khung đọc nội dung dài: `min(86dvh, 820px)`, vùng nhập giãn theo phần còn lại. Quick-add giữ `160px`; mobile edit dùng vùng nhập `40dvh`. Danh sách có khoảng cách dưới 6px. Trong edit Tên/Nội dung, action ✓ và × nằm trên hàng nhãn để field dùng trọn chiều rộng; control desktop là `28px` với icon `16px`, mobile giữ touch target `44px`.
+- Khung sửa Nội dung desktop dùng chiều cao tối đa như khung đọc nội dung dài: `min(86dvh, 820px)`, vùng nhập giãn theo phần còn lại. Quick-add giữ `160px`; mobile edit dùng vùng nhập `40dvh`. Trong edit Tên/Nội dung, action ✓ và × nằm trên hàng nhãn để field dùng trọn chiều rộng; control desktop là `28px` với icon `16px`, mobile giữ touch target `44px`.
 - Dock mobile bo tròn hai đầu; active navigation dùng pill đồng tâm và vẫn giữ vùng chạm tối thiểu 44px.
 - Email đồng bộ gửi OTP 6 chữ số; input chỉ nhận tối đa 6 số và nút xác nhận chỉ bật khi có đúng 6 số.
 - Switcher Tất cả/Note/Task hoạt động nhất quán ở mọi view và không làm thay đổi dữ liệu item.
@@ -260,6 +260,6 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 
 ### Bổ sung nghiệm thu D-117–D-118
 
-- Nội dung tối đa 4.000 ký tự (Unicode code points, bao gồm xuống dòng), hỗ trợ B/I/U, danh sách bullet/number và ⌘/Ctrl+B/I/U cho task/note trong quick-add/detail. Định dạng giữ qua lưu, reload, offline và cloud sync.
+- Nội dung tối đa 4.000 ký tự (Unicode code points, bao gồm xuống dòng), hỗ trợ B/I/U và ⌘/Ctrl+B/I/U cho task/note trong quick-add/detail. Định dạng giữ qua lưu, reload, offline và cloud sync.
 - Nút Sửa Nội dung nằm ngang nhãn Nội dung và không di chuyển khi cuộn vùng nội dung dài; desktop detail rộng 880px.
 - Quick-add chỉ mặc định Ngày bắt đầu hôm nay cho task trong Hôm nay. Note và mọi view khác để trống; vẫn cho chọn/xóa ngày thủ công. Ngày đến hạn giữ quy tắc hiện có.
