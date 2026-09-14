@@ -143,6 +143,10 @@ Chỉ nền toolbar formatting đậm hơn 20%: pha nền field với 20% đen, 
 
 Chỉ nền toolbar đậm hơn 5% thay 20% của D-122. Gỡ bullet/number khỏi toolbar, schema Tiptap, phím tắt và renderer; chỉ còn B/I/U. Nội dung danh sách cũ vẫn giữ văn bản, xuống dòng và B/I/U; bỏ qua metadata danh sách, không sửa/xóa dữ liệu cloud hàng loạt. Dán danh sách chuyển thành đoạn văn. Giữ desktop blur 8px và WebKit. Quyết định này thay phần danh sách của D-119.
 
+## D-124 — Chiều cao dải màu header (2026-09-14)
+
+`view-project-band` cao 10px trên desktop và mobile, cả header thường lẫn compact. Dùng một rule gốc, bỏ override compact trùng lặp.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

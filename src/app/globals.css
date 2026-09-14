@@ -135,7 +135,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .content { min-width: 0; min-height: 100dvh; padding: 0 40px 24px; display: flex; flex-direction: column; }
 .canvas { width: clamp(940px, 80vw, 1200px); max-width: 100%; margin: 0 auto; padding: 0 0 24px; }
 .view-header { position: sticky; top: 0; z-index: 18; display: flex; justify-content: space-between; gap: 24px; align-items: flex-start; padding: 44px 26px 22px; overflow: hidden; background: rgba(247,248,250,.8); box-shadow: 0 1px 0 rgba(17,23,66,.07); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
-.view-project-band { position: absolute; inset: 0 0 auto; height: 20px; transition: height 200ms var(--ease); }
+.view-project-band { position: absolute; inset: 0 0 auto; height: 10px; }
 .eyebrow { min-height: 20px; color: var(--violet); font-size: 0.6875rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
 .eyebrow.project-eyebrow { color: var(--muted); }
 .view-title-row { display: flex; align-items: center; gap: 8px; }
@@ -462,7 +462,6 @@ button:focus-visible { filter: brightness(.88); }
   .mobile-header-drawer:hover, .mobile-header-drawer:focus-visible { color: #287a79; }
   .mobile-header-drawer svg { stroke-width: 1.9; }
   .view-header.mobile-compact { min-height: 92px; padding: calc(18px + env(safe-area-inset-top)) 14px 10px; align-items: center; background: rgba(247,248,250,.6); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
-  .view-header.mobile-compact .view-project-band { height: 10px; }
   .view-header.mobile-compact .eyebrow { display: none; }
   .view-header.mobile-compact h1 { margin: 0; font-size: 1.85rem; }
   .project-edit-button { width: 44px; height: 44px; }
