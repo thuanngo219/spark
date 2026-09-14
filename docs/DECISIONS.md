@@ -135,6 +135,10 @@ File này ghi lại các quyết định sản phẩm/kỹ thuật để các ph
 - D-120: Quick-add focus dùng màu control-hover; edit Nội dung giữ nền field. Nút Sửa tên trên hàng nhãn; input Tên chỉ border nhẹ, không glow/shadow. Khung desktop khi sửa Nội dung dùng chiều cao tối đa của khung đọc dài; mobile edit 40dvh, quick-add 160px. Header desktop blur 18px, nền 80%, có WebKit prefix.
 - D-121: Lưu draft hợp lệ khi chuyển trường Tên/Nội dung/metadata. Chặn khoảng ngày ngược ở UI, mutation, cloud và CHECK database; không sửa dữ liệu cũ. Cập nhật Next.js 16.3.5 và các dependency có cảnh báo; yêu cầu audit sạch trước phát hành.
 
+## D-122 — Toolbar và header (2026-09-14)
+
+Chỉ nền toolbar formatting đậm hơn 20%: pha nền field với 20% đen, không thay nền vùng nhập. Header desktop giảm blur xuống 8px cho cả backdrop-filter và -webkit-backdrop-filter; giữ cấu hình mobile riêng. Thay phần blur desktop của D-120.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

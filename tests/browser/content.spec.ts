@@ -170,6 +170,25 @@ test("lists persist, field switching saves drafts, dates reject invalid ranges, 
   await expect(dates.first()).toHaveValue("2099-10-20"); await expect(dates.nth(1)).toHaveValue("2099-10-21");
 });
 
+test("bullet and number buttons work in an empty editor and exit on an empty line", async ({ page }) => {
+  for (const [name, tag] of [["Danh sách dấu đầu dòng", "ul"], ["Danh sách đánh số", "ol"]]) {
+    const editor = await openQuickAdd(page);
+    const button = page.getByRole("button", { name, exact: true });
+    await button.click();
+    await expect(editor).toBeFocused();
+    await expect(button).toHaveAttribute("aria-pressed", "true");
+    await editor.pressSequentially("Dòng một", { delay: 15 });
+    await editor.press("Enter");
+    await editor.pressSequentially("Dòng hai", { delay: 15 });
+    await expect(editor.locator(`${tag} li`)).toHaveCount(2);
+    await editor.press("Enter"); await editor.press("Enter");
+    await editor.pressSequentially("Ngoài danh sách", { delay: 15 });
+    await expect(editor.locator(":scope > p").last()).toHaveText("Ngoài danh sách");
+    await expect(button).toHaveAttribute("aria-pressed", "false");
+    await page.getByRole("button", { name: "Hủy", exact: true }).click();
+  }
+});
+
 test("mobile detail and quick-add focus styles remain light, lists fit narrow screens", async ({ page }) => {
   const editor = await openQuickAdd(page);
   await page.getByRole("textbox", { name: "Tên mục" }).fill("Mobile list test");
@@ -180,7 +199,7 @@ test("mobile detail and quick-add focus styles remain light, lists fit narrow sc
   await page.getByRole("button", { name: "Thêm", exact: true }).click();
   await page.getByRole("button", { name: "Hủy", exact: true }).click();
   await page.reload();
-  expect(await page.locator(".view-header").evaluate(e => getComputedStyle(e).backdropFilter)).toBe("blur(18px)");
+  expect(await page.locator(".view-header").evaluate(e => getComputedStyle(e).backdropFilter)).toBe("blur(8px)");
   await page.setViewportSize({ width: 390, height: 844 });
   await openTestItem(page, "Mobile list test");
   await expect(page.locator(".detail-description ul li")).toHaveCount(2);

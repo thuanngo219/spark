@@ -93,8 +93,10 @@ Vitest hiện có 162 tests. Browser suite kiểm tra Command B/I/U, undo/redo, 
 
 ## Bổ sung D-119–D-121 (2026-09-14)
 
-- Nút Sửa tên cùng hàng nhãn, input Tên viền nhẹ không glow/shadow; edit Nội dung giữ nền field, quick-add focus dùng control-hover. Header desktop blur 18px/WebKit, nền canvas 80%.
+- Nút Sửa tên cùng hàng nhãn, input Tên viền nhẹ không glow/shadow; edit Nội dung giữ nền field, quick-add focus dùng control-hover. Header desktop blur 8px/WebKit, nền canvas 80%.
 - Tự lưu draft khi chuyển giữa Tên/Nội dung hoặc sang metadata; Hủy vẫn bỏ draft hiện tại.
 - Ngày sai được giữ ở UI kèm báo chưa lưu. Hai ngày được lưu cùng nhau khi hợp lệ; mutation/cloud cũng kiểm tra. Migration `20260914091948_enforce_item_date_range.sql` đã thêm và validate CHECK, dữ liệu remote trước migration không có khoảng ngày ngược.
 - Next.js và eslint-config-next 16.3.5; sharp/js-yaml đã cập nhật qua lockfile, npm audit không còn lỗ hổng.
 - Regression mới kiểm tra danh sách, đổi trường tự lưu, ngày sai/đúng qua reload, màu focus, chiều cao editor và toolbar 320/390px.
+
+- D-122: Chỉ nền toolbar formatting pha 20% đen trên nền field; nền vùng nhập giữ nguyên. Desktop blur 8px với WebKit; mobile giữ blur 18px/14px theo trạng thái.

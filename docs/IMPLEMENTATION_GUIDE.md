@@ -259,4 +259,6 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 - [Supabase: Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security)
 
 - Khi chuyển từ Tên sang Nội dung hoặc ngược lại, tự lưu trường đang sửa trước khi chuyển; chuyển sang metadata cũng lưu draft đang sửa. Tên rỗng chặn chuyển và báo lỗi. Hủy vẫn bỏ draft hiện tại. Nút Sửa tên nằm cạnh nhãn Tên.
-- Header desktop nền canvas 80%, blur 18px với prefix WebKit; mobile giữ cấu hình riêng. Next.js/eslint-config-next khóa 16.3.5; npm audit sau cập nhật trả 0 vulnerabilities.
+- Header desktop nền canvas 80%, blur 8px với prefix WebKit; mobile giữ cấu hình riêng. Next.js/eslint-config-next khóa 16.3.5; npm audit sau cập nhật trả 0 vulnerabilities.
+
+- D-122: Chỉ nền toolbar formatting pha 20% đen trên nền field; nền vùng nhập giữ nguyên. Desktop blur 8px với WebKit; mobile giữ blur 18px/14px theo trạng thái.
