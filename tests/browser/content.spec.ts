@@ -110,13 +110,90 @@ test("mobile 390px: formatting toolbar, 160px editor and no overflow", async ({ 
   await expect(editor.locator("strong")).toHaveText("Nội dung mobile");
   const box = await editor.boundingBox();
   expect(box?.height).toBe(160);
-  for (const name of ["In đậm", "In nghiêng", "Gạch chân"]) {
+  for (const name of ["In đậm", "In nghiêng", "Gạch chân", "Danh sách dấu đầu dòng", "Danh sách đánh số"]) {
     const button = await page.getByRole("button", { name, exact: true }).boundingBox();
     expect(button!.height).toBeGreaterThanOrEqual(44);
     expect(button!.width).toBeGreaterThanOrEqual(44);
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: "/tmp/spark-content-mobile.png" });
+});
+
+test("lists persist, field switching saves drafts, dates reject invalid ranges, editor fills available height", async ({ page }) => {
+  const editor = await openQuickAdd(page);
+  await page.getByRole("textbox", { name: "Tên mục" }).fill("Lists and draft test");
+  await editor.fill("Mục một");
+  await page.getByRole("button", { name: "Danh sách dấu đầu dòng" }).click();
+  await editor.press("End"); await editor.press("Enter"); await editor.pressSequentially("Mục hai");
+  await expect(editor.locator("ul li")).toHaveCount(2);
+  await editor.press("Meta+a");
+  await page.getByRole("button", { name: "Danh sách đánh số" }).click();
+  await expect(editor.locator("ol li")).toHaveCount(2);
+  await page.getByRole("button", { name: "Thêm", exact: true }).click();
+  await page.getByRole("button", { name: "Hủy", exact: true }).click();
+  await page.reload(); await openTestItem(page, "Lists and draft test");
+  await expect(page.locator(".detail-description ol li")).toHaveCount(2);
+  expect(await page.locator(".detail-description ol").evaluate((e) => getComputedStyle(e).marginBottom)).toBe("6px");
+  await expect(page.locator(".detail-field-heading").first().getByRole("button", { name: "Sửa tên" })).toBeVisible();
+  await page.getByRole("button", { name: "Sửa Nội dung" }).click();
+  const detail = page.getByRole("textbox", { name: "Nội dung task", exact: true });
+  await expect(detail.locator("ol li")).toHaveCount(2);
+  await expect(detail).toBeFocused();
+  await detail.locator("li p").last().click();
+  await detail.pressSequentially(" đã sửa", { delay: 20 });
+  await page.getByRole("button", { name: "Sửa tên" }).click();
+  const title = page.getByRole("textbox", { name: "Tên task", exact: true });
+  expect(await title.evaluate(e => getComputedStyle(e).boxShadow)).toBe("none");
+  await title.fill("Saved switched title");
+  await page.getByRole("button", { name: "Sửa Nội dung" }).click();
+  await page.locator(".item-detail-sheet").evaluate((e) => Promise.all(e.getAnimations().map(a => a.finished)));
+  expect((await page.locator(".item-detail-sheet").boundingBox())!.height).toBeCloseTo(688, 0);
+  await page.screenshot({ path: "/tmp/spark-refined-editor-desktop.png" });
+  expect(await detail.evaluate(e => getComputedStyle(e).backgroundColor)).toBe("rgba(0, 0, 0, 0)");
+  await page.getByRole("button", { name: "Hủy", exact: true }).click();
+  const dates = page.locator(".detail-metadata input[type=date]");
+  const originalStart = await dates.first().inputValue();
+  const originalDue = await dates.nth(1).inputValue();
+  await dates.first().fill("2099-10-20");
+  await expect(page.getByRole("status")).toContainText("chưa được lưu");
+  await page.getByRole("button", { name: "Đóng", exact: true }).click();
+  await page.reload(); await openTestItem(page, "Saved switched title");
+  await expect(page.locator(".detail-description ol li").last()).toContainText("đã sửa");
+  await expect(dates.first()).toHaveValue(originalStart);
+  await expect(dates.nth(1)).toHaveValue(originalDue);
+  await dates.first().fill("2099-10-20"); await dates.nth(1).fill("2099-10-21");
+  await expect(page.getByRole("status")).toHaveCount(0);
+  await page.getByRole("button", { name: "Đóng", exact: true }).click();
+  await page.reload();
+  await page.getByRole("button", { name: "Tất cả", exact: true }).click();
+  await openTestItem(page, "Saved switched title");
+  await expect(dates.first()).toHaveValue("2099-10-20"); await expect(dates.nth(1)).toHaveValue("2099-10-21");
+});
+
+test("mobile detail and quick-add focus styles remain light, lists fit narrow screens", async ({ page }) => {
+  const editor = await openQuickAdd(page);
+  await page.getByRole("textbox", { name: "Tên mục" }).fill("Mobile list test");
+  await editor.click();
+  await paste(page, "<p>Trước</p><ul><li><strong>Một</strong></li><li>Hai</li></ul><p>Sau</p>");
+  await expect(editor.locator("ul li")).toHaveCount(2);
+  expect(await editor.evaluate(e => getComputedStyle(e).backgroundColor)).toBe("rgb(241, 242, 245)");
+  await page.getByRole("button", { name: "Thêm", exact: true }).click();
+  await page.getByRole("button", { name: "Hủy", exact: true }).click();
+  await page.reload();
+  expect(await page.locator(".view-header").evaluate(e => getComputedStyle(e).backdropFilter)).toBe("blur(18px)");
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openTestItem(page, "Mobile list test");
+  await expect(page.locator(".detail-description ul li")).toHaveCount(2);
+  await page.getByRole("button", { name: "Sửa Nội dung" }).click();
+  const detail = page.getByRole("textbox", { name: "Nội dung task", exact: true });
+  await expect(detail).toBeFocused();
+  expect((await detail.boundingBox())!.height).toBeCloseTo(844 * .4, 0);
+  await page.screenshot({ path: "/tmp/spark-refined-editor-mobile.png" });
+  for (const width of [390, 320]) {
+    await page.setViewportSize({ width, height: 844 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    expect(await page.locator(".content-toolbar").evaluate(e => e.scrollWidth <= e.clientWidth)).toBe(true);
+  }
 });
 
 

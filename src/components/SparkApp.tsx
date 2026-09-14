@@ -38,6 +38,7 @@ import {
   formatLongDate,
   formatShortWeekday,
   getLocalDateKey,
+  isValidDateRange,
 } from "@/lib/dates";
 import { createItemClickGuard, resolveItemContentTap, resolveItemSwipe, shouldOpenMobileSidebar } from "@/lib/mobile-gestures";
 import { areSparkDataEqual, normalizeDataIds, type SparkData } from "@/lib/data-ids";
@@ -968,6 +969,7 @@ export function SparkApp() {
     const existing = currentData.items.find((item) => item.id === id);
     if (!existing) return;
     const nextItem = { ...existing, ...update };
+    if (!isValidDateRange(nextItem.startDate, nextItem.dueDate)) return;
     if (nextItem.projectId && !currentData.projects.some((project) => project.id === nextItem.projectId)) nextItem.projectId = null;
     commitLocalData({
       ...currentData,
@@ -2223,7 +2225,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
-    const invalidDateRange = Boolean(startDate && dueDate && startDate > dueDate);
+    const invalidDateRange = !isValidDateRange(startDate, dueDate);
     if (!title.trim() || invalidDateRange || !hasUpcomingDate || contentLength(description) > CONTENT_LIMIT) return;
     onAdd({
       id: createUuid(),
@@ -2337,23 +2339,28 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
   const [important, setImportant] = useState(item.isImportant);
   const [urgent, setUrgent] = useState(item.isUrgent);
   const [editingField, setEditingField] = useState<"title" | "content" | null>(null);
+  const [dateError, setDateError] = useState(false);
+  const [titleError, setTitleError] = useState(false);
   const project = projects.find((entry) => entry.id === projectId);
 
   const saveTitle = () => {
     const value = title.trim();
-    if (!value) return;
+    if (!value) { setTitleError(true); return false; }
+    setTitleError(false);
     setTitle(value);
     onSave({ title: value });
     setEditingField(null);
+    return true;
   };
 
   const saveContent = () => {
-    if (contentLength(description) > CONTENT_LIMIT) return;
+    if (contentLength(description) > CONTENT_LIMIT) return false;
     const content = normalizeContent(description, descriptionFormat);
     setDescription(content.description ?? "");
     setDescriptionFormat(content.descriptionFormat);
     onSave(content);
     setEditingField(null);
+    return true;
   };
   const cancelContent = () => {
     setDescription(item.description ?? "");
@@ -2361,33 +2368,48 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
     setEditingField(null);
   };
 
+  const switchField = (field: "title" | "content" | null) => {
+    if (editingField === field) return;
+    if (editingField === "title" && !saveTitle()) return;
+    if (editingField === "content" && !saveContent()) return;
+    setEditingField(field);
+  };
+  const saveDates = (start: string, due: string) => {
+    setStartDate(start); setDueDate(due);
+    const invalid = !isValidDateRange(start, due);
+    setDateError(invalid);
+    if (!invalid) onSave({ startDate: start || null, dueDate: due || null });
+  };
+
   return (
     <div className="dialog-backdrop" onClick={onClose}>
-      <section className="editor-sheet item-detail-sheet" role="dialog" aria-modal="true" aria-labelledby="item-detail-title" onClick={(event) => event.stopPropagation()}>
+      <section className={`editor-sheet item-detail-sheet ${editingField === "content" ? "editing-content" : ""}`} role="dialog" aria-modal="true" aria-labelledby="item-detail-title" onClick={(event) => event.stopPropagation()}>
         <div className="editor-header"><div><span>{item.type === "task" ? "Task" : "Ghi chú"}</span><h2 id="item-detail-title">{item.type === "task" ? "Chi tiết task" : "Chi tiết ghi chú"}</h2></div><button type="button" className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
 
         <div className="detail-content">
           <section className={`detail-text-block ${editingField === "title" ? "editing" : ""}`}>
             <div className="detail-field-heading">
               <span className="detail-label">Tên</span>
-              {editingField === "title" && (
+              {editingField === "title" ? (
                 <div className="detail-edit-actions">
                   <button type="button" className="detail-icon-action save" onClick={saveTitle} aria-label="Lưu"><Icon name="check" size={18} /></button>
-                  <button type="button" className="detail-icon-action" onClick={() => { setTitle(item.title); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
+                  <button type="button" className="detail-icon-action" onClick={() => { setTitle(item.title); setTitleError(false); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
                 </div>
+              ) : (
+                <button type="button" className="detail-icon-action edit" onClick={() => switchField("title")} aria-label="Sửa tên"><Icon name="edit" size={17} /></button>
               )}
             </div>
             {editingField === "title" ? (
               <div className="detail-inline-editor">
                 <input autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} onKeyDown={(event) => {
                   if (event.key === "Enter") { event.preventDefault(); saveTitle(); }
-                  if (event.key === "Escape") { setTitle(item.title); setEditingField(null); }
+                  if (event.key === "Escape") { setTitle(item.title); setTitleError(false); setEditingField(null); }
                 }} aria-label={item.type === "task" ? "Tên task" : "Tên ghi chú"} />
+                {titleError && <p className="form-error" role="status">Tên không được để trống.</p>}
               </div>
             ) : (
               <div className="detail-read-row">
                 <p>{title}</p>
-                <button type="button" className="detail-icon-action edit" onClick={() => setEditingField("title")} aria-label="Sửa tên"><Icon name="edit" size={17} /></button>
               </div>
             )}
           </section>
@@ -2401,7 +2423,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
                     <button type="button" className="detail-icon-action" onClick={cancelContent} aria-label="Hủy"><Icon name="close" size={18} /></button>
                   </div>
                 ) : (
-                  <button type="button" className="detail-icon-action edit" onClick={() => setEditingField("content")} aria-label="Sửa Nội dung"><Icon name="edit" size={17} /></button>
+                  <button type="button" className="detail-icon-action edit" onClick={() => switchField("content")} aria-label="Sửa Nội dung"><Icon name="edit" size={17} /></button>
                 )}
               </div>
               {editingField === "content" ? (
@@ -2410,22 +2432,23 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
                 </div>
               ) : (
                 <div className="detail-read-row align-start">
-                  <p className={description ? "" : "empty"}>{description ? <FormattedContent value={description} format={descriptionFormat} /> : "Chưa có nội dung"}</p>
+                  <div className={`formatted-content ${description ? "" : "empty"}`}>{description ? <FormattedContent value={description} format={descriptionFormat} /> : "Chưa có nội dung"}</div>
                 </div>
               )}
           </section>
         </div>
 
-        <div className="detail-metadata" aria-label="Thông tin mục">
+        {dateError && <p className="form-error detail-date-error" role="status">Ngày đến hạn không thể trước ngày bắt đầu. Thay đổi ngày chưa được lưu.</p>}
+        <div className="detail-metadata" aria-label="Thông tin mục" onFocusCapture={() => switchField(null)}>
           <button type="button" className={`detail-meta-button icon-only important ${important ? "selected" : ""}`} title="Quan Trọng" aria-label="Quan Trọng" aria-pressed={important} onClick={() => { const value = !important; setImportant(value); onSave({ isImportant: value }); }}><Icon name="star" size={17} /></button>
           <button type="button" className={`detail-meta-button icon-only urgent ${urgent ? "selected" : ""}`} title="Ưu tiên" aria-label="Ưu tiên" aria-pressed={urgent} onClick={() => { const value = !urgent; setUrgent(value); onSave({ isUrgent: value }); }}><Icon name="zap" size={17} /></button>
           <label className="detail-meta-control" title="Ngày bắt đầu">
             <Icon name="play" size={16} />
-            <input type="date" max={dueDate || undefined} value={startDate} aria-label="Ngày bắt đầu" onChange={(event) => { const value = event.target.value; setStartDate(value); onSave({ startDate: value || null }); }} />
+            <input type="date" max={dueDate || undefined} value={startDate} aria-label="Ngày bắt đầu" onChange={(event) => { const value = event.target.value; saveDates(value, dueDate); }} />
           </label>
           <label className="detail-meta-control" title="Ngày đến hạn">
             <Icon name="flag" size={16} />
-            <input type="date" min={startDate || undefined} value={dueDate} aria-label="Ngày đến hạn" onChange={(event) => { const value = event.target.value; setDueDate(value); onSave({ dueDate: value || null }); }} />
+            <input type="date" min={startDate || undefined} value={dueDate} aria-label="Ngày đến hạn" onChange={(event) => { const value = event.target.value; saveDates(startDate, value); }} />
           </label>
           <label className="detail-meta-control project" title="Dự án">
             <span className={`project-dot ${project ? "" : "empty"}`} style={project ? { background: project.color } : undefined} />

@@ -128,6 +128,13 @@ File này ghi lại các quyết định sản phẩm/kỹ thuật để các ph
 | D-117 | 2026-09-14: Detail desktop rộng 880px. Nội dung task/note tối đa 4.000 Unicode code points, gồm xuống dòng; hỗ trợ đậm, nghiêng, gạch chân ở quick-add/detail bằng toolbar và ⌘/Ctrl+B/I/U. Nút Sửa Nội dung chuyển lên cùng hàng nhãn, nằm ngoài vùng cuộn. Giữ vùng nhập desktop edit 350px, quick-add/mobile 160px. | Theo yêu cầu chủ dự án. Thay phần chiều rộng D-116, giới hạn và plain-text-only D-084; không mở thêm định dạng nâng cao. Văn bản thuần tiếp tục lưu ở description, định dạng lưu JSON text runs ở description_format; không render HTML tùy ý. |
 | D-118 | 2026-09-14: Quick-add để Ngày bắt đầu trống, ngoại trừ task mới trong view Hôm nay mặc định bằng hôm nay. Note trong Hôm nay cũng để trống. Đổi task/note chỉ đổi mặc định khi chưa chỉnh ngày; ngày chọn/xóa thủ công được giữ. Ngày đến hạn không đổi quy tắc. | Thay mặc định ngày bắt đầu của D-107 theo yêu cầu chủ dự án; giữ dữ liệu lịch sử và backfill legacy hiện có. |
 
+
+## Bổ sung 2026-09-14: D-119–D-121
+
+- D-119: Bật danh sách bullet/number một cấp, giữ B/I/U và giới hạn 4.000 ký tự. Khoảng cách 6px sau mỗi danh sách. Mở rộng text runs bằng list/listStart/softBreak để giữ plain text tương thích dữ liệu cũ; render React an toàn. Thay phần giới hạn định dạng của D-117.
+- D-120: Quick-add focus dùng màu control-hover; edit Nội dung giữ nền field. Nút Sửa tên trên hàng nhãn; input Tên chỉ border nhẹ, không glow/shadow. Khung desktop khi sửa Nội dung dùng chiều cao tối đa của khung đọc dài; mobile edit 40dvh, quick-add 160px. Header desktop blur 18px, nền 80%, có WebKit prefix.
+- D-121: Lưu draft hợp lệ khi chuyển trường Tên/Nội dung/metadata. Chặn khoảng ngày ngược ở UI, mutation, cloud và CHECK database; không sửa dữ liệu cũ. Cập nhật Next.js 16.3.5 và các dependency có cảnh báo; yêu cầu audit sạch trước phát hành.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

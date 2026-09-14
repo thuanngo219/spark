@@ -32,10 +32,10 @@ Spark là công cụ task/note cá nhân, tiếng Việt, desktop và iPhone. UI
 ## Thay đổi mới đã duyệt: D-117 và D-118
 
 1. Detail desktop rộng **880px**, chỉ vùng Nội dung cuộn. Nút Sửa Nội dung cùng hàng nhãn và đứng ngoài vùng cuộn. Mobile nội dung đọc dài có vùng cuộn riêng để nhãn/nút sửa vẫn hiện.
-2. Nội dung tối đa **4.000 Unicode code points**, tính cả xuống dòng, không tính metadata định dạng. Cả task/note, quick-add/detail đều hỗ trợ **bold, italic, underline** bằng toolbar và **⌘/Ctrl+B/I/U**. Có undo/redo; vượt giới hạn bị từ chối và thông báo, không cắt âm thầm draft.
-3. Tiptap chỉ bật paragraph/text/hardBreak, ba mark trên và undo/redo; tắt định dạng nâng cao. Nội dung gốc vẫn là `description`; `descriptionFormat`/`description_format` lưu text runs JSON. Chỉ render định dạng khi ghép text khớp description; bỏ mark lạ, không render HTML tùy ý. URL vẫn linkify an toàn kể cả có format giữa URL.
+2. Nội dung tối đa **4.000 Unicode code points**, tính cả xuống dòng, không tính metadata định dạng. Cả task/note, quick-add/detail đều hỗ trợ **bold, italic, underline, bullet/number list** bằng toolbar và **⌘/Ctrl+B/I/U**. Có undo/redo; vượt giới hạn bị từ chối và thông báo, không cắt âm thầm draft.
+3. Tiptap bật paragraph/text/hardBreak, bulletList/orderedList một cấp (mỗi listItem một paragraph), ba mark trên và undo/redo; tắt định dạng nâng cao. Nội dung gốc vẫn là `description`; `descriptionFormat`/`description_format` lưu text runs JSON; list/listStart/softBreak giữ danh sách và xuống dòng mềm. Chỉ render định dạng khi ghép text khớp description; bỏ mark lạ, không render HTML tùy ý. URL vẫn linkify an toàn kể cả có format giữa URL.
 4. Nội dung cũ không có định dạng vẫn đọc/sửa bình thường. Snapshot equality, cloud mapping, queue và local persistence giữ formatting-only update. Editor đóng gói cùng client app shell để lần đầu mở editor vẫn dùng được offline.
-5. Vùng nhập desktop detail tối đa 350px, quick-add/mobile 160px; toolbar nằm ngoài vùng nhập cuộn, mobile B/I/U có target 44px.
+5. Khung desktop đang edit Nội dung cao min(86dvh, 820px), bằng giới hạn khung đọc nội dung dài; editor flex chiếm phần còn lại. Quick-add 160px; mobile edit 40dvh. Toolbar đứng ngoài vùng cuộn, các nút mobile 44px. Danh sách có margin-bottom 6px.
 6. Quick-add mặc định start trống, **chỉ task mới trong Hôm nay** mặc định hôm nay. Note cũng để trống. Ngày chọn/xóa thủ công được giữ khi đổi task/note; due date giữ quy tắc cũ. Legacy backfill startDate thiếu vẫn giữ nguyên; explicit null không bị backfill.
 
 ## Database
@@ -73,7 +73,7 @@ npm run test:browser
 SPARK_TEST_URL=http://localhost:3015 SPARK_TEST_OFFLINE=1 npm run test:browser
 ```
 
-Vitest hiện có 159 tests. Browser suite kiểm tra Command B/I/U, undo/redo, lưu/reload/cancel, 4.000/4.001 ký tự, fixed edit header, quick-add defaults, mobile 390px và cold-start offline. Kết quả release cuối cùng ghi trong `docs/handoff/release-2026-09-14.md`.
+Vitest hiện có 162 tests. Browser suite kiểm tra Command B/I/U, undo/redo, lưu/reload/cancel, 4.000/4.001 ký tự, fixed edit header, quick-add defaults, mobile 390px và cold-start offline. Kết quả release cuối cùng ghi trong `docs/handoff/release-2026-09-14.md`.
 
 ## Phạm vi commit và lưu ý
 
@@ -90,3 +90,11 @@ Vitest hiện có 159 tests. Browser suite kiểm tra Command B/I/U, undo/redo, 
 - Full-row upsert vẫn có giới hạn last-write-wins khi hai thiết bị sửa offline cùng item.
 - Supabase advisors có cảnh báo sẵn ở hạ tầng dùng chung (`rls_auto_enable`, cấu hình mật khẩu, bảng nội bộ ideaPOD); không tự sửa trong phạm vi editor Spark.
 - Backlog B-005 audit toàn bộ copy vẫn chưa được duyệt triển khai.
+
+## Bổ sung D-119–D-121 (2026-09-14)
+
+- Nút Sửa tên cùng hàng nhãn, input Tên viền nhẹ không glow/shadow; edit Nội dung giữ nền field, quick-add focus dùng control-hover. Header desktop blur 18px/WebKit, nền canvas 80%.
+- Tự lưu draft khi chuyển giữa Tên/Nội dung hoặc sang metadata; Hủy vẫn bỏ draft hiện tại.
+- Ngày sai được giữ ở UI kèm báo chưa lưu. Hai ngày được lưu cùng nhau khi hợp lệ; mutation/cloud cũng kiểm tra. Migration `20260914091948_enforce_item_date_range.sql` đã thêm và validate CHECK, dữ liệu remote trước migration không có khoảng ngày ngược.
+- Next.js và eslint-config-next 16.3.5; sharp/js-yaml đã cập nhật qua lockfile, npm audit không còn lỗ hổng.
+- Regression mới kiểm tra danh sách, đổi trường tự lưu, ngày sai/đúng qua reload, màu focus, chiều cao editor và toolbar 320/390px.

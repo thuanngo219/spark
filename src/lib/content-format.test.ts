@@ -5,6 +5,23 @@ import { FormattedContent } from "@/components/FormattedContent";
 import { contentLength, contentRuns, contentToDocument, documentToContent, normalizeContent } from "./content-format";
 
 describe("basic content formatting", () => {
+  it("round-trips bullet and numbered lists, start numbers, marks and soft breaks", () => {
+    const p = (text: string) => ({ type: "paragraph", content: [{ type: "text", text, marks: [{ type: "bold" }] }] });
+    const doc = { type: "doc", content: [p("Trước"), { type: "bulletList", content: [{ type: "listItem", content: [p("Một")] }, { type: "listItem", content: [p("Hai")] }] }, { type: "orderedList", attrs: { start: 3 }, content: [{ type: "listItem", content: [p("Ba")] }, { type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text: "Bốn", marks: [] }, { type: "hardBreak" }, { type: "hardBreak" }, { type: "text", text: "Tiếp", marks: [] }] }] }] }, p("Sau")] };
+    const content = documentToContent(doc);
+    const saved = normalizeContent(content.description, content.descriptionFormat);
+    expect(content.description).toBe("Trước\nMột\nHai\nBa\nBốn\n\nTiếp\nSau");
+    expect(contentToDocument(saved.description, saved.descriptionFormat)).toEqual(doc);
+    const html = renderToStaticMarkup(createElement(FormattedContent, { value: saved.description!, format: saved.descriptionFormat }));
+    expect(html).toContain('<ul><li><p><strong>Một</strong>');
+    expect(html).toContain('<ol start="3">');
+  });
+  it("keeps list text at the 4000-character boundary and drops stale list metadata", () => {
+    const description = "🙂".repeat(3998) + "\nB";
+    const runs = [{ text: description, list: "bullet" as const }];
+    expect(contentLength(documentToContent(contentToDocument(description, runs)).description!)).toBe(4000);
+    expect(contentToDocument("Edited", runs).content?.[0].type).toBe("paragraph");
+  });
   it("round-trips overlapping formats, Vietnamese, emoji and blank lines", () => {
     const runs = [{ text: "Chào ", bold: true as const }, { text: "Thuận", bold: true as const, italic: true as const, underline: true as const }, { text: "\n\n🙂 Kết thúc" }];
     const description = runs.map((run) => run.text).join("");

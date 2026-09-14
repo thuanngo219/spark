@@ -14,6 +14,7 @@ type IconName =
   | "inbox"
   | "layers"
   | "list"
+  | "list-ordered"
   | "menu"
   | "more"
   | "note"
@@ -46,6 +47,7 @@ const paths: Record<IconName, React.ReactNode> = {
   inbox: <><path d="M4 6h16v13H4z"/><path d="M4 14h4l2 2h4l2-2h4"/></>,
   layers: <><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></>,
   list: <><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="5" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="5" cy="18" r="1" fill="currentColor" stroke="none"/></>,
+  "list-ordered": <><path d="M3 4h1.5v6M3 10h3M3 15a1.5 1.5 0 0 1 3 0c0 1.5-3 2-3 5h3M10 7h10M10 17h10"/></>,
   menu: <path d="M4 7h16M4 12h16M4 17h16" />,
   more: <><circle cx="5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1" fill="currentColor" stroke="none"/></>,
   note: <><path d="M5 3h11l3 3v15H5z"/><path d="M15 3v4h4M8 11h8M8 15h6"/></>,

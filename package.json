@@ -16,10 +16,11 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.3",
+    "@tiptap/extension-list": "3.31.3",
     "@tiptap/pm": "3.31.3",
     "@tiptap/react": "3.31.3",
     "@tiptap/starter-kit": "3.31.3",
-    "next": "latest",
+    "next": "16.3.5",
     "react": "latest",
     "react-dom": "latest"
   },
@@ -29,7 +30,7 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "eslint": "latest",
-    "eslint-config-next": "latest",
+    "eslint-config-next": "16.3.5",
     "typescript": "latest",
     "vitest": "latest"
   }

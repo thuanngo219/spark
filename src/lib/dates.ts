@@ -1,6 +1,10 @@
 export const APP_TIMEZONE = "Asia/Ho_Chi_Minh";
 export const LEGACY_START_DATE_FALLBACK = "2026-09-03";
 
+export function isValidDateRange(start: string | null | undefined, due: string | null | undefined) {
+  return !start || !due || start <= due;
+}
+
 const dateKeyFormatters = new Map<string, Intl.DateTimeFormat>();
 const longDateFormatter = new Intl.DateTimeFormat("vi-VN", {
   weekday: "long",

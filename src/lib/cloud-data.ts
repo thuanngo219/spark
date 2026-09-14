@@ -2,7 +2,7 @@ import { CONTENT_LIMIT, contentLength, normalizeContent } from "@/lib/content-fo
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { CloudMutation } from "@/lib/cloud-sync";
 import type { Project, SparkItem } from "@/lib/types";
-import { getLegacyStartDate } from "@/lib/dates";
+import { getLegacyStartDate, isValidDateRange } from "@/lib/dates";
 
 type ProjectRow = {
   id: string;
@@ -87,6 +87,8 @@ export async function upsertProject(client: SupabaseClient, project: Project, us
 }
 
 export async function upsertItem(client: SupabaseClient, item: SparkItem, userId: string) {
+  const startDate = item.startDate === undefined ? getLegacyStartDate(item.createdAt) : item.startDate;
+  if (!isValidDateRange(startDate, item.dueDate)) throw new Error("Ngày đến hạn không thể trước ngày bắt đầu.");
   const content = normalizeContent(item.description, item.descriptionFormat);
   if (contentLength(content.description ?? "") > CONTENT_LIMIT) throw new Error("Nội dung tối đa 4.000 ký tự.");
   const { error } = await client.from("items").upsert({
@@ -97,9 +99,7 @@ export async function upsertItem(client: SupabaseClient, item: SparkItem, userId
     title: item.title,
     description: content.description,
     description_format: content.descriptionFormat,
-    start_date: item.startDate === undefined
-      ? getLegacyStartDate(item.createdAt)
-      : item.startDate,
+    start_date: startDate,
     due_date: item.dueDate,
     completed_at: item.completedAt,
     archived_at: item.archivedAt,

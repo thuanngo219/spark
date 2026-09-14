@@ -25,6 +25,14 @@ const baseNote: SparkItem = {
 };
 
 describe("shared task and note content", () => {
+  it("rejects reversed dates before sending any cloud mutation", async () => {
+    const { client, upsert } = mockUpsertClient();
+    await expect(upsertItem(client, { ...baseNote, startDate: "2026-10-20", dueDate: "2026-09-01" }, "user-1")).rejects.toThrow("Ngày đến hạn");
+    expect(upsert).not.toHaveBeenCalled();
+    await upsertItem(client, { ...baseNote, startDate: null, dueDate: "2026-09-01" }, "user-1");
+    await upsertItem(client, { ...baseNote, startDate: "2026-09-01", dueDate: "2026-09-01" }, "user-1");
+    expect(upsert).toHaveBeenCalledTimes(2);
+  });
   it("writes all 4000 characters and formatting, but refuses 4001", async () => {
     const { client, upsert } = mockUpsertClient();
     const description = "🙂".repeat(4000);
