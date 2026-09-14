@@ -1,5 +1,7 @@
+import { normalizeContent } from "@/lib/content-format";
 import type { Project, SparkItem } from "@/lib/types";
 import { createUuid } from "@/lib/ids";
+import { getLegacyStartDate } from "@/lib/dates";
 
 export type SparkData = { items: SparkItem[]; projects: Project[] };
 
@@ -53,18 +55,23 @@ export function normalizeDataIds(
   const items = data.items.map((item) => {
     const id = nextUniqueId(item.id, usedItemIds);
     const projectId = item.projectId ? projectIdMap.get(item.projectId) ?? null : null;
-    const description = item.description?.trim() || null;
+    const { description, descriptionFormat } = normalizeContent(item.description, item.descriptionFormat);
+    const startDate = item.startDate === undefined
+      ? getLegacyStartDate(item.createdAt)
+      : item.startDate;
     const archivedAt = item.type === "note" ? item.archivedAt ?? null : null;
     if (
       id === item.id &&
       projectId === item.projectId &&
       description === item.description &&
+      JSON.stringify(descriptionFormat) === JSON.stringify(item.descriptionFormat ?? null) &&
+      startDate === item.startDate &&
       archivedAt === item.archivedAt
     ) {
       return item;
     }
     itemsChanged = true;
-    return { ...item, id, projectId, description, archivedAt };
+    return { ...item, id, projectId, description, descriptionFormat, startDate, archivedAt };
   });
 
   return projectsChanged || itemsChanged ? { items, projects } : data;
@@ -84,6 +91,8 @@ function itemsEqual(left: SparkItem, right: SparkItem) {
     left.type === right.type &&
     left.title === right.title &&
     left.description === right.description &&
+    JSON.stringify(left.descriptionFormat ?? null) === JSON.stringify(right.descriptionFormat ?? null) &&
+    left.startDate === right.startDate &&
     left.dueDate === right.dueDate &&
     left.projectId === right.projectId &&
     left.completedAt === right.completedAt &&

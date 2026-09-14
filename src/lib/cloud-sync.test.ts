@@ -24,6 +24,7 @@ const item: SparkItem = {
   type: "task",
   title: "Bản đầu",
   description: null,
+  startDate: "2026-08-20",
   dueDate: null,
   projectId: project.id,
   completedAt: null,
@@ -145,4 +146,12 @@ describe("cloud mutation queue", () => {
     expect(cloudDataKey("user-a")).not.toBe(cloudDataKey("user-b"));
     expect(pendingMutationsKey("user-a")).not.toBe(pendingMutationsKey("user-b"));
   });
+});
+
+
+it("persists formatting in a serialized pending mutation and overlays it on remote", () => {
+  const formatted = { ...item, description: "Nội dung", descriptionFormat: [{ text: "Nội dung", underline: true as const }] };
+  const queue: CloudMutation[] = [{ id: "format", kind: "upsert-item", item: formatted }];
+  const restored = parseCloudMutations(JSON.parse(JSON.stringify(queue)));
+  expect(applyCloudMutations({ projects: [project], items: [item] }, restored).items[0]).toEqual(formatted);
 });

@@ -1,3 +1,5 @@
+import type { ContentRun } from "@/lib/content-format";
+
 export type ItemType = "task" | "note";
 
 export type Project = {
@@ -14,6 +16,8 @@ export type SparkItem = {
   type: ItemType;
   title: string;
   description: string | null;
+  descriptionFormat?: ContentRun[] | null;
+  startDate: string | null;
   dueDate: string | null;
   projectId: string | null;
   completedAt: string | null;

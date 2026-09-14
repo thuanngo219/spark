@@ -288,6 +288,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 - Dùng màu chủ đạo neutral/Navy. Chỉ thêm Turquoise, Violet hoặc Muted Coral khi màu có ý nghĩa hoặc giúp dẫn mắt.
 - Luôn có accessible label hoặc tooltip cho icon-only control.
 - Các icon cùng nhóm phải thống nhất perspective, corner radius, khoảng âm và mức độ chi tiết.
+- Metadata ngày dùng biểu tượng **play** cho Ngày bắt đầu và **flag** cho Ngày đến hạn trên cả desktop/mobile, quick-add và detail editor. Dropdown sort là pill trắng, dùng nhãn uppercase ngắn; control chiều sort là nút tròn trắng. Cả hai không dùng shadow; hover chỉ đổi màu border và icon/text, không dịch chuyển control. Chiều sort dùng biểu tượng mũi tên kèm các dòng độ dài tăng/giảm để diễn đạt A–Z/Z–A thay vì chevron xoay.
 - Sidebar toggle dùng cùng khung panel bo tròn có divider trái: chevron hướng trái khi sidebar đang mở để biểu thị collapse, chevron hướng phải khi compact để biểu thị mở lại.
 
 ## 7. Imagery, illustration and gradients
@@ -315,8 +316,8 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 ## 8. Layout and motion
 
 - Bố cục đơn giản, rõ thứ bậc, có khoảng thở nhưng không làm giảm mật độ hữu ích của Compact Canvas.
-- Canvas liệt kê task/note trên desktop rộng responsive từ `940px` đến tối đa `1200px`; khi vùng nội dung không đủ chỗ thì co theo chiều rộng khả dụng, không tạo cuộn ngang. Mobile tiếp tục dùng trọn chiều rộng màn hình. Detail sheet giữ chiều rộng desktop `780px` để duy trì nhịp đọc tập trung.
-- Textarea Nội dung của task và note dùng cùng kích thước: trên desktop cao `300px` khi sửa và `160px` khi tạo mới; trên mobile cao `160px` cho cả sửa và tạo mới. Trong trạng thái edit, action ✓ và × nằm trên hàng nhãn, căn phải, để input/textarea dùng trọn chiều rộng. Hai control này dùng kích thước `28px` với icon `16px` trên desktop để cân với nhãn; mobile giữ touch target `44px`.
+- Canvas liệt kê task/note trên desktop rộng responsive từ `940px` đến tối đa `1200px`; khi vùng nội dung không đủ chỗ thì co theo chiều rộng khả dụng, không tạo cuộn ngang. Mobile tiếp tục dùng trọn chiều rộng màn hình. Detail sheet desktop rộng `880px`; header, Tên và cụm metadata/control giữ cố định, chỉ vùng Nội dung cuộn khi nội dung dài. Nhãn Nội dung và nút sửa nằm cùng hàng cố định bên ngoài vùng cuộn. Toolbar B/I/U dùng control neutral, trạng thái chọn Navy/trắng và vùng chạm 44px trên mobile.
+- Textarea Nội dung của task và note dùng cùng kích thước: trên desktop cao `350px` khi sửa và `160px` khi tạo mới; chữ nhập trong quick-add dùng weight regular. Trên mobile, textarea cao `160px` cho cả sửa và tạo mới và giữ style hiện tại. Trong trạng thái edit, action ✓ và × nằm trên hàng nhãn, căn phải, để input/textarea dùng trọn chiều rộng. Hai control này dùng kích thước `28px` với icon `16px` trên desktop để cân với nhãn; mobile giữ touch target `44px`.
 - Dùng bo góc nhất quán và surface trung tính; tránh card lồng card hoặc shadow nặng.
 - Website có thể biểu cảm hơn web app. Web app ưu tiên tốc độ, khả năng quét và vùng chạm tối thiểu 44px trên mobile.
 - Motion ngắn và có mục đích: xác nhận hoàn thành, chuyển trạng thái hoặc dẫn hướng. Tránh chuyển động liên tục và luôn tôn trọng `prefers-reduced-motion`.

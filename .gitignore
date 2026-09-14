@@ -8,3 +8,7 @@ out
 coverage
 *.tsbuildinfo
 .vercel
+supabase/.temp
+
+playwright-report
+test-results

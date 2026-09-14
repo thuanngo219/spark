@@ -1,6 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import ContentEditor from "@/components/ContentEditor";
+import { FormattedContent } from "@/components/FormattedContent";
+import { CONTENT_LIMIT, contentLength, normalizeContent, type ContentRun } from "@/lib/content-format";
+import { defaultStartDate } from "@/lib/quick-add";
 import {
   CSSProperties,
   FormEvent,
@@ -30,8 +34,8 @@ import {
 import {
   addCalendarDays,
   formatDateRange,
+  formatListDate,
   formatLongDate,
-  formatShortDate,
   formatShortWeekday,
   getLocalDateKey,
 } from "@/lib/dates";
@@ -39,7 +43,6 @@ import { createItemClickGuard, resolveItemContentTap, resolveItemSwipe, shouldOp
 import { areSparkDataEqual, normalizeDataIds, type SparkData } from "@/lib/data-ids";
 import { EMAIL_OTP_LENGTH, isCompleteEmailOtp, normalizeEmailOtp } from "@/lib/email-otp";
 import { createUuid } from "@/lib/ids";
-import { linkifyText } from "@/lib/linkify";
 import {
   persistOfflineData,
   persistOfflineMutations,
@@ -55,7 +58,10 @@ import {
   getSidebarCounts,
   groupItemsByTime,
   inactiveForView,
+  sortItemsForDisplay,
   type ItemDisplayMode,
+  type ItemSortField,
+  type ItemSortPreference,
   type TimeGroup,
 } from "@/lib/task-filters";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase";
@@ -66,6 +72,7 @@ const SIDEBAR_KEY = "spark:sidebar:v2";
 const SIDEBAR_SECTIONS_KEY = "spark:sidebar-sections";
 const PROJECT_LABELS_KEY = "spark:project-labels:v1";
 const PROJECT_LABELS_EXPANDED_KEY = "spark:project-labels-expanded:v1";
+const SORT_SETTINGS_KEY = "spark:sort-settings:v1";
 const SPARK_LOGO_NEGATIVE_SRC = "/brand/spark-logo-negative.svg";
 const SPARK_MARK_NEGATIVE_SRC = "/spark-mark-negative.svg";
 
@@ -76,27 +83,45 @@ function projectPillWidth(name: string) {
 const timeGroupLabels: Record<TimeGroup, string> = {
   overdue: "Quá hạn",
   today: "Hôm nay",
+  ongoing: "Đang thực hiện",
   upcoming: "Sắp tới",
   later: "Sau đó",
   undated: "Chưa có ngày",
 };
 
-function LinkifiedText({ value }: { value: string }) {
-  return linkifyText(value).map((segment, index) =>
-    segment.type === "link" ? (
-      <a
-        key={`${segment.href}-${index}`}
-        href={segment.href}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {segment.value}
-      </a>
-    ) : (
-      <span key={`text-${index}`}>{segment.value}</span>
-    ),
-  );
+const sortFieldLabels: Record<ItemSortField, string> = {
+  attention: "MỨC CHÚ Ý",
+  title: "TÊN",
+  startDate: "NGÀY BẮT ĐẦU",
+  dueDate: "NGÀY ĐẾN HẠN",
+  statusDate: "NGÀY TRẠNG THÁI",
+};
+
+function defaultSortPreference(section: string): ItemSortPreference {
+  if (section === "overdue") return { field: "dueDate", direction: "asc" };
+  if (section === "undated") return { field: "title", direction: "asc" };
+  if (section === "upcoming" || section === "later") return { field: "dueDate", direction: "asc" };
+  if (section === "inactive") return { field: "statusDate", direction: "desc" };
+  return { field: "attention", direction: "asc" };
 }
+
+function parseSortSettings(value: string | null): Record<string, ItemSortPreference> {
+  if (!value) return {};
+  try {
+    const parsed = JSON.parse(value) as Record<string, Partial<ItemSortPreference>>;
+    const validFields: ItemSortField[] = ["attention", "title", "startDate", "dueDate", "statusDate"];
+    return Object.fromEntries(Object.entries(parsed).filter(([, preference]) =>
+      Boolean(
+        preference &&
+        validFields.includes(preference.field as ItemSortField) &&
+        (preference.direction === "asc" || preference.direction === "desc"),
+      ),
+    )) as Record<string, ItemSortPreference>;
+  } catch {
+    return {};
+  }
+}
+
 
 const projectColors = [
   "#44D4CD",
@@ -134,6 +159,7 @@ function seedData(today: string): SparkData {
       type: "task",
       title: "Chốt ba việc quan trọng cho hôm nay",
       description: "Chọn đúng ba việc tạo tác động lớn nhất và chốt thứ tự xử lý trước 9 giờ.",
+      startDate: today,
       dueDate: today,
       projectId: workProjectId,
       completedAt: null,
@@ -147,6 +173,7 @@ function seedData(today: string): SparkData {
       type: "note",
       title: "Ý tưởng: dành 20 phút cuối ngày để thu gọn danh sách",
       description: null,
+      startDate: today,
       dueDate: today,
       projectId: sparkProjectId,
       completedAt: null,
@@ -160,6 +187,7 @@ function seedData(today: string): SparkData {
       type: "task",
       title: "Gửi bản cập nhật cho khách hàng",
       description: null,
+      startDate: addCalendarDays(today, -2),
       dueDate: addCalendarDays(today, -1),
       projectId: workProjectId,
       completedAt: null,
@@ -173,6 +201,7 @@ function seedData(today: string): SparkData {
       type: "task",
       title: "Đặt lịch khám định kỳ",
       description: null,
+      startDate: today,
       dueDate: addCalendarDays(today, 2),
       projectId: personalProjectId,
       completedAt: null,
@@ -204,6 +233,11 @@ function viewKey(view: View) {
   if (view.type === "calendar") return `calendar:${view.date}`;
   if (view.type === "project") return `project:${view.projectId}`;
   return view.type;
+}
+
+function sortStorageKey(view: View, section: string) {
+  const scope = view.type === "calendar" ? "calendar" : viewKey(view);
+  return `${scope}:${section}`;
 }
 
 function orderProjectsForSidebar(projects: Project[]) {
@@ -262,6 +296,10 @@ export function SparkApp() {
   const [completedOpen, setCompletedOpen] = useState(false);
   const [todayOverdueOpen, setTodayOverdueOpen] = useState(true);
   const [todayCurrentOpen, setTodayCurrentOpen] = useState(true);
+  const [todayOngoingOpen, setTodayOngoingOpen] = useState(true);
+  const [todayUndatedOpen, setTodayUndatedOpen] = useState(true);
+  const [allGroupsOpen, setAllGroupsOpen] = useState<Partial<Record<TimeGroup, boolean>>>({});
+  const [sortSettings, setSortSettings] = useState<Record<string, ItemSortPreference>>({});
   const [editingItem, setEditingItem] = useState<SparkItem | null>(null);
   const [projectEditor, setProjectEditor] = useState<Project | "new" | null>(null);
   const [projectArchiveOpen, setProjectArchiveOpen] = useState(false);
@@ -490,6 +528,7 @@ export function SparkApp() {
       setSidebarCompact(sidebarPreference === null || sidebarPreference === "compact");
       setProjectLabelsEnabled(window.localStorage.getItem(PROJECT_LABELS_KEY) !== "off");
       setProjectLabelsExpanded(window.localStorage.getItem(PROJECT_LABELS_EXPANDED_KEY) === "open");
+      setSortSettings(parseSortSettings(window.localStorage.getItem(SORT_SETTINGS_KEY)));
       try {
         const sections = JSON.parse(window.localStorage.getItem(SIDEBAR_SECTIONS_KEY) ?? "{}");
         setAttentionOpen(sections.attention !== false);
@@ -736,6 +775,11 @@ export function SparkApp() {
   }, [preferencesLoaded, projectLabelsExpanded]);
 
   useEffect(() => {
+    if (!preferencesLoaded) return;
+    window.localStorage.setItem(SORT_SETTINGS_KEY, JSON.stringify(sortSettings));
+  }, [preferencesLoaded, sortSettings]);
+
+  useEffect(() => {
     window.localStorage.setItem(
       SIDEBAR_SECTIONS_KEY,
       JSON.stringify({ attention: attentionOpen, projects: projectsOpen }),
@@ -864,9 +908,11 @@ export function SparkApp() {
       return project ? Math.max(widest, projectPillWidth(project.name)) : widest;
     }, 0);
   }, [completedOpen, projectById, visibleInactiveItems, visibleOpenItems]);
-  const { overdue, current, taskCount, noteCount, overdueCount } = useMemo(() => {
+  const { overdue, current, todayItems, ongoing, undated, taskCount, noteCount, overdueCount } = useMemo(() => {
     const overdueItems: SparkItem[] = [];
-    const currentItems: SparkItem[] = [];
+    const dueTodayItems: SparkItem[] = [];
+    const ongoingItems: SparkItem[] = [];
+    const undatedItems: SparkItem[] = [];
     let tasks = 0;
     let notes = 0;
     let overdueTotal = 0;
@@ -877,13 +923,18 @@ export function SparkApp() {
       if (item.dueDate && item.dueDate < today) overdueTotal += 1;
       if (view.type === "today") {
         if (item.dueDate && item.dueDate < today) overdueItems.push(item);
-        else if (item.dueDate === today || (item.type === "task" && !item.dueDate)) currentItems.push(item);
+        else if (!item.startDate && !item.dueDate && item.type === "task") undatedItems.push(item);
+        else if (item.startDate === today || item.dueDate === today) dueTodayItems.push(item);
+        else ongoingItems.push(item);
       }
     }
 
     return {
       overdue: overdueItems,
-      current: view.type === "today" ? currentItems : view.type === "all" ? [] : visibleOpenItems,
+      current: view.type === "today" || view.type === "all" ? [] : visibleOpenItems,
+      todayItems: dueTodayItems,
+      ongoing: ongoingItems,
+      undated: undatedItems,
       taskCount: tasks,
       noteCount: notes,
       overdueCount: overdueTotal,
@@ -894,6 +945,15 @@ export function SparkApp() {
     [today, view.type, visibleOpenItems],
   );
   const activeProject = view.type === "project" ? projectById.get(view.projectId) ?? null : null;
+
+  const sortPreferenceFor = useCallback((section: string) => {
+    return sortSettings[sortStorageKey(view, section)] ?? defaultSortPreference(section);
+  }, [sortSettings, view]);
+
+  const updateSortPreference = useCallback((section: string, preference: ItemSortPreference) => {
+    const key = sortStorageKey(view, section);
+    setSortSettings((currentSettings) => ({ ...currentSettings, [key]: preference }));
+  }, [view]);
 
   const navigate = useCallback((next: View) => {
     setView(next);
@@ -1239,10 +1299,11 @@ export function SparkApp() {
                 items={overdue}
                 projectById={projectById}
                 today={today}
-                hideTodayDue={view.type === "today"}
                 collapsible={view.type === "today"}
                 open={todayOverdueOpen}
                 onToggle={() => setTodayOverdueOpen((value) => !value)}
+                sortPreference={sortPreferenceFor("overdue")}
+                onSortPreferenceChange={(preference) => updateSortPreference("overdue", preference)}
                 onArchive={toggleNoteArchive}
                 onComplete={toggleComplete}
                 onDelete={requestItemDelete}
@@ -1257,14 +1318,87 @@ export function SparkApp() {
             )}
             {current.length > 0 && (
               <ItemGroup
-                label={view.type === "today" ? "Hôm nay" : undefined}
+                label={view.type === "upcoming"
+                    ? "Sắp tới"
+                    : view.type === "calendar"
+                      ? "Ngày đã chọn"
+                      : "Danh sách"}
                 items={current}
                 projectById={projectById}
                 today={today}
-                hideTodayDue={view.type === "today"}
-                collapsible={view.type === "today"}
+                sortPreference={sortPreferenceFor("main")}
+                onSortPreferenceChange={(preference) => updateSortPreference("main", preference)}
+                showEmptyDates={view.type === "project"}
+                onArchive={toggleNoteArchive}
+                onComplete={toggleComplete}
+                onDelete={requestItemDelete}
+                onEdit={setEditingItem}
+                onFlag={mutateItem}
+                projectLabelsExpanded={projectLabelsExpanded}
+                onProjectLabelsExpandedChange={setProjectLabelsExpanded}
+                openSwipeItemId={openSwipeItemId}
+                onSwipeOpenChange={setOpenSwipeItemId}
+                projectLabelsEnabled={projectLabelsEnabled}
+              />
+            )}
+            {view.type === "today" && todayItems.length > 0 && (
+              <ItemGroup
+                label="Hôm nay"
+                items={todayItems}
+                projectById={projectById}
+                today={today}
+                collapsible
                 open={todayCurrentOpen}
                 onToggle={() => setTodayCurrentOpen((value) => !value)}
+                sortPreference={sortPreferenceFor("today")}
+                onSortPreferenceChange={(preference) => updateSortPreference("today", preference)}
+                onArchive={toggleNoteArchive}
+                onComplete={toggleComplete}
+                onDelete={requestItemDelete}
+                onEdit={setEditingItem}
+                onFlag={mutateItem}
+                projectLabelsExpanded={projectLabelsExpanded}
+                onProjectLabelsExpandedChange={setProjectLabelsExpanded}
+                openSwipeItemId={openSwipeItemId}
+                onSwipeOpenChange={setOpenSwipeItemId}
+                projectLabelsEnabled={projectLabelsEnabled}
+              />
+            )}
+            {view.type === "today" && ongoing.length > 0 && (
+              <ItemGroup
+                label="Đang thực hiện"
+                items={ongoing}
+                projectById={projectById}
+                today={today}
+                collapsible
+                open={todayOngoingOpen}
+                onToggle={() => setTodayOngoingOpen((value) => !value)}
+                sortPreference={sortPreferenceFor("ongoing")}
+                onSortPreferenceChange={(preference) => updateSortPreference("ongoing", preference)}
+                onArchive={toggleNoteArchive}
+                onComplete={toggleComplete}
+                onDelete={requestItemDelete}
+                onEdit={setEditingItem}
+                onFlag={mutateItem}
+                projectLabelsExpanded={projectLabelsExpanded}
+                onProjectLabelsExpandedChange={setProjectLabelsExpanded}
+                openSwipeItemId={openSwipeItemId}
+                onSwipeOpenChange={setOpenSwipeItemId}
+                projectLabelsEnabled={projectLabelsEnabled}
+              />
+            )}
+            {view.type === "today" && undated.length > 0 && (
+              <ItemGroup
+                label="Chưa có ngày"
+                items={undated}
+                projectById={projectById}
+                today={today}
+                collapsible
+                open={todayUndatedOpen}
+                onToggle={() => setTodayUndatedOpen((value) => !value)}
+                sortPreference={sortPreferenceFor("undated")}
+                onSortPreferenceChange={(preference) => updateSortPreference("undated", preference)}
+                disabledSortFields={["startDate", "dueDate"]}
                 onArchive={toggleNoteArchive}
                 onComplete={toggleComplete}
                 onDelete={requestItemDelete}
@@ -1284,7 +1418,15 @@ export function SparkApp() {
                 items={group.items}
                 projectById={projectById}
                 today={today}
-                hideTodayDue={group.key === "today"}
+                collapsible
+                open={allGroupsOpen[group.key] ?? true}
+                onToggle={() => setAllGroupsOpen((previous) => ({
+                  ...previous,
+                  [group.key]: !(previous[group.key] ?? true),
+                }))}
+                sortPreference={sortPreferenceFor(group.key)}
+                onSortPreferenceChange={(preference) => updateSortPreference(group.key, preference)}
+                disabledSortFields={group.key === "undated" ? ["startDate", "dueDate"] : undefined}
                 onArchive={toggleNoteArchive}
                 onComplete={toggleComplete}
                 onDelete={requestItemDelete}
@@ -1310,33 +1452,31 @@ export function SparkApp() {
             />
 
             {visibleInactiveItems.length > 0 && (
-              <div className="completed-section">
-                <button className="completed-toggle" onClick={() => setCompletedOpen((value) => !value)}>
-                  <Icon name="chevron" className={completedOpen ? "rotate-down" : ""} size={17} />
-                  {visibleInactiveItems.some((item) => item.type === "task") && visibleInactiveItems.some((item) => item.type === "note")
-                    ? "Đã hoàn thành & lưu trữ"
-                    : visibleInactiveItems[0]?.type === "note" ? "Đã lưu trữ" : "Đã hoàn thành"}
-                  <span>{visibleInactiveItems.length}</span>
-                </button>
-                {completedOpen && (
-                  <ItemGroup
-                    items={visibleInactiveItems}
-                    projectById={projectById}
-                    today={today}
-                    hideTodayDue={view.type === "today"}
-                    onArchive={toggleNoteArchive}
-                    onComplete={toggleComplete}
-                    onDelete={requestItemDelete}
-                    onEdit={setEditingItem}
-                    onFlag={mutateItem}
-                    projectLabelsExpanded={projectLabelsExpanded}
-                    onProjectLabelsExpandedChange={setProjectLabelsExpanded}
-                    openSwipeItemId={openSwipeItemId}
-                    onSwipeOpenChange={setOpenSwipeItemId}
-                    projectLabelsEnabled={projectLabelsEnabled}
-                  />
-                )}
-              </div>
+              <ItemGroup
+                label={visibleInactiveItems.some((item) => item.type === "task") && visibleInactiveItems.some((item) => item.type === "note")
+                  ? "Đã hoàn thành & lưu trữ"
+                  : visibleInactiveItems[0]?.type === "note" ? "Đã lưu trữ" : "Đã hoàn thành"}
+                items={visibleInactiveItems}
+                projectById={projectById}
+                today={today}
+                collapsible
+                open={completedOpen}
+                onToggle={() => setCompletedOpen((value) => !value)}
+                sortPreference={sortPreferenceFor("inactive")}
+                onSortPreferenceChange={(preference) => updateSortPreference("inactive", preference)}
+                includeStatusSort
+                showEmptyDates={view.type === "project"}
+                onArchive={toggleNoteArchive}
+                onComplete={toggleComplete}
+                onDelete={requestItemDelete}
+                onEdit={setEditingItem}
+                onFlag={mutateItem}
+                projectLabelsExpanded={projectLabelsExpanded}
+                onProjectLabelsExpandedChange={setProjectLabelsExpanded}
+                openSwipeItemId={openSwipeItemId}
+                onSwipeOpenChange={setOpenSwipeItemId}
+                projectLabelsEnabled={projectLabelsEnabled}
+              />
             )}
           </div>
         </section>
@@ -1608,10 +1748,14 @@ function ItemGroup({
   items,
   projectById,
   today,
-  hideTodayDue = false,
   collapsible = false,
   open = true,
   onToggle,
+  sortPreference,
+  onSortPreferenceChange,
+  disabledSortFields = [],
+  includeStatusSort = false,
+  showEmptyDates = false,
   onArchive,
   onComplete,
   onDelete,
@@ -1627,10 +1771,14 @@ function ItemGroup({
   items: SparkItem[];
   projectById: Map<string, Project>;
   today: string;
-  hideTodayDue?: boolean;
   collapsible?: boolean;
   open?: boolean;
   onToggle?: () => void;
+  sortPreference: ItemSortPreference;
+  onSortPreferenceChange: (preference: ItemSortPreference) => void;
+  disabledSortFields?: ItemSortField[];
+  includeStatusSort?: boolean;
+  showEmptyDates?: boolean;
   onArchive: (item: SparkItem) => void;
   onComplete: (item: SparkItem) => void;
   onDelete: (item: SparkItem) => void;
@@ -1643,23 +1791,67 @@ function ItemGroup({
   projectLabelsEnabled: boolean;
 }) {
   const listId = useId();
+  const sortedItems = useMemo(
+    () => sortItemsForDisplay(items, sortPreference),
+    [items, sortPreference],
+  );
+  const sortFields: ItemSortField[] = [
+    "attention",
+    "dueDate",
+    "startDate",
+    "title",
+    ...(includeStatusSort ? ["statusDate" as const] : []),
+  ];
   return (
     <section className="item-group">
-      {label && (collapsible ? (
-        <button
-          type="button"
-          className="completed-toggle item-group-toggle"
-          aria-controls={listId}
-          aria-expanded={open}
-          onClick={onToggle}
-        >
-          <Icon name="chevron" className={open ? "rotate-down" : ""} size={17} />
-          {label}
-          <span>{items.length}</span>
-        </button>
-      ) : <h2>{label}<span>{items.length}</span></h2>)}
+      {label && <div className="item-group-header">
+        {collapsible ? (
+          <button
+            type="button"
+            className="completed-toggle item-group-toggle"
+            aria-controls={listId}
+            aria-expanded={open}
+            onClick={onToggle}
+          >
+            <Icon name="chevron" className={open ? "rotate-down" : ""} size={17} />
+            {label}
+            <span>{items.length}</span>
+          </button>
+        ) : <h2>{label}<span>{items.length}</span></h2>}
+        <div className="item-sort-controls">
+          <span className="item-sort-select">
+            <select
+              value={sortPreference.field}
+              aria-label={`Sắp xếp khu ${label}`}
+              onChange={(event) => onSortPreferenceChange({
+                ...sortPreference,
+                field: event.target.value as ItemSortField,
+              })}
+            >
+              {sortFields.map((field) => (
+                <option key={field} value={field} disabled={disabledSortFields.includes(field)}>
+                  {sortFieldLabels[field]}
+                </option>
+              ))}
+            </select>
+            <Icon className="item-sort-select-icon" name="chevron-down" size={15} />
+          </span>
+          <button
+            type="button"
+            className={`item-sort-direction ${sortPreference.direction === "desc" ? "descending" : ""}`}
+            onClick={() => onSortPreferenceChange({
+              ...sortPreference,
+              direction: sortPreference.direction === "asc" ? "desc" : "asc",
+            })}
+            aria-label={`Đổi chiều sắp xếp khu ${label}`}
+            title={sortPreference.direction === "asc" ? "Tăng dần" : "Giảm dần"}
+          >
+            <Icon name={sortPreference.direction === "asc" ? "sort-ascending" : "sort-descending"} size={17} />
+          </button>
+        </div>
+      </div>}
       {(!collapsible || open) && <div className="item-list" id={listId}>
-        {items.map((item) => {
+        {sortedItems.map((item) => {
           const project = item.projectId ? projectById.get(item.projectId) : undefined;
           const overdue = item.dueDate && item.dueDate < today && !item.completedAt;
           return (
@@ -1667,7 +1859,7 @@ function ItemGroup({
               item={item}
               project={project}
               overdue={Boolean(overdue)}
-              hideDue={Boolean(item.dueDate && hideTodayDue && item.dueDate === today)}
+              showEmptyDates={showEmptyDates}
               hasOpenSwipeItem={openSwipeItemId !== null}
               isSwipeOpen={openSwipeItemId === item.id}
               key={item.id}
@@ -1695,7 +1887,7 @@ const SwipeableItemRow = memo(function SwipeableItemRow({
   item,
   project,
   overdue,
-  hideDue,
+  showEmptyDates,
   hasOpenSwipeItem,
   isSwipeOpen,
   onArchive,
@@ -1712,7 +1904,7 @@ const SwipeableItemRow = memo(function SwipeableItemRow({
   item: SparkItem;
   project?: Project;
   overdue: boolean;
-  hideDue: boolean;
+  showEmptyDates: boolean;
   hasOpenSwipeItem: boolean;
   isSwipeOpen: boolean;
   onArchive: (item: SparkItem) => void;
@@ -1918,7 +2110,18 @@ const SwipeableItemRow = memo(function SwipeableItemRow({
             )}
           </span>
           <span className="item-meta">
-            {item.dueDate && !hideDue && <span className={overdue ? "due-overdue" : ""}>{formatShortDate(item.dueDate, today)}</span>}
+            {(item.startDate || showEmptyDates) && (
+              <span className={`item-date ${item.startDate ? "" : "empty"}`} title="Ngày bắt đầu">
+                <Icon name="play" size={13} />
+                {item.startDate ? formatListDate(item.startDate, today) : "Chưa bắt đầu"}
+              </span>
+            )}
+            {(item.dueDate || showEmptyDates) && (
+              <span className={`item-date ${overdue ? "due-overdue" : ""} ${item.dueDate ? "" : "empty"}`} title="Ngày đến hạn">
+                <Icon name="flag" size={13} />
+                {item.dueDate ? formatListDate(item.dueDate, today) : "Chưa có hạn"}
+              </span>
+            )}
             <span className="item-state-icons" aria-label={[item.isImportant ? "Quan Trọng" : "", item.isUrgent ? "Ưu tiên" : ""].filter(Boolean).join(", ")}>
               {item.isImportant && <Icon className="item-state-important" name="star" size={14} />}
               {item.isUrgent && <Icon className="item-state-urgent" name="zap" size={14} />}
@@ -1945,19 +2148,29 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
   const [type, setType] = useState<ItemType>("task");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [descriptionFormat, setDescriptionFormat] = useState<ContentRun[] | null>(null);
   const [descriptionOpen, setDescriptionOpen] = useState(false);
-  const [date, setDate] = useState(view.type === "today" ? today : view.type === "calendar" ? view.date : "");
+  const [startDateOverride, setStartDateOverride] = useState<string | null>(null);
+  const startDate = startDateOverride ?? defaultStartDate(view, type, today);
+  const [dueDate, setDueDate] = useState(view.type === "today" ? today : view.type === "calendar" ? view.date : "");
   const [projectId, setProjectId] = useState(view.type === "project" && projects.some((project) => project.id === view.projectId) ? view.projectId : "");
   const inputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
+  const upcomingStart = addCalendarDays(today, 1);
+  const upcomingEnd = addCalendarDays(today, 3);
+  const hasUpcomingDate = view.type !== "upcoming" || [startDate, dueDate].some(
+    (date) => date >= upcomingStart && date <= upcomingEnd,
+  );
 
   const close = useCallback(() => {
     onExpandedChange(false);
     setTitle("");
     setDescription("");
+    setDescriptionFormat(null);
     setDescriptionOpen(false);
     setType("task");
+    setStartDateOverride(null);
     window.requestAnimationFrame(() => triggerRef.current?.focus());
   }, [onExpandedChange]);
 
@@ -2010,13 +2223,15 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
-    if (!title.trim() || (view.type === "upcoming" && !date)) return;
+    const invalidDateRange = Boolean(startDate && dueDate && startDate > dueDate);
+    if (!title.trim() || invalidDateRange || !hasUpcomingDate || contentLength(description) > CONTENT_LIMIT) return;
     onAdd({
       id: createUuid(),
       type,
       title: title.trim(),
-      description: description.trim() || null,
-      dueDate: date || null,
+      ...normalizeContent(description, descriptionFormat),
+      startDate: startDate || null,
+      dueDate: dueDate || null,
       projectId: projectId || null,
       completedAt: null,
       archivedAt: null,
@@ -2026,8 +2241,10 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
     });
     setTitle("");
     setDescription("");
+    setDescriptionFormat(null);
     setDescriptionOpen(false);
     setType("task");
+    setStartDateOverride(null);
     inputRef.current?.focus();
   };
 
@@ -2077,21 +2294,18 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
           </div>
         </div>
         {descriptionOpen && (
-          <label className="quick-description-field">
+          <div className="quick-description-field">
             <span>Nội dung (nếu cần)</span>
-            <textarea
-              maxLength={2000}
-              rows={3}
-              value={description}
-              onChange={(event) => setDescription(event.target.value)}
-              placeholder="Bổ sung nội dung chi tiết…"
-            />
-          </label>
+            <ContentEditor value={description} format={descriptionFormat} label="Nội dung (nếu cần)" onChange={(content) => { setDescription(content.description ?? ""); setDescriptionFormat(content.descriptionFormat); }} />
+          </div>
         )}
+        {startDate && dueDate && startDate > dueDate && <p className="form-error quick-date-error">Ngày đến hạn không thể trước ngày bắt đầu.</p>}
+        {!hasUpcomingDate && <p className="form-error quick-date-error">Chọn ngày bắt đầu hoặc ngày đến hạn trong ba ngày sắp tới.</p>}
         <div className="quick-add-controls">
-          <label className="quick-add-field"><span>Ngày</span><span className="quick-add-control"><Icon name="calendar" size={16} /><input type="date" min={view.type === "upcoming" ? addCalendarDays(today, 1) : undefined} max={view.type === "upcoming" ? addCalendarDays(today, 3) : undefined} value={date} onChange={(event) => setDate(event.target.value)} required={view.type === "upcoming"} /></span></label>
+          <label className="quick-add-field"><span>Ngày bắt đầu</span><span className="quick-add-control"><Icon name="play" size={16} /><input type="date" max={dueDate || undefined} value={startDate} onChange={(event) => setStartDateOverride(event.target.value)} /></span></label>
+          <label className="quick-add-field"><span>Ngày đến hạn</span><span className="quick-add-control"><Icon name="flag" size={16} /><input type="date" min={startDate || undefined} value={dueDate} onChange={(event) => setDueDate(event.target.value)} /></span></label>
           <label className="quick-add-field"><span>Dự án</span><span className="quick-add-control"><span className="project-dot empty" /><select value={projectId} onChange={(event) => setProjectId(event.target.value)}><option value="">Không có dự án</option>{projects.map((project) => <option value={project.id} key={project.id}>{project.name}</option>)}</select></span></label>
-          <div className="quick-add-actions"><button type="button" className="text-button" onClick={close}>Hủy</button><button className="primary-button" disabled={!title.trim()}>Thêm</button></div>
+          <div className="quick-add-actions"><button type="button" className="text-button" onClick={close}>Hủy</button><button className="primary-button" disabled={!title.trim() || !hasUpcomingDate || Boolean(startDate && dueDate && startDate > dueDate)}>Thêm</button></div>
         </div>
       </form>
     </div>
@@ -2116,6 +2330,8 @@ function DateStrip({ selected, today, onSelect }: { selected: string; today: str
 function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { item: SparkItem; projects: Project[]; onArchive: () => void; onClose: () => void; onDelete: () => void; onSave: (update: Partial<SparkItem>) => void }) {
   const [title, setTitle] = useState(item.title);
   const [description, setDescription] = useState(item.description ?? "");
+  const [descriptionFormat, setDescriptionFormat] = useState(item.descriptionFormat ?? null);
+  const [startDate, setStartDate] = useState(item.startDate ?? "");
   const [dueDate, setDueDate] = useState(item.dueDate ?? "");
   const [projectId, setProjectId] = useState(item.projectId ?? "");
   const [important, setImportant] = useState(item.isImportant);
@@ -2132,9 +2348,16 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
   };
 
   const saveContent = () => {
-    const value = description.trim();
-    setDescription(value);
-    onSave({ description: value || null });
+    if (contentLength(description) > CONTENT_LIMIT) return;
+    const content = normalizeContent(description, descriptionFormat);
+    setDescription(content.description ?? "");
+    setDescriptionFormat(content.descriptionFormat);
+    onSave(content);
+    setEditingField(null);
+  };
+  const cancelContent = () => {
+    setDescription(item.description ?? "");
+    setDescriptionFormat(item.descriptionFormat ?? null);
     setEditingField(null);
   };
 
@@ -2172,23 +2395,22 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
           <section className={`detail-text-block detail-description ${editingField === "content" ? "editing" : ""}`}>
               <div className="detail-field-heading">
                 <span className="detail-label">Nội dung</span>
-                {editingField === "content" && (
+                {editingField === "content" ? (
                   <div className="detail-edit-actions">
                     <button type="button" className="detail-icon-action save" onClick={saveContent} aria-label="Lưu Nội dung"><Icon name="check" size={18} /></button>
-                    <button type="button" className="detail-icon-action" onClick={() => { setDescription(item.description ?? ""); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
+                    <button type="button" className="detail-icon-action" onClick={cancelContent} aria-label="Hủy"><Icon name="close" size={18} /></button>
                   </div>
+                ) : (
+                  <button type="button" className="detail-icon-action edit" onClick={() => setEditingField("content")} aria-label="Sửa Nội dung"><Icon name="edit" size={17} /></button>
                 )}
               </div>
               {editingField === "content" ? (
                 <div className="detail-inline-editor">
-                  <textarea autoFocus maxLength={2000} rows={4} value={description} onChange={(event) => setDescription(event.target.value)} onKeyDown={(event) => {
-                    if (event.key === "Escape") { setDescription(item.description ?? ""); setEditingField(null); }
-                  }} placeholder="Nội dung chi tiết (nếu cần)" aria-label={item.type === "task" ? "Nội dung task" : "Nội dung ghi chú"} />
+                  <ContentEditor autoFocus value={description} format={descriptionFormat} label={item.type === "task" ? "Nội dung task" : "Nội dung ghi chú"} onChange={(content) => { setDescription(content.description ?? ""); setDescriptionFormat(content.descriptionFormat); }} onCancel={cancelContent} />
                 </div>
               ) : (
                 <div className="detail-read-row align-start">
-                  <p className={description ? "" : "empty"}>{description ? <LinkifiedText value={description} /> : "Chưa có nội dung"}</p>
-                  <button type="button" className="detail-icon-action edit" onClick={() => setEditingField("content")} aria-label="Sửa Nội dung"><Icon name="edit" size={17} /></button>
+                  <p className={description ? "" : "empty"}>{description ? <FormattedContent value={description} format={descriptionFormat} /> : "Chưa có nội dung"}</p>
                 </div>
               )}
           </section>
@@ -2197,9 +2419,13 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
         <div className="detail-metadata" aria-label="Thông tin mục">
           <button type="button" className={`detail-meta-button icon-only important ${important ? "selected" : ""}`} title="Quan Trọng" aria-label="Quan Trọng" aria-pressed={important} onClick={() => { const value = !important; setImportant(value); onSave({ isImportant: value }); }}><Icon name="star" size={17} /></button>
           <button type="button" className={`detail-meta-button icon-only urgent ${urgent ? "selected" : ""}`} title="Ưu tiên" aria-label="Ưu tiên" aria-pressed={urgent} onClick={() => { const value = !urgent; setUrgent(value); onSave({ isUrgent: value }); }}><Icon name="zap" size={17} /></button>
-          <label className="detail-meta-control" title="Ngày">
-            <Icon name="calendar" size={16} />
-            <input type="date" value={dueDate} aria-label="Ngày" onChange={(event) => { const value = event.target.value; setDueDate(value); onSave({ dueDate: value || null }); }} />
+          <label className="detail-meta-control" title="Ngày bắt đầu">
+            <Icon name="play" size={16} />
+            <input type="date" max={dueDate || undefined} value={startDate} aria-label="Ngày bắt đầu" onChange={(event) => { const value = event.target.value; setStartDate(value); onSave({ startDate: value || null }); }} />
+          </label>
+          <label className="detail-meta-control" title="Ngày đến hạn">
+            <Icon name="flag" size={16} />
+            <input type="date" min={startDate || undefined} value={dueDate} aria-label="Ngày đến hạn" onChange={(event) => { const value = event.target.value; setDueDate(value); onSave({ dueDate: value || null }); }} />
           </label>
           <label className="detail-meta-control project" title="Dự án">
             <span className={`project-dot ${project ? "" : "empty"}`} style={project ? { background: project.color } : undefined} />

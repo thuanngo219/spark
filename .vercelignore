@@ -1,0 +1,10 @@
+.git/
+.next/
+node_modules/
+.env*
+output/
+outputs/
+test-results/
+playwright-report/
+supabase/.temp/
+*.tsbuildinfo

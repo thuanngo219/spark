@@ -1,6 +1,8 @@
+import { CONTENT_LIMIT, contentLength, normalizeContent } from "@/lib/content-format";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { CloudMutation } from "@/lib/cloud-sync";
 import type { Project, SparkItem } from "@/lib/types";
+import { getLegacyStartDate } from "@/lib/dates";
 
 type ProjectRow = {
   id: string;
@@ -16,6 +18,8 @@ type ItemRow = {
   type: "task" | "note";
   title: string;
   description: string | null;
+  description_format?: unknown;
+  start_date: string | null;
   due_date: string | null;
   project_id: string | null;
   completed_at: string | null;
@@ -41,7 +45,8 @@ function toItem(row: ItemRow): SparkItem {
     id: row.id,
     type: row.type,
     title: row.title,
-    description: row.description,
+    ...normalizeContent(row.description, row.description_format),
+    startDate: row.start_date,
     dueDate: row.due_date,
     projectId: row.project_id,
     completedAt: row.completed_at,
@@ -57,7 +62,7 @@ export async function fetchCloudData(client: SupabaseClient) {
     client.from("projects").select("id,name,color,is_starred,archived_at,position").order("position"),
     client
       .from("items")
-      .select("id,type,title,description,due_date,project_id,completed_at,archived_at,is_important,is_urgent,created_at")
+      .select("id,type,title,description,description_format,start_date,due_date,project_id,completed_at,archived_at,is_important,is_urgent,created_at")
       .order("position"),
   ]);
   if (projectsResult.error) throw projectsResult.error;
@@ -82,13 +87,19 @@ export async function upsertProject(client: SupabaseClient, project: Project, us
 }
 
 export async function upsertItem(client: SupabaseClient, item: SparkItem, userId: string) {
+  const content = normalizeContent(item.description, item.descriptionFormat);
+  if (contentLength(content.description ?? "") > CONTENT_LIMIT) throw new Error("Nội dung tối đa 4.000 ký tự.");
   const { error } = await client.from("items").upsert({
     id: item.id,
     user_id: userId,
     project_id: item.projectId,
     type: item.type,
     title: item.title,
-    description: item.description?.trim() || null,
+    description: content.description,
+    description_format: content.descriptionFormat,
+    start_date: item.startDate === undefined
+      ? getLegacyStartDate(item.createdAt)
+      : item.startDate,
     due_date: item.dueDate,
     completed_at: item.completedAt,
     archived_at: item.archivedAt,

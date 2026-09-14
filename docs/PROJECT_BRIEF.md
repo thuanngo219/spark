@@ -36,16 +36,16 @@ Mỗi task có:
 
 - Checkbox hoàn thành.
 - Tên task, bắt buộc, một dòng, tối đa 100 ký tự.
-- Nội dung chi tiết, tùy chọn, plain text tối đa 2.000 ký tự; task và note đều có trường này.
+- Nội dung chi tiết, tùy chọn, tối đa 4.000 ký tự, hỗ trợ đậm/nghiêng/gạch chân; task và note đều có trường này.
 - URL bắt đầu bằng `http://`, `https://` hoặc `www.` trong Nội dung được hiển thị thành liên kết và mở ở tab mới; dữ liệu gốc vẫn là plain text.
-- Due date, tùy chọn, chỉ lưu **ngày** chứ không lưu giờ trong MVP.
+- Ngày bắt đầu và ngày đến hạn, đều tùy chọn và chỉ lưu **ngày** chứ không lưu giờ trong MVP. Chỉ task mới trong Hôm nay mặc định ngày bắt đầu là hôm nay; các trường hợp khác để trống nhưng người dùng có thể xóa.
 - Project, tùy chọn.
 
 Hành động:
 
 - Tạo nhanh bằng một ô nhập cố định trong danh sách.
 - Sửa tên trực tiếp hoặc trong một popover/sheet gọn.
-- Chọn/đổi/xóa due date.
+- Chọn/đổi/xóa ngày bắt đầu và ngày đến hạn.
 - Chọn/đổi/bỏ project.
 - Check/uncheck hoàn thành.
 - Xóa task có khả năng hoàn tác trong vài giây.
@@ -55,9 +55,9 @@ Hành động:
 Note là một item ghi chú ngắn, không phải task:
 
 - Hiển thị bằng bullet point thay cho checkbox.
-- Có Tên ngắn trên một dòng, tối đa 100 ký tự; Nội dung chi tiết tùy chọn tối đa 2.000 ký tự như task.
+- Có Tên ngắn trên một dòng, tối đa 100 ký tự; Nội dung chi tiết tùy chọn tối đa 4.000 ký tự như task.
 - URL trong Nội dung note được hiển thị thành liên kết và mở ở tab mới; dữ liệu gốc vẫn là plain text.
-- Có due date và project tùy chọn giống task để có thể xuất hiện trong view thời gian/dự án.
+- Có ngày bắt đầu, ngày đến hạn và project tùy chọn giống task để có thể xuất hiện trong view thời gian/dự án.
 - Không có trạng thái hoàn thành; có thể sửa, xóa, lưu trữ và khôi phục.
 
 ### Quan Trọng và Ưu tiên
@@ -83,13 +83,13 @@ Note là một item ghi chú ngắn, không phải task:
 
 | Bộ lọc | Quy tắc |
 |---|---|
-| **Hôm nay** | Task chưa hoàn thành có due date đến hôm nay **hoặc chưa có ngày**; note đang hoạt động chỉ xuất hiện khi có due date đến hôm nay. Task/note quá hạn nằm trong nhóm riêng ở đầu danh sách. |
-| **Sắp tới** | Task chưa hoàn thành có due date từ ngày mai đến hết ngày thứ ba tính từ hôm nay. Ví dụ hôm nay 10/8 thì gồm 11/8, 12/8 và 13/8. |
-| **Theo ngày** | Chọn một ngày cụ thể để xem task chưa hoàn thành đến hạn ngày đó; có nút quay về hôm nay. |
-| **Tất cả** | Toàn bộ task chưa hoàn thành và note, chia theo thứ tự Quá hạn, Hôm nay, Sắp tới (ba ngày kế tiếp), Sau đó và Chưa có ngày. |
-| **Project** | Task chưa hoàn thành thuộc project đã chọn, sắp xếp theo due date; task chưa có ngày nằm cuối. |
+| **Hôm nay** | Item quá hạn có ngày đến hạn trước hôm nay; khu **Hôm nay** có ngày bắt đầu hoặc ngày đến hạn đúng hôm nay; khu **Đang thực hiện** có ngày bắt đầu trước hôm nay và chưa đến hạn; task trống cả hai ngày nằm ở **Chưa có ngày**. Note trống cả hai ngày không xuất hiện. |
+| **Sắp tới** | Item có ít nhất một trong hai ngày bắt đầu/ngày đến hạn từ ngày mai đến hết ngày thứ ba tính từ hôm nay. Ví dụ hôm nay 10/8 thì gồm 11/8, 12/8 và 13/8. |
+| **Theo ngày** | Chọn một ngày cụ thể để xem item có ngày bắt đầu hoặc ngày đến hạn trùng ngày đó; có nút quay về hôm nay. |
+| **Tất cả** | Toàn bộ task chưa hoàn thành và note đang hoạt động, chia theo thứ tự Quá hạn, Hôm nay, Đang thực hiện, Sắp tới (ba ngày kế tiếp), Sau đó và Chưa có ngày. |
+| **Project** | Task/note đang hoạt động thuộc project đã chọn; mỗi row nêu rõ ngày bắt đầu và ngày đến hạn, kể cả trạng thái chưa có ngày. |
 
-Đối với note đang hoạt động, các view thời gian dựa trên due date; note chưa có ngày không xuất hiện trong Hôm nay. Note đã lưu trữ rời mọi danh sách đang hoạt động nhưng vẫn có thể xem và khôi phục trong disclosure cuối view phù hợp; riêng Hôm nay chọn note theo ngày lưu trữ thay vì due date.
+Note trống cả ngày bắt đầu lẫn ngày đến hạn không xuất hiện trong Hôm nay. Note đã lưu trữ rời mọi danh sách đang hoạt động nhưng vẫn có thể xem và khôi phục trong disclosure cuối view phù hợp; riêng Hôm nay chọn note theo ngày lưu trữ thay vì các trường ngày kế hoạch.
 
 Mọi view có switcher icon-only ba chế độ theo thứ tự **Tất cả / Chỉ note / Chỉ task**. Đây là presentation filter: chỉ thay đổi danh sách và số liệu đang nhìn, không sửa hoặc xóa dữ liệu; lựa chọn tiếp tục áp dụng khi chuyển view trong phiên hiện tại.
 
@@ -107,7 +107,9 @@ Quy ước ngày:
 - Múi giờ mặc định: `Asia/Ho_Chi_Minh`.
 - Tuần bắt đầu từ Thứ Hai.
 - So sánh theo calendar date trong múi giờ người dùng, không dùng khoảng 24 giờ trượt.
-- Task không có due date xuất hiện trong nhóm Hôm nay của view Hôm nay, nhóm Chưa có ngày trong Tất cả và project tương ứng; không xuất hiện trong Sắp tới hoặc Theo ngày.
+- Cả ngày bắt đầu và ngày đến hạn đều nullable. Chỉ task mới trong Hôm nay mặc định ngày bắt đầu là hôm nay; các trường hợp khác để trống; dữ liệu cũ được backfill từ `created_at` theo `Asia/Ho_Chi_Minh`, hoặc `2026-09-03` nếu timestamp không dùng được.
+- Task trống cả hai ngày xuất hiện trong khu Chưa có ngày của Hôm nay/Tất cả và project tương ứng; note trống cả hai ngày không xuất hiện trong Hôm nay.
+- Trong listing, hôm qua/hôm nay/ngày mai hiển thị bằng nhãn tương đối; ngày khác trong năm hiện tại dùng `dd.mm`, khác năm dùng `dd.mm.yy`.
 
 ### Task đã hoàn thành và note đã lưu trữ
 
@@ -119,7 +121,8 @@ Quy ước ngày:
 - Trên mobile, bỏ app header riêng. Nút mở sidebar là panel icon-only đứng trước tên view trong sticky header; switcher item nằm bên trái sync pill trong hàng control nổi ngay trên dock.
 - Completed task không được tính trong số lượng task mở.
 - Riêng Hôm nay, disclosure chỉ hiển thị task hoàn thành hôm nay và note được lưu trữ hôm nay theo `Asia/Ho_Chi_Minh`, không dựa vào due date (kể cả không ngày hoặc đến hạn trong tương lai). Item chuyển trạng thái ngày khác vẫn xem được ở các view phù hợp khác.
-- Trong mọi listing, ưu tiên presentation order theo cờ đang bật: item có cả Quan Trọng và Ưu tiên → chỉ Ưu tiên → chỉ Quan Trọng → bình thường. Trong từng mức giữ task trước note, sau đó due date và thời điểm tạo; view Tất cả vẫn chia nhóm thời gian trước khi áp dụng thứ tự này trong từng nhóm. Tắt cờ làm item tự trở về vị trí theo thứ tự thông thường, không ghi thêm `position` vào dữ liệu.
+- Mỗi khu có header row và sort độc lập theo Mức chú ý, Ngày đến hạn, Ngày bắt đầu hoặc Tên; khu đã hoàn thành/lưu trữ có thêm Ngày trạng thái. Luôn xếp toàn bộ task trước note trong từng khu, ở cả hai chiều. Lựa chọn sort lưu theo browser/view/khu; không ghi thêm `position` vào dữ liệu.
+- Mức chú ý giữ cố định cả hai cờ → chỉ Quan Trọng → chỉ Ưu tiên → bình thường; trong mỗi mức xét ngày đến hạn rồi tên. Đảo chiều chỉ đảo ngày đến hạn trong cùng mức, không đảo mức chú ý. Các lựa chọn khác chỉ đảo khóa chính; hòa khóa xét tên A–Z rồi ngày đến hạn tăng dần. Ngày trống cuối trong từng loại (và từng mức khi sort Mức chú ý), ở cả hai chiều. Nếu vẫn hòa thì xét ngày tạo rồi ID tăng dần để thứ tự ổn định.
 
 ## 6. Information architecture
 
@@ -181,10 +184,11 @@ Quy tắc:
 2. Chọn “Thêm task” hoặc “Thêm note”.
 3. Nhập tên.
 4. Hệ thống gán ngữ cảnh mặc định:
-   - Trong Hôm nay: due date = hôm nay.
-   - Trong một ngày cụ thể: due date = ngày đang xem.
-   - Trong Project: project = project đang xem, due date để trống.
-   - Trong Sắp tới: không tự đoán ngày; yêu cầu chọn một trong ba ngày.
+   - Ngày bắt đầu để trống ở mọi view; riêng task mới trong Hôm nay mặc định bằng hôm nay. Chuyển sang note bỏ ngày mặc định; ngày đã chọn/xóa thủ công được giữ.
+   - Trong Hôm nay: ngày đến hạn = hôm nay.
+   - Trong một ngày cụ thể: ngày đến hạn = ngày đang xem.
+   - Trong Project: project = project đang xem, ngày đến hạn để trống.
+   - Trong Sắp tới: yêu cầu ít nhất ngày bắt đầu hoặc ngày đến hạn thuộc một trong ba ngày kế tiếp.
 5. Enter/Lưu tạo item; input vẫn sẵn sàng để nhập tiếp.
 
 ### Hoàn thành task
@@ -206,7 +210,7 @@ Quy tắc:
 
 - Nhắc việc/push notification.
 - Giờ đến hạn.
-- Task lặp lại, priority nhiều cấp, tag, rich-text/long-form notes, file đính kèm, subtask.
+- Task lặp lại, priority nhiều cấp, tag, định dạng nâng cao ngoài đậm/nghiêng/gạch chân, file đính kèm, subtask.
 - Kéo thả phức tạp, collaboration, team workspace.
 - AI, natural-language parsing, calendar integration.
 - Native App Store app và native iOS widget.
@@ -230,16 +234,18 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Bốn master view ẩn mọi item thuộc dự án đã lưu trữ và loại khỏi số đếm; khôi phục dự án làm các item xuất hiện lại theo filter, không sửa dữ liệu item.
 - Hôm nay không hiện task đã hoàn thành ngày khác; kiểm tra ranh giới nửa đêm theo múi giờ Việt Nam, không lấy ngày UTC hay due date.
 - Task quá hạn xuất hiện trong Hôm nay và có nhãn ngày dễ hiểu.
-- Note chưa có ngày không xuất hiện trong Hôm nay; task chưa có ngày vẫn xuất hiện. Hai nhóm Quá hạn/Hôm nay đóng mở độc lập và mặc định mở.
-- Sắp tới chỉ gồm ba ngày kế tiếp, không gồm hôm nay.
+- Note trống cả hai ngày không xuất hiện trong Hôm nay; task trống cả hai ngày nằm trong Chưa có ngày. Bốn nhóm Quá hạn/Hôm nay/Đang thực hiện/Chưa có ngày đóng mở độc lập và mặc định mở.
+- Sắp tới chỉ gồm item có ngày bắt đầu hoặc ngày đến hạn trong ba ngày kế tiếp, không gồm hôm nay.
 - Ngày chuyển đúng tại nửa đêm ở múi giờ cấu hình.
 - Một task chỉ thuộc tối đa một project trong MVP.
 - Note hiển thị bằng bullet point, không có checkbox hoặc completed state.
 - Task/note có thể bật đồng thời Quan Trọng và Ưu tiên; smart filters bao gồm đúng item phù hợp.
-- Listing tự sắp theo cả hai cờ → Ưu tiên → Quan Trọng → bình thường; tắt cờ trả item về thứ tự loại/ngày/thời điểm tạo.
-- Detail sheet giữ edit button ở mép phải của từng khối đọc; URL trong Nội dung task/note là liên kết mở tab mới và không cho phép protocol ngoài HTTP(S).
-- Canvas liệt kê task/note trên desktop rộng responsive trong dải `940–1200px` khi vùng nội dung đủ chỗ; màn hình hẹp và mobile co vừa vùng hiển thị, không phát sinh horizontal scroll. Detail sheet desktop giữ chiều rộng `780px`.
-- Textarea Nội dung của task và note cao `300px` khi sửa trên desktop; khi tạo mới trên desktop cao `160px`; trên mobile cả sửa và tạo mới đều cao `160px`. Trong edit Tên/Nội dung, action ✓ và × nằm trên hàng nhãn để field dùng trọn chiều rộng; control desktop là `28px` với icon `16px`, mobile giữ touch target `44px`.
+- Mỗi khu sort độc lập và lưu theo browser; task luôn trước note kể cả note có cả hai cờ hoặc đến hạn sớm hơn. Mức chú ý giữ cả hai cờ → Quan Trọng → Ưu tiên → bình thường và chỉ đảo ngày đến hạn trong từng mức. Ngày trống cuối trong từng loại/từng mức ở cả hai chiều; hòa khóa tuân theo quy tắc trên, không sửa dữ liệu đầu vào.
+- Tất cả cho đóng/mở độc lập cả sáu khu thời gian, mặc định mở và giữ trạng thái trong phiên khi chuyển view; không ảnh hưởng trạng thái khu Hôm nay. Khoảng cách giữa các khu thống nhất 12px, kể cả khu đã hoàn thành/lưu trữ. Nhãn sort NGÀY TRẠNG THÁI phải hiển thị đầy đủ trên desktop/mobile.
+- Email OTP của Spark hiển thị mã 36px, một dòng trong ô nền nhạt; tiêu đề thư bắt đầu bằng mã rồi đến “Mã đăng nhập Spark”. Chỉ template Spark trong shared hook thay đổi, không đổi thương hiệu/template của ứng dụng khác.
+- Detail sheet giữ edit button ở mép phải của từng khối đọc; URL trong Nội dung task/note là liên kết mở tab mới và không cho phép protocol ngoài HTTP(S). Trên desktop, header, Tên và cụm metadata/control không dịch chuyển khi xem item dài; bánh xe chuột chỉ cuộn vùng Nội dung.
+- Canvas liệt kê task/note trên desktop rộng responsive trong dải `940–1200px` khi vùng nội dung đủ chỗ; màn hình hẹp và mobile co vừa vùng hiển thị, không phát sinh horizontal scroll. Detail sheet desktop giữ chiều rộng `880px`.
+- Textarea Nội dung của task và note cao `350px` khi sửa trên desktop; khi tạo mới trên desktop cao `160px` và dùng font weight regular; trên mobile cả sửa và tạo mới đều cao `160px` với style hiện tại. Trong edit Tên/Nội dung, action ✓ và × nằm trên hàng nhãn để field dùng trọn chiều rộng; control desktop là `28px` với icon `16px`, mobile giữ touch target `44px`.
 - Dock mobile bo tròn hai đầu; active navigation dùng pill đồng tâm và vẫn giữ vùng chạm tối thiểu 44px.
 - Email đồng bộ gửi OTP 6 chữ số; input chỉ nhận tối đa 6 số và nút xác nhận chỉ bật khi có đúng 6 số.
 - Switcher Tất cả/Note/Task hoạt động nhất quán ở mọi view và không làm thay đổi dữ liệu item.
@@ -251,3 +257,9 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Các shortcut `N`, `T`, `S`, `D`, `A`, `I`, `U`, `[`, `]`, `\`, `⌘/Ctrl + \`, `1–9` và `?` hoạt động đúng, không kích hoạt khi đang nhập task.
 - Compact sidebar hiển thị tooltip tên hạng mục/project ngay khi hover hoặc focus vào icon/dot.
 - App cài được lên Home Screen với tên/icon riêng và mở ở chế độ standalone khi nền tảng hỗ trợ.
+
+### Bổ sung nghiệm thu D-117–D-118
+
+- Nội dung tối đa 4.000 ký tự (Unicode code points, bao gồm xuống dòng), hỗ trợ B/I/U và ⌘/Ctrl+B/I/U cho task/note trong quick-add/detail. Định dạng giữ qua lưu, reload, offline và cloud sync.
+- Nút Sửa Nội dung nằm ngang nhãn Nội dung và không di chuyển khi cuộn vùng nội dung dài; desktop detail rộng 880px.
+- Quick-add chỉ mặc định Ngày bắt đầu hôm nay cho task trong Hôm nay. Note và mọi view khác để trống; vẫn cho chọn/xóa ngày thủ công. Ngày đến hạn giữ quy tắc hiện có.

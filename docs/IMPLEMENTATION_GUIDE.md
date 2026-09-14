@@ -18,6 +18,8 @@ Lý do chọn cấu hình này: một codebase chạy desktop lẫn iPhone, depl
 
 Hosted Supabase project có display name **WorkSpace** và project ref ổn định `ukoowtpqztknbrgpyqdx`. Đây là container hạ tầng dùng chung, có thể chứa schema riêng cho nhiều ứng dụng. Spark hiện vẫn dùng hai bảng `public.projects` và `public.items`; lần đổi tên project này không đổi project ref, URL, API keys, schema, bảng, Auth hay dữ liệu. Nếu tách Spark sang schema riêng trong tương lai, phải thực hiện bằng migration và cập nhật Data API/client như một thay đổi độc lập.
 
+Migration history của WorkSpace là project-wide nên có version do nhiều app sở hữu. Trước mỗi thay đổi Spark phải chạy `migration list`; không dùng `db push --include-all` và không repair version của app khác chỉ để làm history khớp. Nếu repo Spark thiếu migration đã áp dụng bởi app khác, chạy chính file Spark đã review bằng `db query --file` trong transaction, xác minh schema/data, rồi ghi nhận **chỉ version Spark vừa áp dụng** bằng `migration repair --status applied`.
+
 ### Hai chế độ dữ liệu
 
 **Khuyến nghị cho MVP: cloud sync ngay từ đầu.** Đăng nhập passwordless bằng mã OTP gửi qua email, dữ liệu lưu ở Supabase và được bảo vệ theo user. Người dùng nhập mã ngay trong Spark để tránh magic link bị mở ở browser khác trên mobile. Cách này cho phép iPhone và desktop thấy cùng một danh sách.
@@ -25,6 +27,8 @@ Hosted Supabase project có display name **WorkSpace** và project ref ổn đ�
 Email template của hosted Supabase phải dùng `{{ .Token }}` để gửi OTP 6 chữ số thay vì `{{ .ConfirmationURL }}`. Client chỉ giữ ký tự số, giới hạn đúng 6 ký tự và không gọi `verifyOtp` khi mã chưa khớp `^[0-9]{6}$`.
 
 Mọi request `signInWithOtp` của Spark phải truyền `options.emailRedirectTo` lấy từ `NEXT_PUBLIC_SPARK_AUTH_REDIRECT_ORIGIN`. Local development dùng `http://localhost:3000`; Vercel Production và Preview dùng origin chính xác `https://spark.thuanngo.com`. Shared Send Email Hook nhận diện thương hiệu qua `email_data.redirect_to` (và có thể fallback sang `site_url`), nên không dùng origin của ideaPOD hoặc The Atelier và không cấu hình Resend/SMTP/hook riêng trong Spark.
+
+Template email thực tế do `workspace-send-auth-email` quản lý; nguồn dùng chung hiện nằm tại repo `IdeaPod/web/supabase/functions/_shared/auth-email.ts`, không sao chép hook sang Spark. Nhánh OTP `brand.id === "spark"` đặt mã đầu subject và render mã 36px, một dòng trên nền neutral. Chỉnh template phải giữ nguyên mapping, chữ ký webhook, các nhánh auth khác và template của app khác; chạy regression test shared trước khi cập nhật function. Không lưu OTP thật, email người dùng hoặc secret trong tài liệu/log.
 
 Nếu muốn làm prototype cực nhanh, có thể dùng IndexedDB/local storage trước. Nhược điểm là dữ liệu gắn với từng trình duyệt và không tự đồng bộ giữa thiết bị; phải có migration path trước khi đưa vào dùng thật.
 
@@ -53,8 +57,10 @@ Nếu muốn làm prototype cực nhanh, có thể dùng IndexedDB/local storage
 | `project_id` | uuid nullable | một item tối đa một project |
 | `type` | enum/text | `task` hoặc `note` |
 | `title` | text | task/note 1–100 ký tự, hiển thị một dòng |
-| `description` | text nullable | task/note, plain text 1–2.000 ký tự khi có giá trị; copy UI là “Nội dung” |
-| `due_date` | date nullable | date-only |
+| `description` | text nullable | task/note, văn bản 1–4.000 ký tự khi có giá trị; copy UI là “Nội dung” |
+| `description_format` | jsonb nullable | mảng text run `{text, bold?, italic?, underline?}`; chỉ dùng nếu ghép text khớp `description`; không chứa HTML |
+| `start_date` | date nullable | ngày bắt đầu, date-only; chỉ task mới trong Hôm nay mặc định hôm nay; các trường hợp khác để trống, vẫn chỉnh/xóa được |
+| `due_date` | date nullable | ngày đến hạn, date-only |
 | `completed_at` | timestamptz nullable | chỉ dùng cho task; note luôn null |
 | `archived_at` | timestamptz nullable | chỉ dùng cho note; task luôn null |
 | `is_important` | boolean | mặc định false |
@@ -63,7 +69,7 @@ Nếu muốn làm prototype cực nhanh, có thể dùng IndexedDB/local storage
 | `created_at` | timestamptz | audit |
 | `updated_at` | timestamptz | audit/sync |
 
-Ràng buộc: `type = 'note'` thì `completed_at` phải null; `type = 'task'` thì `archived_at` phải null. Cả hai loại dùng title 1–100 ký tự và description nullable tối đa 2.000 ký tự. Constraint mới dùng `NOT VALID` để không làm migration thất bại vì dữ liệu cũ. Chỉ mục nên có: `(user_id, type, completed_at, due_date)`, `(user_id, project_id, completed_at)`, `(user_id, archived_at)`, `(user_id, is_important)` và `(user_id, is_urgent)`.
+Ràng buộc: `type = 'note'` thì `completed_at` phải null; `type = 'task'` thì `archived_at` phải null. Cả hai loại dùng title 1–100 ký tự và description nullable tối đa 4.000 ký tự. Không đặt DB constraint `start_date <= due_date` trong migration backfill vì dữ liệu lịch sử có thể đã có hạn trước ngày tạo; UI kiểm tra range cho dữ liệu người dùng chỉnh mới. Chỉ mục nên có: `(user_id, type, completed_at, due_date)`, `(user_id, start_date)`, `(user_id, project_id, completed_at)`, `(user_id, archived_at)`, `(user_id, is_important)` và `(user_id, is_urgent)`.
 
 ### Bảo mật
 
@@ -76,15 +82,18 @@ Ràng buộc: `type = 'note'` thì `completed_at` phải null; `type = 'task'` t
 
 Tạo một module thuần, ví dụ `src/lib/task-filters.ts`, không rải logic ngày trong component.
 
-- `today`: task chưa hoàn thành có `due_date <= localToday` hoặc chưa có ngày; note chưa lưu trữ chỉ xuất hiện khi có `due_date <= localToday`. Chia thành `overdue` và `dueToday`, trong đó task không ngày nằm cùng nhóm Hôm nay; note không ngày bị ẩn.
-- `upcoming`: `localTomorrow <= due_date <= localToday + 3 calendar days`.
-- `byDate`: `due_date === selectedDate`.
-- `all`: lấy mọi item còn hiện hành rồi chia `overdue`, `today`, `upcoming` (ba ngày kế tiếp), `later` và `undated`; completed task và archived note nằm trong disclosure trạng thái riêng.
+- `today`: `overdue` khi `due_date < localToday`; `today` khi `due_date === localToday` hoặc `start_date === localToday`; `ongoing` khi `start_date < localToday` và `due_date` trống hoặc sau hôm nay; `undated` chỉ nhận task có cả hai ngày null. Note trống cả hai ngày bị ẩn.
+- `upcoming`: `start_date` hoặc `due_date` nằm từ localTomorrow đến `localToday + 3 calendar days`.
+- `byDate`: `start_date === selectedDate || due_date === selectedDate`.
+- `all`: lấy mọi item còn hiện hành rồi chia `overdue`, `today`, `ongoing`, `upcoming` (ba ngày kế tiếp), `later` và `undated`; completed task và archived note nằm trong disclosure trạng thái riêng.
 - `filterItems` và `inactiveForView` nhận thêm metadata projects để loại item của project có `archivedAt` khỏi bốn master view trước khi sort/group/display filter và tính số đếm sidebar/header. Project view và smart filter không bị ảnh hưởng; không sửa item.
-- Trong `inactiveForView` của Hôm nay, task được chọn theo ngày `completedAt` và note theo ngày `archivedAt` trong `Asia/Ho_Chi_Minh`, không theo due date; timestamp không hợp lệ không được hiển thị. Các view khác giữ quy tắc due date hiện tại.
-- Riêng view Hôm nay, header nhóm Quá hạn và Hôm nay là disclosure độc lập, mặc định mở, dùng cùng icon/kiểu tương tác với disclosure trạng thái cuối danh sách.
+- Trong `inactiveForView` của Hôm nay, task được chọn theo ngày `completedAt` và note theo ngày `archivedAt` trong `Asia/Ho_Chi_Minh`, không theo ngày kế hoạch; timestamp không hợp lệ không được hiển thị.
+- Riêng view Hôm nay, header Quá hạn, Hôm nay, Đang thực hiện và Chưa có ngày là disclosure độc lập, mặc định mở, dùng cùng icon/kiểu tương tác với disclosure trạng thái cuối danh sách.
+- View Tất cả dùng lại `ItemGroup` disclosure cho sáu khu thời gian, state riêng theo `TimeGroup` trong phiên, mặc định mở và độc lập với Hôm nay. `.item-group ~ .item-group` là nguồn spacing 12px duy nhất, tính cả khi quick-add nằm giữa khu active và inactive; không giữ ngoại lệ margin cho khu hoàn thành. Select sort dùng chiều rộng theo `ch` cộng padding để nhãn uppercase không bị cắt khi font scale thay đổi.
 - Trạng thái `itemDisplayMode: 'all' | 'task' | 'note'` là presentation filter dùng chung cho mọi view; áp dụng sau master/smart/project filter, trước khi chia nhóm và tính số quá hạn hiển thị. Không ghi thay đổi xuống item.
-- Presentation sort dùng `task` trước `note`; sau đó sort `due_date` tăng dần và `created_at`. Riêng view `all`, chia nhóm thời gian trước rồi áp dụng comparator này trong từng nhóm. Không ghi lại `position` chỉ để phản ánh thứ tự hiển thị.
+- Mỗi khu sort presentation độc lập theo `attention`, `dueDate`, `startDate`, `title`; disclosure inactive có thêm `statusDate`. `sortItemsForDisplay` so sánh loại trước (task → note), sau đó khóa chọn. Với `attention`, rank cố định cả hai cờ → Quan Trọng → Ưu tiên → bình thường; `direction` chỉ áp dụng cho due date trong cùng rank. Các field khác đảo riêng khóa chính. Hòa khóa xét title A–Z → due date tăng dần → createdAt → ID; null cuối trong từng loại/rank ở cả hai chiều. Preference lưu bằng `localStorage` theo view/khu; không ghi lại `position` hoặc mutate mảng/item đầu vào.
+- Listing format ngày bằng nhãn Hôm qua/Hôm nay/Ngày mai trong khung ba ngày tương đối; ngoài khung dùng `dd.mm` nếu cùng năm với local today hoặc `dd.mm.yy` nếu khác năm.
+- Dữ liệu cũ thiếu `start_date` được backfill từ `created_at` theo `Asia/Ho_Chi_Minh`, fallback cố định `2026-09-03`; runtime chỉ backfill field bị thiếu (`undefined`) và giữ explicit null do người dùng xóa.
 - Luôn truyền timezone vào hàm tạo `localToday` để test được.
 - Test đặc biệt: cuối tháng, cuối năm, năm nhuận và thời điểm quanh nửa đêm.
 
@@ -131,16 +140,17 @@ src/
 - Không dùng global state library ở MVP nếu server cache + component state đã đủ.
 - Giữ unsaved quick-add text khi app chuyển offline ngắn.
 - Quick-add overlay phải có `role="dialog"`, `aria-modal="true"`, đóng được bằng Hủy, click backdrop và phím Escape; khi đóng trả focus về nút “Thêm công việc”. Backdrop của mọi overlay chỉ dùng lớp Navy dim đủ đậm, không dùng blur.
-- Quick-add giữ checkbox Ghi chú. Secondary button **Thêm Nội dung** mở textarea tùy chọn tối đa 2.000 ký tự cho cả task và note; chuyển loại không xóa draft. Chọn ngày và dự án vẫn hoạt động cho cả hai loại item.
+- Quick-add giữ checkbox Ghi chú. Secondary button **Thêm Nội dung** mở textarea tùy chọn tối đa 4.000 ký tự cho cả task và note; chuyển loại không xóa draft. Ngày bắt đầu mặc định trống, chỉ task mới trong Hôm nay mặc định hôm nay; ngày bắt đầu, ngày đến hạn và dự án đều chỉnh/xóa được cho cả hai loại item.
 - Tap item mở detail sheet ở trạng thái đọc. Tên/Nội dung chỉ chuyển sang input/textarea khi bấm edit icon kế text; metadata compact lưu từng thay đổi ngay mà không cần submit cả form.
-- Canvas liệt kê task/note ở desktop dùng `width: clamp(940px, 80vw, 1200px)` cùng `max-width: 100%` để co theo vùng content khi viewport hẹp; mobile override về `width: 100%`. Detail sheet desktop giữ `width: min(780px, calc(100vw - 48px))`.
-- Textarea Nội dung của task và note dùng chung kích thước: desktop edit đặt `height/min-height: 300px`, desktop quick-add đặt `160px`; media mobile override cả `.detail-inline-editor textarea` và `.quick-description-field textarea` về `160px`. Trong edit Tên/Nội dung, đặt action ✓ và × trong `.detail-field-heading` cạnh nhãn, còn `.detail-inline-editor` dùng toàn chiều rộng bên dưới. Action control là `28px`/icon `16px` trên desktop; mobile giữ touch target `44px`/icon `18px`.
+- Canvas liệt kê task/note ở desktop dùng `width: clamp(940px, 80vw, 1200px)` cùng `max-width: 100%` để co theo vùng content khi viewport hẹp; mobile override về `width: 100%`. Detail sheet desktop dùng `width: min(880px, calc(100vw - 48px))`. Nút Sửa Nội dung nằm trên hàng nhãn cố định, ngoài vùng cuộn ở cả chế độ đọc/sửa. Sheet là flex column giới hạn chiều cao; header, khối Tên và `.detail-metadata` không cuộn, còn read row/inline editor trong `.detail-description` là vùng cuộn độc lập.
+- Textarea Nội dung của task và note dùng chung kích thước: desktop edit đặt `height/min-height: 350px`, desktop quick-add đặt `160px` và `font-weight: 400`; media mobile override cả `.detail-inline-editor textarea` và `.quick-description-field textarea` về `160px` và giữ style mobile hiện tại. Trong edit Tên/Nội dung, đặt action ✓ và × trong `.detail-field-heading` cạnh nhãn, còn `.detail-inline-editor` dùng toàn chiều rộng bên dưới. Action control là `28px`/icon `16px` trên desktop; mobile giữ touch target `44px`/icon `18px`.
 - Vùng nội dung item kiểm tra `openSwipeItemId` chung: trên mobile, nếu bất kỳ khay nào mở thì `onClick` chỉ đóng khay; nếu không có khay mở thì một click mở chi tiết. Quy tắc áp dụng khi chạm cùng item hoặc item khác, kể cả khác nhóm. Pointer-down/up của tap thường không được xóa trạng thái khay trước `onClick`. Desktop vẫn mở bằng một click. Chỉ bật style kéo sau khi xác định gesture ngang, không đổi nền/transform ở pointer-down của tap thường. Click phát sinh từ vuốt/cuộn/cancel bị chặn đến pointer-down mới, không reset bằng timer; activation bàn phím/assistive technology (`detail === 0`) vẫn hoạt động. Checkbox/marker và action khay không mở chi tiết.
 - Read row trong detail sheet dùng text column co giãn và edit action `flex: 0 0 auto` ở mép phải; khối Nội dung nhiều dòng căn action theo mép trên.
-- Metadata detail mobile dùng grid ba cột: Quan Trọng, Ưu tiên, Ngày ở hàng đầu; Dự án full-width; cụm Lưu trữ/Xóa icon-only 44px căn phải ở hàng cuối. Label vẫn tồn tại qua `aria-label`/tooltip; Xóa tiếp tục qua confirm dialog.
+- Metadata detail mobile dùng grid bốn cột: Quan Trọng, Ưu tiên, Ngày bắt đầu và Ngày đến hạn ở hàng đầu; Dự án full-width; cụm Lưu trữ/Xóa icon-only 44px căn phải ở hàng cuối. Label vẫn tồn tại qua `aria-label`/tooltip; Xóa tiếp tục qua confirm dialog.
 - Project dot trong item row là control tùy chọn trên desktop: click một dot đổi chung `projectLabelsExpanded` cho mọi item trong view. Pill uppercase dùng regular weight, tham gia grid, không overlay hoặc dùng shadow. Grid track dùng chung `--project-chip-width` từ pill dài nhất đang render để title thẳng hàng; từng pill dùng `--project-pill-width` riêng để nền chỉ ôm tên của nó, còn dot được neo cố định khi animate `width`. Tên pill đã mở luôn ở một dòng và không dùng ellipsis. Trên mobile, button pill được ẩn và thay bằng dot tĩnh nên không có thao tác mở pill hoặc thay đổi grid. Trạng thái mở và toggle trong bảng Phím tắt & hiển thị lưu bằng `localStorage` theo browser và tiếp tục áp dụng khi đổi view desktop; khi tắt tính năng, dot desktop trở lại marker không tương tác và trạng thái mở được reset.
-- Linkify Nội dung bằng parser text thuần và React node, không dùng `dangerouslySetInnerHTML`. Chỉ nhận `http://`, `https://` và `www.`; link dùng `target="_blank"` cùng `rel="noopener noreferrer"`, còn giá trị lưu trong database vẫn là plain text.
-- Comparator hiển thị áp thứ hạng động `is_important && is_urgent` → `is_urgent` → `is_important` → bình thường, sau đó mới task/note, due date và created time. Không persist rank; cập nhật cờ phải làm list tự sort lại từ state hiện tại.
+- Editor Nội dung dùng Tiptap với paragraph/text/hardBreak và đúng ba mark bold/italic/underline, undo/redo, ⌘/Ctrl+B/I/U; tắt các định dạng khác. Đếm 4.000 Unicode code points gồm xuống dòng, không tính metadata định dạng; từ chối nhập/dán vượt giới hạn và giữ draft. `description` giữ văn bản thuần, `description_format` giữ các text run; trim văn bản và định dạng cùng nhau. Cache cũ không có format đọc như plain text; format sai cấu trúc hoặc không khớp text bị bỏ qua.
+- Linkify Nội dung bằng parser text thuần và React node, không dùng `dangerouslySetInnerHTML`. Render đậm/nghiêng/gạch chân bằng React, giữ URL liền mạch kể cả khi format đổi giữa URL. Chỉ nhận `http://`, `https://` và `www.`; link dùng `target="_blank"` cùng `rel="noopener noreferrer"`, còn giá trị lưu trong database vẫn là plain text.
+- Sort Mức chú ý áp rank cố định bên trong mỗi loại task/note như mục Date logic; cập nhật cờ làm list tự sort lại từ state, không persist rank. Test filter kiểm tra đúng tập item và không trùng, test grouping kiểm tra khu, còn test sort kiểm tra thứ tự, hai chiều, null và tie-break độc lập.
 - Desktop floating trigger dùng artwork `+` 32px trong hit target 48px ở góc dưới phải. Mobile dùng dock `position: fixed` cao 58px và nút `+` 72px ở giữa; list phải chừa bottom space cộng safe-area để dock không che item cuối.
 - Trên mobile, sau user gesture mở quick-add phải focus title input; dùng `window.visualViewport` resize/scroll để fit backdrop vào vùng còn thấy khi bàn phím mở và gọi `scrollIntoView` cho field. Cleanup listener/timer khi đóng; desktop giữ layout overlay hiện tại.
 

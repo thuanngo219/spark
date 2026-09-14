@@ -17,6 +17,7 @@ function legacyData(): SparkData {
         type: "task",
         title: "Việc cũ",
         description: null,
+        startDate: null,
         dueDate: "2026-08-19",
         projectId: "work",
         completedAt: null,
@@ -85,6 +86,28 @@ describe("normalizeDataIds", () => {
     expect(normalized.items[0].archivedAt).toBeNull();
   });
 
+  it("backfills a missing legacy start date from created time in Vietnam", () => {
+    const data = legacyData();
+    delete (data.items[0] as Partial<(typeof data.items)[number]>).startDate;
+    data.items[0].createdAt = "2026-09-02T18:00:00.000Z";
+    let index = 0;
+
+    const normalized = normalizeDataIds(data, () => ids[index++]);
+
+    expect(normalized.items[0].startDate).toBe("2026-09-03");
+  });
+
+  it("uses the fixed migration fallback when a legacy created time is invalid", () => {
+    const data = legacyData();
+    delete (data.items[0] as Partial<(typeof data.items)[number]>).startDate;
+    data.items[0].createdAt = "invalid";
+    let index = 0;
+
+    const normalized = normalizeDataIds(data, () => ids[index++]);
+
+    expect(normalized.items[0].startDate).toBe("2026-09-03");
+  });
+
   it("defaults missing descriptions and preserves note content", () => {
     const data = legacyData();
     delete (data.items[0] as Partial<(typeof data.items)[number]>).description;
@@ -131,4 +154,16 @@ describe("areSparkDataEqual", () => {
     changedProject.projects[0].isStarred = true;
     expect(areSparkDataEqual(data, changedProject)).toBe(false);
   });
+});
+
+
+it("detects a formatting-only remote change and keeps legacy data compatible", () => {
+  const before = legacyData();
+  before.items[0].description = "Nội dung";
+  const after = structuredClone(before);
+  after.items[0].descriptionFormat = [{ text: "Nội dung", bold: true }];
+  expect(areSparkDataEqual(before, after)).toBe(false);
+  expect(areSparkDataEqual(after, structuredClone(after))).toBe(true);
+  after.items[0].descriptionFormat = null;
+  expect(areSparkDataEqual(before, after)).toBe(true);
 });

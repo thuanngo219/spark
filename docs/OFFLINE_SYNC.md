@@ -36,7 +36,7 @@ Database `spark-offline`, version 1, có hai object store:
 
 Khi browser có dữ liệu cũ trong các key `spark:data:v1`, `spark:data:v2:*` hoặc `spark:sync-pending:v1:*`, lần đọc đầu tiên sẽ copy dữ liệu hợp lệ sang IndexedDB. Sau khi ghi IndexedDB thành công, key tương ứng trong `localStorage` được xóa. Nếu IndexedDB bị chặn hoặc không khả dụng, Spark tiếp tục dùng `localStorage` làm fallback thay vì làm mất thao tác.
 
-Preferences nhỏ như trạng thái sidebar vẫn dùng `localStorage`; chúng không tham gia transaction dữ liệu.
+Preferences nhỏ như trạng thái sidebar và sort theo từng view/khu vẫn dùng `localStorage`; chúng không tham gia transaction dữ liệu. Snapshot cũ chưa có `startDate` được chuẩn hóa từ `createdAt` theo `Asia/Ho_Chi_Minh`, fallback `2026-09-03`; giá trị `startDate: null` do người dùng chủ động xóa được giữ nguyên.
 
 ## Vòng đời một mutation
 
@@ -74,3 +74,7 @@ App gọi reconcile khi Realtime kết nối lại, browser phát `online`, tab 
 5. Nâng cấp từ browser đang có cache `localStorage`; dữ liệu và queue xuất hiện sau migration.
 6. Đăng nhập hai tài khoản lần lượt; cache của user A không xuất hiện trong UI của user B.
 7. Kiểm tra responsive ở 390px và iPhone Home Screen, gồm cả cold-start offline.
+
+## Nội dung có định dạng (D-117)
+
+`descriptionFormat` được ghi cùng `description` trong snapshot và mutation queue hiện có, không đổi version IndexedDB. So sánh snapshot bao gồm định dạng để thay đổi chỉ bold/italic/underline vẫn được reconcile. Cache cũ không có trường này hiển thị plain text. Editor được đóng gói cùng client app shell, không chờ tải thêm module ở lần mở đầu tiên khi offline; không cache dữ liệu Supabase.

@@ -1,4 +1,5 @@
 export const APP_TIMEZONE = "Asia/Ho_Chi_Minh";
+export const LEGACY_START_DATE_FALLBACK = "2026-09-03";
 
 const dateKeyFormatters = new Map<string, Intl.DateTimeFormat>();
 const longDateFormatter = new Intl.DateTimeFormat("vi-VN", {
@@ -44,6 +45,13 @@ export function getLocalDateKey(
   return `${value("year")}-${value("month")}-${value("day")}`;
 }
 
+export function getLegacyStartDate(createdAt: string): string {
+  const createdDate = new Date(createdAt);
+  return Number.isNaN(createdDate.getTime())
+    ? LEGACY_START_DATE_FALLBACK
+    : getLocalDateKey(createdDate);
+}
+
 export function addCalendarDays(dateKey: string, amount: number): string {
   const date = new Date(`${dateKey}T12:00:00.000Z`);
   date.setUTCDate(date.getUTCDate() + amount);
@@ -68,6 +76,17 @@ export function formatShortDate(dateKey: string, todayKey: string): string {
   if (dateKey === relativeYesterday) return "Hôm qua";
   if (dateKey === relativeTomorrow) return "Ngày mai";
   return shortDateFormatter.format(new Date(`${dateKey}T12:00:00.000Z`));
+}
+
+export function formatListDate(dateKey: string, todayKey: string): string {
+  const yesterday = addCalendarDays(todayKey, -1);
+  const tomorrow = addCalendarDays(todayKey, 1);
+  if (dateKey === yesterday) return "Hôm qua";
+  if (dateKey === todayKey) return "Hôm nay";
+  if (dateKey === tomorrow) return "Ngày mai";
+  const [year, month, day] = dateKey.split("-");
+  const currentYear = todayKey.slice(0, 4);
+  return year === currentYear ? `${day}.${month}` : `${day}.${month}.${year.slice(-2)}`;
 }
 
 export function formatShortWeekday(dateKey: string): string {
