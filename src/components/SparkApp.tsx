@@ -2381,6 +2381,29 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
     if (!invalid) onSave({ startDate: start || null, dueDate: due || null });
   };
 
+  const titleMarker = item.type === "task" ? (
+    <button
+      type="button"
+      className="detail-icon-action detail-status-toggle"
+      role="checkbox"
+      aria-checked={Boolean(item.completedAt)}
+      aria-label={item.completedAt ? "Đánh dấu chưa xong" : "Hoàn thành task"}
+      onClick={() => {
+        if (editingField === "title" && !saveTitle()) return;
+        if (editingField === "content" && !saveContent()) return;
+        onSave({ completedAt: item.completedAt ? null : new Date().toISOString() });
+      }}
+    >
+      <span className={`detail-status-box ${item.completedAt ? "checked" : ""}`} aria-hidden="true">
+        {item.completedAt && <Icon name="check" size={15} />}
+      </span>
+    </button>
+  ) : (
+    <span className="detail-icon-action" role="img" aria-label="Ghi chú">
+      <span className="note-mark" aria-hidden="true" />
+    </span>
+  );
+
   return (
     <div className="dialog-backdrop" onClick={onClose}>
       <section className={`editor-sheet item-detail-sheet ${editingField === "content" ? "editing-content" : ""}`} role="dialog" aria-modal="true" aria-labelledby="item-detail-title" onClick={(event) => event.stopPropagation()}>
@@ -2391,6 +2414,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
             {editingField === "title" ? (
               <>
                 <div className="detail-inline-editor detail-title-row">
+                  {titleMarker}
                   <input autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} onKeyDown={(event) => {
                     if (event.key === "Enter") { event.preventDefault(); saveTitle(); }
                     if (event.key === "Escape") { setTitle(item.title); setTitleError(false); setEditingField(null); }
@@ -2404,6 +2428,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
               </>
             ) : (
               <div className="detail-read-row detail-title-row">
+                {titleMarker}
                 <p>{title}</p>
                 <button type="button" className="detail-icon-action edit" onClick={() => switchField("title")} aria-label="Sửa tên"><Icon name="edit" size={17} /></button>
               </div>

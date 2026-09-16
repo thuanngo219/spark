@@ -112,3 +112,5 @@ Vitest hiện có 162 tests. Browser suite kiểm tra Command B/I/U, undo/redo, 
 Toolbar chỉ đậm hơn 5% (field 95% + đen 5%), thay D-122. Gỡ hoàn toàn định dạng bullet/number ở toolbar/schema/phím tắt/renderer, thay phần danh sách của D-119. Nội dung danh sách đã lưu hiển thị như đoạn văn, giữ chữ/xuống dòng/B/I/U; không sửa hàng loạt cloud. Regression kiểm tra dán danh sách, nội dung cũ và toolbar chỉ có 3 nút. Desktop header vẫn blur 8px/WebKit.
 
 - D-124: `view-project-band` cao 10px thống nhất desktop/mobile, thường/compact; rule gốc là nguồn duy nhất.
+
+- D-127: Trước tên trong chi tiết và inline edit có checkbox cho task (checked theo completedAt, cho bật/tắt) hoặc dấu gạch ngang tĩnh cho note. Lưu draft hợp lệ trước khi đổi trạng thái; tên task hoàn thành trong chi tiết không gạch ngang. Mobile giữ vùng chạm 44px.

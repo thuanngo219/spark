@@ -179,9 +179,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .item-row { min-height: 35px; display: grid; grid-template-columns: 24px 15px minmax(0, 1fr) auto; align-items: start; padding: 4px 1px 4px 10px; border-radius: 7px; transition: background 160ms ease, grid-template-columns 200ms var(--ease); }
 .item-row.project-labels-expanded { grid-template-columns: 24px calc(var(--project-chip-width, 80px) + 2.5px) minmax(0, 1fr) auto; }
 .item-row:hover { background: rgba(255,255,255,.66); }
-.checkbox { width: 19px; height: 19px; margin-top: 3px; border: 1.5px solid #c6cad4; border-radius: 6px; background: transparent; display: grid; place-items: center; color: white; padding: 0; transition: background-color 180ms var(--ease), border-color 180ms var(--ease), color 180ms var(--ease); }
-.checkbox:hover { border-color: var(--turquoise); }
-.checkbox.checked { background: var(--turquoise); border-color: var(--turquoise); }
+.checkbox, .detail-status-box { width: 19px; height: 19px; border: 1.5px solid #c6cad4; border-radius: 6px; background: transparent; display: grid; place-items: center; color: white; padding: 0; transition: background-color 180ms var(--ease), border-color 180ms var(--ease), color 180ms var(--ease); }
+.checkbox { margin-top: 3px; }
+.checkbox:hover, .detail-status-toggle:hover .detail-status-box { border-color: var(--turquoise); }
+.checkbox.checked, .detail-status-box.checked { background: var(--turquoise); border-color: var(--turquoise); }
 .note-bullet { width: 19px; height: 19px; margin-top: 3px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: var(--control-muted); display: grid; place-items: center; }
 .note-bullet:hover { background: var(--control-hover); color: var(--navy-900); }
 .note-mark { width: 12px; height: 3px; border-radius: 999px; background: var(--note-mark); }

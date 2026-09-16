@@ -155,6 +155,10 @@ Trên mobile, Dự án và các nút Lưu trữ/Xóa nằm cùng hàng thứ hai
 
 Giảm 20% khoảng cách hai phía đường phân cách: margin-top của khối Nội dung từ 20px còn 16px, padding-top từ 18px còn 14.4px. Bỏ nhãn Tên; nút sửa nằm cùng hàng với text, khi sửa thì input và ✓/× cùng hàng. Áp dụng desktop/mobile, giữ vùng chạm mobile 44px và hàng nhãn Nội dung 28px. Thay phần hàng nhãn Tên của D-125.
 
+## D-127 — Nhận diện task/note trước tên chi tiết (2026-09-16)
+
+Trước tên trong chi tiết/inline edit hiển thị checkbox cho task, dấu gạch ngang cho note. Checkbox phản ánh completedAt, có thể bật/tắt hoàn thành và lưu draft hợp lệ trước khi đổi trạng thái. Note chỉ có marker tĩnh. Tên trong chi tiết không gạch ngang khi hoàn thành; listing giữ hành vi hiện có. Dùng lại màu, hình checkbox và note-mark của listing; vùng chạm mobile 44px.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

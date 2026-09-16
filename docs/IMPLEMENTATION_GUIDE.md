@@ -264,3 +264,5 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 - D-122: Chỉ nền toolbar formatting pha 5% đen trên nền field; nền vùng nhập giữ nguyên. Desktop blur 8px với WebKit; mobile giữ blur 18px/14px theo trạng thái.
 
 - D-123: Gỡ bullet/number ở toolbar, schema editor, phím tắt và renderer. Nội dung cũ giữ văn bản/xuống dòng/B/I/U, không migration hoặc sửa hàng loạt dữ liệu cloud. Dán HTML danh sách được chuyển thành đoạn văn.
+
+- D-127: Trước tên trong chi tiết và inline edit có checkbox cho task (checked theo completedAt, cho bật/tắt) hoặc dấu gạch ngang tĩnh cho note. Lưu draft hợp lệ trước khi đổi trạng thái; tên task hoàn thành trong chi tiết không gạch ngang. Mobile giữ vùng chạm 44px.
