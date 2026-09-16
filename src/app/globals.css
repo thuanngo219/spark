@@ -319,7 +319,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .detail-read-row a:hover { color: #287a79; text-decoration-color: currentColor; }
 .detail-read-row a:focus-visible { border-radius: 3px; background: var(--turquoise-soft); outline: none; }
 .detail-icon-action { flex: 0 0 auto; width: 34px; height: 34px; min-height: 34px; border: 0; border-radius: 9px; padding: 0; background: transparent; color: #9499a8; display: grid; place-items: center; }
-.detail-icon-action:hover { background: var(--control-hover); color: var(--navy-900); }
+.detail-icon-action:where(:not([role="checkbox"], [role="img"])):hover { background: var(--control-hover); color: var(--navy-900); }
 .detail-icon-action.save { background: var(--navy-900); color: white; }
 .detail-inline-editor { display: block; }
 .detail-title-row { display: flex; align-items: center; gap: 10px; min-height: 28px; }

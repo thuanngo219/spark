@@ -266,3 +266,5 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 - D-123: Gỡ bullet/number ở toolbar, schema editor, phím tắt và renderer. Nội dung cũ giữ văn bản/xuống dòng/B/I/U, không migration hoặc sửa hàng loạt dữ liệu cloud. Dán HTML danh sách được chuyển thành đoạn văn.
 
 - D-127: Trước tên trong chi tiết và inline edit có checkbox cho task (checked theo completedAt, cho bật/tắt) hoặc dấu gạch ngang tĩnh cho note. Lưu draft hợp lệ trước khi đổi trạng thái; tên task hoàn thành trong chi tiết không gạch ngang. Mobile giữ vùng chạm 44px.
+
+- D-128: Hover checkbox/dấu note trong chi tiết không đổi nền. Rule hover `.detail-icon-action` loại trừ role checkbox/img bằng `:where`, giữ specificity hiện có; nền checked của ô checkbox không đổi.

@@ -159,6 +159,10 @@ Giảm 20% khoảng cách hai phía đường phân cách: margin-top của kh�
 
 Trước tên trong chi tiết/inline edit hiển thị checkbox cho task, dấu gạch ngang cho note. Checkbox phản ánh completedAt, có thể bật/tắt hoàn thành và lưu draft hợp lệ trước khi đổi trạng thái. Note chỉ có marker tĩnh. Tên trong chi tiết không gạch ngang khi hoàn thành; listing giữ hành vi hiện có. Dùng lại màu, hình checkbox và note-mark của listing; vùng chạm mobile 44px.
 
+## D-128 — Bỏ nền hover của marker chi tiết (2026-09-16)
+
+Checkbox task và dấu gạch ngang note trong chi tiết/inline edit giữ nền trong suốt khi hover. Checkbox đã hoàn thành vẫn giữ màu checked; các nút sửa/lưu/hủy giữ hiệu ứng hiện có. Điều chỉnh hover của marker D-127 theo yêu cầu chủ dự án.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)
