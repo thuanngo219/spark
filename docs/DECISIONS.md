@@ -147,6 +147,10 @@ Chỉ nền toolbar đậm hơn 5% thay 20% của D-122. Gỡ bullet/number kh�
 
 `view-project-band` cao 10px trên desktop và mobile, cả header thường lẫn compact. Dùng một rule gốc, bỏ override compact trùng lặp.
 
+## D-125 — Thu gọn chi tiết và chỉnh sửa (2026-09-16)
+
+Trên mobile, Dự án và các nút Lưu trữ/Xóa nằm cùng hàng thứ hai của metadata; giữ vùng chạm 44px. Hàng nhãn Tên/Nội dung cao 28px ở cả chế độ đọc/sửa trên desktop và mobile; khoảng cách bên dưới lần lượt 4px/8px. Nút mobile dùng margin dọc âm để giữ vùng chạm 44px mà không tăng chiều cao hàng; không chồng vùng chạm lên field. Điều chỉnh bố cục metadata mobile hiện có và hàng nhãn D-120 theo yêu cầu chủ dự án.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

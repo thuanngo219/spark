@@ -2450,14 +2450,16 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
             <Icon name="flag" size={16} />
             <input type="date" min={startDate || undefined} value={dueDate} aria-label="Ngày đến hạn" onChange={(event) => { const value = event.target.value; saveDates(startDate, value); }} />
           </label>
-          <label className="detail-meta-control project" title="Dự án">
-            <span className={`project-dot ${project ? "" : "empty"}`} style={project ? { background: project.color } : undefined} />
-            <select value={project?.id ?? ""} aria-label="Dự án" onChange={(event) => { const value = event.target.value; setProjectId(value); onSave({ projectId: value || null }); }}><option value="">Không có dự án</option>{projects.filter((entry) => !entry.archivedAt || entry.id === projectId).map((entry) => <option key={entry.id} value={entry.id} disabled={Boolean(entry.archivedAt)}>{entry.name}{entry.archivedAt ? " (đã lưu trữ)" : ""}</option>)}</select>
-          </label>
-          <div className="detail-item-actions">
-            {item.type === "note" && <button type="button" className="detail-meta-button archive" onClick={onArchive} aria-label={item.archivedAt ? "Khôi phục ghi chú" : "Lưu trữ ghi chú"} title={item.archivedAt ? "Khôi phục" : "Lưu trữ"}><Icon name="archive" size={18} /><span className="detail-meta-label">{item.archivedAt ? "Khôi phục" : "Lưu trữ"}</span></button>}
-            <span className="detail-meta-danger-separator" aria-hidden="true" />
-            <button type="button" className="detail-meta-button delete" onClick={onDelete} aria-label="Xóa mục" title="Xóa"><Icon name="trash" size={18} /><span className="detail-meta-label">Xóa</span></button>
+          <div className="detail-project-actions">
+            <label className="detail-meta-control project" title="Dự án">
+              <span className={`project-dot ${project ? "" : "empty"}`} style={project ? { background: project.color } : undefined} />
+              <select value={project?.id ?? ""} aria-label="Dự án" onChange={(event) => { const value = event.target.value; setProjectId(value); onSave({ projectId: value || null }); }}><option value="">Không có dự án</option>{projects.filter((entry) => !entry.archivedAt || entry.id === projectId).map((entry) => <option key={entry.id} value={entry.id} disabled={Boolean(entry.archivedAt)}>{entry.name}{entry.archivedAt ? " (đã lưu trữ)" : ""}</option>)}</select>
+            </label>
+            <div className="detail-item-actions">
+              {item.type === "note" && <button type="button" className="detail-meta-button archive" onClick={onArchive} aria-label={item.archivedAt ? "Khôi phục ghi chú" : "Lưu trữ ghi chú"} title={item.archivedAt ? "Khôi phục" : "Lưu trữ"}><Icon name="archive" size={18} /><span className="detail-meta-label">{item.archivedAt ? "Khôi phục" : "Lưu trữ"}</span></button>}
+              <span className="detail-meta-danger-separator" aria-hidden="true" />
+              <button type="button" className="detail-meta-button delete" onClick={onDelete} aria-label="Xóa mục" title="Xóa"><Icon name="trash" size={18} /><span className="detail-meta-label">Xóa</span></button>
+            </div>
           </div>
         </div>
       </section>

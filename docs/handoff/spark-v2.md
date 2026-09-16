@@ -1,6 +1,6 @@
 # Spark v2 — bàn giao
 
-> Cập nhật: 2026-09-14. Repo `/Users/dna.thuan/Codex/Projects/To-Do List`, branch `main`.
+> Cập nhật: 2026-09-16. Repo `/Users/dna.thuan/Codex/Projects/To-Do List`, branch `main`.
 > Production: https://spark.thuanngo.com
 > Phiên bản Git: xem `git log -1`; không dùng commit `3b184d5` trong handoff cũ làm phiên bản mới nhất.
 
@@ -37,6 +37,12 @@ Spark là công cụ task/note cá nhân, tiếng Việt, desktop và iPhone. UI
 4. Nội dung cũ không có định dạng vẫn đọc/sửa bình thường. Snapshot equality, cloud mapping, queue và local persistence giữ formatting-only update. Editor đóng gói cùng client app shell để lần đầu mở editor vẫn dùng được offline.
 5. Khung desktop đang edit Nội dung cao min(86dvh, 820px), bằng giới hạn khung đọc nội dung dài; editor flex chiếm phần còn lại. Quick-add 160px; mobile edit 40dvh. Toolbar đứng ngoài vùng cuộn, các nút mobile 44px.
 6. Quick-add mặc định start trống, **chỉ task mới trong Hôm nay** mặc định hôm nay. Note cũng để trống. Ngày chọn/xóa thủ công được giữ khi đổi task/note; due date giữ quy tắc cũ. Legacy backfill startDate thiếu vẫn giữ nguyên; explicit null không bị backfill.
+
+## Thu gọn chi tiết — D-125 (2026-09-16)
+
+- Mobile: Dự án, Lưu trữ/Khôi phục và Xóa cùng một hàng; nút giữ vùng chạm 44px.
+- Hàng nhãn Tên/Nội dung cao 28px ở cả trạng thái đọc và sửa, desktop/mobile. Khoảng cách dưới nhãn 4px desktop, 8px mobile; vùng chạm không chồng lên field.
+- Đã kiểm tra bố cục ở 1280px, 390px, 320px cho cả đọc/sửa Tên/sửa Nội dung: cùng hàng, không tràn ngang. Chưa kiểm tra iPhone vật lý.
 
 ## Database
 

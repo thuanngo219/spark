@@ -304,10 +304,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .detail-content { padding: 22px; }
 .detail-text-block + .detail-text-block { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
 .detail-label { display: block; margin-bottom: 7px; color: #858a9b; font-size: 0.625rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
-.detail-field-heading { flex: 0 0 auto; min-height: 28px; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.detail-field-heading { flex: 0 0 auto; min-height: 28px; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .detail-field-heading .detail-label { margin-bottom: 0; }
 .detail-edit-actions { display: flex; align-items: center; gap: 5px; }
-.detail-edit-actions .detail-icon-action { width: 28px; height: 28px; min-height: 28px; margin-block: 0; border-radius: 8px; }
+.detail-field-heading .detail-icon-action { width: 28px; height: 28px; min-height: 28px; margin-block: 0; border-radius: 8px; }
 .detail-edit-actions .detail-icon-action svg { width: 16px; height: 16px; }
 .detail-read-row { width: 100%; display: flex; align-items: center; gap: 10px; }
 .detail-read-row.align-start { align-items: flex-start; }
@@ -329,6 +329,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .detail-meta-button.icon-only { flex: 0 0 auto; width: 36px; padding: 0; justify-content: center; }
 .detail-meta-control input, .detail-meta-control select { min-width: 0; max-width: 132px; border: 0; background: transparent; color: inherit; font: inherit; outline: none; }
 .detail-meta-control.project select { max-width: 120px; }
+.detail-project-actions { display: contents; }
 .detail-meta-button.important.selected { color: #96712a; border-color: rgba(214,168,79,.42); background: rgba(214,168,79,.12); }
 .detail-meta-button.important.selected svg { fill: currentColor; }
 .detail-meta-button.urgent.selected { color: #ad594e; border-color: rgba(217,119,106,.4); background: rgba(217,119,106,.1); }
@@ -550,8 +551,8 @@ button:focus-visible { filter: brightness(.88); }
   .detail-content { padding: 18px 17px; }
   .detail-read-row > p { font-size: 0.9375rem; }
   .detail-icon-action { width: 44px; height: 44px; min-height: 44px; margin-block: -5px; }
-  .detail-field-heading { min-height: 44px; }
-  .detail-edit-actions .detail-icon-action { width: 44px; height: 44px; min-height: 44px; border-radius: 10px; }
+  .detail-field-heading { margin-bottom: 8px; }
+  .detail-field-heading .detail-icon-action { width: 44px; height: 44px; min-height: 44px; margin-block: -8px; border-radius: 10px; }
   .detail-edit-actions .detail-icon-action svg { width: 18px; height: 18px; }
   .content-toolbar button { width: 44px; height: 44px; }
   .item-detail-sheet.editing-content .content-editor-input { height: 40dvh; }
@@ -560,9 +561,10 @@ button:focus-visible { filter: brightness(.88); }
   .detail-meta-control, .detail-meta-button { width: 100%; min-height: 44px; padding-inline: 9px; }
   .detail-meta-button.icon-only { width: 44px; padding: 0; }
   .detail-meta-control input, .detail-meta-control select { width: 100%; max-width: none; }
-  .detail-meta-control.project { grid-column: 1 / -1; }
+  .detail-project-actions { grid-column: 1 / -1; min-width: 0; display: flex; align-items: center; gap: 7px; }
+  .detail-meta-control.project { flex: 1; }
   .detail-meta-control.project select { max-width: none; }
-  .detail-item-actions { grid-column: 1 / -1; margin-left: 0; padding-top: 2px; justify-content: flex-end; }
+  .detail-item-actions { flex: 0 0 auto; margin-left: 0; }
   .detail-item-actions .detail-meta-button { flex: 0 0 44px; width: 44px; padding: 0; justify-content: center; }
   .detail-item-actions .detail-meta-label { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .detail-item-actions .detail-meta-danger-separator { min-height: 30px; margin-inline: 1px; }
