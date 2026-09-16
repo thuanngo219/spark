@@ -267,4 +267,6 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 
 - D-127: Trước tên trong chi tiết và inline edit có checkbox cho task (checked theo completedAt, cho bật/tắt) hoặc dấu gạch ngang tĩnh cho note. Lưu draft hợp lệ trước khi đổi trạng thái; tên task hoàn thành trong chi tiết không gạch ngang. Mobile giữ vùng chạm 44px.
 
-- D-128: Hover checkbox/dấu note trong chi tiết không đổi nền. Rule hover `.detail-icon-action` loại trừ role checkbox/img bằng `:where`, giữ specificity hiện có; nền checked của ô checkbox không đổi.
+- D-128: Hover checkbox/dấu note trong chi tiết không đổi nền. Marker dùng `.detail-title-marker` tách khỏi action có nền hover; nền checked của ô checkbox không đổi.
+
+- D-129: Marker chi tiết không có đệm ngang, gap đến Tên 10px; pseudo-element của checkbox mở vùng bấm thành 44px, không đè input. Input Tên cao 28px. Mobile ẩn action lưu/hủy của Tên, blur lưu hợp lệ nhưng không tháo input trước click tiếp theo; chuyển trường/Enter vẫn thoát edit. Tên rỗng không lưu. Desktop giữ action rõ ràng.

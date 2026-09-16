@@ -319,13 +319,15 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .detail-read-row a:hover { color: #287a79; text-decoration-color: currentColor; }
 .detail-read-row a:focus-visible { border-radius: 3px; background: var(--turquoise-soft); outline: none; }
 .detail-icon-action { flex: 0 0 auto; width: 34px; height: 34px; min-height: 34px; border: 0; border-radius: 9px; padding: 0; background: transparent; color: #9499a8; display: grid; place-items: center; }
-.detail-icon-action:where(:not([role="checkbox"], [role="img"])):hover { background: var(--control-hover); color: var(--navy-900); }
+.detail-icon-action:hover { background: var(--control-hover); color: var(--navy-900); }
 .detail-icon-action.save { background: var(--navy-900); color: white; }
 .detail-inline-editor { display: block; }
 .detail-title-row { display: flex; align-items: center; gap: 10px; min-height: 28px; }
+.detail-title-marker { position: relative; flex: 0 0 auto; height: 28px; padding: 0; border: 0; background: transparent; display: grid; place-items: center; }
+.detail-status-toggle::before { content: ""; position: absolute; inset: -8px -10px -8px -15px; }
 .detail-title-row > input { flex: 1; }
 .detail-title-row .detail-edit-actions { flex: 0 0 auto; }
-.detail-inline-editor input { width: 100%; min-width: 0; border: 1px solid var(--field-border); border-radius: 11px; background: var(--field); padding: 10px 12px; color: var(--ink); font: inherit; min-height: 42px; font-size: 0.9375rem; font-weight: 600; line-height: 1.5; outline: none; box-shadow: none; }
+.detail-inline-editor input { width: 100%; min-width: 0; border: 1px solid var(--field-border); border-radius: 8px; background: var(--field); padding: 1px 6px; color: var(--ink); font: inherit; height: 28px; min-height: 28px; font-size: 1rem; font-weight: 650; line-height: 1.5; outline: none; box-shadow: none; }
 .detail-inline-editor input:focus { border-color: #aab1c2; }
 .detail-date-error { flex: 0 0 auto; margin: 0; padding: 0 22px 12px; }
 .detail-metadata { display: flex; flex-wrap: wrap; gap: 7px; padding: 13px 22px 17px; border-top: 1px solid var(--line); background: #fafbfc; }
@@ -553,7 +555,8 @@ button:focus-visible { filter: brightness(.88); }
   .item-detail-sheet .editor-header { min-height: 62px; padding: 14px 12px 12px 17px; }
   .item-detail-sheet .editor-header h2 { font-size: 1.125rem; }
   .detail-content { padding: 18px 17px; }
-  .detail-read-row > p { font-size: 0.9375rem; }
+  .detail-read-row > p, .detail-inline-editor input { font-size: 0.9375rem; }
+  .detail-title-row .detail-edit-actions { display: none; }
   .detail-icon-action { width: 44px; height: 44px; min-height: 44px; margin-block: -5px; }
   .detail-field-heading { margin-bottom: 8px; }
   .detail-field-heading .detail-icon-action, .detail-title-row .detail-icon-action { width: 44px; height: 44px; min-height: 44px; margin-block: -8px; border-radius: 10px; }

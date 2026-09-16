@@ -2343,13 +2343,13 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
   const [titleError, setTitleError] = useState(false);
   const project = projects.find((entry) => entry.id === projectId);
 
-  const saveTitle = () => {
+  const saveTitle = (finishEditing = true) => {
     const value = title.trim();
     if (!value) { setTitleError(true); return false; }
     setTitleError(false);
     setTitle(value);
     onSave({ title: value });
-    setEditingField(null);
+    if (finishEditing) setEditingField(null);
     return true;
   };
 
@@ -2384,7 +2384,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
   const titleMarker = item.type === "task" ? (
     <button
       type="button"
-      className="detail-icon-action detail-status-toggle"
+      className="detail-title-marker detail-status-toggle"
       role="checkbox"
       aria-checked={Boolean(item.completedAt)}
       aria-label={item.completedAt ? "Đánh dấu chưa xong" : "Hoàn thành task"}
@@ -2399,7 +2399,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
       </span>
     </button>
   ) : (
-    <span className="detail-icon-action" role="img" aria-label="Ghi chú">
+    <span className="detail-title-marker" role="img" aria-label="Ghi chú">
       <span className="note-mark" aria-hidden="true" />
     </span>
   );
@@ -2415,12 +2415,14 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
               <>
                 <div className="detail-inline-editor detail-title-row">
                   {titleMarker}
-                  <input autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} onKeyDown={(event) => {
+                  <input autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} onBlur={() => {
+                    if (window.matchMedia("(max-width: 699px)").matches) saveTitle(false);
+                  }} onKeyDown={(event) => {
                     if (event.key === "Enter") { event.preventDefault(); saveTitle(); }
                     if (event.key === "Escape") { setTitle(item.title); setTitleError(false); setEditingField(null); }
                   }} aria-label={item.type === "task" ? "Tên task" : "Tên ghi chú"} />
                   <div className="detail-edit-actions">
-                    <button type="button" className="detail-icon-action save" onClick={saveTitle} aria-label="Lưu"><Icon name="check" size={18} /></button>
+                    <button type="button" className="detail-icon-action save" onClick={() => saveTitle()} aria-label="Lưu"><Icon name="check" size={18} /></button>
                     <button type="button" className="detail-icon-action" onClick={() => { setTitle(item.title); setTitleError(false); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
                   </div>
                 </div>

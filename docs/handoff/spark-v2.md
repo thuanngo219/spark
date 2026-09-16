@@ -114,3 +114,5 @@ Toolbar chỉ đậm hơn 5% (field 95% + đen 5%), thay D-122. Gỡ hoàn toàn
 - D-124: `view-project-band` cao 10px thống nhất desktop/mobile, thường/compact; rule gốc là nguồn duy nhất.
 
 - D-127: Trước tên trong chi tiết và inline edit có checkbox cho task (checked theo completedAt, cho bật/tắt) hoặc dấu gạch ngang tĩnh cho note. Lưu draft hợp lệ trước khi đổi trạng thái; tên task hoàn thành trong chi tiết không gạch ngang. Mobile giữ vùng chạm 44px.
+
+- D-129: Checkbox/dấu note sát lề nội dung, cách tên 10px; input Tên cao 28px. Mobile bỏ ✓/× của Tên, tự lưu khi rời ô (tên rỗng báo lỗi), Enter lưu/Escape hủy draft chưa lưu; desktop giữ ✓/×. Checkbox vẫn có vùng bấm 44px.

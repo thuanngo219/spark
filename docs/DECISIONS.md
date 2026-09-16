@@ -163,6 +163,10 @@ Trước tên trong chi tiết/inline edit hiển thị checkbox cho task, dấu
 
 Checkbox task và dấu gạch ngang note trong chi tiết/inline edit giữ nền trong suốt khi hover. Checkbox đã hoàn thành vẫn giữ màu checked; các nút sửa/lưu/hủy giữ hiệu ứng hiện có. Điều chỉnh hover của marker D-127 theo yêu cầu chủ dự án.
 
+## D-129 — Căn marker và sửa tên gọn trên mobile (2026-09-16)
+
+Marker chi tiết có chiều rộng đúng artwork (checkbox 19px, dấu note 12px), sát lề nội dung và cách tên 10px. Checkbox dùng vùng bấm mở rộng 44px qua pseudo-element, không chiếm chiều rộng hàng. Input Tên cao 28px, giảm padding và dùng cùng cỡ/weight chữ với tên đọc. Mobile ẩn ✓/× của Tên và tự lưu tên hợp lệ khi blur; giữ ô input đến khi chuyển trường/đóng để không thay DOM trước click kế tiếp. Enter lưu, Escape hủy draft chưa lưu, tên rỗng báo lỗi và không ghi đè dữ liệu. Desktop giữ ✓/×. Thay bố cục sửa tên của D-126/D-127, giữ nền hover marker trong suốt.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)
