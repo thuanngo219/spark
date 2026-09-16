@@ -151,6 +151,10 @@ Chỉ nền toolbar đậm hơn 5% thay 20% của D-122. Gỡ bullet/number kh�
 
 Trên mobile, Dự án và các nút Lưu trữ/Xóa nằm cùng hàng thứ hai của metadata; giữ vùng chạm 44px. Hàng nhãn Tên/Nội dung cao 28px ở cả chế độ đọc/sửa trên desktop và mobile; khoảng cách bên dưới lần lượt 4px/8px. Nút mobile dùng margin dọc âm để giữ vùng chạm 44px mà không tăng chiều cao hàng; không chồng vùng chạm lên field. Điều chỉnh bố cục metadata mobile hiện có và hàng nhãn D-120 theo yêu cầu chủ dự án.
 
+## D-126 — Khoảng cách Nội dung và bỏ nhãn Tên (2026-09-16)
+
+Giảm 20% khoảng cách hai phía đường phân cách: margin-top của khối Nội dung từ 20px còn 16px, padding-top từ 18px còn 14.4px. Bỏ nhãn Tên; nút sửa nằm cùng hàng với text, khi sửa thì input và ✓/× cùng hàng. Áp dụng desktop/mobile, giữ vùng chạm mobile 44px và hàng nhãn Nội dung 28px. Thay phần hàng nhãn Tên của D-125.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

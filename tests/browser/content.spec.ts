@@ -127,7 +127,7 @@ test("field switching saves drafts, dates reject invalid ranges, editor fills av
   await page.getByRole("button", { name: "Hủy", exact: true }).click();
   await page.reload(); await openTestItem(page, "Draft switching test");
   await expect(page.locator(".detail-description .formatted-content")).toHaveText("Mục một\nMục hai");
-  await expect(page.locator(".detail-field-heading").first().getByRole("button", { name: "Sửa tên" })).toBeVisible();
+  await expect(page.locator(".detail-title-row").getByRole("button", { name: "Sửa tên" })).toBeVisible();
   await page.getByRole("button", { name: "Sửa Nội dung" }).click();
   const detail = page.getByRole("textbox", { name: "Nội dung task", exact: true });
   await expect(detail).toContainText("Mục hai");

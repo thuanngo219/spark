@@ -302,12 +302,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .item-detail-sheet .editor-header { min-height: 66px; margin: 0; padding: 17px 17px 14px 22px; align-items: center; border-bottom: 1px solid var(--line); }
 .item-detail-sheet .editor-header h2 { font-size: 1.1875rem; }
 .detail-content { padding: 22px; }
-.detail-text-block + .detail-text-block { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+.detail-text-block + .detail-text-block { margin-top: 16px; padding-top: 14.4px; border-top: 1px solid var(--line); }
 .detail-label { display: block; margin-bottom: 7px; color: #858a9b; font-size: 0.625rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
 .detail-field-heading { flex: 0 0 auto; min-height: 28px; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .detail-field-heading .detail-label { margin-bottom: 0; }
 .detail-edit-actions { display: flex; align-items: center; gap: 5px; }
-.detail-field-heading .detail-icon-action { width: 28px; height: 28px; min-height: 28px; margin-block: 0; border-radius: 8px; }
+.detail-field-heading .detail-icon-action, .detail-title-row .detail-icon-action { width: 28px; height: 28px; min-height: 28px; margin-block: 0; border-radius: 8px; }
 .detail-edit-actions .detail-icon-action svg { width: 16px; height: 16px; }
 .detail-read-row { width: 100%; display: flex; align-items: center; gap: 10px; }
 .detail-read-row.align-start { align-items: flex-start; }
@@ -321,6 +321,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .detail-icon-action:hover { background: var(--control-hover); color: var(--navy-900); }
 .detail-icon-action.save { background: var(--navy-900); color: white; }
 .detail-inline-editor { display: block; }
+.detail-title-row { display: flex; align-items: center; gap: 10px; min-height: 28px; }
+.detail-title-row > input { flex: 1; }
+.detail-title-row .detail-edit-actions { flex: 0 0 auto; }
 .detail-inline-editor input { width: 100%; min-width: 0; border: 1px solid var(--field-border); border-radius: 11px; background: var(--field); padding: 10px 12px; color: var(--ink); font: inherit; min-height: 42px; font-size: 0.9375rem; font-weight: 600; line-height: 1.5; outline: none; box-shadow: none; }
 .detail-inline-editor input:focus { border-color: #aab1c2; }
 .detail-date-error { flex: 0 0 auto; margin: 0; padding: 0 22px 12px; }
@@ -552,7 +555,7 @@ button:focus-visible { filter: brightness(.88); }
   .detail-read-row > p { font-size: 0.9375rem; }
   .detail-icon-action { width: 44px; height: 44px; min-height: 44px; margin-block: -5px; }
   .detail-field-heading { margin-bottom: 8px; }
-  .detail-field-heading .detail-icon-action { width: 44px; height: 44px; min-height: 44px; margin-block: -8px; border-radius: 10px; }
+  .detail-field-heading .detail-icon-action, .detail-title-row .detail-icon-action { width: 44px; height: 44px; min-height: 44px; margin-block: -8px; border-radius: 10px; }
   .detail-edit-actions .detail-icon-action svg { width: 18px; height: 18px; }
   .content-toolbar button { width: 44px; height: 44px; }
   .item-detail-sheet.editing-content .content-editor-input { height: 40dvh; }

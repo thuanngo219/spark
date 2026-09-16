@@ -41,7 +41,7 @@ Spark là công cụ task/note cá nhân, tiếng Việt, desktop và iPhone. UI
 ## Thu gọn chi tiết — D-125 (2026-09-16)
 
 - Mobile: Dự án, Lưu trữ/Khôi phục và Xóa cùng một hàng; nút giữ vùng chạm 44px.
-- Hàng nhãn Tên/Nội dung cao 28px ở cả trạng thái đọc và sửa, desktop/mobile. Khoảng cách dưới nhãn 4px desktop, 8px mobile; vùng chạm không chồng lên field.
+- D-126: bỏ nhãn Tên, nút sửa cùng hàng text; input và ✓/× cùng hàng khi sửa. Khoảng cách trước/sau đường phân cách giảm 20% còn 16px/14.4px. Hàng nhãn Nội dung cao 28px ở cả trạng thái đọc và sửa, desktop/mobile. Khoảng cách dưới nhãn 4px desktop, 8px mobile; vùng chạm không chồng lên field.
 - Đã kiểm tra bố cục ở 1280px, 390px, 320px cho cả đọc/sửa Tên/sửa Nội dung: cùng hàng, không tràn ngang. Chưa kiểm tra iPhone vật lý.
 
 ## Database
