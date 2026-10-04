@@ -1,6 +1,6 @@
 # Spark v2 — bàn giao
 
-> Cập nhật: 2026-09-16. Repo `/Users/dna.thuan/Codex/Projects/To-Do List`, branch `main`.
+> Cập nhật: 2026-10-05. Repo `/Users/dna.thuan/Codex/Projects/To-Do List`, branch `main`.
 > Production: https://spark.thuanngo.com
 > Phiên bản Git: xem `git log -1`; không dùng commit `3b184d5` trong handoff cũ làm phiên bản mới nhất.
 
@@ -116,3 +116,7 @@ Toolbar chỉ đậm hơn 5% (field 95% + đen 5%), thay D-122. Gỡ hoàn toàn
 - D-127: Trước tên trong chi tiết và inline edit có checkbox cho task (checked theo completedAt, cho bật/tắt) hoặc dấu gạch ngang tĩnh cho note. Lưu draft hợp lệ trước khi đổi trạng thái; tên task hoàn thành trong chi tiết không gạch ngang. Mobile giữ vùng chạm 44px.
 
 - D-129: Checkbox/dấu note sát lề nội dung, cách tên 10px; input Tên cao 28px. Mobile bỏ ✓/× của Tên, tự lưu khi rời ô (tên rỗng báo lỗi), Enter lưu/Escape hủy draft chưa lưu; desktop giữ ✓/×. Checkbox vẫn có vùng bấm 44px.
+
+## D-130 — Header và nền app (2026-10-05)
+
+Dải màu 10px ở chân header trên desktop/mobile, cả thường/compact. Không border dưới, bóng Navy nhẹ rõ giữa và mờ hai biên. Blur desktop 12px, mobile 8px với WebKit; nền body canvas phẳng, bỏ gradient màu. Quyết định này thay các mô tả cũ về dải màu trên cùng và blur 8/18/14px.

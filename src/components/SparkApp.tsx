@@ -1238,11 +1238,6 @@ export function SparkApp() {
       >
         <section className="canvas" aria-labelledby="view-title">
           <div className={`view-header ${mobileHeaderCompact ? "mobile-compact" : ""}`}>
-            <span
-              className="view-project-band"
-              style={{ background: activeProject?.color ?? "var(--turquoise)" }}
-              aria-hidden="true"
-            />
             <div>
               {(headerContext || (view.type === "project" && activeProject)) && <div className={`eyebrow ${view.type === "project" ? "project-eyebrow" : ""}`}>
                 {view.type === "project" && activeProject ? (activeProject.archivedAt ? "Dự án đã lưu trữ" : "Dự án") : headerContext}
@@ -1285,6 +1280,11 @@ export function SparkApp() {
                 onChange={setItemDisplayMode}
               />
             </div>
+            <span
+              className="view-project-band"
+              style={{ background: activeProject?.color ?? "var(--turquoise)" }}
+              aria-hidden="true"
+            />
           </div>
 
           {view.type === "calendar" && (

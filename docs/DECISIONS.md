@@ -167,6 +167,10 @@ Checkbox task và dấu gạch ngang note trong chi tiết/inline edit giữ n�
 
 Marker chi tiết có chiều rộng đúng artwork (checkbox 19px, dấu note 12px), sát lề nội dung và cách tên 10px. Checkbox dùng vùng bấm mở rộng 44px qua pseudo-element, không chiếm chiều rộng hàng. Input Tên cao 28px, giảm padding và dùng cùng cỡ/weight chữ với tên đọc. Mobile ẩn ✓/× của Tên và tự lưu tên hợp lệ khi blur; giữ ô input đến khi chuyển trường/đóng để không thay DOM trước click kế tiếp. Enter lưu, Escape hủy draft chưa lưu, tên rỗng báo lỗi và không ghi đè dữ liệu. Desktop giữ ✓/×. Thay bố cục sửa tên của D-126/D-127, giữ nền hover marker trong suốt.
 
+## D-130 — Dải màu dưới header và nền phẳng (2026-10-05)
+
+Dải project/view 10px chuyển từ mép trên xuống chân header, bên dưới tiêu đề và thống kê, trên desktop/mobile và trạng thái compact. Bỏ đường shadow 1px giống border; dùng bóng Navy rất nhẹ dưới dải màu, rõ ở giữa và tan dần về hai mép, không bắt pointer. Desktop blur 12px, mobile blur 8px cả thường/compact, có WebKit prefix. Chuyển 10px padding từ trên xuống dưới để giữ nhịp chiều cao. Nền app dùng canvas phẳng #F7F8FA, bỏ hai radial gradient màu. Thay vị trí của D-124 và cấu hình blur D-122/D-123 theo yêu cầu chủ dự án.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

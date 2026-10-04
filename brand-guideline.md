@@ -263,7 +263,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 - CSS lưu type size bằng `rem` trên base 16px. Web app đặt root scale `112.5%` trên desktop và `120%` dưới 700px; nhờ vậy typography tăng đồng bộ mà không phóng to icon, rail hoặc control geometry.
 - Item title mặc định dùng Inter base `13px`, render khoảng `14.6px` desktop và `15.6px` mobile, weight `400`; không tự động bold task/note.
 - List density: desktop row khoảng `35px` với gap `6px`; mobile row tối thiểu `52px` với gap `2px`, canvas tràn viền và title tối đa hai dòng. Marker/action mobile vẫn giữ vùng chạm tối thiểu `44px`.
-- Mobile view header sticky giữ nguyên typography khi cuộn, có dải project/view 20px full-width; desktop dùng cùng hierarchy với padding nội dung 26px. Mobile bottom dock icon-only cao 58px và overlay trên canvas.
+- Mobile view header sticky thu gọn khi cuộn, giữ thống kê và có dải project/view 10px full-width dưới cùng; desktop dùng cùng hierarchy với padding nội dung 26px. Mobile bottom dock icon-only cao 58px và overlay trên canvas.
 - Marker task/note và project dot luôn căn theo dòng chữ đầu tiên; không căn giữa toàn bộ row khi title hoặc metadata làm row cao hơn.
 - Trên desktop, due-date metadata và tâm artwork star/điện xẹt phải cùng trục giữa với dòng title; không căn theo mép trên của hit target icon.
 - Danh sách hỗn hợp luôn đặt task trước note; trong từng loại giữ thứ tự thời gian. Đây là phân cấp nội dung, không dùng divider hoặc card riêng để tách hai loại.
@@ -308,12 +308,14 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 
 ### Gradient
 
-- Gradient chỉ dùng cho background, illustration hoặc điểm nhấn truyền thông; không dùng trong logo primary.
+- Nền web app dùng canvas phẳng #F7F8FA trên desktop/mobile, không có gradient màu. Gradient chỉ dùng cho illustration hoặc điểm nhấn truyền thông; không dùng trong logo primary.
 - Thường dùng tối đa hai màu brand trong một gradient, chuyển mềm và không tạo glow neon.
 - Cặp gợi ý: Turquoise → Violet cho cảm giác mát và năng động; Muted Coral → Deep Purple cho cảm giác ấm và có chiều sâu.
 - Gradient không được làm giảm độ tương phản của chữ hoặc biến toàn bộ web app thành bề mặt trang trí.
 
 ## 8. Layout and motion
+
+- Header đặt dải màu 10px dưới tiêu đề và thống kê. Không dùng border dưới; bóng Navy rất nhẹ ở chân header rõ hơn giữa và tan ở hai mép. Backdrop blur 12px desktop, 8px mobile (cả thường/compact), có WebKit prefix.
 
 - Bố cục đơn giản, rõ thứ bậc, có khoảng thở nhưng không làm giảm mật độ hữu ích của Compact Canvas.
 - Canvas liệt kê task/note trên desktop rộng responsive từ `940px` đến tối đa `1200px`; khi vùng nội dung không đủ chỗ thì co theo chiều rộng khả dụng, không tạo cuộn ngang. Mobile tiếp tục dùng trọn chiều rộng màn hình. Detail sheet desktop rộng `880px`; header, Tên và cụm metadata/control giữ cố định, chỉ vùng Nội dung cuộn khi nội dung dài. Nhãn Nội dung và nút sửa nằm cùng hàng cố định bên ngoài vùng cuộn. Toolbar B/I/U dùng control neutral, trạng thái chọn Navy/trắng và vùng chạm 44px trên mobile.
