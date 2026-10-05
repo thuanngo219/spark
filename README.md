@@ -10,6 +10,8 @@ Hướng UI đã chọn: **Option C — Compact Canvas**, dùng palette navy–t
 
 Logo chính thức là lockup check-burst với wordmark `spark` lowercase bold; wordmark và dấu tick dùng Deep Purple `#65458A`, ba tia dùng turquoise `#44D4CD`, Muted Coral `#D9776A` và violet `#8951C7`.
 
+App icon cài đặt/favicon hiện dùng SVG tick-vòng tròn trắng trên nền gradient xanh–Navy do chủ dự án cung cấp (D-133); source và cách sinh kích thước ở [assets/logo/README.md](assets/logo/README.md). Logo/wordmark/sidebar vẫn giữ artwork check-burst.
+
 Domain đích: **https://spark.thuanngo.com**.
 
 Vercel owner: team **Thuan Ngo** tại [vercel.com/thuanngo](https://vercel.com/thuanngo). Liên kết local trong `.vercel/repo.json` dùng team ID ổn định nên không phụ thuộc vào việc đổi tên hoặc URL slug của team.

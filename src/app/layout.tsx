@@ -9,11 +9,12 @@ export const metadata: Metadata = {
   applicationName: "Spark",
   icons: {
     icon: [
-      { url: "/spark-favicon.svg", sizes: "any", type: "image/svg+xml" },
-      { url: "/icons/spark-favicon-negative-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/spark-favicon-v2.ico", sizes: "16x16 32x32 48x48", type: "image/x-icon" },
+      { url: "/spark-favicon-v2.svg", sizes: "any", type: "image/svg+xml" },
+      { url: "/icons/spark-favicon-v2-32.png", sizes: "32x32", type: "image/png" },
     ],
-    shortcut: [{ url: "/icons/spark-favicon-negative-32.png", sizes: "32x32", type: "image/png" }],
-    apple: [{ url: "/icons/spark-apple-negative-180.png", sizes: "180x180", type: "image/png" }],
+    shortcut: [{ url: "/icons/spark-favicon-v2-32.png", sizes: "32x32", type: "image/png" }],
+    apple: [{ url: "/icons/spark-apple-v2-180.png", sizes: "180x180", type: "image/png" }],
   },
   appleWebApp: {
     capable: true,

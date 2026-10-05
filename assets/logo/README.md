@@ -31,7 +31,7 @@ Trắng, xám và đen là neutral, không tính vào năm màu chromatic.
 - `spark-logo-primary.svg`: SVG path 2048×768, nền trong suốt; không nhúng bitmap.
 - `spark-logo-negative.png`: PNG RGBA 2048×768, toàn bộ logo trắng trên nền trong suốt.
 - `spark-logo-negative.svg`: SVG colorway trắng cho background tối.
-- App icon production dùng check-burst negative trắng trên nền Navy ở 32, 180, 192 và 512px; không dùng gradient, outline hoặc shadow.
+- App icon production hiện theo D-133: SVG do chủ dự án cung cấp, tick/vòng tròn/vạch trắng trên gradient xanh–Navy. Quy tắc check-burst dưới đây áp dụng cho logo/mark sidebar, không thay source icon v2.
 - Không thay icon check-burst thành star; ba tia luôn là ba rounded bar tách rời.
 - Tick dùng stroke 57 đơn vị trong viewBox 2048×768, tương đương khoảng 68% độ dày của bản logo ban đầu.
 - Ba tia là ba capsule cùng kích thước 140×60 đơn vị, mỏng khoảng 82.5% so với tia ngang ban đầu; chỉ khác hướng xoay và màu.
@@ -52,3 +52,14 @@ Trắng, xám và đen là neutral, không tính vào năm màu chromatic.
 ## Prompt/edit intent
 
 Giữ nguyên bold lowercase wordmark `spark`, kerning và icon-left horizontal layout từ ảnh được chủ dự án chọn. Dùng check-burst đã tinh chỉnh với tick thanh và ba tia đồng kích thước; wordmark/tick cùng Deep Purple, tia ngang dùng Muted Coral, tia chéo dùng turquoise và tia dọc dùng violet. Không gradient, glow, shadow, mockup, 3D hoặc watermark.
+
+## App icon v2 — 2026-10-05
+
+`spark-app-icon-v2.svg` là bản gốc nguyên byte của file `spark-app-icon-editable 2.svg` do chủ dự án gửi. `spark-app-icon-editable.svg` là bản xuất cũ để tham chiếu. Chạy `npm run icons:generate` để tạo SVG/PNG/ICO v2 rồi `npm run icons:verify` để kiểm tra kích thước, nền/alpha, artwork và safe zone maskable.
+
+- Apple: `public/icons/spark-apple-v2-180.png`, vuông full-bleed.
+- Chrome/PWA any: `public/icons/spark-pwa-v2-192.png`, `spark-pwa-v2-512.png`, góc bo.
+- Maskable: `public/icons/spark-maskable-v2-512.png`, artwork 90%, nền full-bleed.
+- Favicon: `public/spark-favicon-v2.svg`, `.ico`, PNG 16/32/48 trong `public/icons/`.
+
+Danh sách icon không có `v2` ở phần trên là source/asset lịch sử, không còn được metadata/manifest/SW dùng cho icon app. Logo primary/negative/compact rail giữ nguyên.

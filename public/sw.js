@@ -2,13 +2,15 @@ const CACHE_NAME = "spark-app-shell-v1";
 const APP_SHELL = [
   "/",
   "/manifest.webmanifest",
-  "/spark-favicon.svg",
+  "/spark-favicon-v2.svg",
+  "/spark-favicon-v2.ico",
+  "/icons/spark-favicon-v2-32.png",
   "/spark-mark-negative.svg",
   "/brand/spark-logo-negative.svg",
-  "/icons/spark-pwa-negative-192.png",
-  "/icons/spark-pwa-negative-512.png",
-  "/icons/spark-maskable-negative-512.png",
-  "/icons/spark-apple-negative-180.png",
+  "/icons/spark-pwa-v2-192.png",
+  "/icons/spark-pwa-v2-512.png",
+  "/icons/spark-maskable-v2-512.png",
+  "/icons/spark-apple-v2-180.png",
 ];
 
 async function cacheResponse(cache, request, options) {

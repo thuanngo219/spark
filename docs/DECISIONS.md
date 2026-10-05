@@ -181,6 +181,10 @@ Header desktop giảm blur 12px xuống 8px, cùng mobile, giữ WebKit. Select 
 
 Khi focus vào Quan Trọng, Ưu tiên, ngày, Dự án, lưu trữ hoặc xóa, lưu draft Tên/Nội dung hợp lệ nhưng giữ editor và kích thước khung hiện tại. Không kết thúc edit trong focus handler vì khung desktop co lại giữa pointerdown và click, làm cú click rơi ra backdrop. Nút Lưu và chuyển sang trường khác vẫn kết thúc edit như trước; Hủy bỏ phần chưa lưu kể từ lần tự lưu gần nhất. Áp dụng desktop/mobile, giữ validation tên/ngày và các thao tác metadata.
 
+## D-133 — App icon do chủ dự án cung cấp (2026-10-05)
+
+Dùng nguyên SVG `spark-app-icon-editable 2.svg` của chủ dự án, lưu canonical tại `assets/logo/spark-app-icon-v2.svg`: tick/vòng tròn/vạch trắng trên gradient xanh–Navy. Thay artwork icon cài đặt và favicon cũ; không thay logo/wordmark/mark sidebar hoặc nền canvas app. Apple 180px dùng bản vuông full-bleed; Chrome/PWA any 192/512px và favicon bo góc 116/512. Maskable 512px giữ nền full-bleed, scale riêng artwork 90% để nằm trong vòng tròn safe zone bán kính 40%. Favicon gồm SVG/PNG 16/32/48/ICO. Version URL `v2`, cập nhật manifest, metadata và SW precache; script sinh/kiểm tra icon lấy source trong repo. Đây là ngoại lệ được duyệt cho quy tắc app mark check-burst/nền phẳng trước đây, không đổi nhận diện logo chính. Kiểm tra hình học, gradient, alpha, safe zone, nguồn nguyên bản và asset live trước khi bàn giao.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

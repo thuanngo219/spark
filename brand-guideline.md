@@ -99,29 +99,24 @@ Logo primary là lockup ngang gồm icon check-burst tách riêng và wordmark l
 - Không trộn wordmark trắng với các tia màu trong cùng một lockup nếu chưa có quyết định mới.
 - Không tạo negative bằng CSS filter ở nơi sử dụng; luôn gọi đúng asset chính thức để kết quả nhất quán.
 
-### App mark
+### App icon hiện hành — D-133 (2026-10-05)
 
-- App mark là check-burst chính thức không kèm wordmark. Favicon, Chrome/PWA icon và Apple Touch Icon dùng thống nhất mark negative trắng `#FFFFFF` trên nền Navy `#111742`.
-- Giữ nguyên hình học tick và ba tia của artwork chính thức; app icon negative không giữ các màu Deep Purple–Muted Coral–Turquoise–Violet của primary mark.
-- Bản favicon và PWA `purpose: any` dùng rounded-square Navy để hiển thị gọn trên nền desktop; phần góc bên ngoài trong suốt.
-- Bản maskable dùng Navy full-bleed toàn khung, bỏ vòng tròn neutral bên trong và giữ toàn bộ mark trong safe zone trung tâm.
-- Apple Touch Icon dùng canvas vuông Navy full-bleed; iOS tự áp dụng corner mask khi đưa lên Home Screen.
-- Trong favicon, Chrome/PWA và Apple Touch Icon, đặt artwork check-burst ở 80% treatment trước và căn giữa để tăng khoảng âm; không sửa hình học nội bộ của mark.
-- Không tự rút gọn thêm tia, đổi tỷ lệ, thêm gradient, outline, glow hoặc shadow ở kích thước nhỏ.
+- Chủ dự án cung cấp SVG mới: tick trắng trong vòng tròn đứt đoạn và hai vạch trắng, nền radial gradient từ `#2B3BA8` đến Navy `#111742`. Source nguyên bản lưu tại `assets/logo/spark-app-icon-v2.svg` (512×512).
+- Đây là ngoại lệ được duyệt cho icon cài đặt/favicon: thay check-burst negative nền phẳng cũ và quy tắc scale 80% ở phần này. Logo primary, wordmark và mark trong sidebar giữ artwork hiện có; nền canvas app vẫn phẳng theo D-130.
+- Apple Touch Icon 180px dùng source vuông full-bleed. Chrome/PWA `purpose: any` 192/512px và favicon dùng source với góc bo radius 116/512, phần ngoài góc trong suốt; không đổi hình học/nền gradient bên trong.
+- PWA maskable 512px giữ nền gradient full-bleed, chỉ scale artwork trắng 90% quanh tâm để nằm trong safe zone bán kính 40% canvas. [Quy tắc safe zone W3C](https://www.w3.org/TR/appmanifest/#icon-masks).
+- Favicon có SVG, PNG 16/32/48px và ICO chứa cả ba kích thước. Tên file `v2` tránh dùng lại URL icon đã cache.
+- Source `assets/logo/spark-app-icon-editable.svg` là bản check-burst cũ đã xuất cho chủ dự án; chỉ là tham chiếu lịch sử, không dùng để build icon mới.
 
 Asset hiện tại:
 
-- `assets/logo/spark-logo-primary.svg`: ưu tiên cho website, web app và presentation hỗ trợ SVG.
-- `assets/logo/spark-logo-primary.png`: dùng khi định dạng đích không hỗ trợ vector.
-- `assets/logo/spark-logo-negative.svg` và `.png`: colorway trắng cho background tối.
-- `public/spark-mark.svg` và `public/spark-mark-maskable.svg`: app mark primary cũ, chỉ giữ làm nguồn tham chiếu cho colorway nhiều màu.
-- `public/spark-mark-negative.svg`: mark trắng không nền dùng trong compact rail hoặc background tối.
-- `public/spark-favicon.svg`: favicon website dùng mark negative trắng trên rounded-square Navy.
-- `public/spark-app-icon-negative.svg`: source full-bleed cho Apple Touch Icon và PWA maskable icon.
-- `public/icons/spark-favicon-negative-32.png`: fallback raster cho favicon/shortcut icon.
-- `public/icons/spark-pwa-negative-192.png` và `spark-pwa-negative-512.png`: PWA `purpose: any` với rounded-square Navy.
-- `public/icons/spark-maskable-negative-512.png`: PWA maskable icon Navy full-bleed.
-- `public/icons/spark-apple-negative-180.png`: Apple Touch Icon Navy full-bleed.
+- `assets/logo/spark-logo-primary.svg` và `.png`: logo primary cho website/app/presentation.
+- `assets/logo/spark-logo-negative.svg` và `.png`: logo trắng trên nền tối; `public/spark-mark-negative.svg` tiếp tục dùng trong compact rail.
+- `public/icons/spark-app-v2.svg`: bản SVG vuông nguyên mẫu; `public/spark-favicon-v2.svg`: SVG bo góc; `public/icons/spark-maskable-v2.svg`: source maskable đã scale artwork.
+- `public/spark-favicon-v2.ico`, `public/icons/spark-favicon-v2-{16,32,48}.png`: favicon.
+- `public/icons/spark-pwa-v2-{192,512}.png`: icon Chrome/PWA thông thường.
+- `public/icons/spark-maskable-v2-512.png`: maskable; `public/icons/spark-apple-v2-180.png`: Apple Touch Icon.
+- Icon `negative`/primary cũ được giữ để tương thích URL trước đây; metadata, manifest và service worker mới chỉ tham chiếu bộ app icon v2.
 
 ## 4. Color system
 
