@@ -1,6 +1,8 @@
 # Spark v2 — bàn giao hiện hành
 
-## Đang chờ duyệt — dark mode preview (D-138–D-142, 2026-10-05)
+## Dark mode — đã duyệt phát hành production (D-138–D-143, 2026-10-05)
+
+Chủ dự án yêu cầu deploy production sau khi duyệt code 9c0dc8f và các thay đổi D-138–D-142. Phát hành qua main/Git integration tới https://spark.thuanngo.com. Mặc định Theo hệ thống; preference của preview không chuyển sang production vì khác origin.
 
 Phản hồi D-142: nền nghỉ nút sidebar dùng canvas ở cả hai theme (dark #121622), thay nền xám #242B3D trong D-141; hover chỉ đổi màu icon, nền giữ canvas. Giữ kích thước/icon/tâm. Đã kiểm tra canvas không đổi khi hover, icon đổi màu, click full/compact và responsive 390px ở cả hai theme; lint/typecheck/build và 162 test logic đạt.
 
@@ -18,7 +20,7 @@ Nhánh `codex/spark-dark-mode` triển khai Theo hệ thống / Sáng / Tối t�
 
 Kiểm tra local: lint/typecheck/build đạt; 162 test logic đạt; 14 browser regression nội dung đạt, 2 regression icon và 7 test theme đạt sau sửa lỗi meta theme-color trùng. Kiểm tra 1280/390px, theme selector 320px, B/I/U, draft/metadata click, màu chữ chính/phụ đạt contrast tối thiểu 4.5:1 trên surface đã đo, lưu preference/reload/cross-tab, storage bị chặn và cold-start offline. Đã xem ảnh Hôm nay, quick-add và editor; chưa kiểm tra Safari/iPhone vật lý.
 
-Bản này cần chủ dự án duyệt màu trên desktop/mobile trước khi đưa lên production. Production hiện vẫn ở `6fd45b2`; các release bên dưới là lịch sử đã phát hành. Chưa xác minh trên iPhone vật lý. Không sửa database/auth/sync và không đưa `output/`, `outputs/` không rõ nguồn gốc vào commit.
+D-143 thay trạng thái chờ duyệt preview. Baseline production trước release dark mode là `6fd45b2`; các release bên dưới là lịch sử. Chưa xác minh trên iPhone vật lý. Không sửa database/auth/sync và không đưa `output/`, `outputs/` không rõ nguồn gốc vào commit.
 
 
 > Rà soát: 2026-10-05. Repo `/Users/dna.thuan/Codex/Projects/To-Do List`, branch `main`.

@@ -278,9 +278,9 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 
 - D-132: Focus vào metadata trong chi tiết tự lưu draft hợp lệ nhưng giữ editor/kích thước khung, để click không mất đích hoặc đóng nhầm khung. Lưu/chuyển trường vẫn kết thúc edit; Hủy chỉ bỏ thay đổi chưa tự lưu. Regression kiểm tra click thực, lưu qua reload, ngày, project, lưu trữ/khôi phục và xác nhận xóa ở 1280px/390px.
 
-## Giao diện sáng/tối — preview D-138
+## Giao diện sáng/tối — D-138–D-143
 
 - Trong “Phím tắt & hiển thị”, chọn Theo hệ thống (mặc định), Sáng hoặc Tối. Lưu riêng thiết bị, đổi đồng thời giữa các tab cùng origin; chỉ bám OS khi Theo hệ thống.
 - Áp dụng ngay lúc mở app, kể cả mở offline sau khi app shell đã cache; không chớp nền sáng do chờ React hydrate. Nếu không lưu preference được, vẫn đổi trong phiên hiện tại.
 - Theme phủ danh sách, quick-add, chi tiết/editor, lịch, dự án, đồng bộ và control mobile. Giữ layout, B/I/U, màu project và asset nhận diện. Màu theo brand guideline D-138.
-- Bản triển khai đầu tiên là preview để chủ dự án xem desktop/mobile và duyệt màu; chưa đưa dark mode lên production.
+- Chủ dự án đã duyệt phát hành production ngày 05/10/2026 sau các vòng preview D-138–D-142. Header tối dùng opacity 75% cho tiêu đề/dải màu; nút sidebar 42px/icon 20px, nền canvas và hover chỉ đổi icon.

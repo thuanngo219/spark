@@ -138,13 +138,13 @@ Project có bảy màu preset để các dot vẫn phân biệt được khi dan
 - Không dùng các màu dẫn xuất làm CTA, focus, trạng thái hệ thống, logo hoặc mảng nền thương hiệu.
 - Navy không dùng làm project dot vì thiếu tương phản trên sidebar navy.
 
-### Giao diện tối — bản preview D-138
+### Giao diện tối — D-138–D-143
 
 D-141/D-142: vòng tròn nút thu/mở sidebar desktop 42px, icon 20px; nền cùng canvas ở cả hai theme (dark #121622), hover chỉ đổi màu icon, không đổi nền. Tâm nút giữ trên biên sidebar ở full/compact.
 
 D-140: tiêu đề view/tên dự án và dải màu dưới header dùng opacity 75% trong dark mode ở desktop/mobile; theme sáng vẫn 100%.
 
-Dark mode dùng neutral xanh xám, canvas phẳng; giữ nguyên màu nhận diện và artwork logo/icon. Đây là bảng màu cho bản preview đang chờ duyệt hình ảnh trước production.
+Dark mode dùng neutral xanh xám, canvas phẳng; giữ nguyên màu nhận diện và artwork logo/icon. Bảng màu và các tinh chỉnh D-139–D-142 đã được chủ dự án duyệt phát hành production theo D-143.
 
 | Thành phần | Màu tối |
 |---|---|

@@ -225,6 +225,10 @@ Nút sidebar-toggle tăng từ 32×32px lên 42×42px (+10px đường kính), i
 
 Theo phản hồi chủ dự án, trạng thái nghỉ của nút thu/mở sidebar dùng cùng nền chính (canvas) ở cả hai theme: dark #121622, light #F7F8FA. Thay nền dark #242B3D của D-141. Giữ đường kính 42px/icon 20px và tâm trên biên. Theo phản hồi tiếp theo, hover/focus chỉ đổi màu icon sang link-hover, giữ nền canvas; thay cả nền hover D-141. Bỏ token nền nút riêng vì không còn khác canvas. Tiếp tục preview trước production.
 
+## D-143 — Duyệt phát hành dark mode lên production (2026-10-05)
+
+Chủ dự án yêu cầu “deploy production”, chốt bản dark mode và toàn bộ tinh chỉnh D-138–D-142 tại code commit 9c0dc8f. Đưa nhánh codex/spark-dark-mode vào main và dùng Git integration hiện hành để Vercel tạo production build. Chế độ mặc định Theo hệ thống; preference lưu riêng mỗi origin/browser nên lựa chọn ở preview không chuyển sang domain production. Không migration hoặc thay đổi auth/sync. Kiểm tra bản live bằng browser profile demo riêng, không tác động dữ liệu tài khoản thật.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

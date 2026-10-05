@@ -16,9 +16,9 @@ Vercel owner: team **Thuan Ngo** tại [vercel.com/thuanngo](https://vercel.com/
 
 Supabase production nằm trong project hạ tầng dùng chung **WorkSpace**, giữ nguyên project ref `ukoowtpqztknbrgpyqdx`. Spark hiện tiếp tục dùng `public.projects` và `public.items`; việc đổi display name của Supabase project không thay đổi URL, API keys, schema, bảng hoặc dữ liệu của ứng dụng.
 
-## Preview dark mode
+## Giao diện sáng/tối
 
-Nhánh `codex/spark-dark-mode` bổ sung Theo hệ thống / Sáng / Tối tại **Phím tắt & hiển thị → Giao diện**, ghi nhớ riêng thiết bị. Đang chờ chủ dự án duyệt màu trước production; chi tiết và kiểm tra ở [handoff](docs/handoff/spark-v2.md), quyết định D-138.
+Chọn THEO HỆ THỐNG / SÁNG / TỐI tại **Phím tắt & hiển thị → Giao diện**, ghi nhớ riêng thiết bị. Chủ dự án đã duyệt phát hành production ngày 05/10/2026; chi tiết và kiểm tra ở [handoff](docs/handoff/spark-v2.md), quyết định D-138–D-143.
 
 ## Chạy local
 
