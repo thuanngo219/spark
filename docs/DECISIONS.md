@@ -217,6 +217,10 @@ Theo phản hồi preview dark mode: nút Lưu Nội dung và Lưu tên trong ch
 
 Chủ dự án muốn tiêu đề Hôm nay/Sắp tới/tên dự án và dải màu dịu hơn. Dùng opacity 75% cho h1 của view-header và view-project-band trong theme tối, nhất quán ở mọi view, desktop/mobile và header compact. Theme sáng giữ 100%. Token --view-accent-opacity áp dụng tại selector gốc; không giảm opacity toàn header để giữ thống kê, control và blur hiện hành. Màu project trong dữ liệu không đổi. Phát hành preview để duyệt.
 
+## D-141 — Tăng vòng tròn nút thu/mở sidebar (2026-10-05)
+
+Nút sidebar-toggle tăng từ 32×32px lên 42×42px (+10px đường kính), icon giữ 20×20px. Margin phải từ -26px thành -31px để tâm vòng tròn vẫn nằm tại biên sidebar ở cả full và compact rail. Dark mode nền xám #242B3D, hover/focus nền #30394E; light giữ nền canvas, hover dùng control-hover. Transition màu 160ms. Footer dùng cột minmax(0, 1fr) để nội dung không làm grid track tràn khỏi chiều rộng sidebar. Chỉ áp dụng nút thu/mở sidebar desktop; drawer mobile giữ control hiện hành. Phát hành preview để duyệt.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

@@ -1,6 +1,8 @@
 # Spark v2 — bàn giao hiện hành
 
-## Đang chờ duyệt — dark mode preview (D-138–D-140, 2026-10-05)
+## Đang chờ duyệt — dark mode preview (D-138–D-141, 2026-10-05)
+
+Phản hồi D-141: nút thu/mở sidebar desktop 42×42px, icon giữ 20×20px, tâm giữ trên biên sidebar full/compact; dark nền xám #242B3D, hover/focus #30394E. Footer dùng cột minmax(0, 1fr) để tránh tràn grid track làm lệch tâm. Đã kiểm tra kích thước 42px/icon 20px, tâm trên biên, click thu/mở và màu hover ở cả hai theme; mobile 390px không tràn ngang. Lint/typecheck/build và 162 test logic đạt.
 
 Phản hồi D-140: tiêu đề view/tên dự án và dải màu dưới header dùng opacity 75% trong dark mode, desktop/mobile/compact; theme sáng giữ 100%. Kiểm tra lint/typecheck/build, 162 test logic và smoke browser các view/dự án ở 1280/390px đạt; không tràn ngang. Chỉ h1/dải màu giảm opacity, không áp lên toàn header.
 
