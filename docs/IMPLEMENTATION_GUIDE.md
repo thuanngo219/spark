@@ -179,7 +179,7 @@ src/
 Để app có cảm giác native-like:
 
 - Có manifest với `name`, `short_name`, `start_url`, `display: "standalone"`, `background_color`, `theme_color` và icon 192/512px.
-- App icon D-133 lấy source `assets/logo/spark-app-icon-v2.svg`; chạy `npm run icons:generate` rồi `npm run icons:verify`. Apple 180px vuông full-bleed; Chrome/PWA any 192/512px bo góc; maskable 512px scale artwork 90% trong safe circle; favicon SVG/PNG 16/32/48/ICO. Metadata/manifest/SW dùng tên v2. Logo sidebar giữ nguyên.
+- App icon D-133 lấy source `assets/logo/spark-app-icon-v2.svg`; chạy `npm run icons:generate` rồi `npm run icons:verify`. Apple 180px vuông full-bleed; Chrome/PWA any 192/512px bo góc; maskable 512px scale artwork 90% trong safe circle; favicon SVG/PNG 16/32/48/ICO. Metadata/manifest/SW dùng tên v2. D-134: logo chính/sidebar/rail cũng dùng badge mới; source wordmark tách riêng, SVG/PNG và alias public được sinh bởi `scripts/generate-brand-assets.mjs`. Sidebar dùng `/brand/spark-logo-negative-v2.svg`, rail dùng `/spark-mark-v2.svg`, SW precache cùng hai URL.
 - Dùng filename mới khi đổi colorway icon để tránh cache cũ; sau deploy cần kiểm tra trực tiếp SVG/PNG, manifest và metadata production.
 - Deploy qua HTTPS; đây là yêu cầu quan trọng cho khả năng cài PWA.
 - Service worker chỉ đăng ký ở production. Navigation dùng network-first với fallback app shell; Next static asset dùng cache-first; font/ảnh/CSS/script cùng origin dùng stale-while-revalidate.

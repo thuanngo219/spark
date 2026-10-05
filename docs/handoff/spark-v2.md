@@ -123,12 +123,20 @@ Git integration của Vercel tự deploy khi push `main`. Dùng `git log -1` đ�
 
 ## D-133 — Icon app mới (2026-10-05)
 
-Chủ dự án gửi `spark-app-icon-editable 2.svg`, đã lưu nguyên bản tại `assets/logo/spark-app-icon-v2.svg`. Chỉ đổi icon mobile/Chrome app/favicon theo file này; logo/wordmark/mark sidebar giữ nguyên. Đây là ngoại lệ gradient cho app icon, không khôi phục gradient nền canvas.
+Chủ dự án gửi `spark-app-icon-editable 2.svg`, đã lưu nguyên bản tại `assets/logo/spark-app-icon-v2.svg`. Phạm vi ban đầu D-133 chỉ đổi icon mobile/Chrome app/favicon; D-134 bên dưới đã mở rộng sang logo và sidebar. Đây là ngoại lệ gradient cho app icon, không khôi phục gradient nền canvas.
 
-Bộ `v2`: Apple 180px vuông; PWA any 192/512px và favicon bo góc; maskable 512px thu artwork trắng còn 90% với nền full-bleed, toàn bộ artwork nằm trong safe circle bán kính 40% canvas. Favicon SVG, PNG 16/32/48 và ICO đa kích thước. Generator/verify đã chuyển sang canonical source mới; metadata/manifest/SW dùng URL v2. Giữ asset cũ để tương thích URL trước và giữ bản SVG cũ đã xuất như lịch sử.
+Bộ `v2`: Apple 180px vuông; PWA any 192/512px và favicon bo góc; maskable 512px thu artwork trắng còn 90% với nền full-bleed, toàn bộ artwork nằm trong safe circle bán kính 40% canvas. Favicon SVG, PNG 16/32/48 và ICO đa kích thước. Generator/verify đã chuyển sang canonical source mới; metadata/manifest/SW dùng URL v2. D-134 cập nhật nội dung các alias public cũ để tương thích URL; bản SVG cũ đã xuất và concept chỉ giữ như lịch sử.
 
 Cập nhật icon đã cài có thể phụ thuộc cache launcher: nếu sau reload vẫn thấy icon cũ, thử gỡ biểu tượng khỏi Home Screen rồi thêm lại. Chưa xác minh icon launcher trên iPhone/Android vật lý.
 
 Kiểm tra trước phát hành D-133: source SVG khớp nguyên byte với file gửi; 7 PNG đạt kiểm tra kích thước, alpha, gradient/artwork, maskable safe zone; ICO có 16/32/48px. Lint, typecheck, build, 162 unit tests và 13 browser tests trên production build local đạt, gồm metadata/manifest/asset và offline cache mới; mobile viewport 390px không tràn ngang.
 
 Phát hành D-133: commit app `a41525c6819c9c37fecbfd1267559b07482cc250`, deployment `dpl_Aov7UwHWRzwdo1GKiZ3GCJ4HFGFL` READY và alias `spark.thuanngo.com` đã xác minh ngày 05/10/2026. Trên production: 13/13 browser tests đạt; 11 asset v2 HTTP 200 và SHA-256 khớp bản local; truy vấn runtime log lỗi không trả bản ghi. Kết quả này không thay thế kiểm tra launcher trên thiết bị vật lý.
+
+## D-134 — Logo chính và toàn bộ vị trí nhận diện (2026-10-05)
+
+Dùng badge gradient v2 thay mark check-burst trong cả logo chính, negative logo, sidebar mở rộng/thu gọn, menu mobile và các asset public. Giữ outlines wordmark `spark`, primary Deep Purple/negative trắng; không đổi icon chức năng task/note. Source riêng `assets/logo/spark-wordmark.svg`, tạo asset bằng `npm run icons:generate`; SVG/PNG primary/negative v2 đều có alias không phiên bản cùng nội dung mới. App/SW dùng logo/mark URL v2 để tránh cache cũ. D-134 thay giới hạn phạm vi logo/sidebar ở D-133.
+
+Vị trí runtime và danh sách source ở `assets/logo/README.md`. Regression browser kiểm tra logo sidebar desktop mở rộng, badge compact rail, logo drawer mobile 390px, cùng cache offline và metadata icon. Nền app vẫn phẳng; gradient chỉ nằm trong badge nhận diện.
+
+Kiểm tra trước phát hành D-134: `icons:verify`, lint, typecheck, build và 162 unit tests đạt. 14/14 browser tests trên production build local đạt, gồm desktop/compact/mobile 390px và cache offline. Đã xem ảnh thực tế logo ở cả ba trạng thái; không tràn ngang trên mobile.

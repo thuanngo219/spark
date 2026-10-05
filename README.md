@@ -8,9 +8,7 @@ Web app quản lý task và note cá nhân hằng ngày, ưu tiên tốc độ, 
 
 Hướng UI đã chọn: **Option C — Compact Canvas**, dùng palette navy–turquoise–violet–Muted Coral–Deep Purple và sidebar đầy đủ có thể thu gọn thành compact rail.
 
-Logo chính thức là lockup check-burst với wordmark `spark` lowercase bold; wordmark và dấu tick dùng Deep Purple `#65458A`, ba tia dùng turquoise `#44D4CD`, Muted Coral `#D9776A` và violet `#8951C7`.
-
-App icon cài đặt/favicon hiện dùng SVG tick-vòng tròn trắng trên nền gradient xanh–Navy do chủ dự án cung cấp (D-133); source và cách sinh kích thước ở [assets/logo/README.md](assets/logo/README.md). Logo/wordmark/sidebar vẫn giữ artwork check-burst.
+Logo chính thức và mọi icon app dùng biểu tượng tick/vòng tròn trắng trên badge gradient xanh–Navy do chủ dự án cung cấp. Wordmark `spark` giữ vector cũ: primary Deep Purple, negative trắng. D-134 áp dụng cho logo chính, sidebar desktop/mobile, compact rail, icon cài đặt và favicon; source/cách sinh asset ở [assets/logo/README.md](assets/logo/README.md).
 
 Domain đích: **https://spark.thuanngo.com**.
 

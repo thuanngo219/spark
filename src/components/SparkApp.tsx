@@ -74,8 +74,8 @@ const SIDEBAR_SECTIONS_KEY = "spark:sidebar-sections";
 const PROJECT_LABELS_KEY = "spark:project-labels:v1";
 const PROJECT_LABELS_EXPANDED_KEY = "spark:project-labels-expanded:v1";
 const SORT_SETTINGS_KEY = "spark:sort-settings:v1";
-const SPARK_LOGO_NEGATIVE_SRC = "/brand/spark-logo-negative.svg";
-const SPARK_MARK_NEGATIVE_SRC = "/spark-mark-negative.svg";
+const SPARK_LOGO_NEGATIVE_SRC = "/brand/spark-logo-negative-v2.svg";
+const SPARK_MARK_NEGATIVE_SRC = "/spark-mark-v2.svg";
 
 function projectPillWidth(name: string) {
   return Math.max(32, Math.ceil(22 + name.trim().length * 6.4));

@@ -67,42 +67,21 @@ Microcopy là ví dụ về giọng điệu, không phải chuỗi bắt buộc 
 
 ## 3. Logo
 
-Logo primary là lockup ngang gồm icon check-burst tách riêng và wordmark lowercase bold `spark`. Dùng asset chính thức trong `assets/logo/`; không gõ lại wordmark bằng font hệ thống.
+Logo chính thức hiện hành theo D-134 (05/10/2026): biểu tượng tick/vòng tròn/vạch trắng trên badge gradient xanh–Navy do chủ dự án cung cấp, đặt bên trái wordmark lowercase bold `spark`. Dùng asset trong `assets/logo/`, không gõ lại wordmark bằng font hệ thống.
 
-### Cấu trúc màu chính thức
+### Cấu trúc và màu chính thức
 
-| Thành phần | Màu |
-|---|---|
-| Wordmark `spark` | Deep Purple `#65458A` |
-| Dấu tick | Deep Purple `#65458A` |
-| Tia ngang phía dưới bên trái | Muted Coral `#D9776A` |
-| Tia chéo phía trên bên trái | Turquoise `#44D4CD` |
-| Tia dọc phía trên | Violet `#8951C7` |
+- Biểu tượng lấy nguyên hình học từ `spark-app-icon-v2.svg`; nền gradient #2B3BA8 → #111742, góc bo 116/512. Không kéo méo, tự đổi nét hoặc thêm hiệu ứng.
+- Primary: wordmark Deep Purple #65458A. Negative: wordmark trắng #FFFFFF; biểu tượng vẫn giữ nguyên badge màu ở cả hai bản.
+- Đường vector và kerning của chữ `spark` giữ từ logo đã duyệt. `spark-wordmark.svg` lưu riêng outlines để tái tạo, không có mark cũ.
+- Lockup có viewBox 2048×768, badge 480×480 tại (133,152); phần ngoài badge/wordmark trong suốt. Giữ tỷ lệ toàn logo; tối thiểu 120 CSS px. Kích thước nhỏ hơn dùng badge độc lập.
+- Primary dùng trên nền sáng; negative dùng trên Navy/nền tối đủ tương phản. Không áp CSS filter cho logo; gọi đúng asset.
+- Quy tắc tick/ba tia check-burst, ba màu tia và logo negative toàn trắng trước D-134 chỉ là lịch sử. D-134 cho phép gradient bên trong badge logo, không áp gradient lên wordmark hoặc canvas app.
 
-### Quy tắc sử dụng
-
-- Giữ đúng chữ `spark`, lowercase và bold như asset chính thức.
-- Giữ dấu tick và wordmark cùng màu.
-- Check-burst luôn là dấu tick với ba rounded ray tách rời; không biến thành ngôi sao.
-- Tick giữ nét thanh ở khoảng 68% độ dày của concept ban đầu; trong asset 2048×768 hiện tại, stroke chuẩn là 57 đơn vị.
-- Ba tia phải cùng kích thước và độ dày. Hình học chuẩn hiện tại là capsule 140×60 đơn vị, tương đương khoảng 82.5% độ dày của tia ngang ban đầu; chỉ thay đổi hướng xoay và màu.
-- Không đổi vị trí các màu, kéo méo, xoay, thêm outline, glow, shadow, 3D hoặc gradient vào logo.
-- Luôn dùng file có nền trong suốt trên một nền đủ tương phản.
-- Chừa khoảng trống tối thiểu quanh lockup bằng khoảng nửa chiều cao chữ `s`.
-- Không dùng primary lockup nhỏ hơn 120 CSS px chiều rộng. Ở kích thước nhỏ hơn, dùng app mark check-burst chính thức.
-
-### Negative colorway
-
-- Negative logo dùng trắng `#FFFFFF` cho toàn bộ wordmark, tick và ba tia trên nền trong suốt.
-- Dùng trên Navy `#111742`, neutral tối hoặc hình/gradient tối có độ tương phản ổn định. Ưu tiên tỷ lệ tương phản tối thiểu 4.5:1 với nền ngay sau logo.
-- Không dùng negative logo trên nền sáng hoặc vùng ảnh thay đổi sáng–tối; khi đó dùng primary logo trên neutral sáng.
-- Không trộn wordmark trắng với các tia màu trong cùng một lockup nếu chưa có quyết định mới.
-- Không tạo negative bằng CSS filter ở nơi sử dụng; luôn gọi đúng asset chính thức để kết quả nhất quán.
-
-### App icon hiện hành — D-133 (2026-10-05)
+### App icon hiện hành — D-133/D-134 (2026-10-05)
 
 - Chủ dự án cung cấp SVG mới: tick trắng trong vòng tròn đứt đoạn và hai vạch trắng, nền radial gradient từ `#2B3BA8` đến Navy `#111742`. Source nguyên bản lưu tại `assets/logo/spark-app-icon-v2.svg` (512×512).
-- Đây là ngoại lệ được duyệt cho icon cài đặt/favicon: thay check-burst negative nền phẳng cũ và quy tắc scale 80% ở phần này. Logo primary, wordmark và mark trong sidebar giữ artwork hiện có; nền canvas app vẫn phẳng theo D-130.
+- D-134 mở rộng biểu tượng mới cho cả logo chính, sidebar desktop/mobile và compact rail; thay toàn bộ mark check-burst trong bộ asset phục vụ app. Wordmark giữ outlines cũ; nền canvas app vẫn phẳng theo D-130.
 - Apple Touch Icon 180px dùng source vuông full-bleed. Chrome/PWA `purpose: any` 192/512px và favicon dùng source với góc bo radius 116/512, phần ngoài góc trong suốt; không đổi hình học/nền gradient bên trong.
 - PWA maskable 512px giữ nền gradient full-bleed, chỉ scale artwork trắng 90% quanh tâm để nằm trong safe zone bán kính 40% canvas. [Quy tắc safe zone W3C](https://www.w3.org/TR/appmanifest/#icon-masks).
 - Favicon có SVG, PNG 16/32/48px và ICO chứa cả ba kích thước. Tên file `v2` tránh dùng lại URL icon đã cache.
@@ -111,12 +90,12 @@ Logo primary là lockup ngang gồm icon check-burst tách riêng và wordmark l
 Asset hiện tại:
 
 - `assets/logo/spark-logo-primary.svg` và `.png`: logo primary cho website/app/presentation.
-- `assets/logo/spark-logo-negative.svg` và `.png`: logo trắng trên nền tối; `public/spark-mark-negative.svg` tiếp tục dùng trong compact rail.
+- `assets/logo/spark-logo-negative.svg` và `.png`: badge màu + wordmark trắng trên nền tối; compact rail dùng `public/spark-mark-v2.svg`.
 - `public/icons/spark-app-v2.svg`: bản SVG vuông nguyên mẫu; `public/spark-favicon-v2.svg`: SVG bo góc; `public/icons/spark-maskable-v2.svg`: source maskable đã scale artwork.
 - `public/spark-favicon-v2.ico`, `public/icons/spark-favicon-v2-{16,32,48}.png`: favicon.
 - `public/icons/spark-pwa-v2-{192,512}.png`: icon Chrome/PWA thông thường.
 - `public/icons/spark-maskable-v2-512.png`: maskable; `public/icons/spark-apple-v2-180.png`: Apple Touch Icon.
-- Icon `negative`/primary cũ được giữ để tương thích URL trước đây; metadata, manifest và service worker mới chỉ tham chiếu bộ app icon v2.
+- Các URL icon/logo cũ trong public được cập nhật bằng nội dung mới để tương thích. App và service worker dùng URL v2. Asset concept và SVG xuất cũ chỉ là lịch sử; không dùng ở runtime.
 
 ## 4. Color system
 
@@ -298,12 +277,12 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 ### Illustration và shape
 
 - Ưu tiên hình học bo tròn, mảng sạch, chuyển động nhẹ và một chi tiết bất ngờ vừa đủ vui.
-- Có thể lấy check-burst làm cảm hứng về nhịp điệu, nhưng không rải star/spark motif tràn lan.
+- Có thể lấy tick/vòng tròn của biểu tượng hiện hành làm cảm hứng về nhịp điệu, nhưng không rải star/spark motif tràn lan.
 - Tránh minh họa quá trẻ con, quá bóng bẩy 3D hoặc quá nhiều chi tiết cạnh tranh với nội dung.
 
 ### Gradient
 
-- Nền web app dùng canvas phẳng #F7F8FA trên desktop/mobile, không có gradient màu. Gradient chỉ dùng cho illustration hoặc điểm nhấn truyền thông; không dùng trong logo primary.
+- Nền web app dùng canvas phẳng #F7F8FA trên desktop/mobile, không có gradient màu. Gradient dùng cho illustration, điểm nhấn truyền thông và badge icon/logo đã duyệt D-134; không thêm vào wordmark hoặc canvas app.
 - Thường dùng tối đa hai màu brand trong một gradient, chuyển mềm và không tạo glow neon.
 - Cặp gợi ý: Turquoise → Violet cho cảm giác mát và năng động; Muted Coral → Deep Purple cho cảm giác ấm và có chiều sâu.
 - Gradient không được làm giảm độ tương phản của chữ hoặc biến toàn bộ web app thành bề mặt trang trí.

@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile, copyFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 
@@ -54,3 +54,17 @@ images.forEach((image, index) => {
 });
 await writeFile(path.join(publicDir, "spark-favicon-v2.ico"), Buffer.concat([header, ...images]));
 console.log("spark-favicon-v2.ico: 16, 32, 48px");
+
+// Keep previously published URLs consistent with the current identity.
+for (const [source, aliases] of [
+  ["spark-favicon-v2.svg", ["spark-favicon.svg", "spark-mark.svg", "spark-mark-negative.svg"]],
+  ["icons/spark-app-v2.svg", ["spark-app-icon-negative.svg"]],
+  ["icons/spark-maskable-v2.svg", ["spark-mark-maskable.svg"]],
+  ["icons/spark-favicon-v2-32.png", ["icons/spark-32.png", "icons/spark-favicon-negative-32.png"]],
+  ["icons/spark-pwa-v2-192.png", ["icons/spark-192.png", "icons/spark-pwa-negative-192.png"]],
+  ["icons/spark-pwa-v2-512.png", ["icons/spark-512.png", "icons/spark-pwa-negative-512.png"]],
+  ["icons/spark-maskable-v2-512.png", ["icons/spark-maskable-512.png", "icons/spark-maskable-negative-512.png"]],
+  ["icons/spark-apple-v2-180.png", ["icons/spark-apple-180.png", "icons/spark-apple-negative-180.png"]],
+]) {
+  for (const alias of aliases) await copyFile(path.join(publicDir, source), path.join(publicDir, alias));
+}

@@ -185,6 +185,10 @@ Khi focus vào Quan Trọng, Ưu tiên, ngày, Dự án, lưu trữ hoặc xóa,
 
 Dùng nguyên SVG `spark-app-icon-editable 2.svg` của chủ dự án, lưu canonical tại `assets/logo/spark-app-icon-v2.svg`: tick/vòng tròn/vạch trắng trên gradient xanh–Navy. Thay artwork icon cài đặt và favicon cũ; không thay logo/wordmark/mark sidebar hoặc nền canvas app. Apple 180px dùng bản vuông full-bleed; Chrome/PWA any 192/512px và favicon bo góc 116/512. Maskable 512px giữ nền full-bleed, scale riêng artwork 90% để nằm trong vòng tròn safe zone bán kính 40%. Favicon gồm SVG/PNG 16/32/48/ICO. Version URL `v2`, cập nhật manifest, metadata và SW precache; script sinh/kiểm tra icon lấy source trong repo. Đây là ngoại lệ được duyệt cho quy tắc app mark check-burst/nền phẳng trước đây, không đổi nhận diện logo chính. Kiểm tra hình học, gradient, alpha, safe zone, nguồn nguyên bản và asset live trước khi bàn giao.
 
+## D-134 — Đồng bộ biểu tượng mới cho logo và toàn bộ app (2026-10-05)
+
+Chủ dự án yêu cầu mở rộng biểu tượng D-133 sang mọi vị trí, gồm logo chính. Thay check-burst bằng badge tick/vòng tròn trắng trên gradient xanh–Navy; giữ outlines/kerning wordmark `spark`. Logo primary chữ Deep Purple, negative chữ trắng, cùng badge ở bên trái. Sidebar mở rộng/menu mobile dùng logo negative v2; rail dùng badge v2. Bộ SVG/PNG chính và toàn bộ alias public logo/mark/icon cũ cùng cập nhật; app/SW dùng URL v2. Generator tách riêng canonical wordmark và dùng cùng source icon người dùng, không font substitution. Thay phần “giữ logo/sidebar cũ” của D-133 và quy tắc mark/ba tia/negative toàn trắng trước đây. Gradient chỉ trong badge, canvas app vẫn phẳng. Không thay concept lịch sử hoặc icon chức năng task/note.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

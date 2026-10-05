@@ -41,3 +41,34 @@ test("app metadata, manifest and offline cache use the new icon set", async ({ p
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
+
+test("desktop sidebar, compact rail and mobile drawer use the approved logo", async ({ page, request }) => {
+  await page.goto("/");
+  const desktop = page.locator(".app-shell > .sidebar");
+  const mark = desktop.locator(".brand-mark-art");
+  await expect(mark).toBeVisible();
+  await expect(mark).toHaveAttribute("src", "/spark-mark-v2.svg");
+  await expect.poll(() => mark.evaluate((image) => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  await page.getByRole("button", { name: "Mở rộng sidebar", exact: true }).click();
+  const logo = desktop.locator(".brand-full");
+  await expect(logo).toBeVisible();
+  await expect(logo).toHaveAttribute("src", "/brand/spark-logo-negative-v2.svg");
+  await expect.poll(() => logo.evaluate((image) => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "Mở sidebar", exact: true }).click();
+  const mobileLogo = page.locator(".sidebar-mobile .brand-full");
+  await expect(mobileLogo).toBeVisible();
+  await expect(mobileLogo).toHaveAttribute("src", "/brand/spark-logo-negative-v2.svg");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  for (const url of ["/brand/spark-logo-v2.svg", "/brand/spark-logo-negative-v2.svg", "/spark-mark-v2.svg", "/brand/spark-logo.svg", "/brand/spark-logo-negative.svg", "/spark-mark-negative.svg"]) {
+    const response = await request.get(url);
+    expect(response.ok()).toBeTruthy();
+    const svg = await response.text();
+    expect(svg).toContain('stop-color="#2B3BA8"');
+    expect(svg).not.toContain("spark-check-burst");
+  }
+  if (process.env.SPARK_TEST_OFFLINE === "1") {
+    await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
+    await expect.poll(() => page.evaluate(async () => Boolean(await caches.match("/spark-mark-v2.svg")) && Boolean(await caches.match("/brand/spark-logo-negative-v2.svg")))).toBe(true);
+  }
+});

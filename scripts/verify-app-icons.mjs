@@ -56,3 +56,23 @@ for (const [index, size] of [16, 32, 48].entries()) {
   assert.deepEqual(ico.subarray(offset, offset + length), await readFile(path.join(iconDir, `spark-favicon-v2-${size}.png`)));
 }
 console.log("Approved SVG source and multi-size ICO verified");
+
+for (const variant of ["primary", "negative"]) {
+  const publicName = variant === "primary" ? "spark-logo" : "spark-logo-negative";
+  const svg = await readFile(`assets/logo/spark-logo-${variant}-v2.svg`, "utf8");
+  assert.ok(svg.includes('stop-color="#2B3BA8"'), "Logo must contain the approved gradient badge");
+  assert.ok(!svg.includes("spark-check-burst"), "Logo must not include the old mark");
+  const metadata = await sharp(`assets/logo/spark-logo-${variant}-v2.png`).metadata();
+  assert.equal(metadata.width, 2048);
+  assert.equal(metadata.height, 768);
+  for (const ext of ["svg", "png"]) {
+    const canonical = await readFile(`assets/logo/spark-logo-${variant}-v2.${ext}`);
+    for (const alias of [`assets/logo/spark-logo-${variant}.${ext}`, `public/brand/${publicName}-v2.${ext}`, `public/brand/${publicName}.${ext}`]) {
+      assert.deepEqual(await readFile(alias), canonical, alias);
+    }
+  }
+}
+for (const alias of ["public/spark-mark-v2.svg", "public/spark-mark.svg", "public/spark-mark-negative.svg", "public/spark-favicon.svg"]) {
+  assert.deepEqual(await readFile(alias), await readFile("public/spark-favicon-v2.svg"), alias);
+}
+console.log("Primary/negative logo, compact mark and legacy aliases verified");
