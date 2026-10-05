@@ -140,3 +140,5 @@ Dùng badge gradient v2 thay mark check-burst trong cả logo chính, negative l
 Vị trí runtime và danh sách source ở `assets/logo/README.md`. Regression browser kiểm tra logo sidebar desktop mở rộng, badge compact rail, logo drawer mobile 390px, cùng cache offline và metadata icon. Nền app vẫn phẳng; gradient chỉ nằm trong badge nhận diện.
 
 Kiểm tra trước phát hành D-134: `icons:verify`, lint, typecheck, build và 162 unit tests đạt. 14/14 browser tests trên production build local đạt, gồm desktop/compact/mobile 390px và cache offline. Đã xem ảnh thực tế logo ở cả ba trạng thái; không tràn ngang trên mobile.
+
+Phát hành D-134: commit app `9add81b01eb547433470b94dac565d8690447e65`, deployment `dpl_5yUnyDE2MMLmRQ54iQkbUuxPLDyw` READY, alias `spark.thuanngo.com` xác minh ngày 05/10/2026. Production đạt 14/14 browser tests; toàn bộ 35 asset logo/icon public (URL v2 và alias cũ) trả HTTP 200, SHA-256 khớp bản local. Truy vấn runtime log lỗi của deployment không trả bản ghi. Chưa kiểm tra launcher trên thiết bị vật lý. Commit ghi nhận kết quả này chỉ cập nhật tài liệu, không thay code/asset.
