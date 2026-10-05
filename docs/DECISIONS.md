@@ -175,6 +175,10 @@ Dải project/view 10px chuyển từ mép trên xuống chân header, bên dư�
 
 Header desktop giảm blur 12px xuống 8px, cùng mobile, giữ WebKit. Select sắp xếp và nút đổi chiều cao 36px trên desktop/mobile; nút đổi chiều rộng 36px để giữ hình tròn. Bỏ override mobile 44px của hai control này theo yêu cầu cụ thể của chủ dự án; các control khác giữ nguyên. Thay phần blur desktop D-130, giữ dải màu dưới header, bóng mềm và nền app phẳng.
 
+## D-132 — Giữ nút chi tiết ổn định khi lưu draft (2026-10-05)
+
+Khi focus vào Quan Trọng, Ưu tiên, ngày, Dự án, lưu trữ hoặc xóa, lưu draft Tên/Nội dung hợp lệ nhưng giữ editor và kích thước khung hiện tại. Không kết thúc edit trong focus handler vì khung desktop co lại giữa pointerdown và click, làm cú click rơi ra backdrop. Nút Lưu và chuyển sang trường khác vẫn kết thúc edit như trước; Hủy bỏ phần chưa lưu kể từ lần tự lưu gần nhất. Áp dụng desktop/mobile, giữ validation tên/ngày và các thao tác metadata.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

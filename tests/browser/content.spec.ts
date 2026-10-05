@@ -310,3 +310,77 @@ test("mobile title uses compact input, saves on blur and leaves the next action 
   await expect(page.getByRole("textbox", { name: "Nội dung task", exact: true })).toBeVisible();
   await expect(row.locator("p")).toHaveText("Tên lưu khi chuyển sang Nội dung");
 });
+
+for (const width of [1280, 390]) {
+  test(`detail metadata remains clickable while editing content at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 });
+    const title = `Metadata click ${width}`;
+    const quickEditor = await openQuickAdd(page);
+    await page.getByRole("textbox", { name: "Tên mục" }).fill(title);
+    await page.getByRole("checkbox", { name: "Ghi chú" }).check();
+    await quickEditor.fill("Nội dung ngắn");
+    await page.getByRole("button", { name: "Thêm", exact: true }).click();
+    await page.getByRole("button", { name: "Hủy", exact: true }).click();
+    await page.getByRole("button", { name: "Tất cả", exact: true }).click();
+    await openTestItem(page, title);
+    const sheet = page.locator(".item-detail-sheet");
+    const editor = sheet.getByRole("textbox", { name: "Nội dung ghi chú", exact: true });
+    const draft = async (text: string) => {
+      if (!await editor.isVisible()) await sheet.getByRole("button", { name: "Sửa Nội dung", exact: true }).click();
+      await editor.fill(text);
+      await editor.press("Meta+a");
+      if (await editor.locator("strong").count() === 0) await editor.press("Meta+b");
+    };
+    const reopen = async (text: string) => {
+      await sheet.getByRole("button", { name: "Đóng", exact: true }).click();
+      await page.reload();
+      await openTestItem(page, title);
+      await expect(sheet.locator(".formatted-content strong")).toHaveText(text);
+    };
+    for (const name of ["Quan Trọng", "Ưu tiên"]) {
+      await draft(`Lưu khi bấm ${name}`);
+      const button = sheet.getByRole("button", { name, exact: true });
+      const before = await button.boundingBox();
+      await button.click();
+      await expect(button).toHaveAttribute("aria-pressed", "true");
+      expect((await button.boundingBox())!.y).toBeCloseTo(before!.y, 1);
+      await reopen(`Lưu khi bấm ${name}`);
+      await expect(button).toHaveAttribute("aria-pressed", "true");
+    }
+    for (const [name, value] of [["Ngày bắt đầu", "2026-10-05"], ["Ngày đến hạn", "2026-10-06"]]) {
+      await draft(`Lưu khi bấm ${name}`);
+      const date = sheet.getByLabel(name, { exact: true });
+      await date.click();
+      await expect(date).toBeFocused();
+      await date.fill(value);
+      await reopen(`Lưu khi bấm ${name}`);
+      await expect(date).toHaveValue(value);
+    }
+    await draft("Lưu khi chọn dự án");
+    const project = sheet.getByLabel("Dự án", { exact: true });
+    await project.click();
+    await expect(project).toBeFocused();
+    await project.press("Escape");
+    await project.selectOption({ index: 1 });
+    const projectId = await project.inputValue();
+    expect(projectId).not.toBe("");
+    await reopen("Lưu khi chọn dự án");
+    await expect(project).toHaveValue(projectId);
+    await draft("Lưu khi lưu trữ");
+    await sheet.getByRole("button", { name: "Lưu trữ ghi chú", exact: true }).click();
+    await expect(sheet).toBeHidden();
+    const archived = page.getByRole("button", { name: /^Đã (hoàn thành|lưu trữ)/ });
+    if (await archived.getAttribute("aria-expanded") === "false") await archived.click();
+    await openTestItem(page, title);
+    await expect(sheet.locator(".formatted-content strong")).toHaveText("Lưu khi lưu trữ");
+    await sheet.getByRole("button", { name: "Khôi phục ghi chú", exact: true }).click();
+    await openTestItem(page, title);
+    await draft("Lưu khi mở xác nhận xóa");
+    await sheet.getByRole("button", { name: "Xóa mục", exact: true }).click();
+    const confirmation = page.getByRole("alertdialog");
+    await expect(confirmation).toBeVisible();
+    await confirmation.getByRole("button", { name: "Giữ lại", exact: true }).click();
+    await expect(sheet).toBeVisible();
+    await reopen("Lưu khi mở xác nhận xóa");
+  });
+}

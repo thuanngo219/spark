@@ -2353,13 +2353,13 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
     return true;
   };
 
-  const saveContent = () => {
+  const saveContent = (finishEditing = true) => {
     if (contentLength(description) > CONTENT_LIMIT) return false;
     const content = normalizeContent(description, descriptionFormat);
     setDescription(content.description ?? "");
     setDescriptionFormat(content.descriptionFormat);
     onSave(content);
-    setEditingField(null);
+    if (finishEditing) setEditingField(null);
     return true;
   };
   const cancelContent = () => {
@@ -2442,7 +2442,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
                 <span className="detail-label">Nội dung</span>
                 {editingField === "content" ? (
                   <div className="detail-edit-actions">
-                    <button type="button" className="detail-icon-action save" onClick={saveContent} aria-label="Lưu Nội dung"><Icon name="check" size={18} /></button>
+                    <button type="button" className="detail-icon-action save" onClick={() => saveContent()} aria-label="Lưu Nội dung"><Icon name="check" size={18} /></button>
                     <button type="button" className="detail-icon-action" onClick={cancelContent} aria-label="Hủy"><Icon name="close" size={18} /></button>
                   </div>
                 ) : (
@@ -2462,7 +2462,11 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
         </div>
 
         {dateError && <p className="form-error detail-date-error" role="status">Ngày đến hạn không thể trước ngày bắt đầu. Thay đổi ngày chưa được lưu.</p>}
-        <div className="detail-metadata" aria-label="Thông tin mục" onFocusCapture={() => switchField(null)}>
+        <div className="detail-metadata" aria-label="Thông tin mục" onFocusCapture={() => {
+          // Save without moving the focused control between pointerdown and click.
+          if (editingField === "title") saveTitle(false);
+          if (editingField === "content") saveContent(false);
+        }}>
           <button type="button" className={`detail-meta-button icon-only important ${important ? "selected" : ""}`} title="Quan Trọng" aria-label="Quan Trọng" aria-pressed={important} onClick={() => { const value = !important; setImportant(value); onSave({ isImportant: value }); }}><Icon name="star" size={17} /></button>
           <button type="button" className={`detail-meta-button icon-only urgent ${urgent ? "selected" : ""}`} title="Ưu tiên" aria-label="Ưu tiên" aria-pressed={urgent} onClick={() => { const value = !urgent; setUrgent(value); onSave({ isUrgent: value }); }}><Icon name="zap" size={17} /></button>
           <label className="detail-meta-control" title="Ngày bắt đầu">

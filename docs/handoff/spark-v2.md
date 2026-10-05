@@ -122,3 +122,6 @@ Toolbar chỉ đậm hơn 5% (field 95% + đen 5%), thay D-122. Gỡ hoàn toàn
 Dải màu 10px ở chân header trên desktop/mobile, cả thường/compact. Không border dưới, bóng Navy nhẹ rõ giữa và mờ hai biên. Blur desktop/mobile 8px với WebKit; nền body canvas phẳng, bỏ gradient màu. Quyết định này thay các mô tả cũ về dải màu trên cùng và blur 8/18/14px.
 
 - D-131: Ô chọn sắp xếp và nút đổi chiều cao 36px trên desktop/mobile; nút đổi chiều rộng 36px. Header blur 8px ở cả hai kích thước, có WebKit.
+
+- D-132: Focus vào metadata trong chi tiết tự lưu draft hợp lệ nhưng giữ editor/kích thước khung, để click không mất đích hoặc đóng nhầm khung. Lưu/chuyển trường vẫn kết thúc edit; Hủy chỉ bỏ thay đổi chưa tự lưu. Regression kiểm tra click thực, lưu qua reload, ngày, project, lưu trữ/khôi phục và xác nhận xóa ở 1280px/390px.
+- Kiểm tra D-132: lint, typecheck, build, 162 unit tests và 12 browser tests trên production build local đều đạt; gồm click metadata desktop 1280px/mobile 390px và cold-start offline. Chưa kiểm tra iPhone vật lý.
