@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import sharp from "sharp";
 
 test("app metadata, manifest and offline cache use the new icon set", async ({ page, request }) => {
   await page.goto("/");
@@ -50,17 +51,26 @@ test("desktop sidebar, compact rail and mobile drawer use the approved logo", as
   await expect(logo).toBeVisible();
   await expect(logo).toHaveAttribute("src", "/brand/spark-logo-negative-v2.svg");
   await expect.poll(() => logo.evaluate((image) => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  await logo.evaluate(image => (image as HTMLImageElement).decode());
   const compact = (await wrap.boundingBox())!;
+  const compactArtwork = (await logo.boundingBox())!;
   expect(compact.width).toBe(36);
-  const badgeBefore = await page.screenshot({ clip: compact });
+  const badgeBefore = await sharp(await page.screenshot({ clip: compact })).raw().toBuffer();
   await page.getByRole("button", { name: "Mở rộng sidebar", exact: true }).click();
   await page.locator(".app-shell").evaluate(e => Promise.all(e.getAnimations().map(a => a.finished)));
   const expanded = (await wrap.boundingBox())!;
   expect(expanded.x).toBe(compact.x);
   expect(expanded.y).toBe(compact.y);
   expect(expanded.height).toBe(compact.height);
-  expect(await page.screenshot({ clip: compact })).toEqual(badgeBefore);
+  const badgeAfter = await sharp(await page.screenshot({ clip: compact })).raw().toBuffer();
+  // Chromium can round gradient channels by 1/255 after repainting a clip.
+  // Geometry remains exact; a moved/scaled edge exceeds this color tolerance.
+  expect(badgeAfter.length).toBe(badgeBefore.length);
+  let maxChannelDelta = 0;
+  for (let i = 0; i < badgeAfter.length; i++) maxChannelDelta = Math.max(maxChannelDelta, Math.abs(badgeAfter[i] - badgeBefore[i]));
+  expect(maxChannelDelta).toBeLessThanOrEqual(1);
   const artwork = (await logo.boundingBox())!;
+  expect(artwork).toEqual(compactArtwork);
   expect(artwork.y + artwork.height).toBeLessThanOrEqual(expanded.y + expanded.height);
   const navIcon = (await desktop.locator(".nav-item svg").first().boundingBox())!;
   expect(compact.x + 18).toBeCloseTo(navIcon.x + navIcon.width / 2, 1);
