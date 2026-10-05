@@ -18,7 +18,7 @@ Cập nhật 05/10/2026, D-133/D-134. Biểu tượng chính thức là tick/vò
 | Vị trí | Asset runtime |
 |---|---|
 | Sidebar desktop mở rộng và menu mobile | `/brand/spark-logo-negative-v2.svg` |
-| Sidebar desktop thu gọn | `/spark-mark-v2.svg` |
+| Sidebar desktop thu gọn | Cùng `/brand/spark-logo-negative-v2.svg`, crop ngang chỉ hiện badge 36px (D-135) |
 | Logo chính trên nền sáng / bộ asset dùng chung | `/brand/spark-logo-v2.svg` và `.png` |
 | Favicon | `/spark-favicon-v2.svg`, `.ico`; PNG 16/32/48px trong `/icons/` |
 | iPhone/Home Screen | `/icons/spark-apple-v2-180.png`, vuông full-bleed |
@@ -37,3 +37,5 @@ npm run icons:verify
 Generator app icon tạo SVG/PNG/ICO và alias cũ; generator brand ghép badge với outlines wordmark, xuất logo SVG/PNG và mark compact. Verifier kiểm tra kích thước, alpha, gradient/artwork, maskable safe zone, ICO và các alias logo. Regression browser kiểm tra metadata, offline cache, sidebar mở/thu gọn và drawer mobile 390px.
 
 Không thêm tia, đổi hình học, vẽ lại wordmark hoặc dùng CSS filter. Không lấy lại check-burst từ concept/variation làm logo production.
+
+D-135: app dùng một ảnh logo để full/compact giữ nguyên size/tọa độ badge, canh cùng cột icon điều hướng. `spark-mark-v2.svg` vẫn là badge độc lập hợp lệ nhưng không còn hoán đổi ở runtime sidebar. Khung cao 58px chứa đủ ảnh 57.6px, không cắt chân chữ.

@@ -75,7 +75,6 @@ const PROJECT_LABELS_KEY = "spark:project-labels:v1";
 const PROJECT_LABELS_EXPANDED_KEY = "spark:project-labels-expanded:v1";
 const SORT_SETTINGS_KEY = "spark:sort-settings:v1";
 const SPARK_LOGO_NEGATIVE_SRC = "/brand/spark-logo-negative-v2.svg";
-const SPARK_MARK_NEGATIVE_SRC = "/spark-mark-v2.svg";
 
 function projectPillWidth(name: string) {
   return Math.max(32, Math.ceil(22 + name.trim().length * 6.4));
@@ -1698,8 +1697,7 @@ function Sidebar({
   return (
     <aside className={`sidebar ${mobile ? "sidebar-mobile" : ""}`}>
       <div className="sidebar-brand">
-        <span className="brand-full-wrap"><Image className="brand-full" src={SPARK_LOGO_NEGATIVE_SRC} width={151} height={57} alt="Spark" priority unoptimized /></span>
-        <span className="brand-mark"><Image className="brand-mark-art" src={SPARK_MARK_NEGATIVE_SRC} width={36} height={36} alt="" priority unoptimized /></span>
+        <span className="brand-full-wrap"><Image className="brand-full" src={SPARK_LOGO_NEGATIVE_SRC} width={153.6} height={57.6} alt="Spark" priority unoptimized /></span>
         {mobile && <button className="icon-button sidebar-close" onClick={onCloseMobile} aria-label="Đóng điều hướng"><Icon name="close" /></button>}
       </div>
       <nav aria-label="Điều hướng chính">

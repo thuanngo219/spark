@@ -184,7 +184,7 @@ test("mobile detail and quick-add focus styles remain light on narrow screens", 
   await editor.click();
   await paste(page, "<p>Trước</p><ul><li><strong>Một</strong></li><li>Hai</li></ul><p>Sau</p>");
   await expect(editor.locator("ul, ol, li")).toHaveCount(0);
-  expect(await editor.evaluate(e => getComputedStyle(e).backgroundColor)).toBe("rgb(241, 242, 245)");
+  expect(await editor.evaluate(e => getComputedStyle(e).backgroundColor)).toBe("rgba(0, 0, 0, 0)");
   await page.getByRole("button", { name: "Thêm", exact: true }).click();
   await page.getByRole("button", { name: "Hủy", exact: true }).click();
   await page.reload();
@@ -386,5 +386,49 @@ for (const width of [1280, 390]) {
     await confirmation.getByRole("button", { name: "Giữ lại", exact: true }).click();
     await expect(sheet).toBeVisible();
     await reopen("Lưu khi mở xác nhận xóa");
+  });
+}
+
+for (const width of [1280, 390]) {
+  test(`rounded actions, grey completion and minimal editors at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 });
+    const quickAdd = page.getByRole("button", { name: "Thêm công việc", exact: true });
+    const circle = width < 700 ? quickAdd.locator("span") : quickAdd;
+    const addBox = (await circle.boundingBox())!;
+    expect(addBox.width).toBe(addBox.height);
+    expect(await circle.evaluate(e => getComputedStyle(e).borderRadius)).toBe("999px");
+    await quickAdd.click();
+    await page.getByRole("textbox", { name: "Tên mục" }).fill("Minimal editor");
+    await page.getByRole("button", { name: "Thêm", exact: true }).click();
+    await page.getByRole("button", { name: "Hủy", exact: true }).click();
+    await openTestItem(page, "Minimal editor");
+    await page.locator(".detail-title-row").getByRole("checkbox").click();
+    await expect(page.locator(".detail-status-box")).toHaveCSS("background-color", "rgb(139, 143, 158)");
+    await page.getByRole("button", { name: "Sửa tên", exact: true }).click();
+    const title = page.getByRole("textbox", { name: "Tên task", exact: true });
+    expect(await title.evaluate(e => {
+      const s = getComputedStyle(e);
+      return [s.borderTopWidth, s.borderRightWidth, s.borderBottomWidth, s.borderLeftWidth, s.outlineStyle, s.backgroundColor, s.boxShadow];
+    })).toEqual(["0px", "0px", "1px", "0px", "none", "rgba(0, 0, 0, 0)", "none"]);
+    await title.fill("Minimal editor saved");
+    await page.getByRole("button", { name: "Sửa Nội dung", exact: true }).click();
+    const input = page.getByRole("textbox", { name: "Nội dung task", exact: true });
+    await input.fill("Nội dung không có khung hoặc nền riêng");
+    for (const selector of [".content-editor", ".content-editor-body", ".content-editor-input"]) {
+      expect(await page.locator(selector).evaluate(e => {
+        const s = getComputedStyle(e); return [s.borderTopWidth, s.borderBottomWidth, s.backgroundColor, s.outlineStyle];
+      })).toEqual(["0px", "0px", "rgba(0, 0, 0, 0)", "none"]);
+    }
+    expect(await page.locator(".content-toolbar").evaluate(e => getComputedStyle(e).borderTopWidth)).toBe("1px");
+    expect(await page.locator(".content-toolbar").evaluate(e => getComputedStyle(e).backgroundColor)).not.toBe("rgba(0, 0, 0, 0)");
+    const cancel = page.locator(".detail-field-heading").getByRole("button", { name: "Hủy", exact: true });
+    const box = (await cancel.boundingBox())!;
+    expect(box.width).toBe(28); expect(box.height).toBe(28);
+    expect(await cancel.evaluate(e => getComputedStyle(e).borderRadius)).toBe("999px");
+    await cancel.click();
+    await expect(page.getByRole("button", { name: "Sửa Nội dung", exact: true })).toBeVisible();
+    await expect(page.locator(".detail-title-row p")).toHaveText("Minimal editor saved");
+    await expect(page.locator(".detail-description .formatted-content")).toHaveText("Chưa có nội dung");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
 }

@@ -78,6 +78,8 @@ Logo chính thức hiện hành theo D-134 (05/10/2026): biểu tượng tick/v�
 - Primary dùng trên nền sáng; negative dùng trên Navy/nền tối đủ tương phản. Không áp CSS filter cho logo; gọi đúng asset.
 - Quy tắc tick/ba tia check-burst, ba màu tia và logo negative toàn trắng trước D-134 chỉ là lịch sử. D-134 cho phép gradient bên trong badge logo, không áp gradient lên wordmark hoặc canvas app.
 
+- D-135: sidebar dùng cùng logo negative cho full/compact/mobile, badge luôn 36px và cùng cột tâm x=28px với icon điều hướng. Crop ngang để ẩn wordmark ở compact; khung cao 58px chứa đủ ảnh, không cắt chân logo.
+
 ### App icon hiện hành — D-133/D-134 (2026-10-05)
 
 - Chủ dự án cung cấp SVG mới: tick trắng trong vòng tròn đứt đoạn và hai vạch trắng, nền radial gradient từ `#2B3BA8` đến Navy `#111742`. Source nguyên bản lưu tại `assets/logo/spark-app-icon-v2.svg` (512×512).
@@ -90,7 +92,7 @@ Logo chính thức hiện hành theo D-134 (05/10/2026): biểu tượng tick/v�
 Asset hiện tại:
 
 - `assets/logo/spark-logo-primary.svg` và `.png`: logo primary cho website/app/presentation.
-- `assets/logo/spark-logo-negative.svg` và `.png`: badge màu + wordmark trắng trên nền tối; compact rail dùng `public/spark-mark-v2.svg`.
+- `assets/logo/spark-logo-negative.svg` và `.png`: badge màu + wordmark trắng trên nền tối; compact rail dùng cùng full logo và crop ngang theo D-135; `public/spark-mark-v2.svg` là badge độc lập.
 - `public/icons/spark-app-v2.svg`: bản SVG vuông nguyên mẫu; `public/spark-favicon-v2.svg`: SVG bo góc; `public/icons/spark-maskable-v2.svg`: source maskable đã scale artwork.
 - `public/spark-favicon-v2.ico`, `public/icons/spark-favicon-v2-{16,32,48}.png`: favicon.
 - `public/icons/spark-pwa-v2-{192,512}.png`: icon Chrome/PWA thông thường.
@@ -104,7 +106,7 @@ Brand palette của Spark có đúng năm màu chromatic. Trắng, đen và các
 | Token gợi ý | Màu | Vai trò thương hiệu |
 |---|---|---|
 | `brand-navy` | `#111742` | Nền/chrome tối, text đậm và cấu trúc chính. |
-| `brand-turquoise` | `#44D4CD` | Tương tác mát, notification/info và chi tiết hoàn thành. |
+| `brand-turquoise` | `#44D4CD` | Tương tác mát và notification/info; checkbox hoàn thành dùng neutral theo D-135. |
 | `brand-violet` | `#8951C7` | Accent hỗ trợ, illustration và gradient. |
 | `brand-coral` | `#D9776A` | Accent ấm, warning và điểm nhấn cần chú ý. |
 | `brand-deep-purple` | `#65458A` | Màu neo nhận diện, logo, heading hoặc chi tiết chủ đạo. |
@@ -160,14 +162,15 @@ Phần này là source of truth cho web app. Khi CSS/component mới khác bản
 | Variant | Dùng cho | Default | Hover | Disabled |
 |---|---|---|---|---|
 | Primary | Thêm, Tạo/Lưu dự án, CTA chính | Turquoise `#44D4CD`, chữ Navy `#111742` | Navy, chữ trắng | Giữ nền Turquoise; chữ Navy ở `46%`, không giảm opacity toàn nút. |
-| Primary icon | Close và utility icon cần nổi bật | Turquoise, icon Navy, `44×44px`, radius `13px` | Navy, icon trắng | Như Primary. |
-| Secondary text | Hủy và action phụ | Transparent, chữ `#8B8F9E`, cao `40px`, radius `10px` | Nền `#F1F2F5`, chữ `#171B35` | Giảm tương phản chữ, không thêm glow. |
-| Secondary icon | Search/Help ở header, edit cạnh tên dự án | Transparent, icon `#8B8F9E`, `36–40px`, radius `10px` | Nền `#F1F2F5`, icon `#171B35` | Giảm tương phản icon. |
+| Primary icon | Close và utility icon cần nổi bật | Turquoise, icon Navy, `44×44px`, hình tròn | Navy, icon trắng | Như Primary. |
+| Secondary text | Hủy và action phụ | Transparent, chữ `#8B8F9E`, cao `40px`, bo tròn hai đầu | Nền `#F1F2F5`, chữ `#171B35` | Giảm tương phản chữ, không thêm glow. |
+| Secondary icon | Search/Help ở header, edit cạnh tên dự án | Transparent, icon `#8B8F9E`, `36–40px`, hình tròn | Nền `#F1F2F5`, icon `#171B35` | Giảm tương phản icon. |
 | Destructive | Xóa item | Muted Coral/tint đi kèm icon và label | Tăng tint tiết chế | Không dùng màu làm tín hiệu duy nhất. |
 | Semantic | Star, Ưu tiên, checkbox, project color | Màu theo ý nghĩa hoặc trạng thái | Chỉ đổi khi giúp nhận biết hành động | Phải giữ icon/shape/label làm tín hiệu bổ sung. |
 
 - Vùng chạm mobile mặc định là `44×44px`, kể cả khi artwork icon nhỏ hơn. Ngoại lệ đã duyệt D-131: selector sắp xếp cao 36px và nút đổi chiều 36×36px trên desktop/mobile.
 - Desktop floating quick-add là ngoại lệ Primary icon `48×48px`, dấu `+` 32px, neo góc dưới phải. Mobile dùng nút Primary icon 72px ở giữa dock 58px, cho phép trồi khỏi dock; cả hai luôn có accessible label/tooltip “Thêm công việc”.
+- D-135: nút chỉ có icon dùng hình tròn; nút có chữ/navigation bo hai đầu. Checkbox checked dùng #8B8F9E/tick trắng trên desktop và mobile.
 - Nút trong cùng một action row dùng cùng chiều cao và radius; Primary và Hủy vẫn giữ phân cấp màu khác nhau.
 - Navigation button, color swatch, date tile và project dot không bị ép vào màu Primary vì chúng là selection/navigation control.
 
@@ -183,7 +186,7 @@ Phần này là source of truth cho web app. Khi CSS/component mới khác bản
 |---|---|
 | Default | Field nền `#FAFBFC`, border `#DDE0E8`, radius `12px`, cao `44–46px`. |
 | Hover | Không đổi màu field Ngày/Dự án; tránh tạo cảm giác đây là CTA. |
-| Focus | Không glow/shadow. Quick-add dùng `ui-control-hover`; vùng nhập Nội dung chi tiết giữ `ui-field`; input Tên chỉ đổi border nhẹ. |
+| Focus | Không glow/shadow. Quick-add Tên dùng `ui-control-hover`; Nội dung trong suốt ở mọi trạng thái, chỉ toolbar có border/nền. Sửa Tên trong chi tiết chỉ có gạch dưới, nền trong suốt. |
 | Selected | Dùng nền/tint đậm hơn khoảng `10–15%` hoặc tín hiệu semantic; không dùng outline glow. |
 | Disabled | Giữ hình học và nền variant; giảm tương phản label/icon thay vì làm nhạt toàn control. |
 | Error | Dùng Muted Coral kèm text/icon giải thích; không chỉ đổi border màu. |
@@ -195,7 +198,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 - **Notification/info:** ưu tiên Turquoise `#44D4CD` trên nền/tint đủ tương phản.
 - **Warning/attention:** ưu tiên Muted Coral `#D9776A` và luôn kèm icon hoặc nhãn rõ nghĩa.
 - **Error/destructive:** có thể dùng Muted Coral làm tín hiệu nóng trong palette, nhưng thông điệp và icon phải nói rõ mức độ; không dùng màu làm tín hiệu duy nhất.
-- **Success/completion:** có thể dùng Turquoise như accent, nhưng checkbox, icon hoặc trạng thái chữ mới là tín hiệu chính.
+- **Success/completion:** checkbox task checked dùng neutral #8B8F9E và tick trắng; không dùng Turquoise cho trạng thái này.
 
 ### Accessibility
 
@@ -293,8 +296,8 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 
 - Bố cục đơn giản, rõ thứ bậc, có khoảng thở nhưng không làm giảm mật độ hữu ích của Compact Canvas.
 - Canvas liệt kê task/note trên desktop rộng responsive từ `940px` đến tối đa `1200px`; khi vùng nội dung không đủ chỗ thì co theo chiều rộng khả dụng, không tạo cuộn ngang. Mobile tiếp tục dùng trọn chiều rộng màn hình. Detail sheet desktop rộng `880px`; header, Tên và cụm metadata/control giữ cố định, chỉ vùng Nội dung cuộn khi nội dung dài. Nhãn Nội dung và nút sửa nằm cùng hàng cố định bên ngoài vùng cuộn. Toolbar B/I/U dùng control neutral, trạng thái chọn Navy/trắng và vùng chạm 44px trên mobile.
-- Khung desktop khi sửa Nội dung cao `min(86dvh, 820px)`, editor giãn theo phần còn lại; mobile edit dùng vùng nhập `40dvh`. Quick-add cao `160px`, chữ nhập regular trên desktop. Toolbar chỉ pha 5% đen trên nền field; vùng nhập giữ nền field. Không có bullet/numbering.
-- Tên không có label; nút sửa ngang text. Input Tên cao 28px, border nhẹ, không glow/shadow. Desktop có ✓/× cùng hàng; mobile ẩn hai nút này và tự lưu tên hợp lệ khi blur. Nhãn Nội dung cao 28px, cách field 4px desktop/8px mobile; action cạnh nhãn dùng control 28px/icon 16px desktop và vùng chạm 44px/icon 18px mobile.
+- Khung desktop khi sửa Nội dung cao `min(86dvh, 820px)`, editor giãn theo phần còn lại; mobile edit dùng vùng nhập `40dvh`. Quick-add cao `160px`, chữ nhập regular trên desktop. Toolbar giữ border và pha 5% đen trên nền field; wrapper/vùng nhập không border hoặc nền. Không có bullet/numbering.
+- Tên không có label; nút sửa ngang text. Input Tên cao 28px, chỉ gạch dưới 1px, nền trong suốt, không outline/glow/shadow. Desktop có ✓/× cùng hàng; mobile ẩn hai nút này và tự lưu tên hợp lệ khi blur. Nhãn Nội dung cao 28px, cách field 4px desktop/8px mobile; nút lưu/hủy Nội dung hiển thị 28px/icon 16px ở cả desktop/mobile, mobile có vùng chạm 44px. Nút Sửa mobile vẫn có control 44px.
 - Khối Nội dung cách đường phân cách 16px phía trước và 14.4px phía sau, giảm 20%. Checkbox/dấu note trong chi tiết không có padding ngang, cách tên 10px, hover không đổi nền; tên task hoàn thành không gạch ngang.
 - Metadata mobile có Dự án và Lưu trữ/Xóa cùng hàng thứ hai. Focus vào metadata tự lưu draft nhưng giữ editor/kích thước khung để click không mất đích (D-132).
 - Dùng bo góc nhất quán và surface trung tính; tránh card lồng card hoặc shadow nặng.

@@ -6,7 +6,7 @@
 
 ## Phạm vi rà soát và cách tiếp tục
 
-Đã đối chiếu toàn bộ yêu cầu trực tiếp có trong chat này từ 14/09 đến 05/10/2026 với D-117–D-132, tài liệu và mã nguồn hiện có. Bao gồm sửa lỗi click chi tiết, kết quả kiểm thử/phát hành và các giới hạn chưa kiểm tra. Không khẳng định đã kiểm kê mọi chat khác hoặc lưu bản gốc các screenshot trong thư mục tạm; thông số và hành vi trong các ảnh của chat này đã được ghi thành yêu cầu bên dưới.
+Đã đối chiếu toàn bộ yêu cầu trực tiếp có trong chat này từ 14/09 đến 05/10/2026 với D-117–D-135, tài liệu và mã nguồn hiện có. Bao gồm sửa lỗi click chi tiết, kết quả kiểm thử/phát hành và các giới hạn chưa kiểm tra. Không khẳng định đã kiểm kê mọi chat khác hoặc lưu bản gốc các screenshot trong thư mục tạm; thông số và hành vi trong các ảnh của chat này đã được ghi thành yêu cầu bên dưới.
 
 Đọc `AGENTS.md`, `README.md`, `brand-guideline.md`, `docs/PROJECT_BRIEF.md`, `docs/UI_OPTIONS.md`, `docs/DECISIONS.md`, `docs/IMPLEMENTATION_GUIDE.md` và handoff này trước khi code. Khi liên quan dữ liệu, đọc thêm `docs/OFFLINE_SYNC.md`. Repo không có `docs/architecture.md`; kiến trúc nằm trong implementation guide. Tên file quyết định chuẩn là `docs/DECISIONS.md`.
 
@@ -41,7 +41,7 @@ Có thể archive chat đã hoàn tất sau khi quyết định, việc còn thi
 | Nội dung và phím tắt | Task/note, quick-add/detail: tối đa 4.000 Unicode code points gồm xuống dòng; chỉ B/I/U, ⌘/Ctrl+B/I/U, undo/redo. Vượt giới hạn bị từ chối, không cắt âm thầm draft. | D-117 |
 | Nút sửa Nội dung | Cùng hàng nhãn Nội dung, bên ngoài vùng cuộn, không dịch theo nội dung dài. | D-117 |
 | Quick-add start | Mặc định trống, chỉ **task mới trong Hôm nay** mặc định hôm nay. Note luôn trống mặc định. Ngày đã chọn/xóa thủ công giữ khi đổi loại. Due date giữ quy tắc trong brief. | D-118 |
-| Nền khi nhập | Quick-add focus dùng control-hover; vùng nhập Nội dung chi tiết giữ màu field như khi chưa nhập. | D-120 |
+| Nền khi nhập | Quick-add Tên focus dùng control-hover; Nội dung quick-add/chi tiết trong suốt, không border, chỉ toolbar có border/nền. | D-135 thay D-120 |
 | Chiều cao editor | Desktop sửa Nội dung: khung `min(86dvh, 820px)`, bằng giới hạn khung đọc dài, editor giãn theo phần còn lại. Mobile edit `40dvh`; quick-add `160px`. | D-120 |
 | Toolbar | Chỉ nền toolbar pha field 95% + đen 5%; không làm đậm vùng nhập. Yêu cầu 20% đã bị thay. | D-123 thay D-122 |
 | Bullet/numbering | Đã gỡ khỏi toolbar/schema/phím tắt/renderer. Nội dung cũ và HTML dán vào giữ chữ/xuống dòng/B/I/U; không sửa hàng loạt dữ liệu cloud. Yêu cầu spacing 6px sau danh sách đã hết hiệu lực cùng tính năng này. | D-123 thay D-119 |
@@ -50,7 +50,7 @@ Có thể archive chat đã hoàn tất sau khi quyết định, việc còn thi
 | Nhãn và khoảng cách chi tiết | Bỏ label Tên; nút sửa ngang text. Nhãn Nội dung cao 28px, gap dưới 4px desktop/8px mobile. Khoảng cách hai phía divider giảm 20%: margin 16px và padding 14.4px. | D-125/D-126 |
 | Task/note trước tên | Checkbox task phản ánh completedAt và cho bật/tắt, lưu draft hợp lệ trước thao tác; dấu gạch ngang note tĩnh. Tên task hoàn thành trong chi tiết không gạch ngang. | D-127 |
 | Hover và vị trí marker | Hover không đổi nền; checked vẫn giữ màu trạng thái. Artwork checkbox 19px/dấu note 12px, không padding ngang, sát lề **nội dung**; gap tên 10px. Checkbox có vùng bấm mở rộng 44px không chiếm hàng. | D-128/D-129 |
-| Sửa Tên | Input cao 28px, border nhẹ không glow/shadow. Desktop giữ ✓/× cùng hàng. Mobile ẩn ✓/×, tự lưu tên hợp lệ khi blur nhưng giữ input; Enter lưu/thoát, Escape hủy phần chưa lưu. | D-120/D-129 |
+| Sửa Tên | Input cao 28px, chỉ gạch dưới 1px, nền trong suốt, không outline/glow/shadow. Desktop giữ ✓/× cùng hàng. Mobile ẩn ✓/×, tự lưu tên hợp lệ khi blur nhưng giữ input; Enter lưu/thoát, Escape hủy phần chưa lưu. | D-135/D-129 |
 | Header và dải màu | Dải 10px nằm dưới tiêu đề/thống kê trên desktop/mobile, thường/compact; không border dưới, bóng Navy nhẹ rõ giữa và tan hai mép. | D-124/D-130 |
 | Blur và nền app | Header blur **8px desktop và mobile**, có `-webkit-backdrop-filter`; desktop 12px đã bị thay. Body canvas phẳng #F7F8FA, không gradient màu. Bóng header vẫn có radial gradient trung tính để làm mờ hai mép. | D-130/D-131 |
 | Control sort | Selector cao 36px; nút đổi chiều 36×36px ở desktop/mobile. Đây là hai control sắp xếp trong ảnh, không phải toàn bộ nút trong app. | D-131 |
@@ -142,3 +142,13 @@ Vị trí runtime và danh sách source ở `assets/logo/README.md`. Regression 
 Kiểm tra trước phát hành D-134: `icons:verify`, lint, typecheck, build và 162 unit tests đạt. 14/14 browser tests trên production build local đạt, gồm desktop/compact/mobile 390px và cache offline. Đã xem ảnh thực tế logo ở cả ba trạng thái; không tràn ngang trên mobile.
 
 Phát hành D-134: commit app `9add81b01eb547433470b94dac565d8690447e65`, deployment `dpl_5yUnyDE2MMLmRQ54iQkbUuxPLDyw` READY, alias `spark.thuanngo.com` xác minh ngày 05/10/2026. Production đạt 14/14 browser tests; toàn bộ 35 asset logo/icon public (URL v2 và alias cũ) trả HTTP 200, SHA-256 khớp bản local. Truy vấn runtime log lỗi của deployment không trả bản ghi. Chưa kiểm tra launcher trên thiết bị vật lý. Commit ghi nhận kết quả này chỉ cập nhật tài liệu, không thay code/asset.
+
+## D-135 — Chỉnh logo, nút và editor (2026-10-05)
+
+- Logo desktop full/compact dùng một ảnh, badge 36px cùng tọa độ/cột icon điều hướng; khung 58px chứa đủ ảnh, không cắt chân chữ. Drawer mobile dùng cùng full logo.
+- Nút icon tròn, nút chữ/navigation bo hai đầu. Task checked neutral #8B8F9E/tick trắng, cả list và chi tiết.
+- Sửa Tên: chỉ gạch dưới, nền trong suốt; giữ chiều cao 28px và quy tắc lưu/validation hiện có.
+- Nội dung quick-add/chi tiết: vùng nhập trong suốt, không border; toolbar giữ border và nền 5% đậm. Lưu/hủy Nội dung 28×28px/icon 16px trên cả desktop/mobile; mobile mở hit area 44px, không chồng nhau. Close sheet giữ 44px, hình tròn.
+- File thay đổi: `src/app/globals.css`, `src/components/SparkApp.tsx`, browser regression, brand guideline, brief, implementation guide, asset README và decision/handoff. Không đổi source artwork, dữ liệu hoặc schema.
+
+Kiểm tra D-135 trước phát hành: lint/typecheck/build và 162 unit tests đạt; 16 browser scenarios local đạt (14 ở lượt toàn bộ, 2 scenario editor mới chạy lại sau khi sửa kiểm tra chờ hiệu ứng màu checked). So sánh ảnh badge compact/full khớp từng pixel; đã xem screenshot desktop/mobile, kiểm tra 320/390px không tràn ngang. Không phát hiện page error trong lượt kiểm tra trực quan.
