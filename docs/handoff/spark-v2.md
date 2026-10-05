@@ -2,6 +2,8 @@
 
 ## Đang chờ duyệt — dark mode preview (D-138, 2026-10-05)
 
+Preview code commit `e6d1728`, Vercel `dpl_B8sDFUj9xcQoFZwTrmtFZ6YzTJpT` READY; URL cố định `https://spark-o9r9k2bzb-thuanngo.vercel.app`, alias nhánh `https://spark-git-codex-spark-dark-mode-thuanngo.vercel.app`. Smoke test trên URL Vercel qua share link: Hôm nay tải đúng, chọn Tối và reload vẫn giữ, quick-add/Nội dung mobile hoạt động, không tràn ngang 390px, không có pageerror. Preview có Vercel Authentication; liên kết share tạm thời gửi riêng trong chat, không ghi token vào repo.
+
 Nhánh `codex/spark-dark-mode` triển khai Theo hệ thống / Sáng / Tối tại Phím tắt & hiển thị, mặc định Theo hệ thống. Preference theo thiết bị/origin, không đồng bộ cloud. Áp dụng trước paint, đổi theo OS/cross-tab, sử dụng được khi offline hoặc storage preference bị chặn. Bảng màu trong brand guideline D-138; logo/project color, checked xám, header 8px/20px/5px và editor tối giản giữ nguyên.
 
 Kiểm tra local: lint/typecheck/build đạt; 162 test logic đạt; 14 browser regression nội dung đạt, 2 regression icon và 7 test theme đạt sau sửa lỗi meta theme-color trùng. Kiểm tra 1280/390px, theme selector 320px, B/I/U, draft/metadata click, màu chữ chính/phụ đạt contrast tối thiểu 4.5:1 trên surface đã đo, lưu preference/reload/cross-tab, storage bị chặn và cold-start offline. Đã xem ảnh Hôm nay, quick-add và editor; chưa kiểm tra Safari/iPhone vật lý.
