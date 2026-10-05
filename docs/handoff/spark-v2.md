@@ -1,8 +1,12 @@
 # Spark v2 — bàn giao hiện hành
 
-## Dark mode — đã duyệt phát hành production (D-138–D-143, 2026-10-05)
+## Dark mode — đã phát hành production (D-138–D-143, 2026-10-05)
 
-Chủ dự án yêu cầu deploy production sau khi duyệt code 9c0dc8f và các thay đổi D-138–D-142. Phát hành qua main/Git integration tới https://spark.thuanngo.com. Mặc định Theo hệ thống; preference của preview không chuyển sang production vì khác origin.
+Đã phát hành qua main/Git integration tới https://spark.thuanngo.com sau yêu cầu deploy production của chủ dự án. Mốc xác minh: commit `22d0e66`, deployment `dpl_9aii13SzVwp1StjXBjg7PAdhVsDT` READY, production alias đúng domain. Build Vercel khoảng 26 giây. Commit tài liệu ghi nhận kết quả này không đổi runtime.
+
+Kiểm tra trực tiếp domain production: 23/23 browser test đạt (59.7 giây), gồm editor B/I/U, giới hạn nội dung, draft/metadata click, icon, cả hai theme, preference/reload/cross-tab/storage bị chặn, responsive 320/390px và cold-start offline. Smoke riêng xác minh header dark opacity 75%, sidebar 42px/icon 20px, nền canvas và hover chỉ đổi icon ở full/compact. Profile kiểm tra riêng chỉ dùng demo local, không tác động dữ liệu tài khoản thật. Runtime error/fatal log của deployment trong 15 phút sau phát hành không có bản ghi khớp. Chưa kiểm tra Safari/iPhone vật lý hoặc phiên cloud thật.
+
+Mặc định Theo hệ thống; preference của preview không chuyển sang production vì khác origin.
 
 Phản hồi D-142: nền nghỉ nút sidebar dùng canvas ở cả hai theme (dark #121622), thay nền xám #242B3D trong D-141; hover chỉ đổi màu icon, nền giữ canvas. Giữ kích thước/icon/tâm. Đã kiểm tra canvas không đổi khi hover, icon đổi màu, click full/compact và responsive 390px ở cả hai theme; lint/typecheck/build và 162 test logic đạt.
 
