@@ -209,6 +209,10 @@ Nền tối #121622, surface #1B2030, input/toolbar #242B3D; chữ chính #E9ECF
 
 Bootstrap tĩnh trong head áp dụng theme trước hydration/paint, đồng thời đặt color-scheme cho control native và theme-color cho browser chrome. HTML vẫn static/cache offline được; không thêm dependency hoặc migration. Bản dark mode nằm trên nhánh `codex/spark-dark-mode` để chủ dự án duyệt màu trước khi phát hành production. D-138 bổ sung theme tối cho các quyết định màu sáng trước đây, không thay kích thước/hành vi editor.
 
+## D-139 — Hover nút lưu và nhãn chọn theme (2026-10-05)
+
+Theo phản hồi preview dark mode: nút Lưu Nội dung và Lưu tên trong chi tiết dùng nền Turquoise #44D4CD, icon Navy #111742 khi hover; trạng thái nghỉ giữ nguyên. Nút Hủy ở Tên/Nội dung hover nền neutral nhẹ (ink 8%), icon ink. Áp dụng cho cả theme sáng/tối và control được hiển thị trên desktop/mobile (mobile vẫn ẩn nút lưu tên theo D-129). Ba lựa chọn theme hiển thị uppercase “THEO HỆ THỐNG / SÁNG / TỐI”, không đổi giá trị preference hay hành vi. Danh sách option/optgroup của select dùng surface và ink theo theme; native picker nhận color-scheme tương ứng, gồm Dự án và sắp xếp. Tiếp tục phát hành preview để duyệt.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

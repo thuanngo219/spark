@@ -2425,7 +2425,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
                   }} aria-label={item.type === "task" ? "Tên task" : "Tên ghi chú"} />
                   <div className="detail-edit-actions">
                     <button type="button" className="detail-icon-action save" onClick={() => saveTitle()} aria-label="Lưu"><Icon name="check" size={18} /></button>
-                    <button type="button" className="detail-icon-action" onClick={() => { setTitle(item.title); setTitleError(false); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
+                    <button type="button" className="detail-icon-action cancel" onClick={() => { setTitle(item.title); setTitleError(false); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
                   </div>
                 </div>
                 {titleError && <p className="form-error" role="status">Tên không được để trống.</p>}
@@ -2445,7 +2445,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
                 {editingField === "content" ? (
                   <div className="detail-edit-actions">
                     <button type="button" className="detail-icon-action save" onClick={() => saveContent()} aria-label="Lưu Nội dung"><Icon name="check" size={18} /></button>
-                    <button type="button" className="detail-icon-action" onClick={cancelContent} aria-label="Hủy"><Icon name="close" size={18} /></button>
+                    <button type="button" className="detail-icon-action cancel" onClick={cancelContent} aria-label="Hủy"><Icon name="close" size={18} /></button>
                   </div>
                 ) : (
                   <button type="button" className="detail-icon-action edit" onClick={() => switchField("content")} aria-label="Sửa Nội dung"><Icon name="edit" size={17} /></button>

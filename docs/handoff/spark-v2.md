@@ -1,8 +1,12 @@
 # Spark v2 — bàn giao hiện hành
 
-## Đang chờ duyệt — dark mode preview (D-138, 2026-10-05)
+## Đang chờ duyệt — dark mode preview (D-138/D-139, 2026-10-05)
 
-Preview code commit `e6d1728`, Vercel `dpl_B8sDFUj9xcQoFZwTrmtFZ6YzTJpT` READY; URL cố định `https://spark-o9r9k2bzb-thuanngo.vercel.app`, alias nhánh `https://spark-git-codex-spark-dark-mode-thuanngo.vercel.app`. Smoke test trên URL Vercel qua share link: Hôm nay tải đúng, chọn Tối và reload vẫn giữ, quick-add/Nội dung mobile hoạt động, không tràn ngang 390px, không có pageerror. Preview có Vercel Authentication; liên kết share tạm thời gửi riêng trong chat, không ghi token vào repo.
+Phản hồi D-139: đã chỉnh hover nút lưu Tên/Nội dung thành nền Turquoise, icon Navy và nhãn chọn theme hiển thị uppercase. Nút Hủy hover nền neutral nhẹ (ink 8%), icon ink. Dropdown option/optgroup dùng nền/chữ theo theme, giữ color-scheme cho native picker. CSS sửa tại selector gốc; không đổi thao tác lưu hoặc preference.
+
+Kiểm tra D-139: lint/typecheck/build và 162 test logic đạt; smoke test Chrome xác minh hover Lưu/Hủy ở Tên/Nội dung trong cả hai theme, option của dropdown dùng đúng nền/chữ/color-scheme và đổi Dự án được; nhãn uppercase không tràn ngang ở 390px. Popup native do trình duyệt/OS vẽ, chưa kiểm tra Safari/iPhone thật.
+
+Preview ban đầu D-138 (trước D-139), code commit `e6d1728`, Vercel `dpl_B8sDFUj9xcQoFZwTrmtFZ6YzTJpT` READY; URL cố định `https://spark-o9r9k2bzb-thuanngo.vercel.app`, alias nhánh `https://spark-git-codex-spark-dark-mode-thuanngo.vercel.app`. Smoke test trên URL Vercel qua share link: Hôm nay tải đúng, chọn Tối và reload vẫn giữ, quick-add/Nội dung mobile hoạt động, không tràn ngang 390px, không có pageerror. Preview có Vercel Authentication; liên kết share tạm thời gửi riêng trong chat, không ghi token vào repo.
 
 Nhánh `codex/spark-dark-mode` triển khai Theo hệ thống / Sáng / Tối tại Phím tắt & hiển thị, mặc định Theo hệ thống. Preference theo thiết bị/origin, không đồng bộ cloud. Áp dụng trước paint, đổi theo OS/cross-tab, sử dụng được khi offline hoặc storage preference bị chặn. Bảng màu trong brand guideline D-138; logo/project color, checked xám, header 8px/20px/5px và editor tối giản giữ nguyên.
 

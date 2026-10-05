@@ -154,7 +154,7 @@ Dark mode dùng neutral xanh xám, canvas phẳng; giữ nguyên màu nhận di�
 | Link / focus | `#6CE0DA` |
 | Chữ nhãn violet / Quan Trọng / Ưu tiên, lỗi | `#BA99DF` / `#EDC879` / `#F1A69B` |
 
-Các sắc sáng của accent ở trên chỉ phục vụ tương phản trong theme tối, không thêm màu thương hiệu. CTA giữ Turquoise và chữ Navy, checked vẫn neutral #8B8F9E. Project giữ giá trị màu đã chọn, dot thêm viền trong trắng 20% để tách khỏi nền. Sidebar tiếp tục dùng logo negative với wordmark trắng. Native date/select theo color-scheme của theme thực tế. Header blur 8px/WebKit và bóng tối nhẹ, không thêm gradient màu nền. Các quy tắc màu sáng bên dưới tiếp tục áp dụng khi chọn Sáng.
+Các sắc sáng của accent ở trên chỉ phục vụ tương phản trong theme tối, không thêm màu thương hiệu. CTA giữ Turquoise và chữ Navy, checked vẫn neutral #8B8F9E. Project giữ giá trị màu đã chọn, dot thêm viền trong trắng 20% để tách khỏi nền. Sidebar tiếp tục dùng logo negative với wordmark trắng. Native date/select theo color-scheme của theme thực tế. Header blur 8px/WebKit và bóng tối nhẹ, không thêm gradient màu nền. Các quy tắc màu sáng bên dưới tiếp tục áp dụng khi chọn Sáng. D-139: hover nút lưu Tên/Nội dung dùng nền Turquoise và icon Navy ở cả hai theme; nút Hủy hover nền neutral nhẹ (ink 8%) và icon ink; nhãn lựa chọn theme hiển thị uppercase.
 
 ### Controls và focus
 
