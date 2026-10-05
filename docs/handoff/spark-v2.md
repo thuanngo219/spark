@@ -1,6 +1,8 @@
 # Spark v2 — bàn giao hiện hành
 
-## Đang chờ duyệt — dark mode preview (D-138–D-141, 2026-10-05)
+## Đang chờ duyệt — dark mode preview (D-138–D-142, 2026-10-05)
+
+Phản hồi D-142: nền nghỉ nút sidebar dùng canvas ở cả hai theme (dark #121622), thay nền xám #242B3D trong D-141; hover chỉ đổi màu icon, nền giữ canvas. Giữ kích thước/icon/tâm. Đã kiểm tra canvas không đổi khi hover, icon đổi màu, click full/compact và responsive 390px ở cả hai theme; lint/typecheck/build và 162 test logic đạt.
 
 Phản hồi D-141: nút thu/mở sidebar desktop 42×42px, icon giữ 20×20px, tâm giữ trên biên sidebar full/compact; dark nền xám #242B3D, hover/focus #30394E. Footer dùng cột minmax(0, 1fr) để tránh tràn grid track làm lệch tâm. Đã kiểm tra kích thước 42px/icon 20px, tâm trên biên, click thu/mở và màu hover ở cả hai theme; mobile 390px không tràn ngang. Lint/typecheck/build và 162 test logic đạt.
 

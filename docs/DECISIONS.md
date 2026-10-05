@@ -221,6 +221,10 @@ Chủ dự án muốn tiêu đề Hôm nay/Sắp tới/tên dự án và dải m
 
 Nút sidebar-toggle tăng từ 32×32px lên 42×42px (+10px đường kính), icon giữ 20×20px. Margin phải từ -26px thành -31px để tâm vòng tròn vẫn nằm tại biên sidebar ở cả full và compact rail. Dark mode nền xám #242B3D, hover/focus nền #30394E; light giữ nền canvas, hover dùng control-hover. Transition màu 160ms. Footer dùng cột minmax(0, 1fr) để nội dung không làm grid track tràn khỏi chiều rộng sidebar. Chỉ áp dụng nút thu/mở sidebar desktop; drawer mobile giữ control hiện hành. Phát hành preview để duyệt.
 
+## D-142 — Nền nút sidebar cùng canvas (2026-10-05)
+
+Theo phản hồi chủ dự án, trạng thái nghỉ của nút thu/mở sidebar dùng cùng nền chính (canvas) ở cả hai theme: dark #121622, light #F7F8FA. Thay nền dark #242B3D của D-141. Giữ đường kính 42px/icon 20px và tâm trên biên. Theo phản hồi tiếp theo, hover/focus chỉ đổi màu icon sang link-hover, giữ nền canvas; thay cả nền hover D-141. Bỏ token nền nút riêng vì không còn khác canvas. Tiếp tục preview trước production.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

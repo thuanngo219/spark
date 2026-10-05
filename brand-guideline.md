@@ -140,7 +140,7 @@ Project có bảy màu preset để các dot vẫn phân biệt được khi dan
 
 ### Giao diện tối — bản preview D-138
 
-D-141: vòng tròn nút thu/mở sidebar desktop 42px, icon 20px; nền dark #242B3D, hover #30394E. Tâm nút giữ trên biên sidebar ở full/compact.
+D-141/D-142: vòng tròn nút thu/mở sidebar desktop 42px, icon 20px; nền cùng canvas ở cả hai theme (dark #121622), hover chỉ đổi màu icon, không đổi nền. Tâm nút giữ trên biên sidebar ở full/compact.
 
 D-140: tiêu đề view/tên dự án và dải màu dưới header dùng opacity 75% trong dark mode ở desktop/mobile; theme sáng vẫn 100%.
 
