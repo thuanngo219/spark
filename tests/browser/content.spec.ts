@@ -188,7 +188,7 @@ test("mobile detail and quick-add focus styles remain light on narrow screens", 
   await page.getByRole("button", { name: "Thêm", exact: true }).click();
   await page.getByRole("button", { name: "Hủy", exact: true }).click();
   await page.reload();
-  expect(await page.locator(".view-header").evaluate(e => getComputedStyle(e).backdropFilter)).toBe("blur(12px)");
+  expect(await page.locator(".view-header").evaluate(e => getComputedStyle(e).backdropFilter)).toBe("blur(8px)");
   await page.setViewportSize({ width: 390, height: 844 });
   await openTestItem(page, "Mobile list test");
   await expect(page.locator(".detail-description ul, .detail-description ol")).toHaveCount(0);

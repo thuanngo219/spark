@@ -259,9 +259,9 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 - [Supabase: Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security)
 
 - Khi chuyển từ Tên sang Nội dung hoặc ngược lại, tự lưu trường đang sửa trước khi chuyển; chuyển sang metadata cũng lưu draft đang sửa. Tên rỗng chặn chuyển và báo lỗi. Hủy vẫn bỏ draft hiện tại. Nút Sửa tên nằm cùng hàng với text của tên, không có nhãn Tên.
-- D-130: Header desktop nền canvas 80%, blur 12px với prefix WebKit; mobile blur 8px ở cả thường/compact. Dải màu 10px nằm dưới header; bỏ đường shadow 1px, dùng pseudo-element bóng nhẹ không bắt pointer và tan ở hai mép. Body nền canvas phẳng. Cột tiêu đề co được và h1 wrap từ dài để không tràn ngang khi bóng nằm ngoài header. Next.js/eslint-config-next khóa 16.3.5; npm audit sau cập nhật trả 0 vulnerabilities.
+- D-130: Header desktop nền canvas 80%, blur 8px với prefix WebKit; mobile blur 8px ở cả thường/compact. Dải màu 10px nằm dưới header; bỏ đường shadow 1px, dùng pseudo-element bóng nhẹ không bắt pointer và tan ở hai mép. Body nền canvas phẳng. Cột tiêu đề co được và h1 wrap từ dài để không tràn ngang khi bóng nằm ngoài header. Next.js/eslint-config-next khóa 16.3.5; npm audit sau cập nhật trả 0 vulnerabilities.
 
-- D-122: Chỉ nền toolbar formatting pha 5% đen trên nền field; nền vùng nhập giữ nguyên. Blur/vị trí dải màu hiện theo D-130: desktop 12px, mobile 8px và dải màu dưới header.
+- D-122: Chỉ nền toolbar formatting pha 5% đen trên nền field; nền vùng nhập giữ nguyên. Blur/vị trí dải màu hiện theo D-130/D-131: desktop/mobile 8px và dải màu dưới header.
 
 - D-123: Gỡ bullet/number ở toolbar, schema editor, phím tắt và renderer. Nội dung cũ giữ văn bản/xuống dòng/B/I/U, không migration hoặc sửa hàng loạt dữ liệu cloud. Dán HTML danh sách được chuyển thành đoạn văn.
 
@@ -270,3 +270,5 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 - D-128: Hover checkbox/dấu note trong chi tiết không đổi nền. Marker dùng `.detail-title-marker` tách khỏi action có nền hover; nền checked của ô checkbox không đổi.
 
 - D-129: Marker chi tiết không có đệm ngang, gap đến Tên 10px; pseudo-element của checkbox mở vùng bấm thành 44px, không đè input. Input Tên cao 28px. Mobile ẩn action lưu/hủy của Tên, blur lưu hợp lệ nhưng không tháo input trước click tiếp theo; chuyển trường/Enter vẫn thoát edit. Tên rỗng không lưu. Desktop giữ action rõ ràng.
+
+- D-131: Ô chọn sắp xếp và nút đổi chiều cao 36px trên desktop/mobile; nút đổi chiều rộng 36px. Header blur 8px ở cả hai kích thước, có WebKit.

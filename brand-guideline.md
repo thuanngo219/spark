@@ -315,7 +315,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 
 ## 8. Layout and motion
 
-- Header đặt dải màu 10px dưới tiêu đề và thống kê. Không dùng border dưới; bóng Navy rất nhẹ ở chân header rõ hơn giữa và tan ở hai mép. Backdrop blur 12px desktop, 8px mobile (cả thường/compact), có WebKit prefix.
+- Header đặt dải màu 10px dưới tiêu đề và thống kê. Không dùng border dưới; bóng Navy rất nhẹ ở chân header rõ hơn giữa và tan ở hai mép. Backdrop blur 8px desktop/mobile (cả thường/compact), có WebKit prefix.
 
 - Bố cục đơn giản, rõ thứ bậc, có khoảng thở nhưng không làm giảm mật độ hữu ích của Compact Canvas.
 - Canvas liệt kê task/note trên desktop rộng responsive từ `940px` đến tối đa `1200px`; khi vùng nội dung không đủ chỗ thì co theo chiều rộng khả dụng, không tạo cuộn ngang. Mobile tiếp tục dùng trọn chiều rộng màn hình. Detail sheet desktop rộng `880px`; header, Tên và cụm metadata/control giữ cố định, chỉ vùng Nội dung cuộn khi nội dung dài. Nhãn Nội dung và nút sửa nằm cùng hàng cố định bên ngoài vùng cuộn. Toolbar B/I/U dùng control neutral, trạng thái chọn Navy/trắng và vùng chạm 44px trên mobile.
@@ -368,3 +368,5 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 - Thay đổi có ảnh hưởng đến nhận diện phải được ghi thêm trong `docs/DECISIONS.md`; không xóa quyết định cũ.
 - Asset logo production nằm trong `assets/logo/`. File thử nghiệm và concept không được dùng như logo chính thức.
 - Trước khi phát hành một ứng dụng mới, kiểm tra tối thiểu: logo đúng phiên bản, font có dấu tiếng Việt, contrast WCAG AA, semantic state không phụ thuộc màu và copy đúng giọng Spark.
+
+- D-131: Ô chọn sắp xếp và nút đổi chiều cao 36px trên desktop/mobile; nút đổi chiều rộng 36px. Header blur 8px ở cả hai kích thước, có WebKit.

@@ -119,4 +119,6 @@ Toolbar chỉ đậm hơn 5% (field 95% + đen 5%), thay D-122. Gỡ hoàn toàn
 
 ## D-130 — Header và nền app (2026-10-05)
 
-Dải màu 10px ở chân header trên desktop/mobile, cả thường/compact. Không border dưới, bóng Navy nhẹ rõ giữa và mờ hai biên. Blur desktop 12px, mobile 8px với WebKit; nền body canvas phẳng, bỏ gradient màu. Quyết định này thay các mô tả cũ về dải màu trên cùng và blur 8/18/14px.
+Dải màu 10px ở chân header trên desktop/mobile, cả thường/compact. Không border dưới, bóng Navy nhẹ rõ giữa và mờ hai biên. Blur desktop/mobile 8px với WebKit; nền body canvas phẳng, bỏ gradient màu. Quyết định này thay các mô tả cũ về dải màu trên cùng và blur 8/18/14px.
+
+- D-131: Ô chọn sắp xếp và nút đổi chiều cao 36px trên desktop/mobile; nút đổi chiều rộng 36px. Header blur 8px ở cả hai kích thước, có WebKit.

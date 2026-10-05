@@ -142,7 +142,7 @@ Spark
     └── + Tạo project
 ```
 
-Desktop mở mặc định ở view Hôm nay với sidebar thu gọn thành compact rail; người dùng có thể mở sidebar bằng nút panel luôn nhìn thấy hoặc phím `⌘/Ctrl + \`. Lựa chọn sau đó được ghi nhớ trên thiết bị. Desktop header dùng padding nội dung 26px, sticky và có dải màu project/view cao 10px ở dưới cùng, sau tiêu đề và thống kê. Nền app canvas phẳng; header blur 12px/WebKit, không border dưới, bóng nhẹ tan ở hai mép.
+Desktop mở mặc định ở view Hôm nay với sidebar thu gọn thành compact rail; người dùng có thể mở sidebar bằng nút panel luôn nhìn thấy hoặc phím `⌘/Ctrl + \`. Lựa chọn sau đó được ghi nhớ trên thiết bị. Desktop header dùng padding nội dung 26px, sticky và có dải màu project/view cao 10px ở dưới cùng, sau tiêu đề và thống kê. Nền app canvas phẳng; header blur 8px/WebKit, không border dưới, bóng nhẹ tan ở hai mép.
 
 Mobile dùng canvas tràn viền và view header sticky. Panel icon-only nằm trong cùng title row, ngay trước tên view. Khi cuộn quá ngưỡng ngắn, header thu từ khoảng 149px xuống 92px, bỏ ngày/eyebrow nhưng giữ dòng thống kê, title còn 80% cỡ ban đầu, nền canvas còn 60% opacity kết hợp blur 8px/WebKit ở cả thường/compact và dải màu project/view 10px ở chân header; panel icon giữ nguyên kích thước. Dock icon-only cao 58px overlay ở cuối màn hình, bo dạng pill tròn hai đầu và chỉ gồm Hôm nay, Sắp tới, thêm task, Theo ngày và Tất cả theo năm cột bằng nhau; active navigation là pill Navy cao 52px, rộng tối đa 64px. Trên iPhone có home indicator, dock nằm tại `safe-area - 10px` (tối thiểu 10px). Sheet điều hướng mở bằng panel icon trong header hoặc swipe từ mép trái sang phải, giữ full negative logo + nút đóng và không lặp các view chính đã có trong dock. Tap item mở editor; swipe trái lộ Quan Trọng/Ưu tiên/Xóa với task và Quan Trọng/Ưu tiên/Lưu trữ với note, swipe phải trên item không có hành động và không dùng touch-and-hold.
 
@@ -267,3 +267,5 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - D-127: Trước tên trong chi tiết và inline edit có checkbox cho task (checked theo completedAt, cho bật/tắt) hoặc dấu gạch ngang tĩnh cho note. Lưu draft hợp lệ trước khi đổi trạng thái; tên task hoàn thành trong chi tiết không gạch ngang. Mobile giữ vùng chạm 44px.
 
 - D-129: Checkbox/dấu note sát lề nội dung, cách tên 10px; input Tên cao 28px. Mobile bỏ ✓/× của Tên, tự lưu khi rời ô (tên rỗng báo lỗi), Enter lưu/Escape hủy draft chưa lưu; desktop giữ ✓/×. Checkbox vẫn có vùng bấm 44px.
+
+- D-131: Ô chọn sắp xếp và nút đổi chiều cao 36px trên desktop/mobile; nút đổi chiều rộng 36px. Header blur 8px ở cả hai kích thước, có WebKit.

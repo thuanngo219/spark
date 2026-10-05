@@ -171,6 +171,10 @@ Marker chi tiết có chiều rộng đúng artwork (checkbox 19px, dấu note 1
 
 Dải project/view 10px chuyển từ mép trên xuống chân header, bên dưới tiêu đề và thống kê, trên desktop/mobile và trạng thái compact. Bỏ đường shadow 1px giống border; dùng bóng Navy rất nhẹ dưới dải màu, rõ ở giữa và tan dần về hai mép, không bắt pointer. Desktop blur 12px, mobile blur 8px cả thường/compact, có WebKit prefix. Chuyển 10px padding từ trên xuống dưới để giữ nhịp chiều cao. Nền app dùng canvas phẳng #F7F8FA, bỏ hai radial gradient màu. Thay vị trí của D-124 và cấu hình blur D-122/D-123 theo yêu cầu chủ dự án.
 
+## D-131 — Blur 8px và control sắp xếp 36px (2026-10-05)
+
+Header desktop giảm blur 12px xuống 8px, cùng mobile, giữ WebKit. Select sắp xếp và nút đổi chiều cao 36px trên desktop/mobile; nút đổi chiều rộng 36px để giữ hình tròn. Bỏ override mobile 44px của hai control này theo yêu cầu cụ thể của chủ dự án; các control khác giữ nguyên. Thay phần blur desktop D-130, giữ dải màu dưới header, bóng mềm và nền app phẳng.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)
