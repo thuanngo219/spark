@@ -201,6 +201,14 @@ Giảm `.view-project-band` từ 10px còn 5px. `.view-header` padding 20px cả
 
 View Tất cả hiển thị “Mọi ngày. Mọi việc.” phía trên tiêu đề. Eyebrow ở Hôm nay/Sắp tới/Theo ngày/Tất cả dùng cùng neutral `--muted` (#73788D) như view dự án; giữ typography uppercase hiện hành và hành vi ẩn eyebrow khi header mobile compact. Dải màu dưới header cao 5px, border-radius 5px bằng chiều cao, áp dụng desktop/mobile. Giữ padding 20px và safe area theo D-136.
 
+## D-138 — Dark mode với lựa chọn theo thiết bị, preview trước production (2026-10-05)
+
+Chủ dự án đồng ý triển khai bản xem trước dark mode: Theo hệ thống / Sáng / Tối trong “Phím tắt & hiển thị”, mặc định theo hệ thống. Ghi nhớ riêng browser/device qua `spark:theme:v1`, cập nhật khi OS đổi nếu đang Theo hệ thống và đồng bộ lựa chọn giữa các tab cùng origin. Không đưa preference vào dữ liệu task/note hoặc cloud; nếu storage bị chặn, vẫn đổi được trong phiên hiện tại.
+
+Nền tối #121622, surface #1B2030, input/toolbar #242B3D; chữ chính #E9ECF5, chữ phụ #A0A8BC, divider #343C50. Giữ Navy sidebar #111742, CTA Turquoise, checked xám, màu project/logo/icon hiện hành. Các màu chữ trạng thái dùng sắc sáng hơn trên nền tối. Header giữ blur 8px/WebKit, padding 20px, band 5px/radius 5px; Tên underline-only và Nội dung trong suốt, toolbar có nền/border. Light giữ các neutral fallback hiện hành; các selector dùng token chung thay vì chồng CSS override.
+
+Bootstrap tĩnh trong head áp dụng theme trước hydration/paint, đồng thời đặt color-scheme cho control native và theme-color cho browser chrome. HTML vẫn static/cache offline được; không thêm dependency hoặc migration. Bản dark mode nằm trên nhánh `codex/spark-dark-mode` để chủ dự án duyệt màu trước khi phát hành production. D-138 bổ sung theme tối cho các quyết định màu sáng trước đây, không thay kích thước/hành vi editor.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

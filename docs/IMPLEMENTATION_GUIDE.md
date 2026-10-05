@@ -276,3 +276,12 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 - D-131: Ô chọn sắp xếp và nút đổi chiều cao 36px trên desktop/mobile; nút đổi chiều rộng 36px. Header blur 8px ở cả hai kích thước, có WebKit.
 
 - D-132: Focus vào metadata trong chi tiết tự lưu draft hợp lệ nhưng giữ editor/kích thước khung, để click không mất đích hoặc đóng nhầm khung. Lưu/chuyển trường vẫn kết thúc edit; Hủy chỉ bỏ thay đổi chưa tự lưu. Regression kiểm tra click thực, lưu qua reload, ngày, project, lưu trữ/khôi phục và xác nhận xóa ở 1280px/390px.
+
+## 11. Theme — D-138
+
+- `src/lib/theme.ts`: bootstrap JavaScript tĩnh, key versioned `spark:theme:v1`; kiểm tra preference, bắt lỗi storage, matchMedia và storage event. Chỉ nội suy hằng key do app sở hữu, không nội suy dữ liệu người dùng.
+- `src/app/layout.tsx`: chạy bootstrap trong head trước paint. Root html suppressHydrationWarning cho dataset/style do bootstrap đặt. Theme-color do bootstrap sở hữu, không khai báo thêm trong Next viewport metadata để tránh React sinh meta trùng khi hydrate.
+- `src/components/ThemePreference.tsx`: radio native truy cập bàn phím; useSyncExternalStore phản ánh preference. ThemeSync reapply trước paint sau React Strict Mode remount, không đặt state trong effect.
+- `src/app/globals.css`: token light và dark ở đầu file; component dùng cùng selector. Neutral fallback giữ shade light, dark thống nhất theo vai trò. Brand Navy/CTA tách khỏi heading/selected/link semantic.
+- Preference ở localStorage theo origin, không đổi schema hoặc sync dữ liệu. SW cache HTML chứa bootstrap như phần app shell; không thêm request hoặc thư viện.
+- `tests/browser/theme.spec.ts`: hệ thống/override/reload/cross-tab/keyboard, storage lỗi, trước hydration, tương phản chữ, quick-add/editor 1280/390px, control 320px và cold-start offline. Không coi viewport giả lập là kiểm tra iPhone vật lý.

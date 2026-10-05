@@ -8,6 +8,7 @@ export default defineConfig({
   use: {
     baseURL: process.env.SPARK_TEST_URL ?? "http://localhost:3014",
     viewport: { width: 1280, height: 800 },
+    colorScheme: "light",
     launchOptions: { channel: "chrome" },
     screenshot: "only-on-failure",
   },

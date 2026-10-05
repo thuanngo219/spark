@@ -138,6 +138,24 @@ Project có bảy màu preset để các dot vẫn phân biệt được khi dan
 - Không dùng các màu dẫn xuất làm CTA, focus, trạng thái hệ thống, logo hoặc mảng nền thương hiệu.
 - Navy không dùng làm project dot vì thiếu tương phản trên sidebar navy.
 
+### Giao diện tối — bản preview D-138
+
+Dark mode dùng neutral xanh xám, canvas phẳng; giữ nguyên màu nhận diện và artwork logo/icon. Đây là bảng màu cho bản preview đang chờ duyệt hình ảnh trước production.
+
+| Thành phần | Màu tối |
+|---|---|
+| Canvas | `#121622` |
+| Sidebar | `#111742` |
+| Quick-add / chi tiết / dialog | `#1B2030` |
+| Input / toolbar / khay control | `#242B3D` |
+| Chữ chính / chữ phụ | `#E9ECF5` / `#A0A8BC` |
+| Đường phân cách | `#343C50` |
+| Control được chọn / chữ | `#3D4B6B` / `#F4F6FB` |
+| Link / focus | `#6CE0DA` |
+| Chữ nhãn violet / Quan Trọng / Ưu tiên, lỗi | `#BA99DF` / `#EDC879` / `#F1A69B` |
+
+Các sắc sáng của accent ở trên chỉ phục vụ tương phản trong theme tối, không thêm màu thương hiệu. CTA giữ Turquoise và chữ Navy, checked vẫn neutral #8B8F9E. Project giữ giá trị màu đã chọn, dot thêm viền trong trắng 20% để tách khỏi nền. Sidebar tiếp tục dùng logo negative với wordmark trắng. Native date/select theo color-scheme của theme thực tế. Header blur 8px/WebKit và bóng tối nhẹ, không thêm gradient màu nền. Các quy tắc màu sáng bên dưới tiếp tục áp dụng khi chọn Sáng.
+
 ### Controls và focus
 
 Phần này là source of truth cho web app. Khi CSS/component mới khác bảng dưới đây, ưu tiên cập nhật component về đúng guideline; nếu thật sự cần ngoại lệ, phải ghi thêm vào decision log.

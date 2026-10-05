@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { OfflineBootstrap } from "@/components/OfflineBootstrap";
+import { ThemeSync } from "@/components/ThemePreference";
+import { themeBootstrap } from "@/lib/theme";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -35,14 +37,15 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#111742",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="vi">
+    <html lang="vi" suppressHydrationWarning>
+      <head><script dangerouslySetInnerHTML={{ __html: themeBootstrap }} /></head>
       <body>
         {children}
+        <ThemeSync />
         <OfflineBootstrap />
       </body>
     </html>

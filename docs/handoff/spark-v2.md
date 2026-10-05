@@ -1,5 +1,14 @@
 # Spark v2 — bàn giao hiện hành
 
+## Đang chờ duyệt — dark mode preview (D-138, 2026-10-05)
+
+Nhánh `codex/spark-dark-mode` triển khai Theo hệ thống / Sáng / Tối tại Phím tắt & hiển thị, mặc định Theo hệ thống. Preference theo thiết bị/origin, không đồng bộ cloud. Áp dụng trước paint, đổi theo OS/cross-tab, sử dụng được khi offline hoặc storage preference bị chặn. Bảng màu trong brand guideline D-138; logo/project color, checked xám, header 8px/20px/5px và editor tối giản giữ nguyên.
+
+Kiểm tra local: lint/typecheck/build đạt; 162 test logic đạt; 14 browser regression nội dung đạt, 2 regression icon và 7 test theme đạt sau sửa lỗi meta theme-color trùng. Kiểm tra 1280/390px, theme selector 320px, B/I/U, draft/metadata click, màu chữ chính/phụ đạt contrast tối thiểu 4.5:1 trên surface đã đo, lưu preference/reload/cross-tab, storage bị chặn và cold-start offline. Đã xem ảnh Hôm nay, quick-add và editor; chưa kiểm tra Safari/iPhone vật lý.
+
+Bản này cần chủ dự án duyệt màu trên desktop/mobile trước khi đưa lên production. Production hiện vẫn ở `6fd45b2`; các release bên dưới là lịch sử đã phát hành. Chưa xác minh trên iPhone vật lý. Không sửa database/auth/sync và không đưa `output/`, `outputs/` không rõ nguồn gốc vào commit.
+
+
 > Rà soát: 2026-10-05. Repo `/Users/dna.thuan/Codex/Projects/To-Do List`, branch `main`.
 > Production: https://spark.thuanngo.com
 > Đây là bản tổng hợp yêu cầu đang áp dụng; lịch sử thay đổi nằm trong `docs/DECISIONS.md`.

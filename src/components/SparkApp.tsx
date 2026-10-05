@@ -1,5 +1,7 @@
 "use client";
 
+import { ThemePreference } from "@/components/ThemePreference";
+
 import Image from "next/image";
 import ContentEditor from "@/components/ContentEditor";
 import { FormattedContent } from "@/components/FormattedContent";
@@ -2690,6 +2692,7 @@ function ShortcutHelp({
           <span><kbd>?</kbd> Trợ giúp</span>
           <span><kbd>Esc</kbd> Đóng</span>
         </div>
+        <ThemePreference />
         <section className="display-preference" aria-labelledby="project-label-preference">
           <span>
             <strong id="project-label-preference">Mở tên dự án khi chạm</strong>
