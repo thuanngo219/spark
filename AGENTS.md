@@ -10,14 +10,15 @@
 4. `docs/UI_OPTIONS.md`
 5. `docs/DECISIONS.md`
 6. `docs/IMPLEMENTATION_GUIDE.md` nếu công việc liên quan kỹ thuật hoặc deploy
+7. `docs/handoff/spark-v2.md` để lấy trạng thái hiện hành, thay đổi đã phát hành và việc còn thiếu. Quyết định mới thay phần tương ứng của quyết định cũ; release note cũ chỉ là lịch sử.
 
 ## Nguyên tắc sản phẩm
 
 - Đây là công cụ cá nhân, không phải phần mềm quản trị nhóm.
-- Một item trong MVP là `task` hoặc `note`; cả hai có tên, ngày bắt đầu/ngày đến hạn/project tùy chọn và cờ Quan Trọng/Ưu tiên (`is_urgent` trong data model). Chỉ task có checkbox/trạng thái hoàn thành; note hiển thị bằng bullet point.
+- Một item trong MVP là `task` hoặc `note`; cả hai có tên, ngày bắt đầu/ngày đến hạn/project tùy chọn và cờ Quan Trọng/Ưu tiên (`is_urgent` trong data model). Chỉ task có checkbox/trạng thái hoàn thành; note dùng dấu gạch ngang (trong chi tiết là marker tĩnh).
 - Bộ lọc hiển thị Ẩn/Hiện ghi chú áp dụng nhất quán cho mọi view và không được sửa/xóa dữ liệu note.
 - Giữ thao tác thêm task nhanh; không mở form/modal dài khi chưa cần.
-- Ưu tiên mobile-first, bàn phím trên desktop và vùng chạm tối thiểu 44px trên mobile.
+- Ưu tiên mobile-first, bàn phím trên desktop và vùng chạm mặc định tối thiểu 44px trên mobile; ngoại lệ D-131 đã duyệt: selector sắp xếp cao 36px và nút đổi chiều 36×36px.
 - Không thêm priority ngoài hai cờ Quan Trọng/Ưu tiên, tag, định dạng nội dung ngoài đậm/nghiêng/gạch chân, subtask, reminder, recurring task, AI hoặc collaboration nếu chưa được chủ dự án duyệt.
 - Không sao chép asset, logo hoặc pixel-level UI của Superlist/Things. Chỉ sử dụng mood và nguyên tắc thiết kế làm tham khảo.
 - Mọi thay đổi về logo, màu, typography, voice, iconography hoặc hình ảnh phải đối chiếu `brand-guideline.md`.

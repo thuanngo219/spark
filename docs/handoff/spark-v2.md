@@ -1,14 +1,18 @@
-# Spark v2 — bàn giao
+# Spark v2 — bàn giao hiện hành
 
-> Cập nhật: 2026-10-05. Repo `/Users/dna.thuan/Codex/Projects/To-Do List`, branch `main`.
+> Rà soát: 2026-10-05. Repo `/Users/dna.thuan/Codex/Projects/To-Do List`, branch `main`.
 > Production: https://spark.thuanngo.com
-> Phiên bản Git: xem `git log -1`; không dùng commit `3b184d5` trong handoff cũ làm phiên bản mới nhất.
+> Đây là bản tổng hợp yêu cầu đang áp dụng; lịch sử thay đổi nằm trong `docs/DECISIONS.md`.
 
-## Bối cảnh và nguồn chuẩn
+## Phạm vi rà soát và cách tiếp tục
 
-Spark là công cụ task/note cá nhân, tiếng Việt, desktop và iPhone. UI Compact Canvas, sidebar full/compact rail; mobile dock/drawer, vùng chạm 44px. Không thêm tính năng nhóm, reminder, recurring, AI hay định dạng nâng cao ngoài phạm vi đã duyệt.
+Đã đối chiếu toàn bộ yêu cầu trực tiếp có trong chat này từ 14/09 đến 05/10/2026 với D-117–D-132, tài liệu và mã nguồn hiện có. Bao gồm sửa lỗi click chi tiết, kết quả kiểm thử/phát hành và các giới hạn chưa kiểm tra. Không khẳng định đã kiểm kê mọi chat khác hoặc lưu bản gốc các screenshot trong thư mục tạm; thông số và hành vi trong các ảnh của chat này đã được ghi thành yêu cầu bên dưới.
 
-Đọc `AGENTS.md`, `README.md`, `brand-guideline.md`, `docs/PROJECT_BRIEF.md`, `docs/UI_OPTIONS.md`, `docs/DECISIONS.md`, `docs/IMPLEMENTATION_GUIDE.md`; đọc `docs/OFFLINE_SYNC.md` khi liên quan dữ liệu. Repo không có `docs/architecture.md`; kiến trúc nằm trong implementation guide. Quyết định mới hơn thay thế phần tương ứng của quyết định cũ.
+Đọc `AGENTS.md`, `README.md`, `brand-guideline.md`, `docs/PROJECT_BRIEF.md`, `docs/UI_OPTIONS.md`, `docs/DECISIONS.md`, `docs/IMPLEMENTATION_GUIDE.md` và handoff này trước khi code. Khi liên quan dữ liệu, đọc thêm `docs/OFFLINE_SYNC.md`. Repo không có `docs/architecture.md`; kiến trúc nằm trong implementation guide. Tên file quyết định chuẩn là `docs/DECISIONS.md`.
+
+Spark là công cụ task/note cá nhân, tiếng Việt, Compact Canvas, sidebar full/compact rail; mobile dock/drawer. Không thêm collaboration, reminder, recurring, AI hoặc định dạng nâng cao chưa được duyệt. Vùng chạm mobile mặc định 44px; ngoại lệ đã duyệt là hai control sắp xếp cao 36px (D-131).
+
+Có thể archive chat đã hoàn tất sau khi quyết định, việc còn thiếu và kết quả phát hành được ghi vào repo. Chat mới dùng các tài liệu này làm bối cảnh. Khi người dùng yêu cầu tóm tắt rồi chờ xác nhận trước khi sửa, thực hiện đúng; khi đã có yêu cầu triển khai/deploy trong phiên thì tiếp tục trong phạm vi được phép. Không tự archive chat hay xóa tài liệu nguồn.
 
 ## Kiến trúc
 
@@ -29,28 +33,37 @@ Spark là công cụ task/note cá nhân, tiếng Việt, desktop và iPhone. UI
 - Project pill mở đồng loạt trên desktop, tham gia cột chung, tên uppercase một dòng đầy đủ; không overlay/shadow. Mobile chỉ dot tĩnh.
 - Sidebar shortcut `⌘/Ctrl+\`; `[` note, `]` task, `\` tất cả. Không kích hoạt shortcut điều hướng trong input/contenteditable.
 
-## Thay đổi mới đã duyệt: D-117 và D-118
+## Yêu cầu hiện hành đã đối chiếu từ chat
 
-1. Detail desktop rộng **880px**, chỉ vùng Nội dung cuộn. Nút Sửa Nội dung cùng hàng nhãn và đứng ngoài vùng cuộn. Mobile nội dung đọc dài có vùng cuộn riêng để nhãn/nút sửa vẫn hiện.
-2. Nội dung tối đa **4.000 Unicode code points**, tính cả xuống dòng, không tính metadata định dạng. Cả task/note, quick-add/detail đều hỗ trợ **bold, italic, underline** bằng toolbar và **⌘/Ctrl+B/I/U**. Có undo/redo; vượt giới hạn bị từ chối và thông báo, không cắt âm thầm draft.
-3. Tiptap bật paragraph/text/hardBreak, ba mark trên và undo/redo; tắt định dạng nâng cao. Nội dung gốc vẫn là `description`; `descriptionFormat`/`description_format` lưu text runs JSON; softBreak giữ xuống dòng mềm; metadata list/listStart cũ bị bỏ qua nhưng không mất text hoặc marks. Chỉ render định dạng khi ghép text khớp description; bỏ mark lạ, không render HTML tùy ý. URL vẫn linkify an toàn kể cả có format giữa URL.
-4. Nội dung cũ không có định dạng vẫn đọc/sửa bình thường. Snapshot equality, cloud mapping, queue và local persistence giữ formatting-only update. Editor đóng gói cùng client app shell để lần đầu mở editor vẫn dùng được offline.
-5. Khung desktop đang edit Nội dung cao min(86dvh, 820px), bằng giới hạn khung đọc nội dung dài; editor flex chiếm phần còn lại. Quick-add 160px; mobile edit 40dvh. Toolbar đứng ngoài vùng cuộn, các nút mobile 44px.
-6. Quick-add mặc định start trống, **chỉ task mới trong Hôm nay** mặc định hôm nay. Note cũng để trống. Ngày chọn/xóa thủ công được giữ khi đổi task/note; due date giữ quy tắc cũ. Legacy backfill startDate thiếu vẫn giữ nguyên; explicit null không bị backfill.
+| Yêu cầu / quyết định cuối | Quy tắc đang áp dụng | Nguồn quyết định |
+|---|---|---|
+| Chiều rộng desktop | **Detail** rộng `min(880px, calc(100vw - 48px))`; listing vẫn responsive 940–1200px theo vùng khả dụng. | D-117 |
+| Nội dung và phím tắt | Task/note, quick-add/detail: tối đa 4.000 Unicode code points gồm xuống dòng; chỉ B/I/U, ⌘/Ctrl+B/I/U, undo/redo. Vượt giới hạn bị từ chối, không cắt âm thầm draft. | D-117 |
+| Nút sửa Nội dung | Cùng hàng nhãn Nội dung, bên ngoài vùng cuộn, không dịch theo nội dung dài. | D-117 |
+| Quick-add start | Mặc định trống, chỉ **task mới trong Hôm nay** mặc định hôm nay. Note luôn trống mặc định. Ngày đã chọn/xóa thủ công giữ khi đổi loại. Due date giữ quy tắc trong brief. | D-118 |
+| Nền khi nhập | Quick-add focus dùng control-hover; vùng nhập Nội dung chi tiết giữ màu field như khi chưa nhập. | D-120 |
+| Chiều cao editor | Desktop sửa Nội dung: khung `min(86dvh, 820px)`, bằng giới hạn khung đọc dài, editor giãn theo phần còn lại. Mobile edit `40dvh`; quick-add `160px`. | D-120 |
+| Toolbar | Chỉ nền toolbar pha field 95% + đen 5%; không làm đậm vùng nhập. Yêu cầu 20% đã bị thay. | D-123 thay D-122 |
+| Bullet/numbering | Đã gỡ khỏi toolbar/schema/phím tắt/renderer. Nội dung cũ và HTML dán vào giữ chữ/xuống dòng/B/I/U; không sửa hàng loạt dữ liệu cloud. Yêu cầu spacing 6px sau danh sách đã hết hiệu lực cùng tính năng này. | D-123 thay D-119 |
+| Lưu draft và ngày | Lưu draft hợp lệ khi chuyển Tên/Nội dung. Tên rỗng không lưu, chặn chuyển trường. Ngày không hợp lệ/khoảng ngày ngược không lưu, giữ draft và báo lỗi; UI/mutation/cloud/CHECK đều có bảo vệ. | D-121 |
+| Bố cục metadata mobile | Quan Trọng/Ưu tiên/hai ngày ở hàng đầu; Dự án và Lưu trữ/Khôi phục/Xóa cùng hàng thứ hai. Nút vẫn 44px; xóa qua xác nhận. | D-125 |
+| Nhãn và khoảng cách chi tiết | Bỏ label Tên; nút sửa ngang text. Nhãn Nội dung cao 28px, gap dưới 4px desktop/8px mobile. Khoảng cách hai phía divider giảm 20%: margin 16px và padding 14.4px. | D-125/D-126 |
+| Task/note trước tên | Checkbox task phản ánh completedAt và cho bật/tắt, lưu draft hợp lệ trước thao tác; dấu gạch ngang note tĩnh. Tên task hoàn thành trong chi tiết không gạch ngang. | D-127 |
+| Hover và vị trí marker | Hover không đổi nền; checked vẫn giữ màu trạng thái. Artwork checkbox 19px/dấu note 12px, không padding ngang, sát lề **nội dung**; gap tên 10px. Checkbox có vùng bấm mở rộng 44px không chiếm hàng. | D-128/D-129 |
+| Sửa Tên | Input cao 28px, border nhẹ không glow/shadow. Desktop giữ ✓/× cùng hàng. Mobile ẩn ✓/×, tự lưu tên hợp lệ khi blur nhưng giữ input; Enter lưu/thoát, Escape hủy phần chưa lưu. | D-120/D-129 |
+| Header và dải màu | Dải 10px nằm dưới tiêu đề/thống kê trên desktop/mobile, thường/compact; không border dưới, bóng Navy nhẹ rõ giữa và tan hai mép. | D-124/D-130 |
+| Blur và nền app | Header blur **8px desktop và mobile**, có `-webkit-backdrop-filter`; desktop 12px đã bị thay. Body canvas phẳng #F7F8FA, không gradient màu. Bóng header vẫn có radial gradient trung tính để làm mờ hai mép. | D-130/D-131 |
+| Control sort | Selector cao 36px; nút đổi chiều 36×36px ở desktop/mobile. Đây là hai control sắp xếp trong ảnh, không phải toàn bộ nút trong app. | D-131 |
+| Lỗi click khi sửa Nội dung | Focus metadata tự lưu draft nhưng **giữ editor và kích thước khung**. Không kết thúc edit giữa pointerdown và click. Lưu/chuyển trường vẫn kết thúc edit; Hủy chỉ bỏ phần chưa lưu từ lần tự lưu gần nhất. | D-132 |
+| Bảo mật | Đã xử lý nâng dependency có cảnh báo trong release editor; render bằng React, không HTML tùy ý; JSON/URL/ngày được kiểm tra. Các kiểm tra hạ tầng và tài khoản thật còn mở được liệt kê riêng, không coi là audit toàn hệ thống hoàn tất. | D-117/D-121 và release 14/09 |
+| Commit/push/production | Chủ dự án đã cho phép phát hành các thay đổi Spark của chuỗi yêu cầu này. Xác minh commit/alias/READY và hành vi production trước khi bàn giao; chỉ dùng demo riêng cho test tự động. | Yêu cầu trực tiếp trong chat |
 
-## Thu gọn chi tiết — D-125 (2026-09-16)
+### Chi tiết lưu nội dung và database
 
-- Mobile: Dự án, Lưu trữ/Khôi phục và Xóa cùng một hàng; nút giữ vùng chạm 44px.
-- D-126: bỏ nhãn Tên, nút sửa cùng hàng text; input và ✓/× cùng hàng khi sửa. Khoảng cách trước/sau đường phân cách giảm 20% còn 16px/14.4px. Hàng nhãn Nội dung cao 28px ở cả trạng thái đọc và sửa, desktop/mobile. Khoảng cách dưới nhãn 4px desktop, 8px mobile; vùng chạm không chồng lên field.
-- Đã kiểm tra bố cục ở 1280px, 390px, 320px cho cả đọc/sửa Tên/sửa Nội dung: cùng hàng, không tràn ngang. Chưa kiểm tra iPhone vật lý.
-
-## Database
-
-- Đã xác minh remote có migration `20260903131416_add_item_start_date` và cột `start_date`; không áp dụng lại.
-- Migration mới `20260914084232_item_basic_content_formatting.sql` đã áp dụng bằng Supabase MCP vào WorkSpace. File tạo ban đầu qua CLI, sau đó đồng bộ tên version với migration history trả về từ remote.
-- Thêm `description_format jsonb nullable`, giới hạn JSON dạng array và 512 KB; `items_description_length` chuyển sang 1–4000 ký tự và được VALIDATE thành công.
-- Trước migration: không có nội dung vi phạm giới hạn mới. Không sửa/xóa dữ liệu hiện có, không thay policy hay schema app khác.
-- Kiểm tra bằng bảng TEMP sao chép constraints: 4.000 emoji + formatting được chấp nhận; 4.001 ký tự bị từ chối. Transaction kiểm thử rollback, không lưu fixture vào bảng người dùng.
+- Tiptap bật paragraph/text/hardBreak, ba mark B/I/U và undo/redo. `description` là văn bản thuần; `descriptionFormat`/`description_format` là JSON text runs. Soft break giữ xuống dòng mềm; metadata list/listStart cũ bị bỏ qua nhưng không mất text hoặc marks.
+- Chỉ render format khi ghép text khớp description; bỏ mark lạ. Linkify chỉ HTTP(S)/www, mở tab mới với noopener/noreferrer. Nội dung cũ không có format vẫn đọc/sửa bình thường. Snapshot equality, cloud mapping và queue giữ formatting-only update; editor nằm trong app shell để mở lần đầu khi offline được.
+- Bằng chứng migration từ release trước: `20260903131416_add_item_start_date` đã có trên remote; `20260914084232_item_basic_content_formatting.sql` thêm JSONB nullable, array tối đa 512 KB, giới hạn description 1–4.000; `20260914091948_enforce_item_date_range.sql` thêm CHECK ngày.
+- Release 14/09 đã xác minh constraints VALIDATED, dữ liệu cũ không vi phạm; test bảng TEMP nhận 4.000 emoji, từ chối 4.001 và ngày ngược, transaction rollback. Lần rà soát tài liệu 05/10 không chạy lại migration hoặc kiểm tra database live.
 
 ## File chính
 
@@ -64,7 +77,17 @@ Spark là công cụ task/note cá nhân, tiếng Việt, desktop và iPhone. UI
 - `tests/browser/content.spec.ts`, `playwright.config.ts`: regression browser; browser profile riêng, chỉ dùng demo.
 - Các thay đổi ngày/sort/UI tồn tại trước phiên này được giữ và đưa vào cùng release Spark.
 
-## Kiểm tra và phát hành
+## Kiểm tra và phát hành gần nhất
+
+- `9ba7635`: sửa click metadata khi đang edit Nội dung. `2416f6f`: ổn định regression bằng cách chờ autofocus Tiptap trước khi chọn/format text; không đổi thêm mã ứng dụng.
+- Deployment `dpl_8oz3BbocV4mPEir3RWpWtbjexeTa`, commit `2416f6f1602c5a5a959bdb282171402876585b76`, target production, **READY**, alias `spark.thuanngo.com`; đã xác minh lại ngày 05/10/2026.
+- Trước phát hành: lint, typecheck, production build, 15 Vitest files / 162 tests và 12 browser tests trên production build local đều đạt.
+- Sau bản sửa app: 12/12 browser tests đạt trên domain production, gồm cold-start offline. Hai regression metadata được chạy lặp ba lần mỗi viewport 1280px/390px: 6/6 đạt. Bản cập nhật `2416f6f` chỉ thay test/tài liệu; deployment đã được xác minh READY, không ghi nhận một lượt 12-test mới sau deployment riêng này.
+- Đã kiểm tra click thật, trạng thái cờ, ngày/project qua reload, draft có định dạng, lưu trữ/khôi phục và mở/hủy xác nhận xóa. Browser dùng Chrome trong profile demo riêng; không ghi fixture vào cloud người dùng.
+- Lượt browser đầu có lỗi chuẩn bị test: thao tác chọn chữ diễn ra trước autofocus bất đồng bộ của Tiptap. Test hiện chờ focus và xác nhận chữ đậm trước khi thử click metadata; không bỏ assertion lưu định dạng qua reload.
+- Runtime logs qua Vercel MCP cho deployment sửa lỗi `9ba7635` không trả log lỗi. CLI 48.12.0 không hỗ trợ `logs --level`; không coi lỗi CLI là kết quả audit. Danh sách drains chưa xác minh được (API 404), không kết luận không có monitoring.
+- Audit dependency 0 vulnerabilities là bằng chứng của release trước, không phải kiểm tra mới trong lượt cập nhật tài liệu này. Next.js/eslint-config-next hiện khóa 16.3.5; xem lockfile và chạy audit lại ở release có thay dependency.
+- Các file `release-2026-09-14*.md` là lịch sử, không phải cấu hình UI hiện hành.
 
 Lệnh kiểm tra:
 
@@ -73,13 +96,14 @@ npm run lint
 npm run typecheck
 npm test
 npm run build
-# Chạy dev/production local trước, mặc định test URL là http://localhost:3014
-npm run test:browser
-# Cold-start offline cần production build đang chạy, ví dụ port 3015
+# Chạy production build local trước trên port 3015
+npm run start -- --port 3015
 SPARK_TEST_URL=http://localhost:3015 SPARK_TEST_OFFLINE=1 npm run test:browser
+# Kiểm tra production, profile demo riêng do Playwright tạo
+SPARK_TEST_URL=https://spark.thuanngo.com SPARK_TEST_OFFLINE=1 npm run test:browser
 ```
 
-Vitest hiện có 162 tests. Browser suite kiểm tra Command B/I/U, undo/redo, lưu/reload/cancel, 4.000/4.001 ký tự, fixed edit header, quick-add defaults, mobile 390px và cold-start offline. Kết quả release cuối cùng ghi trong `docs/handoff/release-2026-09-14.md`.
+Git integration của Vercel tự deploy khi push `main`. Dùng `git log -1` để xem commit hiện tại; commit tài liệu mới hơn không đồng nghĩa có thay đổi code app. Khi cần xác định bản đang chạy, đọc deployment và đối chiếu commit/alias, không suy từ handoff cũ.
 
 ## Phạm vi commit và lưu ý
 
@@ -96,33 +120,3 @@ Vitest hiện có 162 tests. Browser suite kiểm tra Command B/I/U, undo/redo, 
 - Full-row upsert vẫn có giới hạn last-write-wins khi hai thiết bị sửa offline cùng item.
 - Supabase advisors có cảnh báo sẵn ở hạ tầng dùng chung (`rls_auto_enable`, cấu hình mật khẩu, bảng nội bộ ideaPOD); không tự sửa trong phạm vi editor Spark.
 - Backlog B-005 audit toàn bộ copy vẫn chưa được duyệt triển khai.
-
-## Bổ sung D-119–D-121 (2026-09-14)
-
-- Nút Sửa tên cùng hàng nhãn, input Tên viền nhẹ không glow/shadow; edit Nội dung giữ nền field, quick-add focus dùng control-hover. Header desktop blur 8px/WebKit, nền canvas 80%.
-- Tự lưu draft khi chuyển giữa Tên/Nội dung hoặc sang metadata; Hủy vẫn bỏ draft hiện tại.
-- Ngày sai được giữ ở UI kèm báo chưa lưu. Hai ngày được lưu cùng nhau khi hợp lệ; mutation/cloud cũng kiểm tra. Migration `20260914091948_enforce_item_date_range.sql` đã thêm và validate CHECK, dữ liệu remote trước migration không có khoảng ngày ngược.
-- Next.js và eslint-config-next 16.3.5; sharp/js-yaml đã cập nhật qua lockfile, npm audit không còn lỗ hổng.
-- Regression mới kiểm tra danh sách, đổi trường tự lưu, ngày sai/đúng qua reload, màu focus, chiều cao editor và toolbar 320/390px.
-
-- D-122: Chỉ nền toolbar formatting pha 20% đen trên nền field; nền vùng nhập giữ nguyên. Desktop blur 8px với WebKit; mobile giữ blur 18px/14px theo trạng thái.
-
-## D-123 — Cập nhật mới nhất (2026-09-14)
-
-Toolbar chỉ đậm hơn 5% (field 95% + đen 5%), thay D-122. Gỡ hoàn toàn định dạng bullet/number ở toolbar/schema/phím tắt/renderer, thay phần danh sách của D-119. Nội dung danh sách đã lưu hiển thị như đoạn văn, giữ chữ/xuống dòng/B/I/U; không sửa hàng loạt cloud. Regression kiểm tra dán danh sách, nội dung cũ và toolbar chỉ có 3 nút. Desktop header vẫn blur 8px/WebKit.
-
-- D-124: `view-project-band` cao 10px thống nhất desktop/mobile, thường/compact; rule gốc là nguồn duy nhất.
-
-- D-127: Trước tên trong chi tiết và inline edit có checkbox cho task (checked theo completedAt, cho bật/tắt) hoặc dấu gạch ngang tĩnh cho note. Lưu draft hợp lệ trước khi đổi trạng thái; tên task hoàn thành trong chi tiết không gạch ngang. Mobile giữ vùng chạm 44px.
-
-- D-129: Checkbox/dấu note sát lề nội dung, cách tên 10px; input Tên cao 28px. Mobile bỏ ✓/× của Tên, tự lưu khi rời ô (tên rỗng báo lỗi), Enter lưu/Escape hủy draft chưa lưu; desktop giữ ✓/×. Checkbox vẫn có vùng bấm 44px.
-
-## D-130 — Header và nền app (2026-10-05)
-
-Dải màu 10px ở chân header trên desktop/mobile, cả thường/compact. Không border dưới, bóng Navy nhẹ rõ giữa và mờ hai biên. Blur desktop/mobile 8px với WebKit; nền body canvas phẳng, bỏ gradient màu. Quyết định này thay các mô tả cũ về dải màu trên cùng và blur 8/18/14px.
-
-- D-131: Ô chọn sắp xếp và nút đổi chiều cao 36px trên desktop/mobile; nút đổi chiều rộng 36px. Header blur 8px ở cả hai kích thước, có WebKit.
-
-- D-132: Focus vào metadata trong chi tiết tự lưu draft hợp lệ nhưng giữ editor/kích thước khung, để click không mất đích hoặc đóng nhầm khung. Lưu/chuyển trường vẫn kết thúc edit; Hủy chỉ bỏ thay đổi chưa tự lưu. Regression kiểm tra click thực, lưu qua reload, ngày, project, lưu trữ/khôi phục và xác nhận xóa ở 1280px/390px.
-- Kiểm tra D-132: lint, typecheck, build, 162 unit tests và 12 browser tests trên production build local đều đạt; gồm click metadata desktop 1280px/mobile 390px và cold-start offline. Chưa kiểm tra iPhone vật lý.
-- D-132 đã phát hành production qua commit `9ba7635`. Regression click metadata được chạy lặp ba lần ở mỗi kích thước trên domain chính: 6/6 đạt. Test chờ autofocus của Tiptap trước khi chọn/định dạng text để tránh race khi chuẩn bị dữ liệu.

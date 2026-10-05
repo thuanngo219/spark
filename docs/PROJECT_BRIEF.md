@@ -54,7 +54,7 @@ Hành động:
 
 Note là một item ghi chú ngắn, không phải task:
 
-- Hiển thị bằng bullet point thay cho checkbox.
+- Listing dùng dấu gạch ngang có thể bấm để lưu trữ; trong chi tiết là dấu gạch ngang tĩnh, không có checkbox.
 - Có Tên ngắn trên một dòng, tối đa 100 ký tự; Nội dung chi tiết tùy chọn tối đa 4.000 ký tự như task.
 - URL trong Nội dung note được hiển thị thành liên kết và mở ở tab mới; dữ liệu gốc vẫn là plain text.
 - Có ngày bắt đầu, ngày đến hạn và project tùy chọn giống task để có thể xuất hiện trong view thời gian/dự án.
@@ -238,14 +238,14 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Sắp tới chỉ gồm item có ngày bắt đầu hoặc ngày đến hạn trong ba ngày kế tiếp, không gồm hôm nay.
 - Ngày chuyển đúng tại nửa đêm ở múi giờ cấu hình.
 - Một task chỉ thuộc tối đa một project trong MVP.
-- Note hiển thị bằng bullet point, không có checkbox hoặc completed state.
+- Note dùng dấu gạch ngang, không có checkbox hoặc completed state; marker trong chi tiết là tĩnh.
 - Task/note có thể bật đồng thời Quan Trọng và Ưu tiên; smart filters bao gồm đúng item phù hợp.
 - Mỗi khu sort độc lập và lưu theo browser; task luôn trước note kể cả note có cả hai cờ hoặc đến hạn sớm hơn. Mức chú ý giữ cả hai cờ → Quan Trọng → Ưu tiên → bình thường và chỉ đảo ngày đến hạn trong từng mức. Ngày trống cuối trong từng loại/từng mức ở cả hai chiều; hòa khóa tuân theo quy tắc trên, không sửa dữ liệu đầu vào.
 - Tất cả cho đóng/mở độc lập cả sáu khu thời gian, mặc định mở và giữ trạng thái trong phiên khi chuyển view; không ảnh hưởng trạng thái khu Hôm nay. Khoảng cách giữa các khu thống nhất 12px, kể cả khu đã hoàn thành/lưu trữ. Nhãn sort NGÀY TRẠNG THÁI phải hiển thị đầy đủ trên desktop/mobile.
 - Email OTP của Spark hiển thị mã 36px, một dòng trong ô nền nhạt; tiêu đề thư bắt đầu bằng mã rồi đến “Mã đăng nhập Spark”. Chỉ template Spark trong shared hook thay đổi, không đổi thương hiệu/template của ứng dụng khác.
 - Detail sheet giữ edit button ở mép phải của từng khối đọc; URL trong Nội dung task/note là liên kết mở tab mới và không cho phép protocol ngoài HTTP(S). Trên desktop, header, Tên và cụm metadata/control không dịch chuyển khi xem item dài; bánh xe chuột chỉ cuộn vùng Nội dung.
 - Canvas liệt kê task/note trên desktop rộng responsive trong dải `940–1200px` khi vùng nội dung đủ chỗ; màn hình hẹp và mobile co vừa vùng hiển thị, không phát sinh horizontal scroll. Detail sheet desktop giữ chiều rộng `880px`.
-- Khung sửa Nội dung desktop dùng chiều cao tối đa như khung đọc nội dung dài: `min(86dvh, 820px)`, vùng nhập giãn theo phần còn lại. Quick-add giữ `160px`; mobile edit dùng vùng nhập `40dvh`. Tên không có nhãn, nút sửa nằm cùng hàng text; khi sửa, input và ✓/× cùng hàng. Nội dung giữ ✓/× trên hàng nhãn để editor dùng trọn chiều rộng; control desktop là `28px` với icon `16px`, mobile giữ touch target `44px`. Hàng nhãn Nội dung cao 28px ở cả trạng thái đọc/sửa; mobile đặt Dự án và Lưu trữ/Xóa cùng một hàng, không tràn ngang ở 320px.
+- Khung sửa Nội dung desktop dùng chiều cao tối đa như khung đọc nội dung dài: `min(86dvh, 820px)`, vùng nhập giãn theo phần còn lại. Quick-add giữ `160px`; mobile edit dùng vùng nhập `40dvh`. Tên không có nhãn, nút sửa nằm cùng hàng text; khi sửa trên desktop, input và ✓/× cùng hàng; mobile ẩn ✓/× của Tên và tự lưu hợp lệ khi blur. Nội dung giữ ✓/× trên hàng nhãn để editor dùng trọn chiều rộng; control desktop là `28px` với icon `16px`, mobile giữ touch target `44px`. Hàng nhãn Nội dung cao 28px ở cả trạng thái đọc/sửa; mobile đặt Dự án và Lưu trữ/Xóa cùng một hàng, không tràn ngang ở 320px.
 - Dock mobile bo tròn hai đầu; active navigation dùng pill đồng tâm và vẫn giữ vùng chạm tối thiểu 44px.
 - Email đồng bộ gửi OTP 6 chữ số; input chỉ nhận tối đa 6 số và nút xác nhận chỉ bật khi có đúng 6 số.
 - Switcher Tất cả/Note/Task hoạt động nhất quán ở mọi view và không làm thay đổi dữ liệu item.
@@ -258,11 +258,17 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Compact sidebar hiển thị tooltip tên hạng mục/project ngay khi hover hoặc focus vào icon/dot.
 - App cài được lên Home Screen với tên/icon riêng và mở ở chế độ standalone khi nền tảng hỗ trợ.
 
-### Bổ sung nghiệm thu D-117–D-118
+### Nghiệm thu editor và giao diện hiện hành (D-117–D-132)
 
 - Nội dung tối đa 4.000 ký tự (Unicode code points, bao gồm xuống dòng), hỗ trợ B/I/U và ⌘/Ctrl+B/I/U cho task/note trong quick-add/detail. Định dạng giữ qua lưu, reload, offline và cloud sync.
 - Nút Sửa Nội dung nằm ngang nhãn Nội dung và không di chuyển khi cuộn vùng nội dung dài; desktop detail rộng 880px.
 - Quick-add chỉ mặc định Ngày bắt đầu hôm nay cho task trong Hôm nay. Note và mọi view khác để trống; vẫn cho chọn/xóa ngày thủ công. Ngày đến hạn giữ quy tắc hiện có.
+
+- D-120/D-123: Quick-add focus dùng nền control-hover; vùng nhập Nội dung chi tiết giữ nền field. Toolbar chỉ pha 5% đen, không có bullet/numbering; nội dung danh sách cũ giữ text/xuống dòng/B/I/U. Input Tên border nhẹ, không glow/shadow.
+- D-121: Draft hợp lệ tự lưu khi chuyển trường; tên rỗng không lưu. Ngày không hợp lệ hoặc ngày đến hạn trước ngày bắt đầu không được lưu, giữ draft kèm báo lỗi.
+- D-125/D-126: Nhãn Nội dung cao 28px, gap dưới nhãn 4px desktop/8px mobile; khoảng cách hai phía divider còn 16px/14.4px. Không có label Tên.
+- D-128: Hover checkbox/dấu note trong chi tiết không đổi nền; trạng thái checked giữ nguyên.
+- D-130/D-131: Dải màu 10px ở chân header, không border dưới, bóng nhẹ rõ giữa và tan ở hai mép; body canvas phẳng, header blur 8px và WebKit trên desktop/mobile.
 
 - D-127: Trước tên trong chi tiết và inline edit có checkbox cho task (checked theo completedAt, cho bật/tắt) hoặc dấu gạch ngang tĩnh cho note. Lưu draft hợp lệ trước khi đổi trạng thái; tên task hoàn thành trong chi tiết không gạch ngang. Mobile giữ vùng chạm 44px.
 

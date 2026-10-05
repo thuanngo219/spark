@@ -170,7 +170,7 @@ Phần này là source of truth cho web app. Khi CSS/component mới khác bản
 
 | Token | Giá trị | Vai trò |
 |---|---|---|
-| `ui-canvas` | `#F7F8FA` | Base nền toàn ứng dụng và nền nút collapse sidebar; app canvas có thể phủ radial glow Turquoise 16% ở góc trên trái và Violet 14% ở góc dưới phải. |
+| `ui-canvas` | `#F7F8FA` | Nền phẳng toàn ứng dụng và nút collapse sidebar; không phủ gradient hoặc radial glow lên app canvas (D-130). |
 | `ui-surface` | `#FFFFFF` | Dialog, editor và quick-add surface. |
 | `ui-field` | `#FAFBFC` | Nền input/select/textarea. |
 | `ui-field-border` | `#DDE0E8` | Border field mặc định. |
@@ -192,7 +192,7 @@ Phần này là source of truth cho web app. Khi CSS/component mới khác bản
 | Destructive | Xóa item | Muted Coral/tint đi kèm icon và label | Tăng tint tiết chế | Không dùng màu làm tín hiệu duy nhất. |
 | Semantic | Star, Ưu tiên, checkbox, project color | Màu theo ý nghĩa hoặc trạng thái | Chỉ đổi khi giúp nhận biết hành động | Phải giữ icon/shape/label làm tín hiệu bổ sung. |
 
-- Vùng chạm tối thiểu trên mobile là `44×44px`, kể cả khi artwork icon nhỏ hơn.
+- Vùng chạm mobile mặc định là `44×44px`, kể cả khi artwork icon nhỏ hơn. Ngoại lệ đã duyệt D-131: selector sắp xếp cao 36px và nút đổi chiều 36×36px trên desktop/mobile.
 - Desktop floating quick-add là ngoại lệ Primary icon `48×48px`, dấu `+` 32px, neo góc dưới phải. Mobile dùng nút Primary icon 72px ở giữa dock 58px, cho phép trồi khỏi dock; cả hai luôn có accessible label/tooltip “Thêm công việc”.
 - Nút trong cùng một action row dùng cùng chiều cao và radius; Primary và Hủy vẫn giữ phân cấp màu khác nhau.
 - Navigation button, color swatch, date tile và project dot không bị ép vào màu Primary vì chúng là selection/navigation control.
@@ -209,7 +209,7 @@ Phần này là source of truth cho web app. Khi CSS/component mới khác bản
 |---|---|
 | Default | Field nền `#FAFBFC`, border `#DDE0E8`, radius `12px`, cao `44–46px`. |
 | Hover | Không đổi màu field Ngày/Dự án; tránh tạo cảm giác đây là CTA. |
-| Focus | Không dùng glow hoặc ring turquoise phình ra ngoài; field nhập liệu làm nền tối hơn khoảng `12%`. |
+| Focus | Không glow/shadow. Quick-add dùng `ui-control-hover`; vùng nhập Nội dung chi tiết giữ `ui-field`; input Tên chỉ đổi border nhẹ. |
 | Selected | Dùng nền/tint đậm hơn khoảng `10–15%` hoặc tín hiệu semantic; không dùng outline glow. |
 | Disabled | Giữ hình học và nền variant; giảm tương phản label/icon thay vì làm nhạt toàn control. |
 | Error | Dùng Muted Coral kèm text/icon giải thích; không chỉ đổi border màu. |
@@ -262,7 +262,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 
 - CSS lưu type size bằng `rem` trên base 16px. Web app đặt root scale `112.5%` trên desktop và `120%` dưới 700px; nhờ vậy typography tăng đồng bộ mà không phóng to icon, rail hoặc control geometry.
 - Item title mặc định dùng Inter base `13px`, render khoảng `14.6px` desktop và `15.6px` mobile, weight `400`; không tự động bold task/note.
-- List density: desktop row khoảng `35px` với gap `6px`; mobile row tối thiểu `52px` với gap `2px`, canvas tràn viền và title tối đa hai dòng. Marker/action mobile vẫn giữ vùng chạm tối thiểu `44px`.
+- List density: desktop row khoảng `35px` với gap `6px`; mobile row tối thiểu `52px` với gap `2px`, canvas tràn viền và title một dòng, ellipsis khi thiếu chỗ. Marker/action mobile vẫn giữ vùng chạm tối thiểu `44px`.
 - Mobile view header sticky thu gọn khi cuộn, giữ thống kê và có dải project/view 10px full-width dưới cùng; desktop dùng cùng hierarchy với padding nội dung 26px. Mobile bottom dock icon-only cao 58px và overlay trên canvas.
 - Marker task/note và project dot luôn căn theo dòng chữ đầu tiên; không căn giữa toàn bộ row khi title hoặc metadata làm row cao hơn.
 - Trên desktop, due-date metadata và tâm artwork star/điện xẹt phải cùng trục giữa với dòng title; không căn theo mép trên của hit target icon.
@@ -319,7 +319,10 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 
 - Bố cục đơn giản, rõ thứ bậc, có khoảng thở nhưng không làm giảm mật độ hữu ích của Compact Canvas.
 - Canvas liệt kê task/note trên desktop rộng responsive từ `940px` đến tối đa `1200px`; khi vùng nội dung không đủ chỗ thì co theo chiều rộng khả dụng, không tạo cuộn ngang. Mobile tiếp tục dùng trọn chiều rộng màn hình. Detail sheet desktop rộng `880px`; header, Tên và cụm metadata/control giữ cố định, chỉ vùng Nội dung cuộn khi nội dung dài. Nhãn Nội dung và nút sửa nằm cùng hàng cố định bên ngoài vùng cuộn. Toolbar B/I/U dùng control neutral, trạng thái chọn Navy/trắng và vùng chạm 44px trên mobile.
-- Textarea Nội dung của task và note dùng cùng kích thước: trên desktop cao `350px` khi sửa và `160px` khi tạo mới; chữ nhập trong quick-add dùng weight regular. Trên mobile, textarea cao `160px` cho cả sửa và tạo mới và giữ style hiện tại. Trong trạng thái edit, action ✓ và × nằm trên hàng nhãn, căn phải, để input/textarea dùng trọn chiều rộng. Hai control này dùng kích thước `28px` với icon `16px` trên desktop để cân với nhãn; mobile giữ touch target `44px`.
+- Khung desktop khi sửa Nội dung cao `min(86dvh, 820px)`, editor giãn theo phần còn lại; mobile edit dùng vùng nhập `40dvh`. Quick-add cao `160px`, chữ nhập regular trên desktop. Toolbar chỉ pha 5% đen trên nền field; vùng nhập giữ nền field. Không có bullet/numbering.
+- Tên không có label; nút sửa ngang text. Input Tên cao 28px, border nhẹ, không glow/shadow. Desktop có ✓/× cùng hàng; mobile ẩn hai nút này và tự lưu tên hợp lệ khi blur. Nhãn Nội dung cao 28px, cách field 4px desktop/8px mobile; action cạnh nhãn dùng control 28px/icon 16px desktop và vùng chạm 44px/icon 18px mobile.
+- Khối Nội dung cách đường phân cách 16px phía trước và 14.4px phía sau, giảm 20%. Checkbox/dấu note trong chi tiết không có padding ngang, cách tên 10px, hover không đổi nền; tên task hoàn thành không gạch ngang.
+- Metadata mobile có Dự án và Lưu trữ/Xóa cùng hàng thứ hai. Focus vào metadata tự lưu draft nhưng giữ editor/kích thước khung để click không mất đích (D-132).
 - Dùng bo góc nhất quán và surface trung tính; tránh card lồng card hoặc shadow nặng.
 - Website có thể biểu cảm hơn web app. Web app ưu tiên tốc độ, khả năng quét và vùng chạm tối thiểu 44px trên mobile.
 - Motion ngắn và có mục đích: xác nhận hoàn thành, chuyển trạng thái hoặc dẫn hướng. Tránh chuyển động liên tục và luôn tôn trọng `prefers-reduced-motion`.

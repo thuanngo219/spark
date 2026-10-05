@@ -1,5 +1,7 @@
 # Editor refinements — 2026-09-14
 
+> Bản ghi lịch sử của release ngày 14/09/2026, không phải đặc tả hiện hành. Các cập nhật sau (bỏ bullet/number, toolbar 5%, bố cục chi tiết, header và sửa lỗi click) xem [spark-v2.md](spark-v2.md) và [DECISIONS.md](../DECISIONS.md).
+
 ## Phạm vi
 
 - Quick-add focus dùng màu control-hover. Nội dung trong detail giữ nền field khi nhập.

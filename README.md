@@ -33,7 +33,8 @@ npm run dev
 - [UI directions](docs/UI_OPTIONS.md): ba phương án giao diện và quyết định đề xuất.
 - [Implementation guide](docs/IMPLEMENTATION_GUIDE.md): kiến trúc, dữ liệu, lộ trình triển khai, publish và cài lên iPhone.
 - [Offline và đồng bộ](docs/OFFLINE_SYNC.md): app-shell cache, IndexedDB, migration, mutation lifecycle và checklist kiểm thử.
-- [Decision log](docs/DECISIONS.md): quyết định đã chốt và các câu hỏi còn mở.
+- [Decision log](docs/DECISIONS.md): lịch sử quyết định; quyết định mới thay phần tương ứng của quyết định cũ.
+- [Handoff hiện hành](docs/handoff/spark-v2.md): thông số đang áp dụng, bảng đối chiếu yêu cầu trong chat, bản phát hành đã xác minh và việc còn thiếu. Đọc trước khi tiếp tục ở chat mới.
 - [Product backlog](docs/BACKLOG.md): ý tưởng đang cân nhắc, chưa phải hành vi hoặc phạm vi đã chốt.
 - [AGENTS.md](AGENTS.md): quy tắc bàn giao cho các phiên Codex tiếp theo.
 - [Logo concepts](assets/logo-concepts/README.md): năm hướng nhận diện ban đầu cho Spark.
