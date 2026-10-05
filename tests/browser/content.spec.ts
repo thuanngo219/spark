@@ -326,10 +326,14 @@ for (const width of [1280, 390]) {
     const sheet = page.locator(".item-detail-sheet");
     const editor = sheet.getByRole("textbox", { name: "Nội dung ghi chú", exact: true });
     const draft = async (text: string) => {
-      if (!await editor.isVisible()) await sheet.getByRole("button", { name: "Sửa Nội dung", exact: true }).click();
+      if (!await editor.isVisible()) {
+        await sheet.getByRole("button", { name: "Sửa Nội dung", exact: true }).click();
+        await expect(editor).toBeFocused();
+      }
       await editor.fill(text);
       await editor.press("Meta+a");
       if (await editor.locator("strong").count() === 0) await editor.press("Meta+b");
+      await expect(editor.locator("strong")).toHaveText(text);
     };
     const reopen = async (text: string) => {
       await sheet.getByRole("button", { name: "Đóng", exact: true }).click();

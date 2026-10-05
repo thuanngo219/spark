@@ -125,3 +125,4 @@ Dải màu 10px ở chân header trên desktop/mobile, cả thường/compact. K
 
 - D-132: Focus vào metadata trong chi tiết tự lưu draft hợp lệ nhưng giữ editor/kích thước khung, để click không mất đích hoặc đóng nhầm khung. Lưu/chuyển trường vẫn kết thúc edit; Hủy chỉ bỏ thay đổi chưa tự lưu. Regression kiểm tra click thực, lưu qua reload, ngày, project, lưu trữ/khôi phục và xác nhận xóa ở 1280px/390px.
 - Kiểm tra D-132: lint, typecheck, build, 162 unit tests và 12 browser tests trên production build local đều đạt; gồm click metadata desktop 1280px/mobile 390px và cold-start offline. Chưa kiểm tra iPhone vật lý.
+- D-132 đã phát hành production qua commit `9ba7635`. Regression click metadata được chạy lặp ba lần ở mỗi kích thước trên domain chính: 6/6 đạt. Test chờ autofocus của Tiptap trước khi chọn/định dạng text để tránh race khi chuẩn bị dữ liệu.
