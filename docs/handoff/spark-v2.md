@@ -130,3 +130,5 @@ Bộ `v2`: Apple 180px vuông; PWA any 192/512px và favicon bo góc; maskable 5
 Cập nhật icon đã cài có thể phụ thuộc cache launcher: nếu sau reload vẫn thấy icon cũ, thử gỡ biểu tượng khỏi Home Screen rồi thêm lại. Chưa xác minh icon launcher trên iPhone/Android vật lý.
 
 Kiểm tra trước phát hành D-133: source SVG khớp nguyên byte với file gửi; 7 PNG đạt kiểm tra kích thước, alpha, gradient/artwork, maskable safe zone; ICO có 16/32/48px. Lint, typecheck, build, 162 unit tests và 13 browser tests trên production build local đạt, gồm metadata/manifest/asset và offline cache mới; mobile viewport 390px không tràn ngang.
+
+Phát hành D-133: commit app `a41525c6819c9c37fecbfd1267559b07482cc250`, deployment `dpl_Aov7UwHWRzwdo1GKiZ3GCJ4HFGFL` READY và alias `spark.thuanngo.com` đã xác minh ngày 05/10/2026. Trên production: 13/13 browser tests đạt; 11 asset v2 HTTP 200 và SHA-256 khớp bản local; truy vấn runtime log lỗi không trả bản ghi. Kết quả này không thay thế kiểm tra launcher trên thiết bị vật lý.
