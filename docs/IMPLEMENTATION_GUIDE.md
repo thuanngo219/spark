@@ -261,7 +261,7 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 ## 10. Quy tắc editor và header hiện hành (D-117–D-132)
 
 - Khi chuyển từ Tên sang Nội dung hoặc ngược lại, tự lưu trường đang sửa trước khi chuyển; chuyển sang metadata cũng lưu draft đang sửa. Tên rỗng chặn chuyển và báo lỗi. Hủy chỉ bỏ phần draft chưa lưu kể từ lần tự lưu gần nhất. Nút Sửa tên nằm cùng hàng với text của tên, không có nhãn Tên.
-- D-130/D-131: Header desktop nền canvas 80%, blur 8px với prefix WebKit; mobile blur 8px ở cả thường/compact. Dải màu 10px nằm dưới header; bỏ đường shadow 1px, dùng pseudo-element bóng nhẹ không bắt pointer và tan ở hai mép. Body nền canvas phẳng. Cột tiêu đề co được và h1 wrap từ dài để không tràn ngang khi bóng nằm ngoài header. Next.js/eslint-config-next khóa 16.3.5; kết quả npm audit 0 vulnerabilities là bằng chứng sau cập nhật dependency trong release trước, không phải xác nhận liên tục.
+- D-130/D-131: Header desktop nền canvas 80%, blur 8px với prefix WebKit; mobile blur 8px ở cả thường/compact. D-136: dải màu 5px nằm dưới header, padding 20px cả bốn phía desktop/mobile thường/compact (mobile cộng safe-area top), không min-height cố định; bỏ đường shadow 1px, dùng pseudo-element bóng nhẹ không bắt pointer và tan ở hai mép. Body nền canvas phẳng. Cột tiêu đề co được và h1 wrap từ dài để không tràn ngang khi bóng nằm ngoài header. Next.js/eslint-config-next khóa 16.3.5; kết quả npm audit 0 vulnerabilities là bằng chứng sau cập nhật dependency trong release trước, không phải xác nhận liên tục.
 
 - D-123 (thay D-122): Chỉ nền toolbar formatting pha 5% đen trên nền field; D-135 bỏ border/nền vùng nhập và chỉ giữ ở toolbar. Blur/vị trí dải màu hiện theo D-130/D-131: desktop/mobile 8px và dải màu dưới header.
 

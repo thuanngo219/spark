@@ -6,7 +6,7 @@
 
 ## Phạm vi rà soát và cách tiếp tục
 
-Đã đối chiếu toàn bộ yêu cầu trực tiếp có trong chat này từ 14/09 đến 05/10/2026 với D-117–D-135, tài liệu và mã nguồn hiện có. Bao gồm sửa lỗi click chi tiết, kết quả kiểm thử/phát hành và các giới hạn chưa kiểm tra. Không khẳng định đã kiểm kê mọi chat khác hoặc lưu bản gốc các screenshot trong thư mục tạm; thông số và hành vi trong các ảnh của chat này đã được ghi thành yêu cầu bên dưới.
+Đã đối chiếu toàn bộ yêu cầu trực tiếp có trong chat này từ 14/09 đến 05/10/2026 với D-117–D-136, tài liệu và mã nguồn hiện có. Bao gồm sửa lỗi click chi tiết, kết quả kiểm thử/phát hành và các giới hạn chưa kiểm tra. Không khẳng định đã kiểm kê mọi chat khác hoặc lưu bản gốc các screenshot trong thư mục tạm; thông số và hành vi trong các ảnh của chat này đã được ghi thành yêu cầu bên dưới.
 
 Đọc `AGENTS.md`, `README.md`, `brand-guideline.md`, `docs/PROJECT_BRIEF.md`, `docs/UI_OPTIONS.md`, `docs/DECISIONS.md`, `docs/IMPLEMENTATION_GUIDE.md` và handoff này trước khi code. Khi liên quan dữ liệu, đọc thêm `docs/OFFLINE_SYNC.md`. Repo không có `docs/architecture.md`; kiến trúc nằm trong implementation guide. Tên file quyết định chuẩn là `docs/DECISIONS.md`.
 
@@ -51,7 +51,7 @@ Có thể archive chat đã hoàn tất sau khi quyết định, việc còn thi
 | Task/note trước tên | Checkbox task phản ánh completedAt và cho bật/tắt, lưu draft hợp lệ trước thao tác; dấu gạch ngang note tĩnh. Tên task hoàn thành trong chi tiết không gạch ngang. | D-127 |
 | Hover và vị trí marker | Hover không đổi nền; checked vẫn giữ màu trạng thái. Artwork checkbox 19px/dấu note 12px, không padding ngang, sát lề **nội dung**; gap tên 10px. Checkbox có vùng bấm mở rộng 44px không chiếm hàng. | D-128/D-129 |
 | Sửa Tên | Input cao 28px, chỉ gạch dưới 1px, nền trong suốt, không outline/glow/shadow. Desktop giữ ✓/× cùng hàng. Mobile ẩn ✓/×, tự lưu tên hợp lệ khi blur nhưng giữ input; Enter lưu/thoát, Escape hủy phần chưa lưu. | D-135/D-129 |
-| Header và dải màu | Dải 10px nằm dưới tiêu đề/thống kê trên desktop/mobile, thường/compact; không border dưới, bóng Navy nhẹ rõ giữa và tan hai mép. | D-124/D-130 |
+| Header và dải màu | Dải 5px nằm dưới tiêu đề/thống kê trên desktop/mobile, thường/compact; padding header 20px, mobile cộng safe-area top; không border dưới, bóng Navy nhẹ rõ giữa và tan hai mép. | D-136 |
 | Blur và nền app | Header blur **8px desktop và mobile**, có `-webkit-backdrop-filter`; desktop 12px đã bị thay. Body canvas phẳng #F7F8FA, không gradient màu. Bóng header vẫn có radial gradient trung tính để làm mờ hai mép. | D-130/D-131 |
 | Control sort | Selector cao 36px; nút đổi chiều 36×36px ở desktop/mobile. Đây là hai control sắp xếp trong ảnh, không phải toàn bộ nút trong app. | D-131 |
 | Lỗi click khi sửa Nội dung | Focus metadata tự lưu draft nhưng **giữ editor và kích thước khung**. Không kết thúc edit giữa pointerdown và click. Lưu/chuyển trường vẫn kết thúc edit; Hủy chỉ bỏ phần chưa lưu từ lần tự lưu gần nhất. | D-132 |
@@ -154,3 +154,9 @@ Phát hành D-134: commit app `9add81b01eb547433470b94dac565d8690447e65`, deploy
 Kiểm tra D-135 trước phát hành: lint/typecheck/build và 162 unit tests đạt; 16 browser scenarios local đạt (14 ở lượt toàn bộ, 2 scenario editor mới chạy lại sau khi sửa kiểm tra chờ hiệu ứng màu checked). So sánh ảnh badge compact/full cùng hình học; đã xem screenshot desktop/mobile, kiểm tra 320/390px không tràn ngang. Không phát hiện page error trong lượt kiểm tra trực quan.
 
 Phát hành D-135: commit app `be1640ca2ce620ef831626eebdea826e8b647497`, deployment `dpl_CeV9oefbaEdJKm7ibBGPXh9ierp4` READY với alias `spark.thuanngo.com`. Production đạt 16/16 browser tests ngày 05/10/2026, gồm responsive 320/390px, desktop, tương tác editor và cache offline. Logo full/compact giữ chính xác tọa độ/kích thước; kiểm tra pixel cho phép lệch tối đa 1/255 mỗi kênh màu do raster gradient (đã đo sai biệt 51 pixel, delta tối đa 1). Không có page error trong lượt xem UI; truy vấn runtime log lỗi không trả bản ghi. Chưa kiểm tra bàn phím/launcher trên điện thoại vật lý. Commit sau này chỉ chỉnh độ ổn định của test ảnh và ghi bằng chứng phát hành, không đổi app runtime.
+
+## D-136 — Header gọn hơn (2026-10-05)
+
+Dải màu 5px, view-header padding 20px desktop/mobile, cả thường và compact. Mobile cộng safe-area top; bỏ min-height cũ để chiều cao theo nội dung. Cập nhật trực tiếp các rule hiện có trong `src/app/globals.css`; đồng bộ brand guideline, brief, implementation guide và decision log.
+
+Kiểm tra D-136 trước phát hành: lint, typecheck, 162 unit tests và build đạt. Đo trên production build local ở 1280/390/320px: padding 20px cả bốn phía, dải màu 5px; mobile thường/compact đều đạt, không tràn ngang. Đã xem ảnh mobile 390px.

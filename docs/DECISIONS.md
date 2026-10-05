@@ -193,6 +193,10 @@ Chủ dự án yêu cầu mở rộng biểu tượng D-133 sang mọi vị trí
 
 Dùng cùng logo negative SVG cho desktop full/compact và drawer mobile. Badge hiển thị 36×36px, cùng vị trí x=10px/tâm x=28px thẳng cột icon điều hướng; chỉ ẩn wordmark bằng crop ngang khi compact. Khung logo cao 58px chứa trọn ảnh 57.6px, không cắt phần dưới hoặc co khi sidebar dài. Nút icon có bề mặt tròn, nút chứa chữ/navigation bo hai đầu; giữ đủ chỗ đọc và hit area. Checkbox task checked dùng neutral #8B8F9E, tick trắng, cả list/chi tiết desktop/mobile. Sửa Tên cao 28px, chỉ border-bottom 1px, nền trong suốt, không outline/shadow; giữ mobile blur-save/validation. Editor Nội dung chung quick-add/chi tiết không border/nền; chỉ toolbar có border #DDE0E8, radius 12px và nền field pha 5% đen. Nút lưu/hủy Nội dung hiển thị 28×28px/icon 16px trên desktop/mobile, mobile mở rộng vùng chạm 44px và khoảng cách để không chồng nhau. Nút đóng sheet vẫn 44×44px ở cả hai. D-135 thay style tương ứng của D-120/D-129/D-134; không đổi dữ liệu hoặc formatting.
 
+## D-136 — Dải màu 5px và header padding 20px (2026-10-05)
+
+Giảm `.view-project-band` từ 10px còn 5px. `.view-header` padding 20px cả bốn phía trên desktop/mobile, gồm mobile compact khi cuộn; mobile cộng safe-area top vào 20px để tránh notch. Bỏ min-height/padding riêng của header mobile thường/compact để chiều cao theo nội dung và padding mới. Giữ hành vi thu chữ/ẩn eyebrow khi cuộn, blur 8px/WebKit và shadow nhẹ. Thay kích thước/spacing header tương ứng ở D-124/D-130/D-131.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)
