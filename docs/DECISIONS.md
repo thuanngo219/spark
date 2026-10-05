@@ -197,6 +197,10 @@ Dùng cùng logo negative SVG cho desktop full/compact và drawer mobile. Badge 
 
 Giảm `.view-project-band` từ 10px còn 5px. `.view-header` padding 20px cả bốn phía trên desktop/mobile, gồm mobile compact khi cuộn; mobile cộng safe-area top vào 20px để tránh notch. Bỏ min-height/padding riêng của header mobile thường/compact để chiều cao theo nội dung và padding mới. Giữ hành vi thu chữ/ẩn eyebrow khi cuộn, blur 8px/WebKit và shadow nhẹ. Thay kích thước/spacing header tương ứng ở D-124/D-130/D-131.
 
+## D-137 — Eyebrow xám và dải màu bo tròn (2026-10-05)
+
+View Tất cả hiển thị “Mọi ngày. Mọi việc.” phía trên tiêu đề. Eyebrow ở Hôm nay/Sắp tới/Theo ngày/Tất cả dùng cùng neutral `--muted` (#73788D) như view dự án; giữ typography uppercase hiện hành và hành vi ẩn eyebrow khi header mobile compact. Dải màu dưới header cao 5px, border-radius 5px bằng chiều cao, áp dụng desktop/mobile. Giữ padding 20px và safe area theo D-136.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

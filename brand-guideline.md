@@ -292,7 +292,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 
 ## 8. Layout and motion
 
-- D-136: Header padding 20px cả bốn phía desktop/mobile (mobile cộng safe-area top), cả thường/compact; chiều cao theo nội dung. Dải màu 5px dưới tiêu đề và thống kê. Không dùng border dưới; bóng Navy rất nhẹ ở chân header rõ hơn giữa và tan ở hai mép. Backdrop blur 8px desktop/mobile (cả thường/compact), có WebKit prefix.
+- D-136: Header padding 20px cả bốn phía desktop/mobile (mobile cộng safe-area top), cả thường/compact; chiều cao theo nội dung. Dải màu 5px, radius 5px dưới tiêu đề và thống kê (D-137). Eyebrow các view ngày/Tất cả dùng xám #73788D như view dự án; Tất cả ghi “Mọi ngày. Mọi việc.”, giữ chữ uppercase như hệ thống. Không dùng border dưới; bóng Navy rất nhẹ ở chân header rõ hơn giữa và tan ở hai mép. Backdrop blur 8px desktop/mobile (cả thường/compact), có WebKit prefix.
 
 - Bố cục đơn giản, rõ thứ bậc, có khoảng thở nhưng không làm giảm mật độ hữu ích của Compact Canvas.
 - Canvas liệt kê task/note trên desktop rộng responsive từ `940px` đến tối đa `1200px`; khi vùng nội dung không đủ chỗ thì co theo chiều rộng khả dụng, không tạo cuộn ngang. Mobile tiếp tục dùng trọn chiều rộng màn hình. Detail sheet desktop rộng `880px`; header, Tên và cụm metadata/control giữ cố định, chỉ vùng Nội dung cuộn khi nội dung dài. Nhãn Nội dung và nút sửa nằm cùng hàng cố định bên ngoài vùng cuộn. Toolbar B/I/U dùng control neutral, trạng thái chọn Navy/trắng và vùng chạm 44px trên mobile.

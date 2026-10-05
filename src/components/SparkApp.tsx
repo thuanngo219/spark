@@ -1128,7 +1128,9 @@ export function SparkApp() {
         ? formatDateRange(addCalendarDays(today, 1), addCalendarDays(today, 3))
         : view.type === "calendar"
           ? formatLongDate(view.date)
-          : null;
+          : view.type === "all"
+            ? "Mọi ngày. Mọi việc."
+            : null;
 
   const startNavEdgeGesture = (event: ReactPointerEvent<HTMLElement>) => {
     if (
@@ -1238,7 +1240,7 @@ export function SparkApp() {
         <section className="canvas" aria-labelledby="view-title">
           <div className={`view-header ${mobileHeaderCompact ? "mobile-compact" : ""}`}>
             <div>
-              {(headerContext || (view.type === "project" && activeProject)) && <div className={`eyebrow ${view.type === "project" ? "project-eyebrow" : ""}`}>
+              {(headerContext || (view.type === "project" && activeProject)) && <div className="eyebrow">
                 {view.type === "project" && activeProject ? (activeProject.archivedAt ? "Dự án đã lưu trữ" : "Dự án") : headerContext}
               </div>}
               <div className="view-title-row">

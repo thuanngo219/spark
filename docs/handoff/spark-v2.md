@@ -6,7 +6,7 @@
 
 ## Phạm vi rà soát và cách tiếp tục
 
-Đã đối chiếu toàn bộ yêu cầu trực tiếp có trong chat này từ 14/09 đến 05/10/2026 với D-117–D-136, tài liệu và mã nguồn hiện có. Bao gồm sửa lỗi click chi tiết, kết quả kiểm thử/phát hành và các giới hạn chưa kiểm tra. Không khẳng định đã kiểm kê mọi chat khác hoặc lưu bản gốc các screenshot trong thư mục tạm; thông số và hành vi trong các ảnh của chat này đã được ghi thành yêu cầu bên dưới.
+Đã đối chiếu toàn bộ yêu cầu trực tiếp có trong chat này từ 14/09 đến 05/10/2026 với D-117–D-137, tài liệu và mã nguồn hiện có. Bao gồm sửa lỗi click chi tiết, kết quả kiểm thử/phát hành và các giới hạn chưa kiểm tra. Không khẳng định đã kiểm kê mọi chat khác hoặc lưu bản gốc các screenshot trong thư mục tạm; thông số và hành vi trong các ảnh của chat này đã được ghi thành yêu cầu bên dưới.
 
 Đọc `AGENTS.md`, `README.md`, `brand-guideline.md`, `docs/PROJECT_BRIEF.md`, `docs/UI_OPTIONS.md`, `docs/DECISIONS.md`, `docs/IMPLEMENTATION_GUIDE.md` và handoff này trước khi code. Khi liên quan dữ liệu, đọc thêm `docs/OFFLINE_SYNC.md`. Repo không có `docs/architecture.md`; kiến trúc nằm trong implementation guide. Tên file quyết định chuẩn là `docs/DECISIONS.md`.
 
@@ -51,7 +51,7 @@ Có thể archive chat đã hoàn tất sau khi quyết định, việc còn thi
 | Task/note trước tên | Checkbox task phản ánh completedAt và cho bật/tắt, lưu draft hợp lệ trước thao tác; dấu gạch ngang note tĩnh. Tên task hoàn thành trong chi tiết không gạch ngang. | D-127 |
 | Hover và vị trí marker | Hover không đổi nền; checked vẫn giữ màu trạng thái. Artwork checkbox 19px/dấu note 12px, không padding ngang, sát lề **nội dung**; gap tên 10px. Checkbox có vùng bấm mở rộng 44px không chiếm hàng. | D-128/D-129 |
 | Sửa Tên | Input cao 28px, chỉ gạch dưới 1px, nền trong suốt, không outline/glow/shadow. Desktop giữ ✓/× cùng hàng. Mobile ẩn ✓/×, tự lưu tên hợp lệ khi blur nhưng giữ input; Enter lưu/thoát, Escape hủy phần chưa lưu. | D-135/D-129 |
-| Header và dải màu | Dải 5px nằm dưới tiêu đề/thống kê trên desktop/mobile, thường/compact; padding header 20px, mobile cộng safe-area top; không border dưới, bóng Navy nhẹ rõ giữa và tan hai mép. | D-136 |
+| Header và dải màu | Dải 5px/radius 5px nằm dưới tiêu đề/thống kê trên desktop/mobile, thường/compact; padding header 20px, mobile cộng safe-area top; không border dưới, bóng Navy nhẹ rõ giữa và tan hai mép. | D-136/D-137 |
 | Blur và nền app | Header blur **8px desktop và mobile**, có `-webkit-backdrop-filter`; desktop 12px đã bị thay. Body canvas phẳng #F7F8FA, không gradient màu. Bóng header vẫn có radial gradient trung tính để làm mờ hai mép. | D-130/D-131 |
 | Control sort | Selector cao 36px; nút đổi chiều 36×36px ở desktop/mobile. Đây là hai control sắp xếp trong ảnh, không phải toàn bộ nút trong app. | D-131 |
 | Lỗi click khi sửa Nội dung | Focus metadata tự lưu draft nhưng **giữ editor và kích thước khung**. Không kết thúc edit giữa pointerdown và click. Lưu/chuyển trường vẫn kết thúc edit; Hủy chỉ bỏ phần chưa lưu từ lần tự lưu gần nhất. | D-132 |
@@ -160,3 +160,9 @@ Phát hành D-135: commit app `be1640ca2ce620ef831626eebdea826e8b647497`, deploy
 Dải màu 5px, view-header padding 20px desktop/mobile, cả thường và compact. Mobile cộng safe-area top; bỏ min-height cũ để chiều cao theo nội dung. Cập nhật trực tiếp các rule hiện có trong `src/app/globals.css`; đồng bộ brand guideline, brief, implementation guide và decision log.
 
 Kiểm tra D-136 trước phát hành: lint, typecheck, 162 unit tests và build đạt. Đo trên production build local ở 1280/390/320px: padding 20px cả bốn phía, dải màu 5px; mobile thường/compact đều đạt, không tràn ngang. Đã xem ảnh mobile 390px.
+
+## D-137 — Dòng nhỏ trên tiêu đề và dải màu (2026-10-05)
+
+Tất cả có eyebrow “Mọi ngày. Mọi việc.”. Eyebrow Hôm nay/Sắp tới/Theo ngày/Tất cả dùng --muted #73788D giống Dự án. Giữ uppercase và ẩn khi mobile compact. Dải màu cao 5px/radius 5px trên desktop/mobile; padding 20px/safe area không đổi. Chỉnh `SparkApp.tsx`/`globals.css` và đồng bộ tài liệu.
+
+Kiểm tra D-137 trước phát hành: lint/typecheck/build và 162 unit tests đạt. Trình duyệt ở 1280/390/320px: bốn view ngày/Tất cả và Dự án dùng cùng xám #73788D; Tất cả có đúng text mới; band height/radius đều 5px, không tràn ngang hoặc page error. Đã xem screenshot Tất cả mobile 390px.
