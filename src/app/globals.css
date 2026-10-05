@@ -22,6 +22,7 @@
   --ease: cubic-bezier(.2, .8, .2, 1);
   color-scheme: light;
   --heading: var(--navy-900);
+  --view-accent-opacity: 1;
   --link: var(--navy-800);
   --link-hover: #287a79;
   --well: #e9ebef;
@@ -51,6 +52,7 @@
   --well: #242b3d;
   --ink: #e9ecf5;
   --heading: #e9ecf5;
+  --view-accent-opacity: .75;
   --muted: #a0a8bc;
   --control-muted: #a0a8bc;
   --control-hover: #30394e;
@@ -196,10 +198,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .view-header { position: sticky; top: 0; z-index: 18; display: flex; justify-content: space-between; gap: 24px; align-items: flex-start; padding: 20px; background: color-mix(in srgb, var(--canvas) 80%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 .view-header > div:not(.view-actions) { min-width: 0; flex: 1; }
 .view-header::after { content: ""; position: absolute; inset: 100% 0 auto; height: 12px; background: radial-gradient(ellipse at 50% 0, var(--header-shadow), transparent 70%); pointer-events: none; }
-.view-project-band { position: absolute; inset: auto 0 0; height: 5px; border-radius: 5px; }
+.view-project-band { position: absolute; inset: auto 0 0; height: 5px; border-radius: 5px; opacity: var(--view-accent-opacity); }
 .eyebrow { min-height: 20px; color: var(--muted); font-size: 0.6875rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
 .view-title-row { display: flex; align-items: center; gap: 8px; }
-.view-header h1 { min-width: 0; overflow-wrap: anywhere; margin: 3px 0 6px; font-size: clamp(2.125rem, 5vw, 3.0625rem); line-height: 1.05; letter-spacing: -.045em; color: var(--heading); }
+.view-header h1 { min-width: 0; overflow-wrap: anywhere; margin: 3px 0 6px; font-size: clamp(2.125rem, 5vw, 3.0625rem); line-height: 1.05; letter-spacing: -.045em; color: var(--heading); opacity: var(--view-accent-opacity); }
 .project-edit-button { width: 36px; height: 36px; margin-top: -1px; border: 0; border-radius: 999px; background: transparent; color: var(--control-muted); display: grid; place-items: center; transition: background-color 160ms ease, color 160ms ease; }
 .project-edit-button:hover { background: var(--control-hover); color: var(--ink); }
 .view-header p { margin: 0; color: var(--muted); font-size: 0.75rem; }

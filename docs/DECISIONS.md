@@ -213,6 +213,10 @@ Bootstrap tĩnh trong head áp dụng theme trước hydration/paint, đồng th
 
 Theo phản hồi preview dark mode: nút Lưu Nội dung và Lưu tên trong chi tiết dùng nền Turquoise #44D4CD, icon Navy #111742 khi hover; trạng thái nghỉ giữ nguyên. Nút Hủy ở Tên/Nội dung hover nền neutral nhẹ (ink 8%), icon ink. Áp dụng cho cả theme sáng/tối và control được hiển thị trên desktop/mobile (mobile vẫn ẩn nút lưu tên theo D-129). Ba lựa chọn theme hiển thị uppercase “THEO HỆ THỐNG / SÁNG / TỐI”, không đổi giá trị preference hay hành vi. Danh sách option/optgroup của select dùng surface và ink theo theme; native picker nhận color-scheme tương ứng, gồm Dự án và sắp xếp. Tiếp tục phát hành preview để duyệt.
 
+## D-140 — Giảm độ sáng tiêu đề và dải màu trong dark mode (2026-10-05)
+
+Chủ dự án muốn tiêu đề Hôm nay/Sắp tới/tên dự án và dải màu dịu hơn. Dùng opacity 75% cho h1 của view-header và view-project-band trong theme tối, nhất quán ở mọi view, desktop/mobile và header compact. Theme sáng giữ 100%. Token --view-accent-opacity áp dụng tại selector gốc; không giảm opacity toàn header để giữ thống kê, control và blur hiện hành. Màu project trong dữ liệu không đổi. Phát hành preview để duyệt.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

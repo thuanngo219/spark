@@ -1,6 +1,8 @@
 # Spark v2 — bàn giao hiện hành
 
-## Đang chờ duyệt — dark mode preview (D-138/D-139, 2026-10-05)
+## Đang chờ duyệt — dark mode preview (D-138–D-140, 2026-10-05)
+
+Phản hồi D-140: tiêu đề view/tên dự án và dải màu dưới header dùng opacity 75% trong dark mode, desktop/mobile/compact; theme sáng giữ 100%. Kiểm tra lint/typecheck/build, 162 test logic và smoke browser các view/dự án ở 1280/390px đạt; không tràn ngang. Chỉ h1/dải màu giảm opacity, không áp lên toàn header.
 
 Phản hồi D-139: đã chỉnh hover nút lưu Tên/Nội dung thành nền Turquoise, icon Navy và nhãn chọn theme hiển thị uppercase. Nút Hủy hover nền neutral nhẹ (ink 8%), icon ink. Dropdown option/optgroup dùng nền/chữ theo theme, giữ color-scheme cho native picker. CSS sửa tại selector gốc; không đổi thao tác lưu hoặc preference.
 
