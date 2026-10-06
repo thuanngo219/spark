@@ -277,6 +277,10 @@ Thay D-151 theo phản hồi chủ dự án: thu/mở sidebar desktop và trư�
 
 Chủ dự án duyệt giữ nguyên vị trí ngang icon khi sidebar mở/thu gọn, ẩn chữ và số đếm. Dùng chung căn trái ở hai trạng thái: tâm icon điều hướng, dot dự án 12px, trợ giúp, đồng bộ và nút thu/mở ở x=28px, cùng trục badge logo. Nút thu/mở chuyển từ biên sidebar về trục này, thay phần vị trí của D-141/D-142. Bỏ các rule compact căn giữa; giữ animation 240ms easeOutQuint, màu, tooltip và thao tác.
 
+## D-154 — Khôi phục nút thu/mở tại biên sidebar (2026-10-06)
+
+Sửa phần vị trí nút thu/mở của D-153 theo phản hồi chủ dự án: tâm nút trở lại biên phải sidebar ở cả full/compact, di chuyển cùng biên khi sidebar đổi độ rộng. Giữ nút 42px/icon 20px, nền canvas và hover chỉ đổi màu icon. Icon điều hướng, dot dự án, trợ giúp và đồng bộ vẫn giữ trục x=28px; animation sidebar vẫn 240ms easeOutQuint.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

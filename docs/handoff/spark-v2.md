@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## Nút thu/mở tại biên — D-154 (2026-10-06)
+
+Sửa vị trí nút thu/mở trong D-153: tâm nút bám biên phải sidebar full/compact. Các icon còn lại giữ trục x=28px; giữ 240ms easeOutQuint. Thay đổi: globals.css, brand-guideline, decisions/handoff. Lint/typecheck/build và 175 test logic đạt; Chrome sáng/tối xác minh từng frame: tâm nút collapse khớp biên phải, các icon khác giữ x=28px; thao tác và mobile 390px đạt. Chưa kiểm tra Safari/iPhone vật lý.
+
 ## Trục trái sidebar — D-153 (2026-10-06)
 
 Sidebar full/compact giữ tâm các icon ở x=28px, cùng trục badge logo. Dot dự án 12px ở cả hai trạng thái; đồng bộ và nút thu/mở cũng nằm trên trục trái. Bỏ rule compact căn giữa, giữ 240ms easeOutQuint và các thao tác. Thay đổi: globals.css, brand-guideline, decisions/handoff. Lint/typecheck/build, 175 test logic và 2/2 browser test icon/logo đạt. Chrome sáng/tối kiểm tra từng frame khi thu/mở: tâm icon/dot/footer giữ x=28px, kích thước không đổi; chọn dự án/trợ giúp và mobile 390px đạt. Đã xem ảnh sidebar full/compact; chưa kiểm tra Safari/iPhone vật lý.

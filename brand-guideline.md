@@ -140,7 +140,7 @@ Project có sáu màu preset để các dot vẫn phân biệt được khi danh
 
 ### Giao diện tối — D-138–D-143
 
-D-141/D-142: vòng tròn nút thu/mở sidebar desktop 42px, icon 20px; nền cùng canvas ở cả hai theme (dark #121622), hover chỉ đổi màu icon, không đổi nền. D-153 thay vị trí trên biên: tâm nút nằm trên cùng trục x=28px với icon logo/điều hướng ở full/compact.
+D-141/D-142: vòng tròn nút thu/mở sidebar desktop 42px, icon 20px; nền cùng canvas ở cả hai theme (dark #121622), hover chỉ đổi màu icon, không đổi nền. D-154 khôi phục tâm nút trên biên phải sidebar ở full/compact.
 
 D-147: phím `<` chọn Sáng, `>` chọn Tối, `M`/`m` chọn Theo hệ thống khi không nhập văn bản. Cùng cơ chế lưu và theo OS như bộ chọn giao diện.
 
@@ -380,4 +380,6 @@ D-145: màn hình khởi động phủ Navy #111742, giữa màn hình là logo 
 
 D-152 thay D-151: animation thu/mở sidebar desktop và trượt mở sidebar mobile dùng 240ms, easeOutQuint qua token chung `--ease: cubic-bezier(.22, 1, .36, 1)`. Giữ reduced motion; bỏ token easeInOutQuint không còn sử dụng.
 
-D-153: sidebar desktop full/compact dùng cùng điểm neo trái; tâm icon điều hướng, dot dự án, trợ giúp, đồng bộ và nút thu/mở nằm ở x=28px, cùng trục badge logo. Không căn giữa theo chiều rộng sidebar khi compact; chỉ ẩn chữ/số đếm. Dot dự án 12px ở cả hai trạng thái.
+D-153: sidebar desktop full/compact dùng cùng điểm neo trái; tâm icon điều hướng, dot dự án, trợ giúp và đồng bộ nằm ở x=28px, cùng trục badge logo. Không căn giữa theo chiều rộng sidebar khi compact; chỉ ẩn chữ/số đếm. Dot dự án 12px ở cả hai trạng thái.
+
+D-154 sửa riêng vị trí nút thu/mở trong D-153: nút bám biên phải sidebar, không nằm trong cột icon; các icon còn lại giữ trục trái khi thu/mở.
