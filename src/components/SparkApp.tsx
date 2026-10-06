@@ -15,6 +15,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -294,7 +295,9 @@ export function SparkApp() {
   const [helpOpen, setHelpOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
   const [itemDisplayMode, setItemDisplayMode] = useState<ItemDisplayMode>("all");
-  const [mobileHeaderCompact, setMobileHeaderCompact] = useState(false);
+  const [headerCompact, setHeaderCompact] = useState(false);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const expandedHeaderHeight = useRef(0);
   const [completedOpen, setCompletedOpen] = useState(false);
   const [todayOverdueOpen, setTodayOverdueOpen] = useState(true);
   const [todayCurrentOpen, setTodayCurrentOpen] = useState(true);
@@ -342,8 +345,13 @@ export function SparkApp() {
     const updateHeader = () => {
       window.cancelAnimationFrame(frame);
       frame = window.requestAnimationFrame(() => {
-        const mobile = window.matchMedia("(max-width: 699px)").matches;
-        setMobileHeaderCompact(mobile && window.scrollY > 28);
+        const compact = window.scrollY > 28;
+        const header = headerRef.current;
+        if (compact && header && !header.classList.contains("is-compact")) {
+          // Reserve space before shrinking, so layout cannot clamp scrollY to zero.
+          header.parentElement?.style.setProperty("--header-collapse-space", `${header.getBoundingClientRect().height}px`);
+        }
+        setHeaderCompact(compact);
       });
     };
     updateHeader();
@@ -355,6 +363,22 @@ export function SparkApp() {
       window.removeEventListener("resize", updateHeader);
     };
   }, []);
+
+  const headerReady = data !== null;
+  useLayoutEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const preserveHeaderSpace = () => {
+      const height = header.getBoundingClientRect().height;
+      if (!headerCompact) expandedHeaderHeight.current = height;
+      // Keep document height stable even when a short list barely overflows.
+      header.parentElement?.style.setProperty("--header-collapse-space", `${headerCompact ? Math.max(0, expandedHeaderHeight.current - height) : 0}px`);
+    };
+    preserveHeaderSpace();
+    const observer = new ResizeObserver(preserveHeaderSpace);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, [headerCompact, headerReady]);
 
   const setHydratedData = useCallback((next: SparkData, scope: "demo" | string) => {
     dataScopeRef.current = scope;
@@ -1240,7 +1264,7 @@ export function SparkApp() {
         onPointerCancelCapture={endNavEdgeGesture}
       >
         <section className="canvas" aria-labelledby="view-title">
-          <div className={`view-header ${mobileHeaderCompact ? "mobile-compact" : ""}`}>
+          <div ref={headerRef} className={`view-header ${headerCompact ? "is-compact" : ""}`}>
             <div>
               {(headerContext || (view.type === "project" && activeProject)) && <div className="eyebrow">
                 {view.type === "project" && activeProject ? (activeProject.archivedAt ? "Dự án đã lưu trữ" : "Dự án") : headerContext}

@@ -229,6 +229,10 @@ Theo phản hồi chủ dự án, trạng thái nghỉ của nút thu/mở sideb
 
 Chủ dự án yêu cầu “deploy production”, chốt bản dark mode và toàn bộ tinh chỉnh D-138–D-142 tại code commit 9c0dc8f. Đưa nhánh codex/spark-dark-mode vào main và dùng Git integration hiện hành để Vercel tạo production build. Chế độ mặc định Theo hệ thống; preference lưu riêng mỗi origin/browser nên lựa chọn ở preview không chuyển sang domain production. Không migration hoặc thay đổi auth/sync. Kiểm tra bản live bằng browser profile demo riêng, không tác động dữ liệu tài khoản thật.
 
+## D-144 — Header thu gọn trên desktop và mobile (2026-10-06)
+
+Header desktop/mobile thu gọn khi cuộn quá 28px; trạng thái compact chỉ giữ h1 ở 50% cỡ chữ thường và dải màu 5px/radius 5px. Ẩn eyebrow, thống kê, nút mở sidebar mobile, nút sửa dự án và control trong header; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Giữ padding 20px/safe-area, blur 8px/WebKit và opacity dark 75% cho h1/dải màu. Chủ dự án đính chính -0.25em thành -0.025em sau khi trao đổi. Thay phần compact chỉ có mobile/title 80%/giữ thống kê của D-069 và các mô tả tương ứng; không thay màu hoặc dữ liệu.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

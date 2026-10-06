@@ -1,5 +1,11 @@
 # Spark v2 — bàn giao hiện hành
 
+## Header thu gọn — D-144 (2026-10-06)
+
+Header desktop/mobile thu gọn khi cuộn quá 28px; trạng thái compact chỉ giữ h1 ở 50% cỡ chữ thường và dải màu 5px/radius 5px. Ẩn eyebrow, thống kê, nút mở sidebar mobile, nút sửa dự án và control trong header; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Giữ padding 20px/safe-area, blur 8px/WebKit và opacity dark 75% cho h1/dải màu.
+
+Kiểm tra local: build/typecheck đạt; lint phần mã nguồn Spark và test header không có warning/error (lint toàn workspace có warning ở thư mục Masan ngoài phạm vi). 162 test logic đạt; 7/7 browser test header đạt ở 1280/390/320px sáng/tối, có danh sách ngắn và tên dự án dài. Hồi quy editor/icon/theme: 21 đạt, 2 offline test bỏ qua ở localhost theo điều kiện test. Chưa kiểm tra Safari/iPhone vật lý. Đang chờ xác minh production. Thay đổi ở `SparkApp.tsx`, `globals.css`, regression `tests/browser/header.spec.ts` và tài liệu brand/brief/UI/implementation/decisions/handoff. Bảng màu chỉ được kiểm kê, chưa thay đổi token màu.
+
 ## Dark mode — đã phát hành production (D-138–D-143, 2026-10-05)
 
 Đã phát hành qua main/Git integration tới https://spark.thuanngo.com sau yêu cầu deploy production của chủ dự án. Mốc xác minh: commit `22d0e66`, deployment `dpl_9aii13SzVwp1StjXBjg7PAdhVsDT` READY, production alias đúng domain. Build Vercel khoảng 26 giây. Commit tài liệu ghi nhận kết quả này không đổi runtime.

@@ -154,6 +154,11 @@ src/
 - Desktop floating trigger dùng artwork `+` 32px trong hit target 48px ở góc dưới phải. Mobile dùng dock `position: fixed` cao 58px và nút `+` 72px ở giữa; list phải chừa bottom space cộng safe-area để dock không che item cuối.
 - Trên mobile, sau user gesture mở quick-add phải focus title input; dùng `window.visualViewport` resize/scroll để fit backdrop vào vùng còn thấy khi bàn phím mở và gọi `scrollIntoView` cho field. Cleanup listener/timer khi đóng; desktop giữ layout overlay hiện tại.
 
+### Header thu gọn — D-144
+
+- Header desktop/mobile thu gọn khi cuộn quá 28px; trạng thái compact chỉ giữ h1 ở 50% cỡ chữ thường và dải màu 5px/radius 5px. Ẩn eyebrow, thống kê, nút mở sidebar mobile, nút sửa dự án và control trong header; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Giữ padding 20px/safe-area, blur 8px/WebKit và opacity dark 75% cho h1/dải màu.
+- State `headerCompact` dùng chung desktop/mobile, cập nhật qua scroll listener passive và requestAnimationFrame. CSS dùng `--view-title-size` theo breakpoint và nhân 0.5 khi `.is-compact`, không giữ selector mobile compact riêng. Bù phần chiều cao header đã thu vào padding cuối canvas qua useLayoutEffect/ResizeObserver, không để khoảng trắng dưới header; document không ngắn lại khi thu gọn, kể cả danh sách chỉ vừa vượt viewport. Canvas tắt scroll anchoring để trình duyệt không tự bù vị trí rồi đảo trạng thái ở ngưỡng cuộn.
+
 ### Sidebar và keyboard shortcuts
 
 - Sidebar có hai trạng thái: `expanded` và `compact`; lưu lựa chọn cục bộ để giữ sau reload.
