@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## Trục trái sidebar — D-153 (2026-10-06)
+
+Sidebar full/compact giữ tâm các icon ở x=28px, cùng trục badge logo. Dot dự án 12px ở cả hai trạng thái; đồng bộ và nút thu/mở cũng nằm trên trục trái. Bỏ rule compact căn giữa, giữ 240ms easeOutQuint và các thao tác. Thay đổi: globals.css, brand-guideline, decisions/handoff. Lint/typecheck/build, 175 test logic và 2/2 browser test icon/logo đạt. Chrome sáng/tối kiểm tra từng frame khi thu/mở: tâm icon/dot/footer giữ x=28px, kích thước không đổi; chọn dự án/trợ giúp và mobile 390px đạt. Đã xem ảnh sidebar full/compact; chưa kiểm tra Safari/iPhone vật lý.
+
 ## Sidebar 240ms — D-152 (2026-10-06)
 
 Thay D-151: sidebar desktop/mobile dùng 240ms, easeOutQuint qua token chung; bỏ token easeInOutQuint dư. Giữ reduced motion và hành vi. Thay đổi: globals.css, brand-guideline, decisions/handoff. Lint/typecheck/build và 175 test logic đạt; Chrome 1280/390px xác minh 240ms/easeOutQuint, thao tác sidebar, reduced motion và không tràn ngang. Chưa kiểm tra Safari/iPhone vật lý.

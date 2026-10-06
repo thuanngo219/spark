@@ -273,6 +273,10 @@ Theo yêu cầu chủ dự án: tăng transition thu/mở sidebar desktop từ 2
 
 Thay D-151 theo phản hồi chủ dự án: thu/mở sidebar desktop và trượt mở sidebar mobile cùng dùng 240ms, easeOutQuint qua token `--ease` hiện hành. Bỏ token easeInOutQuint không còn dùng. Giữ reduced motion, kích thước và hành vi sidebar.
 
+## D-153 — Giữ trục trái khi thu sidebar (2026-10-06)
+
+Chủ dự án duyệt giữ nguyên vị trí ngang icon khi sidebar mở/thu gọn, ẩn chữ và số đếm. Dùng chung căn trái ở hai trạng thái: tâm icon điều hướng, dot dự án 12px, trợ giúp, đồng bộ và nút thu/mở ở x=28px, cùng trục badge logo. Nút thu/mở chuyển từ biên sidebar về trục này, thay phần vị trí của D-141/D-142. Bỏ các rule compact căn giữa; giữ animation 240ms easeOutQuint, màu, tooltip và thao tác.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

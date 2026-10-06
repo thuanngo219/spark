@@ -133,6 +133,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .project-nav-row.drop-before::before, .project-nav-row.drop-after::after { content: ""; position: absolute; z-index: 2; left: 5px; right: 5px; height: 7px; pointer-events: none; background: radial-gradient(circle at 3px 50%, var(--turquoise) 0 3px, transparent 3.5px), linear-gradient(var(--turquoise), var(--turquoise)) 6px 3px / calc(100% - 6px) 2px no-repeat; filter: drop-shadow(0 0 3px rgba(68,212,205,.42)); }
 .project-nav-row.drop-before::before { top: -4px; }
 .project-nav-row.drop-after::after { bottom: -4px; }
+.project-nav-row .project-dot { width: 12px; height: 12px; margin-inline: 3px; }
 .project-actions { display: flex; align-items: center; }
 .project-more, .project-star { width: 30px; height: 30px; }
 .project-star.selected { color: var(--important-ink); }
@@ -140,14 +141,14 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .project-dot { width: 11px; height: 11px; border-radius: 999px; flex: 0 0 auto; box-shadow: inset 0 0 0 1px var(--dot-outline); }
 .sidebar-footer { min-width: 0; margin-top: auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
 .nav-kbd { margin-left: auto; color: rgba(255,255,255,.38); border: 1px solid rgba(255,255,255,.13); border-radius: 5px; min-width: 24px; padding: 2px 5px; text-align: center; font-size: 0.6875rem; }
-.local-mode-card { width: 100%; padding: 12px 10px; border: 0; border-top: 1px solid rgba(255,255,255,.08); background: transparent; color: inherit; display: flex; gap: 9px; align-items: center; text-align: left; }
+.local-mode-card { width: 100%; padding: 12px 4px; border: 0; border-top: 1px solid rgba(255,255,255,.08); background: transparent; color: inherit; display: flex; gap: 9px; align-items: center; text-align: left; }
 .local-mode-card:hover { background: rgba(255,255,255,.04); border-radius: 999px; }
 .local-mode-card > span:last-child { display: grid; min-width: 0; }
 .local-mode-card strong { color: rgba(255,255,255,.8); font-size: 0.6875rem; font-weight: 650; white-space: nowrap; }
 .local-mode-card small { color: rgba(255,255,255,.38); font-size: 0.625rem; margin-top: 2px; white-space: nowrap; }
 .local-mode-icon { width: 28px; height: 28px; border-radius: 999px; background: rgba(68,212,205,.15); color: var(--turquoise); display: grid; place-items: center; flex: 0 0 auto; }
 .local-mode-icon.error, .local-mode-icon.offline { color: var(--urgent-ink); background: rgba(217,119,106,.14); }
-.sidebar-toggle { justify-self: end; width: 42px; height: 42px; margin: 0 -31px 12px 0; display: grid; place-items: center; color: var(--heading); background: var(--canvas); border: 0; border-radius: 999px; box-shadow: none; z-index: 22; transition: background-color var(--motion-duration, 160ms) var(--ease), color var(--motion-duration, 160ms) var(--ease); }
+.sidebar-toggle { justify-self: start; width: 42px; height: 42px; margin: 0 0 12px -3px; display: grid; place-items: center; color: var(--heading); background: var(--canvas); border: 0; border-radius: 999px; box-shadow: none; z-index: 22; transition: background-color var(--motion-duration, 160ms) var(--ease), color var(--motion-duration, 160ms) var(--ease); }
 .sidebar-toggle:hover, .sidebar-toggle:focus-visible { color: var(--link-hover); }
 .app-shell.sidebar-compact > .sidebar .brand-full-wrap { width: 36px; }
 .app-shell.sidebar-compact > .sidebar .nav-text,
@@ -155,13 +156,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .app-shell.sidebar-compact > .sidebar .nav-kbd,
 .app-shell.sidebar-compact > .sidebar .local-mode-card > span:last-child { display: none; }
 .app-shell.sidebar-compact > .sidebar .nav-section { margin-bottom: 15px; }
-.app-shell.sidebar-compact > .sidebar .nav-item { justify-content: center; padding: 0; min-height: 34px; }
-.app-shell.sidebar-compact > .sidebar .nav-heading { justify-content: center; }
 .app-shell.sidebar-compact > .sidebar .project-nav-row { display: block; }
 .app-shell.sidebar-compact > .sidebar .project-nav-row .nav-item { min-height: 32px; }
-.app-shell.sidebar-compact > .sidebar .project-nav-row .project-dot { width: 12px; height: 12px; }
 .app-shell.sidebar-compact > .sidebar .project-actions { display: none; }
-.app-shell.sidebar-compact > .sidebar .local-mode-card { justify-content: center; padding-inline: 0; }
 .app-shell.sidebar-compact > .sidebar [data-tooltip] { position: relative; }
 .app-shell.sidebar-compact > .sidebar [data-tooltip]::after {
   content: attr(data-tooltip);
