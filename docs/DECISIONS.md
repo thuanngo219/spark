@@ -261,6 +261,10 @@ Gộp style dùng chung của dialog và swipe; bỏ khai báo luôn bị thay t
 
 Thay phần hướng/tốc độ reveal của D-145: nền Navy thu về bên phải, thời lượng tăng 20% từ 500ms lên 600ms. Logo/progress vẫn fade 500ms trước khi reveal bắt đầu. Giữ ease-out Quint, reduced motion và chờ dữ liệu sẵn sàng trước animation; không đổi đồng bộ hoặc dữ liệu.
 
+## D-150 — Nền trượt của bộ lọc nội dung (2026-10-06)
+
+Bộ lọc Tất cả / Note / Task dùng một nền tròn di chuyển từ lựa chọn hiện tại sang lựa chọn mới trong 280ms, ease-out Quint. Áp dụng desktop/mobile và hai theme, cả click lẫn phím tắt. Giữ kích thước, màu và hành vi lọc hiện tại; reduced motion dùng token chung. Nền dùng pseudo-element không chặn thao tác, thay nền riêng từng nút; không thêm dependency hoặc rule ép cascade.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

@@ -211,10 +211,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .icon-button:hover { background: var(--selected); color: var(--selected-ink); transform: translateY(-1px); }
 .view-actions .icon-button { width: 40px; height: 40px; background: transparent; color: var(--control-muted); }
 .view-actions .icon-button:hover { background: var(--control-hover); color: var(--ink); transform: none; }
-.item-display-switcher { min-height: 40px; display: grid; grid-template-columns: repeat(3, 36px); align-items: center; gap: 2px; padding: 3px; border-radius: 999px; background: var(--well); color: var(--control-muted); }
-.item-display-switcher button { width: 36px; height: 36px; padding: 0; border: 0; border-radius: 999px; background: transparent; color: inherit; display: grid; place-items: center; transition: color var(--motion-duration, 160ms) var(--ease), background var(--motion-duration, 160ms) var(--ease), box-shadow var(--motion-duration, 160ms) var(--ease); }
-.item-display-switcher button:hover { color: var(--heading); }
-.item-display-switcher button.selected { color: var(--heading); background: var(--surface); box-shadow: 0 5px 13px rgba(17,23,66,.15); }
+.item-display-switcher { --switcher-size: 36px; --switcher-padding: 3px; --switcher-index: 0; position: relative; min-height: 40px; display: grid; grid-template-columns: repeat(3, var(--switcher-size)); align-items: center; gap: 2px; padding: var(--switcher-padding); border-radius: 999px; background: var(--well); color: var(--control-muted); }
+.item-display-switcher[data-mode="note"] { --switcher-index: 1; }
+.item-display-switcher[data-mode="task"] { --switcher-index: 2; }
+.item-display-switcher::before { content: ""; position: absolute; left: var(--switcher-padding); top: 50%; width: var(--switcher-size); height: var(--switcher-size); border-radius: 50%; background: var(--surface); box-shadow: 0 5px 13px rgba(17,23,66,.15); pointer-events: none; transform: translate(calc(var(--switcher-index) * (var(--switcher-size) + 2px)), -50%); transition: transform var(--motion-duration, 280ms) var(--ease); }
+.item-display-switcher button { position: relative; width: var(--switcher-size); height: var(--switcher-size); padding: 0; border: 0; border-radius: 999px; background: transparent; color: inherit; display: grid; place-items: center; transition: color var(--motion-duration, 160ms) var(--ease); }
+.item-display-switcher button:hover, .item-display-switcher button.selected { color: var(--heading); }
 .mobile-header-drawer { display: none; }
 .sync-header-status { border-radius: 999px; min-height: 36px; display: flex; align-items: center; gap: 7px; padding: 0 8px; border: 0; background: transparent; color: var(--muted); font-size: 0.625rem; }
 .sync-header-status > span, .mobile-sync-status > span { width: 9px; height: 9px; border-radius: 999px; background: #8b8f9e; box-shadow: 0 0 0 3px rgba(139,143,158,.13); }
@@ -618,8 +620,7 @@ button:focus-visible { filter: brightness(.88); }
   .mobile-dock .mobile-dock-add:active > span { transform: scale(.98); }
   .mobile-floating-controls { position: fixed; left: 14px; right: 14px; bottom: max(88px, calc(68px + env(safe-area-inset-bottom))); z-index: 71; display: flex; align-items: center; justify-content: space-between; gap: 10px; pointer-events: none; }
   .mobile-floating-controls > * { pointer-events: auto; }
-  .item-display-switcher.mobile { min-height: 48px; grid-template-columns: repeat(3, 44px); padding: 2px; background: color-mix(in srgb, var(--well) 94%, transparent); box-shadow: 0 7px 22px rgba(17,23,66,.13); backdrop-filter: blur(16px); }
-  .item-display-switcher.mobile button { width: 44px; height: 44px; }
+  .item-display-switcher.mobile { --switcher-size: 44px; --switcher-padding: 2px; min-height: 48px; background: color-mix(in srgb, var(--well) 94%, transparent); box-shadow: 0 7px 22px rgba(17,23,66,.13); backdrop-filter: blur(16px); }
   .mobile-sync-status { min-height: 44px; display: flex; align-items: center; gap: 7px; padding: 0 12px; border: 1px solid var(--floating-border); border-radius: 999px; background: color-mix(in srgb, var(--surface) 94%, transparent); color: var(--muted); box-shadow: 0 7px 22px rgba(17,23,66,.13); backdrop-filter: blur(16px); font-size: 0.625rem; }
   .dialog-backdrop { padding: 10px 8px calc(8px + env(safe-area-inset-bottom)); }
   .item-detail-sheet { padding: 0; }

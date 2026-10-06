@@ -24,6 +24,7 @@ export function ItemDisplaySwitcher({
       className={`item-display-switcher ${mobile ? "mobile" : ""}`}
       role="group"
       aria-label="Lọc loại nội dung"
+      data-mode={mode}
     >
       {entries.map((entry) => (
         <button

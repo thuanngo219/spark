@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## Nền trượt bộ lọc — D-150 (2026-10-06)
+
+Tất cả/Note/Task có một nền tròn trượt giữa các nút trong 280ms với Quint, cả desktop/mobile, sáng/tối và phím tắt. Giữ size/màu/tính năng lọc; reduced motion theo token chung. Thay đổi: SparkNavigation.tsx, globals.css, decisions/handoff. Lint/typecheck/build và 175 test logic đạt. Chrome kiểm tra 1280/390px ở cả sáng/tối: nền có vị trí trung gian khi trượt, khớp từng nút khi kết thúc, phím tắt và reduced motion hoạt động, không tràn ngang; đã xem ảnh mobile dark. Chưa kiểm tra Safari/iPhone vật lý.
+
 ## Reveal loading — D-149 (2026-10-06)
 
 Nền Navy thu về phải trong 600ms, sau khi logo/progress fade 500ms; thay hướng trái và duration 500ms của D-145. Giữ Quint và reduced motion. Chỉnh rule gốc trong globals.css, cập nhật kiểm tra trình tự/duration/transform-origin ở startup.spec.ts và tài liệu brand/brief/UI/implementation/decisions. Kiểm tra local: lint/typecheck/build đạt, 175 test logic và 10/10 test browser startup đạt, gồm desktop 1280px/mobile 390px, trình tự fade–reveal, hướng phải, duration 600ms, reduced motion và lỗi/offline. Chưa kiểm tra Safari/iPhone vật lý.
