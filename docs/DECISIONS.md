@@ -239,7 +239,7 @@ Theo yêu cầu và xác nhận của chủ dự án: chỉ bỏ dữ liệu m�
 
 Splash Navy #111742 với logo negative icon + wordmark spark, tiến trình theo các bước thực tế; không tăng giả theo thời gian. 100% sau dữ liệu sẵn sàng và queue được xử lý. Logo/thanh tiến trình fade 500ms, tiếp theo nền thu về trái 500ms để lộ app. Lúc chờ app inert, phím tắt không kích hoạt nội dung bên dưới. Ngoại tuyến có cache cho phép sử dụng; lỗi/timeout có Thử lại và dùng bản lưu, không báo sync thành công. Reduced motion bỏ chờ chuyển động.
 
-Thay phần D-144 ẩn control: desktop compact giữ sync + bộ lọc All/Note/Task; mobile giữ cụm nổi hiện hành. Title/eyebrow/thống kê chuyển nhẹ 220ms, h1 50%, tracking -0.025em. Bù không gian ở cuối canvas để tránh nhảy scroll khi header đổi chiều cao.
+Thay phần D-144 ẩn control: desktop compact giữ sync + bộ lọc All/Note/Task; mobile giữ cụm nổi hiện hành. Title/eyebrow/thống kê chuyển nhẹ 220ms, h1 50%, tracking -0.025em. Bù không gian ở cuối canvas để tránh nhảy scroll khi header đổi chiều cao. Phản hồi cùng ngày: H1 compact căn giữa theo chiều dọc với cụm sync/bộ lọc, giữ control ổn định trong lúc title co lại.
 
 ## D-146 — Bỏ Violet, thống nhất màu cờ và Quint easing (2026-10-06)
 

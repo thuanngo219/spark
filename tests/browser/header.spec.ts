@@ -38,7 +38,12 @@ for (const width of [1280, 390, 320]) {
       for (const selector of [".eyebrow", "p", ".view-title-row button"]) {
         for (const el of await header.locator(selector).all()) await expect(el).toBeHidden();
       }
-      if (width >= 700) await expect(header.locator(".view-actions")).toBeVisible();
+      if (width >= 700) {
+        await expect(header.locator(".view-actions")).toBeVisible();
+        const titleBox = (await title.boundingBox())!;
+        const controlsBox = (await header.locator(".view-actions").boundingBox())!;
+        expect(titleBox.y + titleBox.height / 2).toBeCloseTo(controlsBox.y + controlsBox.height / 2, 1);
+      }
       else await expect(page.locator(".mobile-sync-status")).toBeVisible();
       await expect(header.locator(".view-project-band")).toHaveCSS("height", "5px");
       await page.mouse.wheel(0, 500);
