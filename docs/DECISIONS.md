@@ -269,6 +269,10 @@ Bộ lọc Tất cả / Note / Task dùng một nền tròn di chuyển từ l�
 
 Theo yêu cầu chủ dự án: tăng transition thu/mở sidebar desktop từ 220ms và animation trượt mở mobile từ 240ms lên 400ms. Dùng easeInOutQuint `cubic-bezier(.83, 0, .17, 1)` riêng cho hai chuyển động này, thay ease-out Quint trong phạm vi sidebar của D-146. Giữ reduced motion qua token chung; không đổi kích thước, thao tác hoặc animation khác.
 
+## D-152 — Sidebar 240ms easeOutQuint (2026-10-06)
+
+Thay D-151 theo phản hồi chủ dự án: thu/mở sidebar desktop và trượt mở sidebar mobile cùng dùng 240ms, easeOutQuint qua token `--ease` hiện hành. Bỏ token easeInOutQuint không còn dùng. Giữ reduced motion, kích thước và hành vi sidebar.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

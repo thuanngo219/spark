@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## Sidebar 240ms — D-152 (2026-10-06)
+
+Thay D-151: sidebar desktop/mobile dùng 240ms, easeOutQuint qua token chung; bỏ token easeInOutQuint dư. Giữ reduced motion và hành vi. Thay đổi: globals.css, brand-guideline, decisions/handoff. Lint/typecheck/build và 175 test logic đạt; Chrome 1280/390px xác minh 240ms/easeOutQuint, thao tác sidebar, reduced motion và không tràn ngang. Chưa kiểm tra Safari/iPhone vật lý.
+
 ## Sidebar 400ms — D-151 (2026-10-06)
 
 Thu/mở sidebar desktop và trượt mở sidebar mobile dùng 400ms, easeInOutQuint `cubic-bezier(.83, 0, .17, 1)`. Giữ reduced motion, size và các animation khác. Thay đổi: globals.css, brand-guideline, decisions/handoff. Lint/typecheck/build và 175 test logic đạt; Chrome 1280/390px xác minh duration 400ms/easing, thu–mở, reduced motion và không tràn ngang. Chưa kiểm tra Safari/iPhone vật lý.

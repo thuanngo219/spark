@@ -378,4 +378,4 @@ D-145: màn hình khởi động phủ Navy #111742, giữa màn hình là logo 
 
 - D-131: Ô chọn sắp xếp và nút đổi chiều cao 36px trên desktop/mobile; nút đổi chiều rộng 36px. Header blur 8px ở cả hai kích thước, có WebKit.
 
-D-151: riêng animation thu/mở sidebar desktop và trượt mở sidebar mobile dùng 400ms, easeInOutQuint qua `--ease-in-out-quint: cubic-bezier(.83, 0, .17, 1)`. Các animation khác giữ easing hiện hành; reduced motion vẫn dùng token chung.
+D-152 thay D-151: animation thu/mở sidebar desktop và trượt mở sidebar mobile dùng 240ms, easeOutQuint qua token chung `--ease: cubic-bezier(.22, 1, .36, 1)`. Giữ reduced motion; bỏ token easeInOutQuint không còn sử dụng.
