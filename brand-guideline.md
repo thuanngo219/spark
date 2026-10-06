@@ -377,3 +377,5 @@ D-145: màn hình khởi động phủ Navy #111742, giữa màn hình là logo 
 - Trước khi phát hành một ứng dụng mới, kiểm tra tối thiểu: logo đúng phiên bản, font có dấu tiếng Việt, contrast WCAG AA, semantic state không phụ thuộc màu và copy đúng giọng Spark.
 
 - D-131: Ô chọn sắp xếp và nút đổi chiều cao 36px trên desktop/mobile; nút đổi chiều rộng 36px. Header blur 8px ở cả hai kích thước, có WebKit.
+
+D-151: riêng animation thu/mở sidebar desktop và trượt mở sidebar mobile dùng 400ms, easeInOutQuint qua `--ease-in-out-quint: cubic-bezier(.83, 0, .17, 1)`. Các animation khác giữ easing hiện hành; reduced motion vẫn dùng token chung.

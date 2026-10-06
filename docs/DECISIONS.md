@@ -265,6 +265,10 @@ Thay phần hướng/tốc độ reveal của D-145: nền Navy thu về bên ph
 
 Bộ lọc Tất cả / Note / Task dùng một nền tròn di chuyển từ lựa chọn hiện tại sang lựa chọn mới trong 280ms, ease-out Quint. Áp dụng desktop/mobile và hai theme, cả click lẫn phím tắt. Giữ kích thước, màu và hành vi lọc hiện tại; reduced motion dùng token chung. Nền dùng pseudo-element không chặn thao tác, thay nền riêng từng nút; không thêm dependency hoặc rule ép cascade.
 
+## D-151 — Sidebar 400ms easeInOutQuint (2026-10-06)
+
+Theo yêu cầu chủ dự án: tăng transition thu/mở sidebar desktop từ 220ms và animation trượt mở mobile từ 240ms lên 400ms. Dùng easeInOutQuint `cubic-bezier(.83, 0, .17, 1)` riêng cho hai chuyển động này, thay ease-out Quint trong phạm vi sidebar của D-146. Giữ reduced motion qua token chung; không đổi kích thước, thao tác hoặc animation khác.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

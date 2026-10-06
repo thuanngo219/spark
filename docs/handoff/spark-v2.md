@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## Sidebar 400ms — D-151 (2026-10-06)
+
+Thu/mở sidebar desktop và trượt mở sidebar mobile dùng 400ms, easeInOutQuint `cubic-bezier(.83, 0, .17, 1)`. Giữ reduced motion, size và các animation khác. Thay đổi: globals.css, brand-guideline, decisions/handoff. Lint/typecheck/build và 175 test logic đạt; Chrome 1280/390px xác minh duration 400ms/easing, thu–mở, reduced motion và không tràn ngang. Chưa kiểm tra Safari/iPhone vật lý.
+
 ## Nền trượt bộ lọc — D-150 (2026-10-06)
 
 Tất cả/Note/Task có một nền tròn trượt giữa các nút trong 280ms với Quint, cả desktop/mobile, sáng/tối và phím tắt. Giữ size/màu/tính năng lọc; reduced motion theo token chung. Thay đổi: SparkNavigation.tsx, globals.css, decisions/handoff. Lint/typecheck/build và 175 test logic đạt. Chrome kiểm tra 1280/390px ở cả sáng/tối: nền có vị trí trung gian khi trượt, khớp từng nút khi kết thúc, phím tắt và reduced motion hoạt động, không tràn ngang; đã xem ảnh mobile dark. Chưa kiểm tra Safari/iPhone vật lý.
