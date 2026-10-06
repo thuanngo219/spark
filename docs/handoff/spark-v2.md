@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## Reveal loading — D-149 (2026-10-06)
+
+Nền Navy thu về phải trong 600ms, sau khi logo/progress fade 500ms; thay hướng trái và duration 500ms của D-145. Giữ Quint và reduced motion. Chỉnh rule gốc trong globals.css, cập nhật kiểm tra trình tự/duration/transform-origin ở startup.spec.ts và tài liệu brand/brief/UI/implementation/decisions. Kiểm tra local: lint/typecheck/build đạt, 175 test logic và 10/10 test browser startup đạt, gồm desktop 1280px/mobile 390px, trình tự fade–reveal, hướng phải, duration 600ms, reduced motion và lỗi/offline. Chưa kiểm tra Safari/iPhone vật lý.
+
 ## Phím tắt theme và CSS — D-147/D-148 (2026-10-06)
 
 `<` Sáng, `>` Tối, `M`/`m` Theo hệ thống; không can thiệp input/textarea/select/contenteditable, IME hoặc Ctrl/Command/Alt. Dùng chung preference lưu thiết bị/cross-tab và đã thêm hướng dẫn trong bảng phím tắt.

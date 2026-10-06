@@ -83,13 +83,22 @@ test("startup waits for both cloud datasets, migrates only Violet, fades then re
   });
   releaseItems();
   await expect(splash(page)).toHaveClass(/is-ready/);
-  const timing = await splash(page).evaluate(el => ({ fade: getComputedStyle(el.querySelector(".startup-content")!).animationDuration, reveal: getComputedStyle(el, "::before").animationDelay }));
-  expect(timing).toEqual({ fade: "0.5s", reveal: "0.5s" });
+  const timing = await splash(page).evaluate(el => {
+    const background = getComputedStyle(el, "::before");
+    return {
+      fade: getComputedStyle(el.querySelector(".startup-content")!).animationDuration,
+      delay: background.animationDelay,
+      duration: background.animationDuration,
+      origin: background.transformOrigin,
+      rightCenter: `${el.clientWidth}px ${el.clientHeight / 2}px`,
+    };
+  });
+  expect(timing).toEqual({ fade: "0.5s", delay: "0.5s", duration: "0.6s", origin: timing.rightCenter, rightCenter: timing.rightCenter });
   await expect(splash(page)).toBeHidden();
   const events = await page.evaluate(() => (window as unknown as { startupEvents: { name: string; at: number }[] }).startupEvents);
   const fade = events.find(e => e.name === "startup-logo-out")!;
   const reveal = events.find(e => e.name === "startup-reveal")!;
-  expect(reveal.at - fade.at).toBeGreaterThan(400);
+  expect(reveal.at - fade.at).toBeGreaterThan(500);
   await expect(page.locator(".item-row")).toContainText("Nội dung thật từ cloud");
   expect(patches).toHaveLength(1);
   expect(patches[0].body).toEqual({ color: "#D6A84F" });

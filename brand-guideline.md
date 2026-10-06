@@ -316,7 +316,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 
 ## 8. Layout and motion
 
-D-145: màn hình khởi động phủ Navy #111742, giữa màn hình là logo negative chính thức (icon + chữ spark) cùng thanh tiến trình và %. Sau khi dữ liệu sẵn sàng, cụm logo/progress mờ dần 500ms rồi nền thu về trái 500ms. Không lộ dữ liệu mẫu lúc chờ; lỗi/offline có lối tiếp tục rõ ràng.
+D-145: màn hình khởi động phủ Navy #111742, giữa màn hình là logo negative chính thức (icon + chữ spark) cùng thanh tiến trình và %. Sau khi dữ liệu sẵn sàng, cụm logo/progress mờ dần 500ms rồi nền thu về phải 600ms (D-149). Không lộ dữ liệu mẫu lúc chờ; lỗi/offline có lối tiếp tục rõ ràng.
 
 - D-136: Header padding 20px cả bốn phía desktop/mobile (mobile cộng safe-area top), cả thường/compact; chiều cao theo nội dung. Dải màu 5px, radius 5px dưới tiêu đề và thống kê (D-137). Eyebrow các view ngày/Tất cả dùng xám #73788D như view dự án; Tất cả ghi “Mọi ngày. Mọi việc.”, giữ chữ uppercase như hệ thống. Không dùng border dưới; bóng Navy rất nhẹ ở chân header rõ hơn giữa và tan ở hai mép. Backdrop blur 8px desktop/mobile (cả thường/compact), có WebKit prefix.
 

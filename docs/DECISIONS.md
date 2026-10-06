@@ -257,6 +257,10 @@ Theo yêu cầu tối ưu CSS: bỏ 5 `!important` (OTP và reduced motion), g�
 
 Gộp style dùng chung của dialog và swipe; bỏ khai báo luôn bị thay thế ở quick-add, màu nút lặp và giá trị mobile giống base. Đối chiếu selector với JSX, giữ state động `drop-before/drop-after`, responsive và giá trị inline phụ thuộc dữ liệu. Sau rà soát: 551→543 rule, 2059→2022 declaration, important 5→0. Không tuyên bố mọi state chưa dùng trong một lần render là mã chết; các nhánh điều kiện vẫn cần giữ.
 
+## D-149 — Reveal loading về phải (2026-10-06)
+
+Thay phần hướng/tốc độ reveal của D-145: nền Navy thu về bên phải, thời lượng tăng 20% từ 500ms lên 600ms. Logo/progress vẫn fade 500ms trước khi reveal bắt đầu. Giữ ease-out Quint, reduced motion và chờ dữ liệu sẵn sàng trước animation; không đổi đồng bộ hoặc dữ liệu.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

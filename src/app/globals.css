@@ -477,7 +477,7 @@ button:focus-visible { filter: brightness(.88); }
 .quick-add-controls input:focus-visible, .quick-add-controls select:focus-visible { background: transparent; }
 .mobile-nav-backdrop, .mobile-dock, .mobile-floating-controls { display: none; }
 .startup-screen { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; isolation: isolate; color: #fff; }
-.startup-screen::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--navy-900); transform-origin: left center; }
+.startup-screen::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--navy-900); transform-origin: right center; }
 .startup-content { width: min(320px, calc(100vw - 64px)); }
 .startup-logo { display: block; width: 100%; height: auto; }
 .startup-progress { height: 3px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.2); }
@@ -488,7 +488,7 @@ button:focus-visible { filter: brightness(.88); }
 .startup-actions button { min-height: 44px; border: 1px solid rgba(255,255,255,.3); border-radius: 999px; padding: 8px 16px; background: transparent; color: #fff; font: inherit; font-size: .75rem; }
 .startup-actions button:hover { background: rgba(255,255,255,.1); }
 .startup-screen.is-ready .startup-content { animation: startup-logo-out var(--motion-duration, 500ms) var(--ease) forwards; }
-.startup-screen.is-ready::before { animation: startup-reveal var(--motion-duration, 500ms) var(--ease) var(--motion-delay, 500ms) forwards; }
+.startup-screen.is-ready::before { animation: startup-reveal var(--motion-duration, 600ms) var(--ease) var(--motion-delay, 500ms) forwards; }
 @keyframes startup-logo-out { to { opacity: 0; } }
 @keyframes startup-reveal { to { transform: scaleX(0); } }
 
