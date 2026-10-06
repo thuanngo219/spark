@@ -63,7 +63,7 @@ Ba phương án cùng dùng một information architecture và data model. Khác
 
 **Mood:** nhanh và hơi thiên power-user; danh sách là trung tâm, chrome tối thiểu.
 
-- Content surface sáng, chữ navy đậm; chrome chính navy, accent turquoise và màu hỗ trợ violet theo ảnh tham chiếu đã duyệt.
+- Content surface sáng, chữ navy đậm; chrome chính navy, accent turquoise theo ảnh tham chiếu đã duyệt.
 - Desktop dùng sidebar đầy đủ và cho phép thu gọn thành compact rail khi cần.
 - Project được nhận diện bằng dot màu lớn trong task row; tên project chỉ hiện trong navigation/editor.
 - Mật độ cao hơn: row 48–52px, thích hợp danh sách dài.
@@ -97,9 +97,9 @@ Ba phương án cùng dùng một information architecture và data model. Khác
 
 ## Hướng đã chọn
 
-Chủ dự án đã chọn **Option C — Compact Canvas** vì sự gọn gàng. Visual direction dùng navy `#111742` làm nền/chrome chính, turquoise `#44D4CD` làm màu tương tác, violet `#8951C7` làm màu hỗ trợ, Muted Coral `#D9776A` làm accent ấm và Deep Purple `#65458A` làm màu nhận diện trầm hơn violet nhưng tách biệt rõ với navy; content surface giữ sáng và sạch. Canvas hiện dùng nền phẳng #F7F8FA, không radial glow hoặc gradient màu (D-130). Tổng palette chromatic là năm màu; trắng, xám và đen được xem là neutral và không tính vào giới hạn này.
+Chủ dự án đã chọn **Option C — Compact Canvas** vì sự gọn gàng. Visual direction dùng navy `#111742` làm nền/chrome chính, turquoise `#44D4CD` làm màu tương tác, Muted Coral `#D9776A` làm accent ấm và Deep Purple `#65458A` làm màu nhận diện tách biệt với navy; content surface giữ sáng và sạch. Canvas hiện dùng nền phẳng #F7F8FA, không radial glow hoặc gradient màu (D-130). Tổng palette chromatic là bốn màu; trắng, xám và đen được xem là neutral và không tính vào giới hạn này.
 
-Màu trạng thái Quan Trọng/star dùng tint Amber và Ưu tiên/điện xẹt dùng Muted Coral ở icon/highlight nhỏ; đây là màu semantic hiện có, không phải đề xuất mở rộng brand palette năm màu đã chốt.
+Màu trạng thái Quan Trọng/star dùng tint Amber và Ưu tiên/điện xẹt dùng Muted Coral ở icon/highlight nhỏ; đây là màu semantic hiện có, không phải đề xuất mở rộng brand palette bốn màu đã chốt.
 
 Trong task list, project mặc định được biểu diễn bằng **dot màu cỡ lớn**. Trên desktop, click bất kỳ dot nào sẽ animate mở hoặc thu gọn đồng loạt mọi project dot trong view thành pill compact hiển thị đầy đủ tên project uppercase với regular weight trên một dòng, không ellipsis hoặc xuống dòng. Khi mở, nền mỗi pill chỉ ôm tên project; các pill nằm trong một cột chung theo pill dài nhất để title thẳng hàng và dot giữ cùng một trục. Pill tham gia layout, không overlay hoặc dùng shadow; trạng thái mở được giữ khi đổi view và lưu theo browser. Người dùng có thể tắt/mở hành vi này trong bảng Phím tắt & hiển thị. Mobile luôn chỉ hiển thị dot tĩnh, không có thao tác mở pill. Tên project vẫn xuất hiện trong navigation, màn hình project và task editor để bảo đảm người dùng có thể hiểu/chỉnh quan hệ này.
 
@@ -109,7 +109,7 @@ Mật độ đã được tinh chỉnh: rail thu gọn rộng khoảng `56px`, n
 
 Nhóm **Tập trung** được đổi tên thành **Cần lưu ý**. Cần lưu ý và Dự án có thể thu gọn độc lập; project được gắn sao sẽ được đẩy lên Cần lưu ý.
 
-Project editor đặt nút star icon-only ở đầu hàng chọn màu, sau đó là bảy preset: Turquoise, Violet, Muted Coral, Deep Purple, Soft Amber, Cornflower và Sage. Lựa chọn màu thứ tám là swatch đa sắc mở color picker hệ thống; màu custom selected hiển thị ở tâm nút. Mobile giữ dải swatch trên một hàng cuộn ngang với touch target 44px. Màu custom và ba màu dẫn xuất chỉ dùng cho nhận diện project, không mở rộng palette CTA hay trạng thái hệ thống.
+Project editor đặt nút star icon-only ở đầu hàng chọn màu, sau đó là sáu preset: Turquoise, Muted Coral, Deep Purple, Soft Amber, Cornflower và Sage. Lựa chọn màu thứ bảy là swatch đa sắc mở color picker hệ thống; màu custom selected hiển thị ở tâm nút. Mobile giữ dải swatch trên một hàng cuộn ngang với touch target 44px. Màu custom và ba màu dẫn xuất chỉ dùng cho nhận diện project, không mở rộng palette CTA hay trạng thái hệ thống.
 
 Khi mở Tạo dự án mới trên mobile, ô Tên dự án được focus ngay. Overlay bám theo `visualViewport` và tự đưa field vào giữa vùng nhìn thấy khi bàn phím iOS mở; desktop và form chỉnh sửa dự án giữ hành vi focus thông thường.
 
@@ -135,7 +135,7 @@ Typography web app dùng base size bằng `rem`, scale root `112.5%` trên deskt
 
 Danh sách mobile dùng canvas tràn viền, row tối thiểu `52px` và gap `2px` giữa item; row ở trạng thái nghỉ dùng nền transparent để nền canvas phẳng của Spark liền mạch, chỉ phủ lại canvas khi đang kéo hoặc mở khay swipe. Title task/note luôn là một dòng và ellipsis khi thiếu chỗ. Item có Nội dung chi tiết hiển thị icon hội thoại 15px ngay sau text, không neo ở mép phải. Marker giữ vùng chạm tối thiểu 44px, project dot được thu gọn, còn desktop tiếp tục dùng row khoảng `35px` và gap `6px`.
 
-Mobile bỏ app header riêng; view header sticky đặt panel icon-only trước title khi header đầy đủ. D-144: Header desktop/mobile thu gọn khi cuộn quá 28px; trạng thái compact chỉ giữ h1 ở 50% cỡ chữ thường và dải màu 5px/radius 5px. Ẩn eyebrow, thống kê, nút mở sidebar mobile, nút sửa dự án và control trong header; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Giữ padding 20px/safe-area, blur 8px/WebKit và opacity dark 75% cho h1/dải màu. Nền app phẳng trên mọi kích thước. Dock icon-only 58px dùng năm segment bằng nhau cho Hôm nay/Sắp tới/Thêm/Theo ngày/Tất cả; nút thêm 72px nằm giữa và trồi khỏi thanh, còn active navigation dùng nền Navy rộng tối đa 64px.
+Mobile bỏ app header riêng; view header sticky đặt panel icon-only trước title khi header đầy đủ. D-144/D-145: Header desktop/mobile thu gọn khi cuộn quá 28px, chuyển động 220ms; compact giữ h1 ở 50% cỡ chữ thường và dải màu 5px/radius 5px. Desktop giữ cụm sync/bộ lọc trong header, mobile giữ cụm nổi trên dock. Ẩn eyebrow, thống kê, nút mở sidebar mobile và nút sửa dự án; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Giữ padding 20px/safe-area, blur 8px/WebKit và opacity dark 75% cho h1/dải màu. Nền app phẳng trên mọi kích thước. Dock icon-only 58px dùng năm segment bằng nhau cho Hôm nay/Sắp tới/Thêm/Theo ngày/Tất cả; nút thêm 72px nằm giữa và trồi khỏi thanh, còn active navigation dùng nền Navy rộng tối đa 64px.
 
 Gesture chỉ áp dụng dưới breakpoint mobile: khi không có khay swipe nào mở, một lần tap vùng nội dung task/note mở chi tiết. Nếu bất kỳ khay nào đang mở, tap nội dung cùng item hoặc item khác chỉ đóng khay, chưa mở chi tiết. Swipe trái mở khay Quan Trọng, Ưu tiên và action cuối theo loại item — Xóa với task, Lưu trữ/Khôi phục với note; swipe phải trên item không có hành động; swipe từ mép trái sang phải mở navigation sheet với motion transform. Vuốt/cuộn không tự mở chi tiết; checkbox/marker và action trong khay giữ hành vi riêng. Xóa vẫn dùng toast Hoàn tác và không kích hoạt ngay khi thả full-swipe. Toast nằm trên hàng switcher/sync và dock/safe area, không che navigation; desktop né floating `+`. Không dùng touch-and-hold. Panel icon trong header là fallback khi browser ưu tiên gesture hệ thống.
 
@@ -163,3 +163,11 @@ Gesture chỉ áp dụng dưới breakpoint mobile: khi không có khay swipe n�
 Editor Nội dung hiện hỗ trợ B/I/U và ⌘/Ctrl+B/I/U, tối đa 4.000 ký tự. Nút sửa cùng hàng nhãn Nội dung, ngoài vùng cuộn. Toolbar và bộ đếm nằm trên vùng nhập; toolbar mobile có vùng chạm 44px.
 
 - D-131: Ô chọn sắp xếp và nút đổi chiều cao 36px trên desktop/mobile; nút đổi chiều rộng 36px. Header blur 8px ở cả hai kích thước, có WebKit.
+
+## Cập nhật D-145–D-146 (2026-10-06)
+
+- Header thu gọn/mở lại trong 220ms; h1 giữ tỷ lệ 50% và tracking -0.025em. Cụm sync và All/Note/Task vẫn hiện trên desktop; mobile giữ cụm nổi trên dock. Eyebrow/thống kê ẩn khi compact. Dải màu 5px, padding 20px, blur 8px giữ nguyên.
+- Khởi động bằng lớp Navy #111742, logo negative gồm icon + chữ spark ở giữa và tiến trình theo giai đoạn. Chờ xác định phiên, cache đúng user, tải projects/items và xử lý queue; không render dữ liệu mẫu trong lúc chờ. Khi sẵn sàng, logo/thanh tiến trình fade 500ms rồi nền thu về trái trong 500ms.
+- Local mới bắt đầu rỗng. Chỉ dọn bộ seed local cũ khi nhận diện đầy đủ và chưa sửa; giữ dữ liệu thật, bộ seed đã sửa/không rõ và toàn bộ dữ liệu cloud. Khi offline có cache thì mở bản lưu; lỗi đồng bộ có Thử lại và lựa chọn dùng dữ liệu đã lưu. Phần trăm là tiến trình từng bước, không phải phần trăm byte tải về.
+- Chỉ bỏ Violet #8951C7 (và sắc nhãn #BA99DF), giữ Deep Purple #65458A. Dự án Violet chuyển Amber #D6A84F khi đọc local/cloud; cloud chỉ cập nhật trường color với điều kiện user/id/màu cũ. Queue ghi project cũng chuẩn hóa màu để không đưa Violet trở lại. Không đổi tên, quan hệ, thứ tự hay nội dung dự án.
+- Quan Trọng Amber #D6A84F, Ưu tiên Coral #D9776A thống nhất toàn app ở cả hai theme. Preset dự án còn sáu màu; custom picker giữ nguyên. Mọi animation/transition dùng ease-out Quint `cubic-bezier(.22, 1, .36, 1)` và tôn trọng reduced motion.

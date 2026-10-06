@@ -1,8 +1,9 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 import sharp from "sharp";
 
 test("app metadata, manifest and offline cache use the new icon set", async ({ page, request }) => {
   await page.goto("/");
+  await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
   await expect(page.getByRole("heading", { name: "Hôm nay", exact: true })).toBeVisible();
   await expect(page.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveAttribute("href", "/spark-favicon-v2.svg");
   await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute("href", "/icons/spark-apple-v2-180.png");
@@ -45,6 +46,7 @@ test("app metadata, manifest and offline cache use the new icon set", async ({ p
 
 test("desktop sidebar, compact rail and mobile drawer use the approved logo", async ({ page, request }) => {
   await page.goto("/");
+  await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
   const desktop = page.locator(".app-shell > .sidebar");
   const logo = desktop.locator(".brand-full");
   const wrap = desktop.locator(".brand-full-wrap");

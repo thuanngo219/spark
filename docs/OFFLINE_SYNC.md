@@ -6,7 +6,7 @@ Tài liệu này mô tả hành vi offline-first hiện tại của Spark. Supab
 
 - Sau ít nhất một lần mở bản production khi có mạng, Spark có thể cold-start, đọc và sửa dữ liệu khi thiết bị offline.
 - Mọi thay đổi được ghi local trước khi gửi cloud; lỗi mạng không rollback nội dung người dùng vừa nhập.
-- Cache demo tách khỏi cache từng user. Snapshot cloud rỗng không tự được gieo lại từ demo hoặc cache cũ.
+- Cache local (scope lịch sử `demo`) tách khỏi cache từng user. Snapshot cloud rỗng không tự được gieo lại từ demo hoặc cache cũ.
 - Khi mạng trở lại, mutation được gửi tuần tự và chỉ xóa khỏi queue sau khi Supabase xác nhận.
 
 ## Kiến trúc
@@ -78,3 +78,11 @@ App gọi reconcile khi Realtime kết nối lại, browser phát `online`, tab 
 ## Nội dung có định dạng (D-117)
 
 `descriptionFormat` được ghi cùng `description` trong snapshot và mutation queue hiện có, không đổi version IndexedDB. So sánh snapshot bao gồm định dạng để thay đổi chỉ bold/italic/underline vẫn được reconcile. Cache cũ không có trường này hiển thị plain text. Editor được đóng gói cùng client app shell, không chờ tải thêm module ở lần mở đầu tiên khi offline; không cache dữ liệu Supabase.
+
+## Khởi động và dữ liệu mẫu — D-145/D-146
+
+Không tạo seed runtime. Splash Navy che app (inert) đến khi cache local hoặc phiên cloud được xác định và dữ liệu sẵn sàng. Cloud tải hai bảng trước khi đạt 100%; queue phải được xử lý. Ngoại tuyến có cache mở bản lưu với trạng thái offline; lỗi/timeout 12 giây cho từng bước hiển thị Thử lại và lựa chọn dùng bản đã lưu nếu có. Không coi fallback cache là sync cloud thành công.
+
+`removePristineDemoSeed` chỉ chạy ở scope local: đủ ba project cũ, bốn item đúng nội dung/cờ/ngày, cùng createdAt và chưa hoàn thành/lưu trữ. Bộ không chắc chắn được giữ. Item thật và project được item thật tham chiếu luôn giữ. Không gọi delete/truncate trên cloud.
+
+Màu Violet cũ chuẩn hóa thành Amber ở cache và mọi project write. Với cloud, mỗi lần fetch gặp màu cũ chỉ PATCH color, giới hạn theo user_id + id + giá trị color đã đọc; tránh ghi đè sửa đổi đồng thời. Deep Purple và màu custom khác không đổi.

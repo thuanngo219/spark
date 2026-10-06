@@ -101,32 +101,32 @@ Asset hiện tại:
 
 ## 4. Color system
 
-Brand palette của Spark có đúng năm màu chromatic. Trắng, đen và các sắc xám là neutral, không tính vào giới hạn này. Palette nhận diện dự án bên dưới là một ngoại lệ có kiểm soát dành riêng cho project dot và bộ chọn màu, không phải màu thương hiệu bổ sung.
+Brand palette của Spark có bốn màu chromatic. Trắng, đen và các sắc xám là neutral, không tính vào giới hạn này. Palette nhận diện dự án bên dưới là một ngoại lệ có kiểm soát dành riêng cho project dot và bộ chọn màu, không phải màu thương hiệu bổ sung.
 
 | Token gợi ý | Màu | Vai trò thương hiệu |
 |---|---|---|
 | `brand-navy` | `#111742` | Nền/chrome tối, text đậm và cấu trúc chính. |
 | `brand-turquoise` | `#44D4CD` | Tương tác mát và notification/info; checkbox hoàn thành dùng neutral theo D-135. |
-| `brand-violet` | `#8951C7` | Accent hỗ trợ, illustration và gradient. |
 | `brand-coral` | `#D9776A` | Accent ấm, warning và điểm nhấn cần chú ý. |
 | `brand-deep-purple` | `#65458A` | Màu neo nhận diện, logo, heading hoặc chi tiết chủ đạo. |
 
 ### Cách phối màu
 
-- Mỗi bố cục thường chỉ dùng 2–3 màu chromatic; không cần đưa cả năm màu vào một màn hình.
+- Mỗi bố cục thường chỉ dùng 2–3 màu chromatic; không cần đưa cả bốn màu vào một màn hình.
 - Dùng neutral cho phần lớn surface và nội dung; màu thương hiệu dẫn hướng, không phủ kín mọi thành phần.
-- Navy và Deep Purple là màu neo. Turquoise, Violet và Muted Coral là accent.
+- Navy và Deep Purple là màu neo. Turquoise và Muted Coral là accent.
 - Turquoise và Muted Coral tạo cặp lạnh–ấm; tránh đặt cả hai ở độ phủ lớn ngang nhau.
 - Không thêm màu chromatic mới nếu chưa cập nhật guideline và decision log; ngoại lệ hiện tại chỉ gồm palette nhận diện dự án đã định nghĩa dưới đây.
 
+D-146: bỏ Violet #8951C7 khỏi thương hiệu/UI và đổi dự án dùng preset Violet sang Amber #D6A84F; giữ Deep Purple. Giá trị Violet chỉ còn trong mã migration/test hoặc tài liệu lịch sử.
+
 ### Project identity palette
 
-Project có bảy màu preset để các dot vẫn phân biệt được khi danh sách dài. Bốn màu lấy trực tiếp từ brand palette và ba màu dẫn xuất được giảm độ gắt để hòa với Compact Canvas; lựa chọn thứ tám trong editor là swatch đa sắc mở màu custom.
+Project có sáu màu preset để các dot vẫn phân biệt được khi danh sách dài. Ba màu lấy trực tiếp từ brand palette và ba màu dẫn xuất được giảm độ gắt để hòa với Compact Canvas; lựa chọn thứ bảy trong editor là swatch đa sắc mở màu custom.
 
 | Tên | Màu | Nguồn |
 |---|---|---|
 | Turquoise | `#44D4CD` | Brand |
-| Violet | `#8951C7` | Brand |
 | Muted Coral | `#D9776A` | Brand |
 | Deep Purple | `#65458A` | Brand |
 | Soft Amber | `#D6A84F` | Dẫn xuất ấm |
@@ -156,9 +156,9 @@ Dark mode dùng neutral xanh xám, canvas phẳng; giữ nguyên màu nhận di�
 | Đường phân cách | `#343C50` |
 | Control được chọn / chữ | `#3D4B6B` / `#F4F6FB` |
 | Link / focus | `#6CE0DA` |
-| Chữ nhãn violet / Quan Trọng / Ưu tiên, lỗi | `#BA99DF` / `#EDC879` / `#F1A69B` |
+| Chữ nhãn / Quan Trọng / Ưu tiên | `#A0A8BC` / `#D6A84F` / `#D9776A` |
 
-Các sắc sáng của accent ở trên chỉ phục vụ tương phản trong theme tối, không thêm màu thương hiệu. CTA giữ Turquoise và chữ Navy, checked vẫn neutral #8B8F9E. Project giữ giá trị màu đã chọn, dot thêm viền trong trắng 20% để tách khỏi nền. Sidebar tiếp tục dùng logo negative với wordmark trắng. Native date/select theo color-scheme của theme thực tế. Header blur 8px/WebKit và bóng tối nhẹ, không thêm gradient màu nền. Các quy tắc màu sáng bên dưới tiếp tục áp dụng khi chọn Sáng. D-139: hover nút lưu Tên/Nội dung dùng nền Turquoise và icon Navy ở cả hai theme; nút Hủy hover nền neutral nhẹ (ink 8%) và icon ink; nhãn lựa chọn theme hiển thị uppercase.
+D-146: Quan Trọng dùng duy nhất Amber #D6A84F, Ưu tiên dùng duy nhất Coral #D9776A ở danh sách, chi tiết, sidebar và swipe, cả hai theme; nền/border có thể dùng độ trong suốt của cùng màu. Nhãn trước đây dùng Violet chuyển sang neutral muted. Deep Purple #65458A giữ nguyên trong logo và dự án. CTA giữ Turquoise và chữ Navy, checked vẫn neutral #8B8F9E. Project giữ giá trị màu đã chọn, dot thêm viền trong trắng 20% để tách khỏi nền. Sidebar tiếp tục dùng logo negative với wordmark trắng. Native date/select theo color-scheme của theme thực tế. Header blur 8px/WebKit và bóng tối nhẹ, không thêm gradient màu nền. Các quy tắc màu sáng bên dưới tiếp tục áp dụng khi chọn Sáng. D-139: hover nút lưu Tên/Nội dung dùng nền Turquoise và icon Navy ở cả hai theme; nút Hủy hover nền neutral nhẹ (ink 8%) và icon ink; nhãn lựa chọn theme hiển thị uppercase.
 
 ### Controls và focus
 
@@ -225,8 +225,8 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 ### Accessibility
 
 - Mọi text và control phải đạt WCAG AA trong tổ hợp màu thực tế.
-- Trên nền trắng, Navy (`17.14:1`), Deep Purple (`7.58:1`) và Violet (`5.17:1`) đạt tỷ lệ cho body text; Muted Coral (`3.09:1`) và Turquoise (`1.82:1`) không dùng làm chữ nhỏ trực tiếp trên trắng.
-- Trên Navy, trắng (`17.14:1`), Turquoise (`9.42:1`) và Muted Coral (`5.55:1`) có độ tương phản tốt; không mặc định dùng Deep Purple hoặc Violet làm chữ nhỏ.
+- Trên nền trắng, Navy (`17.14:1`) và Deep Purple (`7.58:1`) đạt tỷ lệ cho body text; Muted Coral (`3.09:1`) và Turquoise (`1.82:1`) không dùng làm chữ nhỏ trực tiếp trên trắng.
+- Trên Navy, trắng (`17.14:1`), Turquoise (`9.42:1`) và Muted Coral (`5.55:1`) có độ tương phản tốt; không mặc định dùng Deep Purple làm chữ nhỏ.
 - Các tỷ lệ trên là guardrail cho màu gốc. Tint, opacity, gradient và trạng thái disabled phải được kiểm tra lại.
 
 ## 5. Typography
@@ -262,7 +262,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 - CSS lưu type size bằng `rem` trên base 16px. Web app đặt root scale `112.5%` trên desktop và `120%` dưới 700px; nhờ vậy typography tăng đồng bộ mà không phóng to icon, rail hoặc control geometry.
 - Item title mặc định dùng Inter base `13px`, render khoảng `14.6px` desktop và `15.6px` mobile, weight `400`; không tự động bold task/note.
 - List density: desktop row khoảng `35px` với gap `6px`; mobile row tối thiểu `52px` với gap `2px`, canvas tràn viền và title một dòng, ellipsis khi thiếu chỗ. Marker/action mobile vẫn giữ vùng chạm tối thiểu `44px`.
-- D-144: Header desktop/mobile thu gọn khi cuộn quá 28px; trạng thái compact chỉ giữ h1 ở 50% cỡ chữ thường và dải màu 5px/radius 5px. Ẩn eyebrow, thống kê, nút mở sidebar mobile, nút sửa dự án và control trong header; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Giữ padding 20px/safe-area, blur 8px/WebKit và opacity dark 75% cho h1/dải màu. Mobile bottom dock icon-only cao 58px và overlay trên canvas.
+- D-144/D-145: Header desktop/mobile thu gọn khi cuộn quá 28px, chuyển động 220ms; compact giữ h1 ở 50% cỡ chữ thường và dải màu 5px/radius 5px. Desktop giữ cụm sync/bộ lọc trong header, mobile giữ cụm nổi trên dock. Ẩn eyebrow, thống kê, nút mở sidebar mobile và nút sửa dự án; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Giữ padding 20px/safe-area, blur 8px/WebKit và opacity dark 75% cho h1/dải màu. Mobile bottom dock icon-only cao 58px và overlay trên canvas.
 - Marker task/note và project dot luôn căn theo dòng chữ đầu tiên; không căn giữa toàn bộ row khi title hoặc metadata làm row cao hơn.
 - Trên desktop, due-date metadata và tâm artwork star/điện xẹt phải cùng trục giữa với dòng title; không căn theo mép trên của hit target icon.
 - Danh sách hỗn hợp luôn đặt task trước note; trong từng loại giữ thứ tự thời gian. Đây là phân cấp nội dung, không dùng divider hoặc card riêng để tách hai loại.
@@ -284,7 +284,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 - Duy trì cùng optical size và stroke weight trong một bộ; ở lưới 24px, bắt đầu từ stroke khoảng 1.75–2px rồi cân chỉnh quang học.
 - Hình phải nhận ra được ở 16–20px và không phụ thuộc vào chi tiết trang trí nhỏ.
 - Active state ưu tiên nền neutral nhẹ, thay đổi weight hoặc một accent nhỏ; riêng current destination trong mobile dock dùng nền Navy và icon trắng để tạo trạng thái đảo màu rõ ràng. Không tô nhiều màu cho toàn bộ sidebar.
-- Dùng màu chủ đạo neutral/Navy. Chỉ thêm Turquoise, Violet hoặc Muted Coral khi màu có ý nghĩa hoặc giúp dẫn mắt.
+- Dùng màu chủ đạo neutral/Navy. Chỉ thêm Turquoise hoặc Muted Coral khi màu có ý nghĩa hoặc giúp dẫn mắt.
 - Luôn có accessible label hoặc tooltip cho icon-only control.
 - Các icon cùng nhóm phải thống nhất perspective, corner radius, khoảng âm và mức độ chi tiết.
 - Metadata ngày dùng biểu tượng **play** cho Ngày bắt đầu và **flag** cho Ngày đến hạn trên cả desktop/mobile, quick-add và detail editor. Dropdown sort là pill trắng, dùng nhãn uppercase ngắn; control chiều sort là nút tròn trắng. Cả hai không dùng shadow; hover chỉ đổi màu border và icon/text, không dịch chuyển control. Chiều sort dùng biểu tượng mũi tên kèm các dòng độ dài tăng/giảm để diễn đạt A–Z/Z–A thay vì chevron xoay.
@@ -309,10 +309,12 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 
 - Nền web app dùng canvas phẳng #F7F8FA trên desktop/mobile, không có gradient màu. Gradient dùng cho illustration, điểm nhấn truyền thông và badge icon/logo đã duyệt D-134; không thêm vào wordmark hoặc canvas app.
 - Thường dùng tối đa hai màu brand trong một gradient, chuyển mềm và không tạo glow neon.
-- Cặp gợi ý: Turquoise → Violet cho cảm giác mát và năng động; Muted Coral → Deep Purple cho cảm giác ấm và có chiều sâu.
+- Cặp gợi ý: Turquoise → Deep Purple cho cảm giác mát và năng động; Muted Coral → Deep Purple cho cảm giác ấm và có chiều sâu.
 - Gradient không được làm giảm độ tương phản của chữ hoặc biến toàn bộ web app thành bề mặt trang trí.
 
 ## 8. Layout and motion
+
+D-145: màn hình khởi động phủ Navy #111742, giữa màn hình là logo negative chính thức (icon + chữ spark) cùng thanh tiến trình và %. Sau khi dữ liệu sẵn sàng, cụm logo/progress mờ dần 500ms rồi nền thu về trái 500ms. Không lộ dữ liệu mẫu lúc chờ; lỗi/offline có lối tiếp tục rõ ràng.
 
 - D-136: Header padding 20px cả bốn phía desktop/mobile (mobile cộng safe-area top), cả thường/compact; chiều cao theo nội dung. Dải màu 5px, radius 5px dưới tiêu đề và thống kê (D-137). Eyebrow các view ngày/Tất cả dùng xám #73788D như view dự án; Tất cả ghi “Mọi ngày. Mọi việc.”, giữ chữ uppercase như hệ thống. Không dùng border dưới; bóng Navy rất nhẹ ở chân header rõ hơn giữa và tan ở hai mép. Backdrop blur 8px desktop/mobile (cả thường/compact), có WebKit prefix.
 
@@ -324,6 +326,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 - Metadata mobile có Dự án và Lưu trữ/Xóa cùng hàng thứ hai. Focus vào metadata tự lưu draft nhưng giữ editor/kích thước khung để click không mất đích (D-132).
 - Dùng bo góc nhất quán và surface trung tính; tránh card lồng card hoặc shadow nặng.
 - Website có thể biểu cảm hơn web app. Web app ưu tiên tốc độ, khả năng quét và vùng chạm tối thiểu 44px trên mobile.
+- D-146: mọi transition/animation dùng ease-out Quint qua token `--ease: cubic-bezier(.22, 1, .36, 1)`; giữ hỗ trợ reduced motion.
 - Motion ngắn và có mục đích: xác nhận hoàn thành, chuyển trạng thái hoặc dẫn hướng. Tránh chuyển động liên tục và luôn tôn trọng `prefers-reduced-motion`.
 - Sự vui tính nên đến từ timing, microcopy và chi tiết nhỏ, không từ hiệu ứng cản trở thao tác.
 

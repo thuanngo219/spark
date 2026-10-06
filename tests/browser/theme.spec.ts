@@ -1,7 +1,9 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "./fixtures";
+import type { Page } from "@playwright/test";
 import { THEME_STORAGE_KEY } from "../../src/lib/theme";
 
 async function preferences(page: Page) {
+  await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
   await page.keyboard.press("Escape");
   await page.keyboard.press("?");
   await expect(page.getByRole("dialog", { name: "Phím tắt & hiển thị" })).toBeVisible();

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 for (const width of [1280, 390, 320]) {
   for (const theme of ["light", "dark"] as const) {
@@ -20,6 +20,7 @@ for (const width of [1280, 390, 320]) {
       const errors: string[] = [];
       page.on("pageerror", error => errors.push(error.message));
       await page.goto("/");
+  await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
       await expect(page.locator(".item-row")).toHaveCount(48);
       const header = page.locator(".view-header");
       const title = header.locator("h1");
@@ -34,9 +35,11 @@ for (const width of [1280, 390, 320]) {
       const compactSize = await title.evaluate(el => parseFloat(getComputedStyle(el).fontSize));
       expect(compactSize).toBeCloseTo(fullSize / 2, 2);
       expect(await title.evaluate(el => parseFloat(getComputedStyle(el).letterSpacing) / parseFloat(getComputedStyle(el).fontSize))).toBeCloseTo(-0.025, 4);
-      for (const selector of [".eyebrow", "p", ".view-actions", ".view-title-row button"]) {
+      for (const selector of [".eyebrow", "p", ".view-title-row button"]) {
         for (const el of await header.locator(selector).all()) await expect(el).toBeHidden();
       }
+      if (width >= 700) await expect(header.locator(".view-actions")).toBeVisible();
+      else await expect(page.locator(".mobile-sync-status")).toBeVisible();
       await expect(header.locator(".view-project-band")).toHaveCSS("height", "5px");
       await page.mouse.wheel(0, 500);
       await expect.poll(async () => (await header.boundingBox())?.y).toBe(0);
@@ -62,6 +65,7 @@ for (const width of [1280, 390, 320]) {
 test("short mobile list keeps its scroll range when the header collapses", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 550 });
   await page.goto("/");
+  await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
   await page.locator(".item-main").first().waitFor();
   await page.keyboard.press("a");
   const header = page.locator(".view-header");

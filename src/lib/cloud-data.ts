@@ -1,3 +1,4 @@
+import { normalizeProjectColor } from "@/lib/project-colors";
 import { CONTENT_LIMIT, contentLength, normalizeContent } from "@/lib/content-format";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { CloudMutation } from "@/lib/cloud-sync";
@@ -33,7 +34,7 @@ function toProject(row: ProjectRow): Project {
   return {
     id: row.id,
     name: row.name,
-    color: row.color,
+    color: normalizeProjectColor(row.color),
     isStarred: row.is_starred,
     archivedAt: row.archived_at,
     position: row.position,
@@ -57,7 +58,7 @@ function toItem(row: ItemRow): SparkItem {
   };
 }
 
-export async function fetchCloudData(client: SupabaseClient) {
+export async function fetchCloudData(client: SupabaseClient, userId?: string) {
   const [projectsResult, itemsResult] = await Promise.all([
     client.from("projects").select("id,name,color,is_starred,archived_at,position").order("position"),
     client
@@ -67,6 +68,14 @@ export async function fetchCloudData(client: SupabaseClient) {
   ]);
   if (projectsResult.error) throw projectsResult.error;
   if (itemsResult.error) throw itemsResult.error;
+  // Change only the retired color, preserving all other fields and concurrent edits.
+  if (userId) {
+    await Promise.all((projectsResult.data as ProjectRow[]).filter(row => normalizeProjectColor(row.color) !== row.color).map(async row => {
+      const { error } = await client.from("projects").update({ color: normalizeProjectColor(row.color) })
+        .eq("user_id", userId).eq("id", row.id).eq("color", row.color);
+      if (error) throw error;
+    }));
+  }
   return {
     projects: (projectsResult.data as ProjectRow[]).map(toProject),
     items: (itemsResult.data as ItemRow[]).map(toItem),
@@ -78,7 +87,7 @@ export async function upsertProject(client: SupabaseClient, project: Project, us
     id: project.id,
     user_id: userId,
     name: project.name,
-    color: project.color,
+    color: normalizeProjectColor(project.color),
     is_starred: project.isStarred,
     archived_at: project.archivedAt,
     position: project.position ?? 0,

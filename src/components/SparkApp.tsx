@@ -1,5 +1,9 @@
 "use client";
 
+import { StartupScreen, type StartupState } from "@/components/StartupScreen";
+import { EMPTY_SPARK_DATA, removePristineDemoSeed, withStartupTimeout } from "@/lib/startup";
+
+import { PROJECT_COLORS, normalizeProjectColor } from "@/lib/project-colors";
 import { ThemePreference } from "@/components/ThemePreference";
 
 import Image from "next/image";
@@ -126,15 +130,7 @@ function parseSortSettings(value: string | null): Record<string, ItemSortPrefere
 }
 
 
-const projectColors = [
-  "#44D4CD",
-  "#8951C7",
-  "#D9776A",
-  "#65458A",
-  "#D6A84F",
-  "#5C78D6",
-  "#6FA889",
-];
+const projectColors = PROJECT_COLORS;
 type SyncStatus =
   | "demo"
   | "loading"
@@ -146,80 +142,9 @@ type SyncStatus =
   | "not-configured";
 type CloudUser = { id: string; email: string };
 
-function seedData(today: string): SparkData {
-  const workProjectId = createUuid();
-  const personalProjectId = createUuid();
-  const sparkProjectId = createUuid();
-  const projects: Project[] = [
-    { id: workProjectId, name: "Công việc", color: "#44D4CD", isStarred: false, archivedAt: null },
-    { id: personalProjectId, name: "Cá nhân", color: "#8951C7", isStarred: false, archivedAt: null },
-    { id: sparkProjectId, name: "Spark", color: "#D6A84F", isStarred: false, archivedAt: null },
-  ];
-  const createdAt = new Date().toISOString();
-  const items: SparkItem[] = [
-    {
-      id: createUuid(),
-      type: "task",
-      title: "Chốt ba việc quan trọng cho hôm nay",
-      description: "Chọn đúng ba việc tạo tác động lớn nhất và chốt thứ tự xử lý trước 9 giờ.",
-      startDate: today,
-      dueDate: today,
-      projectId: workProjectId,
-      completedAt: null,
-      archivedAt: null,
-      isImportant: true,
-      isUrgent: false,
-      createdAt,
-    },
-    {
-      id: createUuid(),
-      type: "note",
-      title: "Ý tưởng: dành 20 phút cuối ngày để thu gọn danh sách",
-      description: null,
-      startDate: today,
-      dueDate: today,
-      projectId: sparkProjectId,
-      completedAt: null,
-      archivedAt: null,
-      isImportant: false,
-      isUrgent: false,
-      createdAt,
-    },
-    {
-      id: createUuid(),
-      type: "task",
-      title: "Gửi bản cập nhật cho khách hàng",
-      description: null,
-      startDate: addCalendarDays(today, -2),
-      dueDate: addCalendarDays(today, -1),
-      projectId: workProjectId,
-      completedAt: null,
-      archivedAt: null,
-      isImportant: false,
-      isUrgent: true,
-      createdAt,
-    },
-    {
-      id: createUuid(),
-      type: "task",
-      title: "Đặt lịch khám định kỳ",
-      description: null,
-      startDate: today,
-      dueDate: addCalendarDays(today, 2),
-      projectId: personalProjectId,
-      completedAt: null,
-      archivedAt: null,
-      isImportant: true,
-      isUrgent: false,
-      createdAt,
-    },
-  ];
-  return { items, projects };
-}
-
-async function readDemoData(today: string) {
+async function readLocalData() {
   const cached = await readOfflineData("demo");
-  const normalized = normalizeDataIds(cached ?? seedData(today));
+  const normalized = normalizeDataIds(removePristineDemoSeed(cached ?? EMPTY_SPARK_DATA));
   if (normalized !== cached) await persistOfflineData("demo", normalized);
   return normalized;
 }
@@ -282,6 +207,10 @@ function syncStatusShortLabel(status: SyncStatus) {
 export function SparkApp() {
   const today = getLocalDateKey();
   const [data, setData] = useState<SparkData | null>(null);
+  const [startupActive, setStartupActive] = useState(true);
+  const [startupCanContinue, setStartupCanContinue] = useState(false);
+  const [startup, setStartup] = useState<StartupState>({ progress: 0, label: "Đang mở Spark…", status: "loading" });
+  const retryStartupRef = useRef<() => void>(() => window.location.reload());
   const [selectedView, setView] = useState<View>({ type: "today" });
   const view = useMemo<View>(() => selectedView.type === "project" && data && !data.projects.some((project) => project.id === selectedView.projectId)
     ? { type: "today" } : selectedView, [data, selectedView]);
@@ -298,6 +227,7 @@ export function SparkApp() {
   const [headerCompact, setHeaderCompact] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
   const expandedHeaderHeight = useRef(0);
+  const headerMotionUntil = useRef(0);
   const [completedOpen, setCompletedOpen] = useState(false);
   const [todayOverdueOpen, setTodayOverdueOpen] = useState(true);
   const [todayCurrentOpen, setTodayCurrentOpen] = useState(true);
@@ -347,9 +277,10 @@ export function SparkApp() {
       frame = window.requestAnimationFrame(() => {
         const compact = window.scrollY > 28;
         const header = headerRef.current;
-        if (compact && header && !header.classList.contains("is-compact")) {
-          // Reserve space before shrinking, so layout cannot clamp scrollY to zero.
-          header.parentElement?.style.setProperty("--header-collapse-space", `${header.getBoundingClientRect().height}px`);
+        if (header && compact !== header.classList.contains("is-compact")) {
+          headerMotionUntil.current = performance.now() + 260;
+          // Reserve before animation; keep room for each layout frame on short lists.
+          header.parentElement?.style.setProperty("--header-collapse-space", `${expandedHeaderHeight.current}px`);
         }
         setHeaderCompact(compact);
       });
@@ -370,14 +301,16 @@ export function SparkApp() {
     if (!header) return;
     const preserveHeaderSpace = () => {
       const height = header.getBoundingClientRect().height;
-      if (!headerCompact) expandedHeaderHeight.current = height;
-      // Keep document height stable even when a short list barely overflows.
-      header.parentElement?.style.setProperty("--header-collapse-space", `${headerCompact ? Math.max(0, expandedHeaderHeight.current - height) : 0}px`);
+      const animating = performance.now() < headerMotionUntil.current;
+      if (!headerCompact && !animating) expandedHeaderHeight.current = height;
+      const space = Math.max(0, expandedHeaderHeight.current - height);
+      header.parentElement?.style.setProperty("--header-collapse-space", `${space + (animating ? expandedHeaderHeight.current : 0)}px`);
     };
     preserveHeaderSpace();
     const observer = new ResizeObserver(preserveHeaderSpace);
     observer.observe(header);
-    return () => observer.disconnect();
+    const settle = window.setTimeout(preserveHeaderSpace, Math.max(0, headerMotionUntil.current - performance.now()) + 20);
+    return () => { observer.disconnect(); window.clearTimeout(settle); };
   }, [headerCompact, headerReady]);
 
   const setHydratedData = useCallback((next: SparkData, scope: "demo" | string) => {
@@ -435,7 +368,7 @@ export function SparkApp() {
       try {
         const client = await getSupabaseBrowserClient();
         if (!client) return;
-        const remote = await fetchCloudData(client);
+        const remote = await fetchCloudData(client, user.id);
         if (
           requestId !== pullRequestRef.current ||
           revision !== syncRevisionRef.current ||
@@ -545,11 +478,7 @@ export function SparkApp() {
   }, [data]);
 
   useEffect(() => {
-    let active = true;
     queueMicrotask(() => {
-      void readDemoData(today).then((localData) => {
-        if (active && !cloudUserRef.current) setHydratedData(localData, "demo");
-      });
       const sidebarPreference = window.localStorage.getItem(SIDEBAR_KEY);
       setSidebarCompact(sidebarPreference === null || sidebarPreference === "compact");
       setProjectLabelsEnabled(window.localStorage.getItem(PROJECT_LABELS_KEY) !== "off");
@@ -565,106 +494,137 @@ export function SparkApp() {
       }
       setPreferencesLoaded(true);
     });
-    return () => {
-      active = false;
-    };
-  }, [setHydratedData, today]);
+  }, []);
 
   useEffect(() => {
     let active = true;
     let activationUserId: string | null = null;
     let activationPromise: Promise<void> | null = null;
     let unsubscribeAuth: (() => void) | null = null;
+    let localLoad: Promise<void> | null = null;
+
+    const resetTransientState = () => {
+      setEditingItem(null);
+      setProjectEditor(null);
+      setQuickAddOpen(false);
+      setProjectArchiveOpen(false);
+      setDeleteConfirmation(null);
+      setDeletedItem(null);
+      setSyncDialogOpen(false);
+      if (undoTimer.current) clearTimeout(undoTimer.current);
+    };
+
+    const advance = (progress: number, label: string) => {
+      if (active) setStartup({ progress, label, status: "loading" });
+    };
+    const finish = (label: string) => {
+      if (active) setStartup({ progress: 100, label, status: "ready" });
+    };
+    const fail = (label: string) => {
+      if (active) {
+        setSyncStatus(navigator.onLine ? "error" : "offline");
+        setStartup(current => ({ ...current, label, status: "error" }));
+      }
+    };
+    const activateLocal = () => {
+      if (localLoad) return localLoad;
+      const activationId = activationRef.current;
+      advance(35, "Đang tải dữ liệu trên thiết bị…");
+      localLoad = withStartupTimeout(readLocalData()).then(localData => {
+        if (!active || activationId !== activationRef.current || cloudUserRef.current) return;
+        setHydratedData(localData, "demo");
+        setStartupCanContinue(true);
+        setSyncStatus(isSupabaseConfigured() ? "demo" : "not-configured");
+        finish("Đã tải dữ liệu trên thiết bị");
+      }).catch(() => {
+        if (active && activationId === activationRef.current && !cloudUserRef.current) fail("Chưa đọc được dữ liệu trên thiết bị.");
+      }).finally(() => { localLoad = null; });
+      return localLoad;
+    };
 
     const initialize = async () => {
-      const client = await getSupabaseBrowserClient();
-      if (!client || !active) return;
+      advance(10, "Đang kiểm tra phiên đăng nhập…");
+      const client = await withStartupTimeout(getSupabaseBrowserClient());
+      if (!active) return;
+      if (!client) { await activateLocal(); return; }
 
       const activateSession = (user: { id: string; email?: string }) => {
         if (!active) return Promise.resolve();
         if (activationUserId === user.id && activationPromise) return activationPromise;
-
         activationUserId = user.id;
         const activationId = ++activationRef.current;
         activationPromise = (async () => {
+          setStartupActive(true);
+          if (dataScopeRef.current !== user.id) {
+            setData(null);
+            dataRef.current = null;
+            pendingMutationsRef.current = [];
+            mutationPersistenceRef.current = null;
+            pullRequestRef.current += 1;
+            if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
+            setCloudUser(null);
+            setStartupCanContinue(false);
+            resetTransientState();
+          }
+          advance(25, "Đang tải dữ liệu đã lưu…");
           const nextUser = { id: user.id, email: user.email ?? "" };
           cloudUserRef.current = nextUser;
-          setCloudUser(nextUser);
           realtimeConnectedRef.current = false;
           setSyncStatus("loading");
-          const [pendingMutations, cached] = await Promise.all([
-            readOfflineMutations(user.id),
-            readOfflineData(user.id),
-          ]);
-          if (
-            !active ||
-            activationId !== activationRef.current ||
-            cloudUserRef.current?.id !== user.id
-          ) {
-            return;
-          }
-          pendingMutationsRef.current = pendingMutations;
-          syncRevisionRef.current += 1;
-
-          if (cached) {
-            setHydratedData(
-              applyCloudMutations(cached, pendingMutationsRef.current),
-              user.id,
-            );
-          } else {
-            setHydratedData({ projects: [], items: [] }, user.id);
-          }
-
+          const isCurrent = () => active && activationId === activationRef.current && cloudUserRef.current?.id === user.id;
           try {
-            const remote = await fetchCloudData(client);
-            if (
-              !active ||
-              activationId !== activationRef.current ||
-              cloudUserRef.current?.id !== user.id
-            ) {
+            const [pendingMutations, cached] = await withStartupTimeout(Promise.all([
+              readOfflineMutations(user.id), readOfflineData(user.id),
+            ]));
+            if (!isCurrent()) return;
+            pendingMutationsRef.current = pendingMutations;
+            syncRevisionRef.current += 1;
+            setHydratedData(applyCloudMutations(cached ?? EMPTY_SPARK_DATA, pendingMutations), user.id);
+            setCloudUser(nextUser);
+            setStartupCanContinue(Boolean(cached) || pendingMutations.length > 0);
+            advance(45, "Đang đồng bộ dữ liệu…");
+            if (!navigator.onLine) {
+              if (!cached) throw new Error("No offline snapshot");
+              setSyncStatus("offline");
+              finish("Đã tải bản lưu trên thiết bị · Ngoại tuyến");
               return;
             }
-
-            replaceData(
-              resolveCloudActivationData(remote, pendingMutationsRef.current),
-              user.id,
-            );
+            const remote = await withStartupTimeout(fetchCloudData(client, user.id));
+            if (!isCurrent()) return;
+            replaceData(resolveCloudActivationData(remote, pendingMutationsRef.current), user.id);
+            setStartupCanContinue(true);
+            advance(80, "Đang hoàn tất đồng bộ…");
             if (pendingMutationsRef.current.length > 0) {
-              void flushPendingMutations();
+              await withStartupTimeout(flushPendingMutations());
+              if (!isCurrent()) return;
+              if (pendingMutationsRef.current.length > 0) throw new Error("Pending offline changes");
             } else {
               setIdleSyncStatus();
             }
+            finish("Dữ liệu đã sẵn sàng");
           } catch (error) {
             console.error("Spark cloud activation failed", error);
-            if (active && activationId === activationRef.current) {
-              setSyncStatus(navigator.onLine ? "error" : "offline");
+            if (isCurrent()) {
+              fail(navigator.onLine ? "Chưa đồng bộ được dữ liệu. Bạn có thể thử lại." : "Đang ngoại tuyến. Chưa tải được dữ liệu mới.");
               if (pendingMutationsRef.current.length > 0) schedulePendingRetry();
+              // A later focus/auth event may retry this activation.
+              activationUserId = null;
+              activationPromise = null;
             }
           }
         })();
         return activationPromise;
       };
 
-      client.auth.getSession()
-        .then(({ data: sessionData, error }) => {
-          if (error) throw error;
-          if (sessionData.session?.user) {
-            void activateSession(sessionData.session.user);
-          } else if (active) {
-            cloudUserRef.current = null;
-            setSyncStatus("demo");
-          }
-        })
-        .catch((error) => {
-          console.error("Spark auth session restore failed", error);
-          if (active) setSyncStatus(navigator.onLine ? "error" : "offline");
-        });
-
-      const { data: authListener } = client.auth.onAuthStateChange((_event, session) => {
+      unsubscribeAuth?.();
+      const { data: authListener } = client.auth.onAuthStateChange((event, session) => {
+        if (event === "INITIAL_SESSION") return; // getSession below owns initial resolution.
         queueMicrotask(() => {
+          if (!active) return;
           if (session?.user) {
             void activateSession(session.user);
-          } else if (active) {
+          } else if (event === "SIGNED_OUT") {
+            resetTransientState();
             activationUserId = null;
             activationPromise = null;
             activationRef.current += 1;
@@ -674,33 +634,39 @@ export function SparkApp() {
             mutationPersistenceRef.current = null;
             realtimeConnectedRef.current = false;
             setCloudUser(null);
-            setSyncStatus("demo");
-            void readDemoData(getLocalDateKey()).then((demoData) => {
-              if (active && !cloudUserRef.current) setHydratedData(demoData, "demo");
-            });
+            setData(null);
+            dataRef.current = null;
+            setStartupCanContinue(false);
+            setStartupActive(true);
+            void activateLocal();
           }
         });
       });
       unsubscribeAuth = () => authListener.subscription.unsubscribe();
+      const { data: sessionData, error } = await withStartupTimeout(client.auth.getSession());
+      if (!active) return;
+      if (error) throw error;
+      if (sessionData.session?.user) await activateSession(sessionData.session.user);
+      else if (!cloudUserRef.current) await activateLocal();
     };
 
-    void initialize().catch((error) => {
-      console.error("Spark Supabase client initialization failed", error);
-      if (active) setSyncStatus(navigator.onLine ? "error" : "offline");
-    });
-
+    const retry = () => {
+      activationUserId = null;
+      activationPromise = null;
+      activationRef.current += 1;
+      void initialize().catch(error => {
+        console.error("Spark startup failed", error);
+        fail("Chưa mở được dữ liệu. Vui lòng thử lại.");
+      });
+    };
+    retryStartupRef.current = retry;
+    retry();
     return () => {
       active = false;
       activationRef.current += 1;
       unsubscribeAuth?.();
     };
-  }, [
-    flushPendingMutations,
-    replaceData,
-    schedulePendingRetry,
-    setHydratedData,
-    setIdleSyncStatus,
-  ]);
+  }, [flushPendingMutations, replaceData, schedulePendingRetry, setHydratedData, setIdleSyncStatus]);
 
   useEffect(() => {
     if (!cloudUser) return;
@@ -814,7 +780,7 @@ export function SparkApp() {
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
-      if (projectEditor || projectArchiveOpen) return;
+      if (startupActive || projectEditor || projectArchiveOpen) return;
       if (isTypingTarget(event.target)) return;
       const standaloneShortcut = resolveStandaloneShortcut(event.key, {
         ctrlKey: event.ctrlKey,
@@ -889,7 +855,7 @@ export function SparkApp() {
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [editingItem, helpOpen, mobileNav, projectEditor, projectArchiveOpen, syncDialogOpen, today]);
+  }, [startupActive, editingItem, helpOpen, mobileNav, projectEditor, projectArchiveOpen, syncDialogOpen, today]);
 
   const allProjects = useMemo(() => data?.projects ?? [], [data]);
   const projects = useMemo(
@@ -1019,7 +985,8 @@ export function SparkApp() {
     });
   }, [commitLocalData, enqueueCloudMutation]);
 
-  const saveProject = (project: Project) => {
+  const saveProject = (input: Project) => {
+    const project = { ...input, color: normalizeProjectColor(input.color) };
     const currentData = dataRef.current;
     if (!currentData) return;
     const exists = currentData.projects.some((entry) => entry.id === project.id);
@@ -1199,10 +1166,16 @@ export function SparkApp() {
     }
   };
 
-  if (!data) return <LoadingShell />;
+  const startupScreen = startupActive && <StartupScreen key="startup" state={startup} canContinue={startupCanContinue}
+    onRetry={() => retryStartupRef.current()}
+    onContinue={() => setStartup({ progress: 100, label: "Đã tải bản lưu trên thiết bị", status: "ready" })}
+    onComplete={() => setStartupActive(false)} />;
+  if (!data) return <>{startupScreen}</>;
 
   return (
-    <div className={`app-shell ${sidebarCompact ? "sidebar-compact" : ""}`}>
+    <>
+    {startupScreen}
+    <div inert={startupActive} aria-hidden={startupActive || undefined} className={`app-shell ${sidebarCompact ? "sidebar-compact" : ""}`}>
       <Sidebar
         compact={sidebarCompact}
         counts={sidebarCounts}
@@ -1605,6 +1578,7 @@ export function SparkApp() {
         <div className="toast" role="status"><span>Đã xóa “{deletedItem.title}”</span><button onClick={undoDelete}>Hoàn tác</button></div>
       )}
     </div>
+    </>
   );
 }
 
@@ -2847,8 +2821,4 @@ function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
 
 function EmptyState({ view }: { view: View }) {
   return <div className="empty-state"><span><Icon name={view.type === "calendar" ? "calendar" : "check"} size={28} /></span><h2>Khoảng trống thật dễ chịu.</h2><p>Không có mục nào ở đây. Thêm một việc nhỏ để bắt đầu, hoặc tận hưởng cảm giác đã xong.</p></div>;
-}
-
-function LoadingShell() {
-  return <div className="loading-shell"><div className="loading-sidebar" /><main><div className="skeleton wide" /><div className="skeleton short" /><div className="skeleton row" /><div className="skeleton row" /><div className="skeleton row" /></main></div>;
 }

@@ -1,5 +1,15 @@
 # Spark v2 — bàn giao hiện hành
 
+## Loading, header và palette — D-145/D-146 (2026-10-06)
+
+Yêu cầu mới thay phần tương ứng của D-144: animation header 220ms, giữ sync/All–Note–Task khi compact trên desktop; mobile giữ cụm nổi. Splash Navy #111742 + logo negative icon/wordmark, tiến trình theo giai đoạn; dữ liệu sẵn sàng thì fade 500ms, sau đó nền thu trái 500ms. Reduced motion được tôn trọng; toàn bộ transition/animation dùng ease-out Quint.
+
+Đã xác nhận chỉ dọn dữ liệu mẫu, giữ dữ liệu thật. Không tạo seed runtime; chỉ dọn bộ seed local nguyên vẹn, giữ mọi entry đã sửa/không rõ và project có item thật. Cloud/cache đúng user không hiển thị trước khi khởi động xong. Lỗi có retry/cache fallback; offline có cache vẫn mở được. Không xóa cloud, không đổi schema/RLS.
+
+Chỉ bỏ Violet #8951C7 và nhãn Violet nhạt; giữ Deep Purple #65458A trong logo/dự án. Dự án Violet đổi Amber khi app đọc dữ liệu; cloud chỉ PATCH color có điều kiện user/id/màu cũ, queue upsert cũng chuẩn hóa. Quan Trọng Amber #D6A84F, Ưu tiên Coral #D9776A thống nhất danh sách/chi tiết/sidebar/swipe ở cả hai theme.
+
+Thay đổi chính: SparkApp/globals.css, StartupScreen, startup/project-colors/data-ids/cloud-data, fixture/regression browser và tài liệu brand/brief/UI/implementation/offline/decisions. Asset logo không thay. Kiểm tra local: lint `src/tests` không warning/error, typecheck/build đạt, 171 test logic đạt. Bộ browser gồm 44 kịch bản; lần toàn bộ trước sửa test chờ splash có 42 đạt/1 lỗi chụp logo khi splash còn phủ. Đã sửa điều kiện chờ đúng UI và chạy lại 19 kịch bản header/icon/startup đều đạt (48.8 giây), gồm đăng xuất giữ snapshot riêng; 25 kịch bản editor/theme/palette/offline còn lại đã đạt. Đã xem splash 390px, kiểm tra header 1280/390/320px hai theme. Cloud dùng transport giả lập trong profile test, không tác động tài khoản thật. Chưa kiểm tra Safari/iPhone vật lý. Production chờ commit/push và kiểm tra live.
+
 ## Header thu gọn — D-144 (2026-10-06)
 
 Header desktop/mobile thu gọn khi cuộn quá 28px; trạng thái compact chỉ giữ h1 ở 50% cỡ chữ thường và dải màu 5px/radius 5px. Ẩn eyebrow, thống kê, nút mở sidebar mobile, nút sửa dự án và control trong header; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Giữ padding 20px/safe-area, blur 8px/WebKit và opacity dark 75% cho h1/dải màu.

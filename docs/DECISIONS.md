@@ -233,6 +233,20 @@ Chủ dự án yêu cầu “deploy production”, chốt bản dark mode và to
 
 Header desktop/mobile thu gọn khi cuộn quá 28px; trạng thái compact chỉ giữ h1 ở 50% cỡ chữ thường và dải màu 5px/radius 5px. Ẩn eyebrow, thống kê, nút mở sidebar mobile, nút sửa dự án và control trong header; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Giữ padding 20px/safe-area, blur 8px/WebKit và opacity dark 75% cho h1/dải màu. Chủ dự án đính chính -0.25em thành -0.025em sau khi trao đổi. Thay phần compact chỉ có mobile/title 80%/giữ thống kê của D-069 và các mô tả tương ứng; không thay màu hoặc dữ liệu.
 
+## D-145 — Khởi động sạch và chuyển động header/loading (2026-10-06)
+
+Theo yêu cầu và xác nhận của chủ dự án: chỉ bỏ dữ liệu mẫu, giữ toàn bộ dữ liệu thật. Dừng tạo seed runtime; local mới rỗng. Dọn seed local nguyên bản bằng nhận diện bảo thủ; seed đã sửa/không rõ và cloud không bị xóa. Chờ xác định phiên đăng nhập trước khi đưa dữ liệu vào app, giữ cache/queue tách theo user.
+
+Splash Navy #111742 với logo negative icon + wordmark spark, tiến trình theo các bước thực tế; không tăng giả theo thời gian. 100% sau dữ liệu sẵn sàng và queue được xử lý. Logo/thanh tiến trình fade 500ms, tiếp theo nền thu về trái 500ms để lộ app. Lúc chờ app inert, phím tắt không kích hoạt nội dung bên dưới. Ngoại tuyến có cache cho phép sử dụng; lỗi/timeout có Thử lại và dùng bản lưu, không báo sync thành công. Reduced motion bỏ chờ chuyển động.
+
+Thay phần D-144 ẩn control: desktop compact giữ sync + bộ lọc All/Note/Task; mobile giữ cụm nổi hiện hành. Title/eyebrow/thống kê chuyển nhẹ 220ms, h1 50%, tracking -0.025em. Bù không gian ở cuối canvas để tránh nhảy scroll khi header đổi chiều cao.
+
+## D-146 — Bỏ Violet, thống nhất màu cờ và Quint easing (2026-10-06)
+
+Chủ dự án xác nhận chỉ bỏ Violet #8951C7, giữ Deep Purple #65458A. Brand còn Navy, Turquoise, Coral, Deep Purple; dự án còn sáu preset. Nhãn Violet/#BA99DF chuyển neutral muted. Dự án Violet đổi Amber #D6A84F; chỉ đổi color, giữ nội dung/quan hệ/thứ tự và dữ liệu thật. Read/write local/cloud chuẩn hóa; cloud PATCH có điều kiện user/id/màu cũ, không migration schema hoặc quyền. Logo primary Deep Purple giữ nguyên. Các ghi chép Violet trong release/decision cũ chỉ là lịch sử.
+
+Quan Trọng dùng Amber #D6A84F, Ưu tiên dùng Coral #D9776A ở mọi vị trí (danh sách, chi tiết, sidebar, swipe), cả sáng/tối. Bỏ các biến thể ink trước đây; nền/border vẫn có độ trong suốt phù hợp. Mọi transition/animation dùng ease-out Quint, CSS token `--ease: cubic-bezier(.22, 1, .36, 1)`; giữ thời lượng và reduced motion. Thay các phần màu/motion tương ứng trong D-022/D-138 và guideline cũ.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

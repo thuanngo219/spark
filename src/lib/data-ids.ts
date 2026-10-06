@@ -1,3 +1,4 @@
+import { normalizeProjectColor } from "@/lib/project-colors";
 import { normalizeContent } from "@/lib/content-format";
 import type { Project, SparkItem } from "@/lib/types";
 import { createUuid } from "@/lib/ids";
@@ -35,11 +36,13 @@ export function normalizeDataIds(
   const projects = data.projects.map((project, index) => {
     const id = nextUniqueId(project.id, usedProjectIds);
     projectIdMap.set(project.id, id);
+    const color = normalizeProjectColor(project.color);
     const isStarred = Boolean(project.isStarred);
     const archivedAt = project.archivedAt ?? null;
     const position = Number.isFinite(project.position) ? project.position : index;
     if (
       id === project.id &&
+      color === project.color &&
       isStarred === project.isStarred &&
       archivedAt === project.archivedAt &&
       position === project.position
@@ -47,7 +50,7 @@ export function normalizeDataIds(
       return project;
     }
     projectsChanged = true;
-    return { ...project, id, isStarred, archivedAt, position };
+    return { ...project, id, color, isStarred, archivedAt, position };
   });
 
   const usedItemIds = new Set<string>();

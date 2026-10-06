@@ -166,7 +166,7 @@ src/
 - Rail compact rộng khoảng `56px`; hai nhóm Cần lưu ý và Dự án có trạng thái mở/đóng riêng được lưu cục bộ.
 - Mobile sidebar giữ full negative logo và nút đóng, nhưng ẩn nhóm view Hôm nay/Sắp tới/Theo ngày/Tất cả đã chuyển xuống dock. Drawer mở bằng panel icon-only trong sticky header hoặc drag từ mép trái sang phải và dùng transition `transform` ngắn để có motion liên tục.
 - Project có thể gắn sao; `is_starred` được đồng bộ cloud và project được hiển thị trong Cần lưu ý.
-- Project editor giữ bảy màu preset và dùng lựa chọn thứ tám là native `input[type=color]` trong nút đa sắc cho màu tùy ý. Giá trị custom tiếp tục lưu vào `projects.color`; so sánh preset không phân biệt hoa/thường. Mobile render swatch strip cuộn ngang để giữ touch target 44px.
+- Project editor giữ sáu màu preset và dùng lựa chọn thứ bảy là native `input[type=color]` trong nút đa sắc cho màu tùy ý. Giá trị custom tiếp tục lưu vào `projects.color`; so sánh preset không phân biệt hoa/thường. Mobile render swatch strip cuộn ngang để giữ touch target 44px.
 - Tạo project mới trên mobile focus `nameInputRef` ngay sau user gesture, theo dõi `window.visualViewport` resize/scroll để fit backdrop và `scrollIntoView` field khi bàn phím iOS mở. Cleanup listener, timer, body overflow và inline viewport styles khi đóng; edit project giữ focus mặc định.
 - Sidebar desktop expanded cho kéo-thả project để đổi thứ tự. Trong lúc kéo, row nguồn giảm opacity; nửa trên/nửa dưới của row đích lần lượt chọn chèn trước/sau và hiển thị drop indicator Turquoise đúng cạnh tương ứng. Thứ tự mới được chuẩn hóa thành `position` liên tiếp, cập nhật optimistic và xếp vào durable mutation queue; mobile/compact rail không bật drag.
 - Project archive/restore dùng mutation `upsert-project` với `archivedAt`. Sidebar/shortcut/quick-add chỉ dùng active projects; ItemGroup và item editor vẫn resolve cả archived project để không mất màu/tên liên kết cũ.
@@ -290,3 +290,11 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 - `src/app/globals.css`: token light và dark ở đầu file; component dùng cùng selector. Neutral fallback giữ shade light, dark thống nhất theo vai trò. Brand Navy/CTA tách khỏi heading/selected/link semantic.
 - Preference ở localStorage theo origin, không đổi schema hoặc sync dữ liệu. SW cache HTML chứa bootstrap như phần app shell; không thêm request hoặc thư viện.
 - `tests/browser/theme.spec.ts`: hệ thống/override/reload/cross-tab/keyboard, storage lỗi, trước hydration, tương phản chữ, quick-add/editor 1280/390px, control 320px và cold-start offline. Không coi viewport giả lập là kiểm tra iPhone vật lý.
+
+## Cập nhật D-145–D-146 (2026-10-06)
+
+- Header thu gọn/mở lại trong 220ms; h1 giữ tỷ lệ 50% và tracking -0.025em. Cụm sync và All/Note/Task vẫn hiện trên desktop; mobile giữ cụm nổi trên dock. Eyebrow/thống kê ẩn khi compact. Dải màu 5px, padding 20px, blur 8px giữ nguyên.
+- Khởi động bằng lớp Navy #111742, logo negative gồm icon + chữ spark ở giữa và tiến trình theo giai đoạn. Chờ xác định phiên, cache đúng user, tải projects/items và xử lý queue; không render dữ liệu mẫu trong lúc chờ. Khi sẵn sàng, logo/thanh tiến trình fade 500ms rồi nền thu về trái trong 500ms.
+- Local mới bắt đầu rỗng. Chỉ dọn bộ seed local cũ khi nhận diện đầy đủ và chưa sửa; giữ dữ liệu thật, bộ seed đã sửa/không rõ và toàn bộ dữ liệu cloud. Khi offline có cache thì mở bản lưu; lỗi đồng bộ có Thử lại và lựa chọn dùng dữ liệu đã lưu. Phần trăm là tiến trình từng bước, không phải phần trăm byte tải về.
+- Chỉ bỏ Violet #8951C7 (và sắc nhãn #BA99DF), giữ Deep Purple #65458A. Dự án Violet chuyển Amber #D6A84F khi đọc local/cloud; cloud chỉ cập nhật trường color với điều kiện user/id/màu cũ. Queue ghi project cũng chuẩn hóa màu để không đưa Violet trở lại. Không đổi tên, quan hệ, thứ tự hay nội dung dự án.
+- Quan Trọng Amber #D6A84F, Ưu tiên Coral #D9776A thống nhất toàn app ở cả hai theme. Preset dự án còn sáu màu; custom picker giữ nguyên. Mọi animation/transition dùng ease-out Quint `cubic-bezier(.22, 1, .36, 1)` và tôn trọng reduced motion.
