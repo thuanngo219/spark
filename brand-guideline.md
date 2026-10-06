@@ -142,6 +142,8 @@ Project có sáu màu preset để các dot vẫn phân biệt được khi danh
 
 D-141/D-142: vòng tròn nút thu/mở sidebar desktop 42px, icon 20px; nền cùng canvas ở cả hai theme (dark #121622), hover chỉ đổi màu icon, không đổi nền. Tâm nút giữ trên biên sidebar ở full/compact.
 
+D-147: phím `<` chọn Sáng, `>` chọn Tối, `M`/`m` chọn Theo hệ thống khi không nhập văn bản. Cùng cơ chế lưu và theo OS như bộ chọn giao diện.
+
 D-140: tiêu đề view/tên dự án và dải màu dưới header dùng opacity 75% trong dark mode ở desktop/mobile; theme sáng vẫn 100%.
 
 Dark mode dùng neutral xanh xám, canvas phẳng; giữ nguyên màu nhận diện và artwork logo/icon. Bảng màu và các tinh chỉnh D-139–D-142 đã được chủ dự án duyệt phát hành production theo D-143.
@@ -326,7 +328,7 @@ D-145: màn hình khởi động phủ Navy #111742, giữa màn hình là logo 
 - Metadata mobile có Dự án và Lưu trữ/Xóa cùng hàng thứ hai. Focus vào metadata tự lưu draft nhưng giữ editor/kích thước khung để click không mất đích (D-132).
 - Dùng bo góc nhất quán và surface trung tính; tránh card lồng card hoặc shadow nặng.
 - Website có thể biểu cảm hơn web app. Web app ưu tiên tốc độ, khả năng quét và vùng chạm tối thiểu 44px trên mobile.
-- D-146: mọi transition/animation dùng ease-out Quint qua token `--ease: cubic-bezier(.22, 1, .36, 1)`; giữ hỗ trợ reduced motion.
+- D-146/D-148: mọi transition/animation dùng ease-out Quint qua token `--ease: cubic-bezier(.22, 1, .36, 1)`. Duration/delay dùng fallback tại rule gốc; reduced motion đặt chung `--motion-duration: .01ms`, `--motion-delay: 0ms`, `--motion-iterations: 1`. Không dùng `!important` hoặc tăng specificity để ép style; giữ animationend cần cho màn loading.
 - Motion ngắn và có mục đích: xác nhận hoàn thành, chuyển trạng thái hoặc dẫn hướng. Tránh chuyển động liên tục và luôn tôn trọng `prefers-reduced-motion`.
 - Sự vui tính nên đến từ timing, microcopy và chi tiết nhỏ, không từ hiệu ứng cản trở thao tác.
 

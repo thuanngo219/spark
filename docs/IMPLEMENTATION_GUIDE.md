@@ -298,3 +298,10 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 - Local mới bắt đầu rỗng. Chỉ dọn bộ seed local cũ khi nhận diện đầy đủ và chưa sửa; giữ dữ liệu thật, bộ seed đã sửa/không rõ và toàn bộ dữ liệu cloud. Khi offline có cache thì mở bản lưu; lỗi đồng bộ có Thử lại và lựa chọn dùng dữ liệu đã lưu. Phần trăm là tiến trình từng bước, không phải phần trăm byte tải về.
 - Chỉ bỏ Violet #8951C7 (và sắc nhãn #BA99DF), giữ Deep Purple #65458A. Dự án Violet chuyển Amber #D6A84F khi đọc local/cloud; cloud chỉ cập nhật trường color với điều kiện user/id/màu cũ. Queue ghi project cũng chuẩn hóa màu để không đưa Violet trở lại. Không đổi tên, quan hệ, thứ tự hay nội dung dự án.
 - Quan Trọng Amber #D6A84F, Ưu tiên Coral #D9776A thống nhất toàn app ở cả hai theme. Preset dự án còn sáu màu; custom picker giữ nguyên. Mọi animation/transition dùng ease-out Quint `cubic-bezier(.22, 1, .36, 1)` và tôn trọng reduced motion.
+
+## Keyboard theme và CSS — D-147/D-148
+
+- Shortcut parser hỗ trợ `<`/`>`/`M` (`m`); App dispatch cùng `spark:theme-select` như radio. Guard vùng nhập/IME/modifier trước khi dispatch, theme shortcut được dùng trong dialog khi focus ngoài input; chỉ xử lý lần keydown đầu.
+- CSS hiện không có `!important`. Token `--motion-duration`, `--motion-delay`, `--motion-iterations` chỉ khai báo trong media reduced motion; rule thường dùng fallback thời lượng gốc. Animationend của StartupScreen vẫn phải chạy. Khi thêm motion mới, dùng cùng token/fallback, không thêm blanket override.
+- Dialog share surface/radius/padding/motion; mobile share radius/padding/max-height/overflow. Các rule riêng chỉ giữ khác biệt thực sự (width, chi tiết padding 0). Dữ liệu động (project color, swipe offset, pill width, progress) tiếp tục dùng inline value/custom property.
+- Rà bằng parser CSS và source JSX: không còn selector trùng trong cùng ngữ cảnh media; giữ class được tạo động. 37 declaration dư đã bỏ, rule giảm 551→543; gzip stylesheet nguồn 12014→11973 byte là đo cùng công cụ, không phải cam kết cải thiện tốc độ tải.

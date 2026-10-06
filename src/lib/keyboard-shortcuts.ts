@@ -10,22 +10,30 @@ export type StandaloneShortcut =
   | "display-tasks"
   | "display-all"
   | "toggle-sidebar"
-  | "help";
+  | "help"
+  | "theme-light"
+  | "theme-dark"
+  | "theme-system";
 
 type ShortcutModifiers = {
   ctrlKey?: boolean;
   metaKey?: boolean;
+  altKey?: boolean;
 };
 
 export function resolveStandaloneShortcut(
   key: string,
-  { ctrlKey = false, metaKey = false }: ShortcutModifiers = {},
+  { ctrlKey = false, metaKey = false, altKey = false }: ShortcutModifiers = {},
 ): StandaloneShortcut | null {
+  if (altKey) return null;
   if (ctrlKey || metaKey) {
     return key === "\\" ? "toggle-sidebar" : null;
   }
 
   const normalized = key.toLowerCase();
+  if (key === "<") return "theme-light";
+  if (key === ">") return "theme-dark";
+  if (normalized === "m") return "theme-system";
   if (normalized === "n") return "new-task";
   if (normalized === "t") return "today";
   if (normalized === "s") return "upcoming";

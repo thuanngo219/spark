@@ -247,6 +247,16 @@ Chủ dự án xác nhận chỉ bỏ Violet #8951C7, giữ Deep Purple #65458A.
 
 Quan Trọng dùng Amber #D6A84F, Ưu tiên dùng Coral #D9776A ở mọi vị trí (danh sách, chi tiết, sidebar, swipe), cả sáng/tối. Bỏ các biến thể ink trước đây; nền/border vẫn có độ trong suốt phù hợp. Mọi transition/animation dùng ease-out Quint, CSS token `--ease: cubic-bezier(.22, 1, .36, 1)`; giữ thời lượng và reduced motion. Thay các phần màu/motion tương ứng trong D-022/D-138 và guideline cũ.
 
+## D-147 — Phím tắt giao diện (2026-10-06)
+
+Theo yêu cầu chủ dự án: `<` chọn Sáng, `>` chọn Tối, `M`/`m` chọn Theo hệ thống. Chạy ngoài vùng nhập (input/textarea/select/contenteditable), không chạy khi đang khởi động, IME composing hoặc có Ctrl/Command/Alt. Shift được phép vì cần cho ký tự `<`, `>` và chữ hoa. Không xử lý key repeat cho đổi theme. Các phím gọi cùng `spark:theme-select` như bộ chọn hiện hành, giữ persistence/cross-tab/system preference và hoạt động trong dialog khi không nhập. Bổ sung vào bảng Phím tắt & hiển thị.
+
+## D-148 — Rà soát và gọn CSS (2026-10-06)
+
+Theo yêu cầu tối ưu CSS: bỏ 5 `!important` (OTP và reduced motion), gộp 3 media block reduced motion thành một cơ chế token kế thừa. Thời lượng/màu/Quint/layout bình thường giữ nguyên. Duration cực ngắn thay vì bỏ animation hoàn toàn để loading vẫn nhận animationend và mở app. Không tăng specificity, thêm dependency hoặc dùng force style.
+
+Gộp style dùng chung của dialog và swipe; bỏ khai báo luôn bị thay thế ở quick-add, màu nút lặp và giá trị mobile giống base. Đối chiếu selector với JSX, giữ state động `drop-before/drop-after`, responsive và giá trị inline phụ thuộc dữ liệu. Sau rà soát: 551→543 rule, 2059→2022 declaration, important 5→0. Không tuyên bố mọi state chưa dùng trong một lần render là mã chết; các nhánh điều kiện vẫn cần giữ.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

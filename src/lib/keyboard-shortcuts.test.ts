@@ -45,6 +45,13 @@ describe("standalone keyboard shortcuts", () => {
     expect(resolveProjectShortcut("0")).toBeNull();
   });
 
+  it.each([["<", "theme-light"], [">", "theme-dark"], ["m", "theme-system"], ["M", "theme-system"]] as const)("maps theme shortcut %s", (key, action) => {
+    expect(resolveStandaloneShortcut(key)).toBe(action);
+    for (const modifiers of [{ metaKey: true }, { ctrlKey: true }, { altKey: true }]) {
+      expect(resolveStandaloneShortcut(key, modifiers)).toBeNull();
+    }
+  });
+
   it("ignores unrelated keys", () => {
     expect(resolveStandaloneShortcut("x")).toBeNull();
   });

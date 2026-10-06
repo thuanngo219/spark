@@ -1,5 +1,11 @@
 # Spark v2 — bàn giao hiện hành
 
+## Phím tắt theme và CSS — D-147/D-148 (2026-10-06)
+
+`<` Sáng, `>` Tối, `M`/`m` Theo hệ thống; không can thiệp input/textarea/select/contenteditable, IME hoặc Ctrl/Command/Alt. Dùng chung preference lưu thiết bị/cross-tab và đã thêm hướng dẫn trong bảng phím tắt.
+
+CSS bỏ toàn bộ 5 important, gộp reduced motion bằng token, gộp dialog/swipe và bỏ 37 declaration dư. Giữ layout/màu/Quint/animationend loading và state động. Thay đổi: globals.css, SparkApp, keyboard-shortcuts, unit/browser tests, brand/brief/implementation/decisions/handoff. Lint/typecheck/build và 175 test logic đạt. Toàn bộ 46 browser test local đạt (2.6 phút), gồm theme shortcut, persistence, bỏ qua nhập văn bản/IME/modifier, reduced motion/OTP, startup, responsive 1280/390/320px, editor/icon/màu và offline. Chuẩn bị phát hành production; kết quả live sẽ được ghi sau kiểm tra.
+
 ## Loading, header và palette — D-145/D-146 (2026-10-06)
 
 Yêu cầu mới thay phần tương ứng của D-144: animation header 220ms, giữ sync/All–Note–Task khi compact trên desktop; mobile giữ cụm nổi. Phản hồi bổ sung: H1 compact căn giữa chiều dọc với control bên phải. Splash Navy #111742 + logo negative icon/wordmark, tiến trình theo giai đoạn; dữ liệu sẵn sàng thì fade 500ms, sau đó nền thu trái 500ms. Reduced motion được tôn trọng; toàn bộ transition/animation dùng ease-out Quint.

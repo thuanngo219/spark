@@ -167,6 +167,9 @@ Phím tắt filter dùng một phím trực tiếp khi focus không nằm trong 
 | `1–9` | Mở dự án tương ứng theo thứ tự đang hiển thị trong sidebar. |
 | `⌘/Ctrl + \` | Thu gọn/mở rộng sidebar. |
 | `?` | Mở bảng trợ giúp phím tắt. |
+| `<` | Chọn giao diện Sáng. |
+| `>` | Chọn giao diện Tối. |
+| `M` / `m` | Chọn giao diện Theo hệ thống. |
 | `Escape` | Đóng overlay hoặc bảng trợ giúp. |
 
 Quy tắc:
@@ -292,3 +295,5 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Local mới bắt đầu rỗng. Chỉ dọn bộ seed local cũ khi nhận diện đầy đủ và chưa sửa; giữ dữ liệu thật, bộ seed đã sửa/không rõ và toàn bộ dữ liệu cloud. Khi offline có cache thì mở bản lưu; lỗi đồng bộ có Thử lại và lựa chọn dùng dữ liệu đã lưu. Phần trăm là tiến trình từng bước, không phải phần trăm byte tải về.
 - Chỉ bỏ Violet #8951C7 (và sắc nhãn #BA99DF), giữ Deep Purple #65458A. Dự án Violet chuyển Amber #D6A84F khi đọc local/cloud; cloud chỉ cập nhật trường color với điều kiện user/id/màu cũ. Queue ghi project cũng chuẩn hóa màu để không đưa Violet trở lại. Không đổi tên, quan hệ, thứ tự hay nội dung dự án.
 - Quan Trọng Amber #D6A84F, Ưu tiên Coral #D9776A thống nhất toàn app ở cả hai theme. Preset dự án còn sáu màu; custom picker giữ nguyên. Mọi animation/transition dùng ease-out Quint `cubic-bezier(.22, 1, .36, 1)` và tôn trọng reduced motion.
+
+D-147: phím tắt giao diện không chạy trong input/textarea/select/contenteditable, lúc IME đang ghép chữ hoặc khi giữ Ctrl/Command/Alt; Shift vẫn dùng được để tạo `<`, `>` và `M`. Dùng chung preference/theme event hiện hành, lưu local và cập nhật giữa các tab.

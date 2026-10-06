@@ -780,12 +780,21 @@ export function SparkApp() {
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
-      if (startupActive || projectEditor || projectArchiveOpen) return;
-      if (isTypingTarget(event.target)) return;
+      if (startupActive || event.isComposing || isTypingTarget(event.target)) return;
       const standaloneShortcut = resolveStandaloneShortcut(event.key, {
         ctrlKey: event.ctrlKey,
         metaKey: event.metaKey,
+        altKey: event.altKey,
       });
+      const themeShortcuts = { "theme-light": "light", "theme-dark": "dark", "theme-system": "system" } as const;
+      if (standaloneShortcut && standaloneShortcut in themeShortcuts) {
+        event.preventDefault();
+        if (!event.repeat) window.dispatchEvent(new CustomEvent("spark:theme-select", {
+          detail: themeShortcuts[standaloneShortcut as keyof typeof themeShortcuts],
+        }));
+        return;
+      }
+      if (projectEditor || projectArchiveOpen) return;
       if (event.key === "Escape") {
         setHelpOpen(false);
         setMobileNav(false);
@@ -2689,6 +2698,9 @@ function ShortcutHelp({
           <span><kbd>⌘/Ctrl + \</kbd> Sidebar</span>
           <span><kbd>?</kbd> Trợ giúp</span>
           <span><kbd>Esc</kbd> Đóng</span>
+          <span><kbd>&lt;</kbd> Giao diện sáng</span>
+          <span><kbd>&gt;</kbd> Giao diện tối</span>
+          <span><kbd>M</kbd> Theo hệ thống</span>
         </div>
         <ThemePreference />
         <section className="display-preference" aria-labelledby="project-label-preference">
