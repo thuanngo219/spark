@@ -278,7 +278,7 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 
 - D-129: Marker chi tiết không có đệm ngang, gap đến Tên 10px; pseudo-element của checkbox mở vùng bấm thành 44px, không đè input. Input Tên cao 28px. Mobile ẩn action lưu/hủy của Tên, blur lưu hợp lệ nhưng không tháo input trước click tiếp theo; chuyển trường/Enter vẫn thoát edit. Tên rỗng không lưu. Desktop giữ action rõ ràng.
 
-- D-131: Ô chọn sắp xếp và nút đổi chiều cao 36px trên desktop/mobile; nút đổi chiều rộng 36px. Header blur 8px ở cả hai kích thước, có WebKit.
+- D-155 thay kích thước D-131: Ô chọn sắp xếp và nút đổi chiều có height/min-height 30px trên desktop/mobile; nút đổi chiều rộng 30px để giữ hình tròn. Header blur 8px ở cả hai kích thước, có WebKit.
 
 - D-132: Focus vào metadata trong chi tiết tự lưu draft hợp lệ nhưng giữ editor/kích thước khung, để click không mất đích hoặc đóng nhầm khung. Lưu/chuyển trường vẫn kết thúc edit; Hủy chỉ bỏ thay đổi chưa tự lưu. Regression kiểm tra click thực, lưu qua reload, ngày, project, lưu trữ/khôi phục và xác nhận xóa ở 1280px/390px.
 

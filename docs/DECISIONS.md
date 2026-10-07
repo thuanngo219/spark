@@ -281,6 +281,10 @@ Chủ dự án duyệt giữ nguyên vị trí ngang icon khi sidebar mở/thu g
 
 Sửa phần vị trí nút thu/mở của D-153 theo phản hồi chủ dự án: tâm nút trở lại biên phải sidebar ở cả full/compact, di chuyển cùng biên khi sidebar đổi độ rộng. Giữ nút 42px/icon 20px, nền canvas và hover chỉ đổi màu icon. Icon điều hướng, dot dự án, trợ giúp và đồng bộ vẫn giữ trục x=28px; animation sidebar vẫn 240ms easeOutQuint.
 
+## D-155 — Control sắp xếp 30px (2026-10-07)
+
+Theo ảnh và yêu cầu chủ dự án, selector sắp xếp và nút đổi chiều cùng `height: 30px; min-height: 30px` trên desktop/mobile. Nút đổi chiều rộng 30px để giữ hình tròn, giữ icon và chiều rộng selector. Thay kích thước 36px của D-131; các control khác không đổi. Sửa rule gốc, không thêm override.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

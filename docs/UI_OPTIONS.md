@@ -162,7 +162,7 @@ Gesture chỉ áp dụng dưới breakpoint mobile: khi không có khay swipe n�
 
 Editor Nội dung hiện hỗ trợ B/I/U và ⌘/Ctrl+B/I/U, tối đa 4.000 ký tự. Nút sửa cùng hàng nhãn Nội dung, ngoài vùng cuộn. Toolbar và bộ đếm nằm trên vùng nhập; toolbar mobile có vùng chạm 44px.
 
-- D-131: Ô chọn sắp xếp và nút đổi chiều cao 36px trên desktop/mobile; nút đổi chiều rộng 36px. Header blur 8px ở cả hai kích thước, có WebKit.
+- D-155 thay kích thước D-131: Ô chọn sắp xếp và nút đổi chiều có height/min-height 30px trên desktop/mobile; nút đổi chiều rộng 30px để giữ hình tròn. Header blur 8px ở cả hai kích thước, có WebKit.
 
 ## Cập nhật D-145–D-146 (2026-10-06)
 

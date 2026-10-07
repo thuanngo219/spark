@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## Control sắp xếp 30px — D-155 (2026-10-07)
+
+Selector sắp xếp và nút đổi chiều có height/min-height 30px ở desktop/mobile; nút đổi chiều rộng 30px giữ hình tròn. Giữ chiều rộng selector, icon và hành vi sort. Thay đổi: globals.css, AGENTS, brand-guideline, brief/UI/implementation/decisions/handoff. Lint/typecheck/build và 175 test logic đạt. Chrome 1280/390px sáng/tối xác minh height/min-height 30px, nút tròn 30px, selector/đổi chiều đảo đúng thứ tự, không tràn ngang. Chưa kiểm tra Safari/iPhone vật lý.
+
 ## Nút thu/mở tại biên — D-154 (2026-10-06)
 
 Sửa vị trí nút thu/mở trong D-153: tâm nút bám biên phải sidebar full/compact. Các icon còn lại giữ trục x=28px; giữ 240ms easeOutQuint. Thay đổi: globals.css, brand-guideline, decisions/handoff. Lint/typecheck/build và 175 test logic đạt; Chrome sáng/tối xác minh từng frame: tâm nút collapse khớp biên phải, các icon khác giữ x=28px; thao tác và mobile 390px đạt. Chưa kiểm tra Safari/iPhone vật lý.
@@ -83,7 +87,7 @@ D-143 thay trạng thái chờ duyệt preview. Baseline production trước rel
 
 Đọc `AGENTS.md`, `README.md`, `brand-guideline.md`, `docs/PROJECT_BRIEF.md`, `docs/UI_OPTIONS.md`, `docs/DECISIONS.md`, `docs/IMPLEMENTATION_GUIDE.md` và handoff này trước khi code. Khi liên quan dữ liệu, đọc thêm `docs/OFFLINE_SYNC.md`. Repo không có `docs/architecture.md`; kiến trúc nằm trong implementation guide. Tên file quyết định chuẩn là `docs/DECISIONS.md`.
 
-Spark là công cụ task/note cá nhân, tiếng Việt, Compact Canvas, sidebar full/compact rail; mobile dock/drawer. Không thêm collaboration, reminder, recurring, AI hoặc định dạng nâng cao chưa được duyệt. Vùng chạm mobile mặc định 44px; ngoại lệ đã duyệt là hai control sắp xếp cao 36px (D-131).
+Spark là công cụ task/note cá nhân, tiếng Việt, Compact Canvas, sidebar full/compact rail; mobile dock/drawer. Không thêm collaboration, reminder, recurring, AI hoặc định dạng nâng cao chưa được duyệt. Vùng chạm mobile mặc định 44px; ngoại lệ đã duyệt là hai control sắp xếp cao 30px (D-155).
 
 Có thể archive chat đã hoàn tất sau khi quyết định, việc còn thiếu và kết quả phát hành được ghi vào repo. Chat mới dùng các tài liệu này làm bối cảnh. Khi người dùng yêu cầu tóm tắt rồi chờ xác nhận trước khi sửa, thực hiện đúng; khi đã có yêu cầu triển khai/deploy trong phiên thì tiếp tục trong phạm vi được phép. Không tự archive chat hay xóa tài liệu nguồn.
 
@@ -126,7 +130,7 @@ Có thể archive chat đã hoàn tất sau khi quyết định, việc còn thi
 | Sửa Tên | Input cao 28px, chỉ gạch dưới 1px, nền trong suốt, không outline/glow/shadow. Desktop giữ ✓/× cùng hàng. Mobile ẩn ✓/×, tự lưu tên hợp lệ khi blur nhưng giữ input; Enter lưu/thoát, Escape hủy phần chưa lưu. | D-135/D-129 |
 | Header và dải màu | Dải 5px/radius 5px nằm dưới tiêu đề/thống kê trên desktop/mobile, thường/compact; padding header 20px, mobile cộng safe-area top; không border dưới, bóng Navy nhẹ rõ giữa và tan hai mép. | D-136/D-137 |
 | Blur và nền app | Header blur **8px desktop và mobile**, có `-webkit-backdrop-filter`; desktop 12px đã bị thay. Body canvas phẳng #F7F8FA, không gradient màu. Bóng header vẫn có radial gradient trung tính để làm mờ hai mép. | D-130/D-131 |
-| Control sort | Selector cao 36px; nút đổi chiều 36×36px ở desktop/mobile. Đây là hai control sắp xếp trong ảnh, không phải toàn bộ nút trong app. | D-131 |
+| Control sort | Selector height/min-height 30px; nút đổi chiều 30×30px ở desktop/mobile. Chỉ hai control sắp xếp trong ảnh. | D-155 |
 | Lỗi click khi sửa Nội dung | Focus metadata tự lưu draft nhưng **giữ editor và kích thước khung**. Không kết thúc edit giữa pointerdown và click. Lưu/chuyển trường vẫn kết thúc edit; Hủy chỉ bỏ phần chưa lưu từ lần tự lưu gần nhất. | D-132 |
 | Bảo mật | Đã xử lý nâng dependency có cảnh báo trong release editor; render bằng React, không HTML tùy ý; JSON/URL/ngày được kiểm tra. Các kiểm tra hạ tầng và tài khoản thật còn mở được liệt kê riêng, không coi là audit toàn hệ thống hoàn tất. | D-117/D-121 và release 14/09 |
 | Commit/push/production | Chủ dự án đã cho phép phát hành các thay đổi Spark của chuỗi yêu cầu này. Xác minh commit/alias/READY và hành vi production trước khi bàn giao; chỉ dùng demo riêng cho test tự động. | Yêu cầu trực tiếp trong chat |
