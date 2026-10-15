@@ -2339,6 +2339,7 @@ function DateStrip({ selected, today, onSelect }: { selected: string; today: str
 }
 
 function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { item: SparkItem; projects: Project[]; onArchive: () => void; onClose: () => void; onDelete: () => void; onSave: (update: Partial<SparkItem>) => void }) {
+  const backdropPointer = useRef<number | null>(null);
   const [title, setTitle] = useState(item.title);
   const [description, setDescription] = useState(item.description ?? "");
   const [descriptionFormat, setDescriptionFormat] = useState(item.descriptionFormat ?? null);
@@ -2414,7 +2415,22 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
   );
 
   return (
-    <div className="dialog-backdrop" onClick={onClose}>
+    <div
+      className="dialog-backdrop"
+      onPointerDownCapture={(event) => {
+        // A selection dragged out of the sheet can produce a click on the backdrop.
+        backdropPointer.current = event.isPrimary && event.button === 0 && event.target === event.currentTarget ? event.pointerId : null;
+      }}
+      onPointerUpCapture={(event) => {
+        if (event.pointerId !== backdropPointer.current || event.button !== 0 || event.target !== event.currentTarget) backdropPointer.current = null;
+      }}
+      onPointerCancelCapture={() => { backdropPointer.current = null; }}
+      onClick={(event) => {
+        const dismiss = backdropPointer.current !== null && event.target === event.currentTarget;
+        backdropPointer.current = null;
+        if (dismiss) onClose();
+      }}
+    >
       <section className={`editor-sheet item-detail-sheet ${editingField === "content" ? "editing-content" : ""}`} role="dialog" aria-modal="true" aria-labelledby="item-detail-title" onClick={(event) => event.stopPropagation()}>
         <div className="editor-header"><div><span>{item.type === "task" ? "Task" : "Ghi chú"}</span><h2 id="item-detail-title">{item.type === "task" ? "Chi tiết task" : "Chi tiết ghi chú"}</h2></div><button type="button" className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
 

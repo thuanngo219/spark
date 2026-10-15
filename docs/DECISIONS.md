@@ -285,6 +285,10 @@ Sửa phần vị trí nút thu/mở của D-153 theo phản hồi chủ dự á
 
 Theo ảnh và yêu cầu chủ dự án, selector sắp xếp và nút đổi chiều cùng `height: 30px; min-height: 30px` trên desktop/mobile. Nút đổi chiều rộng 30px để giữ hình tròn, giữ icon và chiều rộng selector. Thay kích thước 36px của D-131; các control khác không đổi. Sửa rule gốc, không thêm override.
 
+## D-156 — Kéo chọn chữ không đóng màn chi tiết (2026-10-15)
+
+Sửa lỗi kéo chọn Nội dung đang sửa rồi thả ngoài khung làm đóng chi tiết task/note: chỉ đóng bằng nền ngoài khi con trỏ chính nhấn và thả trực tiếp trên nền trong cùng lượt pointer. Bắt đầu trong khung, kết thúc trong khung hoặc pointer bị hủy không được tính là bấm nền để đóng. Không chặn chọn chữ, giữ draft/editor; nút Đóng và thao tác bấm nền bình thường vẫn hoạt động. Không đổi quy tắc lưu/hủy nội dung hoặc dữ liệu cloud.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

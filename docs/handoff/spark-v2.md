@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## Kéo chọn chữ vượt khung chi tiết — D-156 (2026-10-15)
+
+Đã tái hiện bằng chuột thật: kéo từ editor ra nền rồi thả tạo click trên backdrop và đóng sheet. ItemEditor kiểm tra cả pointerdown/pointerup, loại pointercancel và giữ click trên nền thật/nút Đóng. Không chặn selection hoặc thay đổi lưu/hủy draft. Áp dụng chung task/note. File: SparkApp.tsx, tests/browser/content.spec.ts, brief/decisions/handoff. Regression mới thất bại trên bản cũ vì sheet bị đóng, sau sửa đạt cả task/note tại 1280/390px: giữ selection/draft khi kéo trong→ngoài và ngoài→trong, lưu/reload giữ nội dung, click nền thật và nút Đóng hoạt động. Lint/typecheck/build, 175 test logic và 18/18 browser test editor local (có offline) đạt. Chưa kiểm tra Safari/iPhone vật lý.
+
 ## Control sắp xếp 30px — D-155 (2026-10-07)
 
 Selector sắp xếp và nút đổi chiều có height/min-height 30px ở desktop/mobile; nút đổi chiều rộng 30px giữ hình tròn. Giữ chiều rộng selector, icon và hành vi sort. Thay đổi: globals.css, AGENTS, brand-guideline, brief/UI/implementation/decisions/handoff. Lint/typecheck/build và 175 test logic đạt. Chrome 1280/390px sáng/tối xác minh height/min-height 30px, nút tròn 30px, selector/đổi chiều đảo đúng thứ tự, không tràn ngang. Chưa kiểm tra Safari/iPhone vật lý.

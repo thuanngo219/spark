@@ -297,3 +297,5 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Quan Trọng Amber #D6A84F, Ưu tiên Coral #D9776A thống nhất toàn app ở cả hai theme. Preset dự án còn sáu màu; custom picker giữ nguyên. Mọi animation/transition dùng ease-out Quint `cubic-bezier(.22, 1, .36, 1)` và tôn trọng reduced motion.
 
 D-147: phím tắt giao diện không chạy trong input/textarea/select/contenteditable, lúc IME đang ghép chữ hoặc khi giữ Ctrl/Command/Alt; Shift vẫn dùng được để tạo `<`, `>` và `M`. Dùng chung preference/theme event hiện hành, lưu local và cập nhật giữa các tab.
+
+- D-156: Trong chi tiết task/note, kéo chọn chữ vượt biên không đóng sheet hoặc mất bản nháp. Chỉ bấm nền ngoài khi nhấn và thả đều trực tiếp trên nền mới đóng; nút Đóng giữ nguyên.

@@ -433,3 +433,56 @@ for (const width of [1280, 390]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
 }
+
+for (const width of [1280, 390]) {
+  for (const type of ["task", "note"] as const) {
+    test(`dragging edited ${type} content outside the detail preserves selection and draft at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 844 });
+      await page.getByRole("region", { name: "Khởi động Spark" }).waitFor({ state: "hidden" });
+      await page.keyboard.press("a");
+      const title = type === "task" ? "Chốt ba việc quan trọng cho hôm nay" : "Ý tưởng: dành 20 phút cuối ngày để thu gọn danh sách";
+      await openTestItem(page, title);
+      await page.getByRole("button", { name: "Sửa Nội dung", exact: true }).click();
+      const editor = page.getByRole("textbox", { name: type === "task" ? "Nội dung task" : "Nội dung ghi chú", exact: true });
+      await expect(editor).toBeFocused();
+      const draft = "Bản nháp đang sửa cần giữ nguyên khi kéo chọn chữ vượt ra ngoài khung chi tiết.";
+      await editor.fill(draft);
+      const sheet = page.locator(".item-detail-sheet");
+      const box = (await sheet.boundingBox())!;
+      const outside = { x: Math.min(width - 2, box.x + box.width + 4), y: box.y + box.height / 2 };
+      const start = await editor.evaluate(el => {
+        const text = document.createTreeWalker(el, NodeFilter.SHOW_TEXT).nextNode()!;
+        const range = document.createRange();
+        range.setStart(text, 0);
+        range.setEnd(text, 1);
+        const bounds = range.getBoundingClientRect();
+        return { x: bounds.x + 1, y: bounds.y + bounds.height / 2 };
+      });
+      await page.mouse.move(start.x, start.y);
+      await page.mouse.down();
+      await page.mouse.move(outside.x, outside.y, { steps: 12 });
+      await page.mouse.up();
+      await expect(sheet).toBeVisible();
+      await expect(editor).toHaveText(draft);
+      expect(await page.evaluate(() => window.getSelection()?.toString().length ?? 0)).toBeGreaterThan(0);
+      // An outside-to-inside drag must not count as a backdrop click either.
+      await page.mouse.move(outside.x, outside.y);
+      await page.mouse.down();
+      await page.mouse.move(start.x, start.y, { steps: 12 });
+      await page.mouse.up();
+      await expect(editor).toBeVisible();
+      await page.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
+      // A genuine backdrop click still closes, and the saved draft survives reload.
+      await page.mouse.click(outside.x, outside.y);
+      await expect(sheet).toBeHidden();
+      await page.reload();
+      await page.getByRole("region", { name: "Khởi động Spark" }).waitFor({ state: "hidden" });
+      await page.keyboard.press("a");
+      await openTestItem(page, title);
+      await expect(page.locator(".detail-description .formatted-content")).toHaveText(draft);
+      await page.getByRole("button", { name: "Đóng", exact: true }).click();
+      await expect(sheet).toBeHidden();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    });
+  }
+}
