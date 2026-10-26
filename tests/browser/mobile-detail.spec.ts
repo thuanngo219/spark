@@ -16,7 +16,8 @@ for (const width of [320, 390]) {
         await sheet.evaluate(el => Promise.all(el.getAnimations().map(a => a.finished)));
         expect(await sheet.boundingBox()).toEqual({ x: 0, y: 0, width, height: 844 });
         await expect(sheet).toHaveCSS("background-color", theme === "dark" ? "rgb(18, 22, 34)" : "rgb(247, 248, 250)");
-        await expect(sheet.locator(".detail-description")).toHaveCSS("background-color", theme === "dark" ? "rgb(27, 32, 48)" : "rgb(255, 255, 255)");
+        await expect(sheet.locator(".detail-description")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+        await expect(sheet.locator(".detail-description")).toHaveCSS("padding-left", "0px");
         await expect(sheet).toHaveCSS("border-radius", "0px");
         await expect(sheet).toHaveCSS("box-shadow", "none");
         await expect(sheet.locator(".editor-header > div > span")).toHaveCSS("color", theme === "dark" ? "rgb(160, 168, 188)" : "rgb(115, 120, 141)");

@@ -297,6 +297,10 @@ Task/note mở chi tiết toàn màn hình ở breakpoint mobile dưới 700px, 
 
 Thay phần màu nền của D-157: bỏ ép palette sáng trên toàn màn chi tiết. Nền chung dùng canvas, khối Nội dung đọc/sửa dùng surface (trắng khi sáng, tối khi tối), có padding 12px để chữ không sát mép vùng tương phản. Header, Tên, metadata, chữ và control theo theme hiện hành. Giữ toàn màn hình, safe-area, xử lý bàn phím và bố cục desktop.
 
+## D-159 — Nội dung dùng chung nền chi tiết (2026-10-26)
+
+Thay phần nền riêng của D-158 theo xác nhận của chủ dự án: bỏ surface và padding 12px vừa thêm cho khối Nội dung mobile. Khối đọc/sửa trong suốt trên nền chung canvas theo theme, không tạo vùng trắng riêng. Giữ toolbar hiện có, bố cục toàn màn hình, safe-area và xử lý bàn phím.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## Nội dung dùng chung nền chi tiết — D-159 (2026-10-26)
+
+Bỏ nền riêng và padding 12px của Nội dung từ D-158. Nội dung trong suốt trên nền chung theo theme; giữ toolbar và toàn màn hình mobile. Thay đổi globals.css, mobile-detail.spec.ts và tài liệu brand/brief/UI/implementation/decisions/handoff. Lint/typecheck/build, 175 test logic và 8/8 browser test mobile 320/390px sáng/tối đạt; đã xem ảnh cả hai theme. Chưa kiểm tra Safari/iPhone vật lý.
+
 ## Nền chi tiết mobile theo theme — D-158 (2026-10-26)
 
 Bỏ ép nền trắng/palette sáng của D-157. Mobile dùng canvas theo theme; khối Nội dung dùng surface trắng/tối tương ứng, padding 12px. Giữ toàn màn hình và mọi hành vi. Thay đổi globals.css, mobile-detail.spec.ts và tài liệu brand/brief/UI/implementation/decisions/handoff. Lint/typecheck/build, 175 test logic và 8/8 browser test mobile 320/390px sáng/tối đạt; đã xem ảnh cả hai theme. Chưa kiểm tra iPhone/Safari vật lý.
