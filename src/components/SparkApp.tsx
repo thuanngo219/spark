@@ -11,6 +11,7 @@ import ContentEditor from "@/components/ContentEditor";
 import { FormattedContent } from "@/components/FormattedContent";
 import { CONTENT_LIMIT, contentLength, normalizeContent, type ContentRun } from "@/lib/content-format";
 import { defaultStartDate } from "@/lib/quick-add";
+import { lockDetailScroll, pageScrollY } from "@/lib/detail-scroll-lock";
 import {
   CSSProperties,
   FormEvent,
@@ -275,7 +276,7 @@ export function SparkApp() {
     const updateHeader = () => {
       window.cancelAnimationFrame(frame);
       frame = window.requestAnimationFrame(() => {
-        const compact = window.scrollY > 28;
+        const compact = pageScrollY() > 28;
         const header = headerRef.current;
         if (header && compact !== header.classList.contains("is-compact")) {
           headerMotionUntil.current = performance.now() + 260;
@@ -2341,14 +2342,18 @@ function DateStrip({ selected, today, onSelect }: { selected: string; today: str
 function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { item: SparkItem; projects: Project[]; onArchive: () => void; onClose: () => void; onDelete: () => void; onSave: (update: Partial<SparkItem>) => void }) {
   const backdropPointer = useRef<number | null>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const backdrop = backdropRef.current;
     if (!backdrop) return;
     const mobile = window.matchMedia("(max-width: 699px)");
     const viewport = window.visualViewport;
-    const previousOverflow = document.body.style.overflow;
+    let unlockScroll: (() => void) | undefined;
     const fitViewport = () => {
-      document.body.style.overflow = mobile.matches ? "hidden" : previousOverflow;
+      if (mobile.matches && !unlockScroll) unlockScroll = lockDetailScroll(backdrop);
+      else if (!mobile.matches && unlockScroll) {
+        unlockScroll();
+        unlockScroll = undefined;
+      }
       if (mobile.matches && viewport) {
         backdrop.style.setProperty("--detail-viewport-height", `${viewport.height}px`);
         backdrop.style.setProperty("--detail-viewport-top", `${viewport.offsetTop}px`);
@@ -2362,10 +2367,12 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
     viewport?.addEventListener("resize", fitViewport);
     viewport?.addEventListener("scroll", fitViewport);
     return () => {
-      document.body.style.overflow = previousOverflow;
       mobile.removeEventListener("change", fitViewport);
       viewport?.removeEventListener("resize", fitViewport);
       viewport?.removeEventListener("scroll", fitViewport);
+      const focused = document.activeElement;
+      if (focused instanceof HTMLElement && backdrop.contains(focused)) focused.blur();
+      unlockScroll?.();
     };
   }, []);
   const [title, setTitle] = useState(item.title);
@@ -2457,7 +2464,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
       onClick={(event) => {
         const dismiss = backdropPointer.current !== null && event.target === event.currentTarget;
         backdropPointer.current = null;
-        if (dismiss) onClose();
+        if (dismiss && !window.matchMedia("(max-width: 699px)").matches) onClose();
       }}
     >
       <section className={`editor-sheet item-detail-sheet ${editingField === "content" ? "editing-content" : ""}`} role="dialog" aria-modal="true" aria-labelledby={editingField === "content" ? "item-content-title" : "item-detail-title"} onClick={(event) => event.stopPropagation()}>

@@ -317,6 +317,10 @@ Thay kích thước mobile trong D-160/D-161: eyebrow bằng thống kê (0.75re
 
 Theo ảnh iPhone khi bàn phím mở, header/Tên/metadata chiếm gần hết vùng nhập: sửa Nội dung mobile chuyển sang focus mode, ẩn ba khu này cùng lỗi ngày (vẫn giữ state), chỉ hiện hàng Nội dung/Lưu/Hủy, B/I/U và editor giãn hết visual viewport. Lưu hoặc Hủy hiện lại chi tiết đầy đủ; không tự lưu draft khi Hủy. Giữ nền theo theme, safe-area, giới hạn 4.000 và font editor mobile 16px. Desktop/quick-add không đổi. Eyebrow view-header mobile chuyển 0.75rem→0.65rem, tracking 0; h1 compact chuyển 16→21px; h1 thường 30px/padding 15px/band compact 2.5px giữ nguyên.
 
+## D-164 — Khóa cuộn nền của chi tiết mobile (2026-10-26)
+
+Sửa D-157/D-163: overflow hidden của body và backdrop co theo keyboard vẫn để lộ danh sách. Backdrop nay luôn phủ layout viewport, sheet theo visual viewport; khóa body fixed giữ tọa độ cuộn, root overflow/overscroll, đặt background main/sidebar/dock/control inert. Giữ trạng thái header theo tọa độ đã lưu; cleanup khôi phục style/inert/scroll khi đóng hoặc vượt breakpoint. Không đóng bằng backdrop trên mobile; vuốt, tap vùng ngoài sheet bị co không được đóng editor. Desktop giữ hành vi hiện tại. Không chặn touchmove toàn cục để giữ chọn chữ và cuộn native trong editor.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

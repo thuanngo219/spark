@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## Khóa cuộn nền editor mobile — D-164 (2026-10-26)
+
+Backdrop phủ layout viewport, chỉ sheet co theo keyboard. Body fixed giữ tọa độ danh sách; root khóa overflow/overscroll, main/sidebar/dock/control nền inert. Header giữ trạng thái theo tọa độ lưu; đóng hoặc chuyển desktop khôi phục vị trí/style/inert. Mobile không đóng bằng chạm backdrop; editor vẫn cuộn native và chọn chữ. File: detail-scroll-lock.ts, SparkApp.tsx, globals.css, mobile-scroll-lock.spec.ts và brand/brief/UI/implementation/decisions/handoff. Regression tái hiện trên bản cũ: elementFromPoint ngoài visual viewport vẫn chạm danh sách/dock. Sau sửa: 17 test header/mobile và 6 test xác nhận cuối đạt, gồm CDP touch swipe trong editor/đầu/cuối/toolbar/nền, tap nền không đóng, khôi phục scrollY=400, đổi mobile↔desktop, lưu tên/metadata và desktop selection. Lint/typecheck/build, 175 test logic đạt; đã xem ảnh cả hai theme. Chưa kiểm tra Safari/iPhone vật lý.
+
 ## Editor mobile tập trung — D-163 (2026-10-26)
 
 Khi sửa Nội dung, ẩn header Chi tiết/Tên/metadata, giữ Lưu/Hủy/B/I/U và editor 16px giãn theo visual viewport. Lưu/Hủy trả về chi tiết; desktop và quick-add giữ nguyên. Eyebrow mobile 0.65rem/400/tracking 0; compact h1 21px. File: globals.css, SparkApp.tsx, header.spec.ts, mobile-detail.spec.ts, content.spec.ts và brand/brief/UI/implementation/decisions/handoff. Lint/typecheck/build, 175 test logic và 31/31 browser test đạt, gồm offline/format/lưu/hủy/metadata/desktop/header. Mobile sáng/tối 320/390px, viewport 420px còn vùng nhập >240px; thêm safe-area 59px trên/34px dưới vẫn >150px, caret trong editor sau di chuyển bàn phím. Đã xem ảnh; đây là mô phỏng Chrome, chưa xác minh Safari/iPhone vật lý.
