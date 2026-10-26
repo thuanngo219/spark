@@ -5,10 +5,11 @@ for (const width of [1280, 390, 320]) {
     test(`header collapses and restores without scroll jumps at ${width}px in ${theme}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 800 });
       await page.emulateMedia({ colorScheme: theme });
-      await page.addInitScript(() => {
+      const projectName = width === 390 ? "DNA / sparkOne" : "Dự án kiểm tra tiêu đề dài";
+      await page.addInitScript((projectName) => {
         const projectId = crypto.randomUUID();
         localStorage.setItem("spark:data:v1", JSON.stringify({
-          projects: [{ id: projectId, name: "Dự án kiểm tra tiêu đề dài", color: "#8951C7", isStarred: false, archivedAt: null }],
+          projects: [{ id: projectId, name: projectName, color: "#8951C7", isStarred: false, archivedAt: null }],
           items: Array.from({ length: 48 }, (_, i) => ({
             id: crypto.randomUUID(), type: "task", title: `Công việc kiểm tra ${i + 1}`,
             description: "", startDate: null, dueDate: null, projectId,
@@ -16,7 +17,7 @@ for (const width of [1280, 390, 320]) {
             createdAt: new Date().toISOString(),
           })),
         }));
-      });
+      }, projectName);
       const errors: string[] = [];
       page.on("pageerror", error => errors.push(error.message));
       await page.goto("/");
@@ -55,8 +56,30 @@ for (const width of [1280, 390, 320]) {
       if (width < 700) {
         await header.getByRole("button", { name: "Mở sidebar", exact: true }).click();
       }
-      await page.getByRole("button", { name: "Dự án kiểm tra tiêu đề dài", exact: true }).click();
-      await expect(title).toHaveText("Dự án kiểm tra tiêu đề dài");
+      await page.getByRole("button", { name: projectName, exact: true }).click();
+      await expect(title).toHaveText(projectName);
+      if (width < 700) {
+        await expect(header.locator(".eyebrow")).toHaveCSS("font-weight", "400");
+        await expect(header).toHaveCSS("padding-left", "14px");
+        await expect(header).toHaveCSS("padding-top", "12px");
+        await expect(header.locator(".view-title-row")).toHaveCSS("gap", "4px");
+        expect(await title.evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeCloseTo(31.2, 1);
+        const menu = header.getByRole("button", { name: "Mở sidebar", exact: true });
+        const edit = header.getByRole("button", { name: /Chỉnh sửa dự án/ });
+        for (const control of [menu, edit]) {
+          const box = (await control.boundingBox())!;
+          expect(box.width).toBeGreaterThanOrEqual(44);
+          expect(box.height).toBeGreaterThanOrEqual(44);
+        }
+        if (width === 390) {
+          expect((await title.boundingBox())!.height).toBeLessThan(40);
+          expect((await header.boundingBox())!.height).toBeLessThan(115);
+        }
+        await page.screenshot({ path: `/tmp/spark-header-${width}-${theme}.png` });
+        await edit.click();
+        await expect(page.getByRole("dialog")).toBeVisible();
+        await page.getByRole("button", { name: "Đóng", exact: true }).click();
+      }
       await page.mouse.move(width - 40, 450);
       await page.mouse.wheel(0, 400);
       await expect(header).toHaveClass(/is-compact/);

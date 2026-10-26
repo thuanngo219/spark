@@ -541,11 +541,14 @@ button:focus-visible { filter: brightness(.88); }
   .app-shell > .sidebar { display: none; }
   .content { padding: 0; }
   .canvas { width: 100%; padding: 0 0 var(--header-collapse-space, 0px); }
-  .view-header { --view-title-size: 2.3125rem; justify-content: flex-start; gap: 7px; padding-top: calc(20px + env(safe-area-inset-top)); background: color-mix(in srgb, var(--canvas) 96%, transparent); }
-  .mobile-header-drawer { flex: 0 0 auto; width: 44px; height: 44px; margin-left: -7px; padding: 0; border: 0; border-radius: 999px; background: transparent; color: var(--heading); display: grid; place-items: center; }
+  .view-header { --view-title-size: 1.625rem; justify-content: flex-start; gap: 7px; padding: calc(12px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) 12px calc(14px + env(safe-area-inset-left)); background: color-mix(in srgb, var(--canvas) 96%, transparent); }
+  .view-header .eyebrow { min-height: 18px; font-weight: 400; }
+  .view-title-row { gap: 4px; }
+  .view-header h1 { margin: 2px 0 4px; }
+  .mobile-header-drawer { flex: 0 0 auto; width: 44px; height: 44px; margin-left: -10px; padding: 0; border: 0; border-radius: 999px; background: transparent; color: var(--heading); display: grid; place-items: center; }
   .mobile-header-drawer:hover, .mobile-header-drawer:focus-visible { color: var(--link-hover); }
   .mobile-header-drawer svg { stroke-width: 1.9; }
-  .project-edit-button { width: 44px; height: 44px; }
+  .project-edit-button { flex: 0 0 44px; width: 44px; height: 44px; margin-right: -10px; }
   .view-actions { display: none; }
   .list-area { padding: 12px 0 calc(148px + env(safe-area-inset-bottom)); }
   .item-group-header { padding-inline: 12px; gap: 5px; }
@@ -675,7 +678,6 @@ button:focus-visible { filter: brightness(.88); }
 @keyframes slide-right { from { transform: translateX(-100%); opacity: .7; } }
 
 @media (max-width: 380px) {
-  .view-header { --view-title-size: 2.125rem; }
   .quick-add-controls { grid-template-columns: 1fr; }
   .quick-add-actions { grid-column: auto; }
 }

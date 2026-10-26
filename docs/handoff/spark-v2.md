@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## Header mobile gọn hơn — D-161 (2026-10-26)
+
+Eyebrow weight 400, padding dọc 12px/ngang 14px cộng safe-area, gap hàng title 4px, h1 31.2px thay 44.4px. Giữ vùng bấm menu/sửa 44px và header compact 50%. File: globals.css, header.spec.ts và brand/brief/UI/implementation/decisions/handoff. Lint/typecheck/build, 175 test logic, 7/7 browser test header và 6/6 dock đạt. DNA / sparkOne nằm một dòng ở 390px; tên dài ở 320px xuống dòng không tràn, menu/sửa giữ 44px, cuộn thu/mở không giật; desktop 1280px sáng/tối đạt. Đã xem ảnh; chưa kiểm tra iPhone/Safari vật lý.
+
 ## Dock mobile sát mép — D-160 (2026-10-26)
 
 Dock thành thanh liền khối sát ba mép, nền surface theo sáng/tối; cao 58px cộng safe-area. Bốn đích có icon trên/nhãn dưới, nút + 52px không nhãn nằm gọn trong thanh; cụm lọc/sync cách 20px. Thay đổi SparkNavigation.tsx, globals.css, mobile-dock.spec.ts và tài liệu brand/brief/UI/implementation/decisions/handoff. Lint/typecheck/build, 175 test logic, 6/6 browser case tại 320/390/600px sáng/tối đạt; kiểm tra bổ sung safe-area 34px dưới và 20px hai bên đạt. Đã kiểm tra icon/nhãn, chuyển view, quick-add, không che mục cuối, desktop ẩn dock; đã xem ảnh. Chưa thử Safari/iPhone vật lý.

@@ -305,6 +305,10 @@ Thay phần nền riêng của D-158 theo xác nhận của chủ dự án: bỏ
 
 Thay dock pill/icon-only: thanh liền khối nền surface theo theme, sát mép trái/phải/dưới, không bo góc, không blur hoặc bóng nổi. Giữ vùng dock cao 58px, cộng safe-area dưới; các nút có vùng bấm tối thiểu 44px. Hôm nay/Sắp tới/Theo ngày/Tất cả có icon 24px trên và nhãn 11px dưới. Active giữ nền selected tròn 32px sau icon và nhấn chữ. Nút + 52px không có nhãn, nằm gọn trong thanh. Cụm lọc/sync cách dock 20px; giữ năm cột bằng nhau, chức năng và desktop. Thay các mô tả dock 72px/pill/icon-only trước đây.
 
+## D-161 — Header mobile gọn hơn (2026-10-26)
+
+Theo ảnh tên dự án xuống dòng chiếm nhiều chỗ: eyebrow mobile bỏ bold (400), padding header dọc 12px/ngang 14px cộng safe-area; gap giữa menu/tên/sửa giảm 8px→4px. H1 mobile giảm 2.3125rem→1.625rem (44.4px→31.2px), giữ tracking -0.025em, compact bằng 50% và motion 220ms Quint. Giữ vùng bấm 44px cho menu/sửa và cho tên dài xuống dòng nếu cần. Chỉ đổi mobile, desktop giữ nguyên. Thay phần padding 20px và cỡ tiêu đề mobile ở quyết định cũ.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)
