@@ -171,3 +171,7 @@ Editor Nội dung hiện hỗ trợ B/I/U và ⌘/Ctrl+B/I/U, tối đa 4.000 k�
 - Local mới bắt đầu rỗng. Chỉ dọn bộ seed local cũ khi nhận diện đầy đủ và chưa sửa; giữ dữ liệu thật, bộ seed đã sửa/không rõ và toàn bộ dữ liệu cloud. Khi offline có cache thì mở bản lưu; lỗi đồng bộ có Thử lại và lựa chọn dùng dữ liệu đã lưu. Phần trăm là tiến trình từng bước, không phải phần trăm byte tải về.
 - Chỉ bỏ Violet #8951C7 (và sắc nhãn #BA99DF), giữ Deep Purple #65458A. Dự án Violet chuyển Amber #D6A84F khi đọc local/cloud; cloud chỉ cập nhật trường color với điều kiện user/id/màu cũ. Queue ghi project cũng chuẩn hóa màu để không đưa Violet trở lại. Không đổi tên, quan hệ, thứ tự hay nội dung dự án.
 - Quan Trọng Amber #D6A84F, Ưu tiên Coral #D9776A thống nhất toàn app ở cả hai theme. Preset dự án còn sáu màu; custom picker giữ nguyên. Mọi animation/transition dùng ease-out Quint `cubic-bezier(.22, 1, .36, 1)` và tôn trọng reduced motion.
+
+### D-157 — Chi tiết mobile toàn màn hình (2026-10-26)
+
+Ở màn hình dưới 700px, chi tiết task/note phủ toàn bộ vùng nhìn thấy, nền trắng kể cả khi app ở dark mode; chữ/control dùng palette sáng trong màn chi tiết. Không bo khung, không bóng hoặc lộ nền danh sách. Header và metadata giữ ở hai đầu, nội dung đọc/sửa giãn phần còn lại và cuộn riêng, thay chiều cao mobile 40dvh cũ. Có safe-area, khóa cuộn nền và theo visual viewport khi mở bàn phím. Khi ít chiều cao, phần giữa có thể cuộn để truy cập đủ tên/nội dung. Desktop giữ popup và theme hiện tại; quick-add không đổi.

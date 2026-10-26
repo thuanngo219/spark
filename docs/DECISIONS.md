@@ -289,6 +289,10 @@ Theo ảnh và yêu cầu chủ dự án, selector sắp xếp và nút đổi c
 
 Sửa lỗi kéo chọn Nội dung đang sửa rồi thả ngoài khung làm đóng chi tiết task/note: chỉ đóng bằng nền ngoài khi con trỏ chính nhấn và thả trực tiếp trên nền trong cùng lượt pointer. Bắt đầu trong khung, kết thúc trong khung hoặc pointer bị hủy không được tính là bấm nền để đóng. Không chặn chọn chữ, giữ draft/editor; nút Đóng và thao tác bấm nền bình thường vẫn hoạt động. Không đổi quy tắc lưu/hủy nội dung hoặc dữ liệu cloud.
 
+## D-157 — Chi tiết toàn màn hình mobile (2026-10-26)
+
+Task/note mở chi tiết toàn màn hình ở breakpoint mobile dưới 700px, nền trắng theo yêu cầu kể cả khi app ở dark mode; dùng màu chữ/control sáng trong phạm vi màn chi tiết. Bỏ viền bo, bóng và khoảng hở nhìn xuống danh sách. Giữ bố cục tiêu đề/Tên/Nội dung/metadata; header và metadata ở hai đầu, nội dung đọc/sửa giãn hết phần còn lại thay giới hạn 40dvh của D-120. Nội dung dài cuộn trong vùng giữa; chừa safe-area và khớp visual viewport khi bàn phím mở. Khóa cuộn danh sách trong lúc xem chi tiết, khôi phục khi đóng. Nút Đóng, lưu/hủy và dữ liệu giữ hành vi hiện tại; desktop vẫn popup tối đa 880px và dùng theme của app. D-156 tiếp tục bảo vệ thao tác kéo chọn chữ trên desktop.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

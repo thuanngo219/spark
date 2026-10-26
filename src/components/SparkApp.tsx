@@ -2340,6 +2340,34 @@ function DateStrip({ selected, today, onSelect }: { selected: string; today: str
 
 function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { item: SparkItem; projects: Project[]; onArchive: () => void; onClose: () => void; onDelete: () => void; onSave: (update: Partial<SparkItem>) => void }) {
   const backdropPointer = useRef<number | null>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const backdrop = backdropRef.current;
+    if (!backdrop) return;
+    const mobile = window.matchMedia("(max-width: 699px)");
+    const viewport = window.visualViewport;
+    const previousOverflow = document.body.style.overflow;
+    const fitViewport = () => {
+      document.body.style.overflow = mobile.matches ? "hidden" : previousOverflow;
+      if (mobile.matches && viewport) {
+        backdrop.style.setProperty("--detail-viewport-height", `${viewport.height}px`);
+        backdrop.style.setProperty("--detail-viewport-top", `${viewport.offsetTop}px`);
+      } else {
+        backdrop.style.removeProperty("--detail-viewport-height");
+        backdrop.style.removeProperty("--detail-viewport-top");
+      }
+    };
+    fitViewport();
+    mobile.addEventListener("change", fitViewport);
+    viewport?.addEventListener("resize", fitViewport);
+    viewport?.addEventListener("scroll", fitViewport);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      mobile.removeEventListener("change", fitViewport);
+      viewport?.removeEventListener("resize", fitViewport);
+      viewport?.removeEventListener("scroll", fitViewport);
+    };
+  }, []);
   const [title, setTitle] = useState(item.title);
   const [description, setDescription] = useState(item.description ?? "");
   const [descriptionFormat, setDescriptionFormat] = useState(item.descriptionFormat ?? null);
@@ -2416,7 +2444,8 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
 
   return (
     <div
-      className="dialog-backdrop"
+      ref={backdropRef}
+      className="dialog-backdrop item-detail-backdrop"
       onPointerDownCapture={(event) => {
         // A selection dragged out of the sheet can produce a click on the backdrop.
         backdropPointer.current = event.isPrimary && event.button === 0 && event.target === event.currentTarget ? event.pointerId : null;

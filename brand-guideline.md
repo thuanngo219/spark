@@ -322,7 +322,7 @@ D-145: màn hình khởi động phủ Navy #111742, giữa màn hình là logo 
 
 - Bố cục đơn giản, rõ thứ bậc, có khoảng thở nhưng không làm giảm mật độ hữu ích của Compact Canvas.
 - Canvas liệt kê task/note trên desktop rộng responsive từ `940px` đến tối đa `1200px`; khi vùng nội dung không đủ chỗ thì co theo chiều rộng khả dụng, không tạo cuộn ngang. Mobile tiếp tục dùng trọn chiều rộng màn hình. Detail sheet desktop rộng `880px`; header, Tên và cụm metadata/control giữ cố định, chỉ vùng Nội dung cuộn khi nội dung dài. Nhãn Nội dung và nút sửa nằm cùng hàng cố định bên ngoài vùng cuộn. Toolbar B/I/U dùng control neutral, trạng thái chọn Navy/trắng và vùng chạm 44px trên mobile.
-- Khung desktop khi sửa Nội dung cao `min(86dvh, 820px)`, editor giãn theo phần còn lại; mobile edit dùng vùng nhập `40dvh`. Quick-add cao `160px`, chữ nhập regular trên desktop. Toolbar giữ border và pha 5% đen trên nền field; wrapper/vùng nhập không border hoặc nền. Không có bullet/numbering.
+- Khung desktop khi sửa Nội dung cao `min(86dvh, 820px)`, editor giãn theo phần còn lại; mobile đọc/sửa giãn phần còn lại của màn hình theo D-157. Quick-add cao `160px`, chữ nhập regular trên desktop. Toolbar giữ border và pha 5% đen trên nền field; wrapper/vùng nhập không border hoặc nền. Không có bullet/numbering.
 - Tên không có label; nút sửa ngang text. Input Tên cao 28px, chỉ gạch dưới 1px, nền trong suốt, không outline/glow/shadow. Desktop có ✓/× cùng hàng; mobile ẩn hai nút này và tự lưu tên hợp lệ khi blur. Nhãn Nội dung cao 28px, cách field 4px desktop/8px mobile; nút lưu/hủy Nội dung hiển thị 28px/icon 16px ở cả desktop/mobile, mobile có vùng chạm 44px. Nút Sửa mobile vẫn có control 44px.
 - Khối Nội dung cách đường phân cách 16px phía trước và 14.4px phía sau, giảm 20%. Checkbox/dấu note trong chi tiết không có padding ngang, cách tên 10px, hover không đổi nền; tên task hoàn thành không gạch ngang.
 - Metadata mobile có Dự án và Lưu trữ/Xóa cùng hàng thứ hai. Focus vào metadata tự lưu draft nhưng giữ editor/kích thước khung để click không mất đích (D-132).
@@ -383,3 +383,7 @@ D-152 thay D-151: animation thu/mở sidebar desktop và trượt mở sidebar m
 D-153: sidebar desktop full/compact dùng cùng điểm neo trái; tâm icon điều hướng, dot dự án, trợ giúp và đồng bộ nằm ở x=28px, cùng trục badge logo. Không căn giữa theo chiều rộng sidebar khi compact; chỉ ẩn chữ/số đếm. Dot dự án 12px ở cả hai trạng thái.
 
 D-154 sửa riêng vị trí nút thu/mở trong D-153: nút bám biên phải sidebar, không nằm trong cột icon; các icon còn lại giữ trục trái khi thu/mở.
+
+### D-157 — Chi tiết mobile toàn màn hình (2026-10-26)
+
+Ở màn hình dưới 700px, chi tiết task/note phủ toàn bộ vùng nhìn thấy, nền trắng kể cả khi app ở dark mode; chữ/control dùng palette sáng trong màn chi tiết. Không bo khung, không bóng hoặc lộ nền danh sách. Header và metadata giữ ở hai đầu, nội dung đọc/sửa giãn phần còn lại và cuộn riêng, thay chiều cao mobile 40dvh cũ. Có safe-area, khóa cuộn nền và theo visual viewport khi mở bàn phím. Khi ít chiều cao, phần giữa có thể cuộn để truy cập đủ tên/nội dung. Desktop giữ popup và theme hiện tại; quick-add không đổi.

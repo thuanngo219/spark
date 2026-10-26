@@ -1,5 +1,11 @@
 # Spark v2 — bàn giao hiện hành
 
+## Chi tiết mobile toàn màn hình — D-157 (2026-10-26)
+
+Chi tiết task/note dưới 700px chuyển thành trang nền trắng tràn màn hình (cả hai theme), không lộ danh sách bên dưới. Giữ bố cục hiện tại; đọc/sửa Nội dung giãn hết chiều cao còn lại, header/metadata không cuộn theo nội dung. Safe-area và visual viewport cho bàn phím; khóa cuộn nền khi mở, khôi phục khi đóng. Desktop và quick-add giữ bố cục cũ. D-157 thay giới hạn mobile 40dvh và popup mobile cũ. File: globals.css, SparkApp.tsx, content.spec.ts/mobile-detail.spec.ts, brand/brief/UI/implementation/decisions/handoff.
+
+Kiểm tra: lint/typecheck/build, 175 test logic và 24/24 browser test chi tiết đạt. Chrome 320/390px sáng/tối, task/note, nội dung dài, lưu/reload, cuộn, metadata và offline; mô phỏng visual viewport khi bàn phím mở và màn ngang 600×390. Đã xem ảnh mobile/desktop; chưa kiểm tra Safari/iPhone vật lý.
+
 ## Kéo chọn chữ vượt khung chi tiết — D-156 (2026-10-15)
 
 Đã tái hiện bằng chuột thật: kéo từ editor ra nền rồi thả tạo click trên backdrop và đóng sheet. ItemEditor kiểm tra cả pointerdown/pointerup, loại pointercancel và giữ click trên nền thật/nút Đóng. Không chặn selection hoặc thay đổi lưu/hủy draft. Áp dụng chung task/note. File: SparkApp.tsx, tests/browser/content.spec.ts, brief/decisions/handoff. Regression mới thất bại trên bản cũ vì sheet bị đóng, sau sửa đạt cả task/note tại 1280/390px: giữ selection/draft khi kéo trong→ngoài và ngoài→trong, lưu/reload giữ nội dung, click nền thật và nút Đóng hoạt động. Lint/typecheck/build, 175 test logic và 18/18 browser test editor local (có offline) đạt. Chưa kiểm tra Safari/iPhone vật lý.
@@ -123,7 +129,7 @@ Có thể archive chat đã hoàn tất sau khi quyết định, việc còn thi
 | Nút sửa Nội dung | Cùng hàng nhãn Nội dung, bên ngoài vùng cuộn, không dịch theo nội dung dài. | D-117 |
 | Quick-add start | Mặc định trống, chỉ **task mới trong Hôm nay** mặc định hôm nay. Note luôn trống mặc định. Ngày đã chọn/xóa thủ công giữ khi đổi loại. Due date giữ quy tắc trong brief. | D-118 |
 | Nền khi nhập | Quick-add Tên focus dùng control-hover; Nội dung quick-add/chi tiết trong suốt, không border, chỉ toolbar có border/nền. | D-135 thay D-120 |
-| Chiều cao editor | Desktop sửa Nội dung: khung `min(86dvh, 820px)`, bằng giới hạn khung đọc dài, editor giãn theo phần còn lại. Mobile edit `40dvh`; quick-add `160px`. | D-120 |
+| Chiều cao editor | Desktop sửa Nội dung: khung `min(86dvh, 820px)`, bằng giới hạn khung đọc dài, editor giãn theo phần còn lại. Mobile đọc/sửa giãn phần còn lại của màn hình (D-157); quick-add `160px`. | D-120 |
 | Toolbar | Chỉ nền toolbar pha field 95% + đen 5%; không làm đậm vùng nhập. Yêu cầu 20% đã bị thay. | D-123 thay D-122 |
 | Bullet/numbering | Đã gỡ khỏi toolbar/schema/phím tắt/renderer. Nội dung cũ và HTML dán vào giữ chữ/xuống dòng/B/I/U; không sửa hàng loạt dữ liệu cloud. Yêu cầu spacing 6px sau danh sách đã hết hiệu lực cùng tính năng này. | D-123 thay D-119 |
 | Lưu draft và ngày | Lưu draft hợp lệ khi chuyển Tên/Nội dung. Tên rỗng không lưu, chặn chuyển trường. Ngày không hợp lệ/khoảng ngày ngược không lưu, giữ draft và báo lỗi; UI/mutation/cloud/CHECK đều có bảo vệ. | D-121 |
