@@ -1,5 +1,11 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-165 — Khoảng trống đáy editor khi mở bàn phím (2026-10-26)
+
+Trong focus mode sửa Nội dung mobile, bỏ padding đáy 12px và safe-area dưới khi visual viewport co hơn 120px so với innerHeight ở scale xấp xỉ 1. Giữ padding trong vùng nhập để caret không sát mép; đóng bàn phím khôi phục 12px + safe-area ngay cả khi editor còn focus. Ngưỡng là heuristic để tránh nhầm thay đổi chrome trình duyệt; pinch zoom không kích hoạt. Giữ safe-area trên/hai bên, full backdrop và khóa nền D-164; desktop/quick-add không đổi. Thanh ↑/↓/Done của iOS giữ nguyên do trình duyệt quản lý. Cần kiểm tra iPhone thật để xác nhận phần khoảng hở còn lại do hệ thống.
+
+Thay đổi: SparkApp.tsx, globals.css, mobile-keyboard-gap.spec.ts và các tài liệu brand/brief/UI/implementation/decisions/handoff. Regression mới thất bại trên bản cũ (padding đáy vẫn 46px khi keyboard mở), sau sửa đạt ở sáng/tối: padding về 0, editor chạm đáy sheet, đóng bàn phím khôi phục 46px với safe-area 34px dù vẫn focus. Pinch zoom và viewport giảm 80px giữ inset; draft/lưu/cuộn còn nguyên. Tổng 15 browser case đạt, gồm 320/390px task/note, khóa nền và desktop selection/metadata. Lint (loại thư mục ngoài Spark), typecheck/build và 175 test logic đạt; đã xem ảnh hai theme. Chưa kiểm tra iPhone/Safari vật lý.
+
 ## Khóa cuộn nền editor mobile — D-164 (2026-10-26)
 
 Backdrop phủ layout viewport, chỉ sheet co theo keyboard. Body fixed giữ tọa độ danh sách; root khóa overflow/overscroll, main/sidebar/dock/control nền inert. Header giữ trạng thái theo tọa độ lưu; đóng hoặc chuyển desktop khôi phục vị trí/style/inert. Mobile không đóng bằng chạm backdrop; editor vẫn cuộn native và chọn chữ. File: detail-scroll-lock.ts, SparkApp.tsx, globals.css, mobile-scroll-lock.spec.ts và brand/brief/UI/implementation/decisions/handoff. Regression tái hiện trên bản cũ: elementFromPoint ngoài visual viewport vẫn chạm danh sách/dock. Sau sửa: 17 test header/mobile và 6 test xác nhận cuối đạt, gồm CDP touch swipe trong editor/đầu/cuối/toolbar/nền, tap nền không đóng, khôi phục scrollY=400, đổi mobile↔desktop, lưu tên/metadata và desktop selection. Lint/typecheck/build, 175 test logic đạt; đã xem ảnh cả hai theme. Chưa kiểm tra Safari/iPhone vật lý.

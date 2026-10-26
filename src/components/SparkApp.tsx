@@ -2357,9 +2357,16 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
       if (mobile.matches && viewport) {
         backdrop.style.setProperty("--detail-viewport-height", `${viewport.height}px`);
         backdrop.style.setProperty("--detail-viewport-top", `${viewport.offsetTop}px`);
+        // iOS can retain the home-indicator inset above the keyboard. Ignore
+        // small browser-chrome changes and pinch zoom; focus alone is not enough
+        // because Done can dismiss the keyboard without blurring the editor.
+        const keyboardOpen = Math.abs(viewport.scale - 1) < 0.01 && window.innerHeight - viewport.height > 120;
+        if (keyboardOpen) backdrop.style.setProperty("--detail-content-bottom", "0px");
+        else backdrop.style.removeProperty("--detail-content-bottom");
       } else {
         backdrop.style.removeProperty("--detail-viewport-height");
         backdrop.style.removeProperty("--detail-viewport-top");
+        backdrop.style.removeProperty("--detail-content-bottom");
       }
     };
     fitViewport();

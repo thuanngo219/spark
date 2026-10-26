@@ -321,6 +321,10 @@ Theo ảnh iPhone khi bàn phím mở, header/Tên/metadata chiếm gần hết 
 
 Sửa D-157/D-163: overflow hidden của body và backdrop co theo keyboard vẫn để lộ danh sách. Backdrop nay luôn phủ layout viewport, sheet theo visual viewport; khóa body fixed giữ tọa độ cuộn, root overflow/overscroll, đặt background main/sidebar/dock/control inert. Giữ trạng thái header theo tọa độ đã lưu; cleanup khôi phục style/inert/scroll khi đóng hoặc vượt breakpoint. Không đóng bằng backdrop trên mobile; vuốt, tap vùng ngoài sheet bị co không được đóng editor. Desktop giữ hành vi hiện tại. Không chặn touchmove toàn cục để giữ chọn chữ và cuộn native trong editor.
 
+## D-165 — Khoảng trống đáy editor khi mở bàn phím (2026-10-26)
+
+Trong focus mode sửa Nội dung mobile, bỏ padding đáy 12px và safe-area dưới khi visual viewport co hơn 120px so với innerHeight ở scale xấp xỉ 1. Giữ padding trong vùng nhập để caret không sát mép; đóng bàn phím khôi phục 12px + safe-area ngay cả khi editor còn focus. Ngưỡng là heuristic để tránh nhầm thay đổi chrome trình duyệt; pinch zoom không kích hoạt. Giữ safe-area trên/hai bên, full backdrop và khóa nền D-164; desktop/quick-add không đổi. Thanh ↑/↓/Done của iOS giữ nguyên do trình duyệt quản lý. Cần kiểm tra iPhone thật để xác nhận phần khoảng hở còn lại do hệ thống.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

@@ -635,7 +635,7 @@ button:focus-visible { filter: brightness(.88); }
   .item-detail-sheet.editing-content .detail-content > .detail-text-block:first-child,
   .item-detail-sheet.editing-content > .detail-metadata,
   .item-detail-sheet.editing-content > .detail-date-error { display: none; }
-  .item-detail-sheet.editing-content .detail-content { padding: calc(12px + env(safe-area-inset-top)) 17px calc(12px + env(safe-area-inset-bottom)); overflow: hidden; }
+  .item-detail-sheet.editing-content .detail-content { padding: calc(12px + env(safe-area-inset-top)) 17px var(--detail-content-bottom, calc(12px + env(safe-area-inset-bottom))); overflow: hidden; }
   .item-detail-sheet.editing-content .detail-description { min-height: 0; margin-top: 0; padding-top: 0; border-top: 0; }
   .item-detail-sheet.editing-content .detail-field-heading { min-height: 44px; }
   .item-detail-sheet .content-editor-input { font-size: 16px; overscroll-behavior: none; }
