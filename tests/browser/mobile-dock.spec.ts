@@ -26,12 +26,29 @@ for (const width of [320, 390, 600]) {
         expect(buttonBox.height).toBeGreaterThanOrEqual(44);
         await button.click();
         await expect(button).toHaveAttribute("aria-current", "page");
+        await expect(button).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+        await expect(button.locator(".mobile-dock-icon")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+        await expect(label).toHaveCSS("font-weight", "700");
+        const contrast = await button.evaluate(el => {
+          const luminance = (color: string) => {
+            const rgb = color.match(/[\d.]+/g)!.slice(0, 3).map(Number).map(c => {
+              const value = c / 255;
+              return value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4;
+            });
+            return rgb[0] * .2126 + rgb[1] * .7152 + rgb[2] * .0722;
+          };
+          const ink = luminance(getComputedStyle(el.querySelector("svg")!).color);
+          const background = luminance(getComputedStyle(el.closest("nav")!).backgroundColor);
+          return (Math.max(ink, background) + .05) / (Math.min(ink, background) + .05);
+        });
+        expect(contrast).toBeGreaterThanOrEqual(4.5);
       }
       const add = dock.getByRole("button", { name: "Thêm công việc", exact: true });
       await expect(add).toHaveText("");
       const addBox = (await add.locator("span").boundingBox())!;
-      expect(addBox.width).toBe(52);
-      expect(addBox.y).toBeGreaterThan(height - 58);
+      expect(addBox.width).toBe(64);
+      expect((await add.locator("svg").boundingBox())!.width).toBe(36);
+      expect(addBox.y).toBeLessThan(height - 58);
       expect(addBox.y + addBox.height).toBeLessThan(height);
       await add.click();
       await expect(page.getByRole("textbox", { name: "Tên mục", exact: true })).toBeVisible();

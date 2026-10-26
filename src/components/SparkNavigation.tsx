@@ -78,7 +78,7 @@ export function MobileDock({
         </button>
       ))}
       <button className="mobile-dock-add" type="button" onClick={onAdd} aria-label="Thêm công việc">
-        <span><Icon name="plus" size={31} /></span>
+        <span><Icon name="plus" size={36} /></span>
       </button>
       {entries.slice(2).map((entry) => (
         <button

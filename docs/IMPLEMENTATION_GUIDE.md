@@ -151,12 +151,12 @@ src/
 - Editor Nội dung dùng Tiptap với paragraph/text/hardBreak và ba mark bold/italic/underline, undo/redo, ⌘/Ctrl+B/I/U; tắt các định dạng khác. Xuống dòng mềm giữ hardBreak; không lưu HTML. Metadata danh sách cũ bị bỏ qua, giữ nguyên text và B/I/U. Đếm 4.000 Unicode code points gồm xuống dòng, không tính metadata định dạng; từ chối nhập/dán vượt giới hạn và giữ draft. `description` giữ văn bản thuần, `description_format` giữ các text run; trim văn bản và định dạng cùng nhau. Cache cũ không có format đọc như plain text; format sai cấu trúc hoặc không khớp text bị bỏ qua.
 - Linkify Nội dung bằng parser text thuần và React node, không dùng `dangerouslySetInnerHTML`. Render đậm/nghiêng/gạch chân bằng React, giữ URL liền mạch kể cả khi format đổi giữa URL. Chỉ nhận `http://`, `https://` và `www.`; link dùng `target="_blank"` cùng `rel="noopener noreferrer"`, còn giá trị lưu trong database vẫn là plain text.
 - Sort Mức chú ý áp rank cố định bên trong mỗi loại task/note như mục Date logic; cập nhật cờ làm list tự sort lại từ state, không persist rank. Test filter kiểm tra đúng tập item và không trùng, test grouping kiểm tra khu, còn test sort kiểm tra thứ tự, hai chiều, null và tie-break độc lập.
-- Desktop floating trigger dùng artwork `+` 32px trong hit target 48px ở góc dưới phải. Mobile dùng dock `position: fixed; inset: auto 0 0` cao 58px cộng safe-area, nền surface đặc theo theme, bốn đích icon trên/nhãn dưới và nút `+` 52px không nhãn ở giữa; list phải chừa bottom space cộng safe-area để dock không che item cuối.
+- Desktop floating trigger dùng artwork `+` 32px trong hit target 48px ở góc dưới phải. Mobile dùng dock `position: fixed; inset: auto 0 0` cao 58px cộng safe-area, nền surface đặc theo theme, bốn đích icon trên/nhãn dưới và nút `+` 64px không nhãn ở giữa, dấu + 36px; list phải chừa bottom space cộng safe-area để dock không che item cuối.
 - Trên mobile, sau user gesture mở quick-add phải focus title input; dùng `window.visualViewport` resize/scroll để fit backdrop vào vùng còn thấy khi bàn phím mở và gọi `scrollIntoView` cho field. Cleanup listener/timer khi đóng; desktop giữ layout overlay hiện tại.
 
 ### Header thu gọn — D-144
 
-- Header desktop/mobile thu gọn khi cuộn quá 28px; trạng thái compact chỉ giữ h1 ở 50% cỡ chữ thường và dải màu 5px/radius 5px. Ẩn eyebrow, thống kê, nút mở sidebar mobile, nút sửa dự án và control trong header; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Padding desktop 20px; mobile dọc 12px/ngang 14px cộng safe-area theo D-161; giữ blur 8px/WebKit và opacity dark 75% cho h1/dải màu.
+- Header desktop/mobile thu gọn khi cuộn quá 28px; trạng thái compact chỉ giữ h1 ở 50% cỡ chữ thường và dải màu 5px/radius 5px. Ẩn eyebrow, thống kê, nút mở sidebar mobile, nút sửa dự án và control trong header; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Padding desktop 20px; mobile 15px cả bốn phía cộng safe-area theo D-161; giữ blur 8px/WebKit và opacity dark 75% cho h1/dải màu.
 - State `headerCompact` dùng chung desktop/mobile, cập nhật qua scroll listener passive và requestAnimationFrame. CSS dùng `--view-title-size` theo breakpoint và nhân 0.5 khi `.is-compact`, không giữ selector mobile compact riêng. Bù phần chiều cao header đã thu vào padding cuối canvas qua useLayoutEffect/ResizeObserver, không để khoảng trắng dưới header; document không ngắn lại khi thu gọn, kể cả danh sách chỉ vừa vượt viewport. Canvas tắt scroll anchoring để trình duyệt không tự bù vị trí rồi đảo trạng thái ở ngưỡng cuộn.
 
 ### Sidebar và keyboard shortcuts
@@ -266,7 +266,7 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 ## 10. Quy tắc editor và header hiện hành (D-117–D-132)
 
 - Khi chuyển từ Tên sang Nội dung hoặc ngược lại, tự lưu trường đang sửa trước khi chuyển; chuyển sang metadata cũng lưu draft đang sửa. Tên rỗng chặn chuyển và báo lỗi. Hủy chỉ bỏ phần draft chưa lưu kể từ lần tự lưu gần nhất. Nút Sửa tên nằm cùng hàng với text của tên, không có nhãn Tên.
-- D-130/D-131: Header desktop nền canvas 80%, blur 8px với prefix WebKit; mobile blur 8px ở cả thường/compact. D-137: eyebrow chung dùng --muted, Tất cả thêm “Mọi ngày. Mọi việc.”; dải màu 5px/radius 5px nằm dưới header, padding desktop 20px; mobile dọc 12px/ngang 14px cộng safe-area theo D-161, không min-height cố định; bỏ đường shadow 1px, dùng pseudo-element bóng nhẹ không bắt pointer và tan ở hai mép. Body nền canvas phẳng. Cột tiêu đề co được và h1 wrap từ dài để không tràn ngang khi bóng nằm ngoài header. Next.js/eslint-config-next khóa 16.3.5; kết quả npm audit 0 vulnerabilities là bằng chứng sau cập nhật dependency trong release trước, không phải xác nhận liên tục.
+- D-130/D-131: Header desktop nền canvas 80%, blur 8px với prefix WebKit; mobile blur 8px ở cả thường/compact. D-137: eyebrow chung dùng --muted, Tất cả thêm “Mọi ngày. Mọi việc.”; dải màu 5px/radius 5px nằm dưới header, padding desktop 20px; mobile 15px cả bốn phía cộng safe-area theo D-161, không min-height cố định; bỏ đường shadow 1px, dùng pseudo-element bóng nhẹ không bắt pointer và tan ở hai mép. Body nền canvas phẳng. Cột tiêu đề co được và h1 wrap từ dài để không tràn ngang khi bóng nằm ngoài header. Next.js/eslint-config-next khóa 16.3.5; kết quả npm audit 0 vulnerabilities là bằng chứng sau cập nhật dependency trong release trước, không phải xác nhận liên tục.
 
 - D-123 (thay D-122): Chỉ nền toolbar formatting pha 5% đen trên nền field; D-135 bỏ border/nền vùng nhập và chỉ giữ ở toolbar. Blur/vị trí dải màu hiện theo D-130/D-131: desktop/mobile 8px và dải màu dưới header.
 
@@ -293,7 +293,7 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 
 ## Cập nhật D-145–D-146 (2026-10-06)
 
-- Header thu gọn/mở lại trong 220ms; h1 giữ tỷ lệ 50% và tracking -0.025em. Cụm sync và All/Note/Task vẫn hiện trên desktop; mobile giữ cụm nổi trên dock. Eyebrow/thống kê ẩn khi compact. Dải màu 5px, blur 8px giữ nguyên; padding desktop 20px, mobile dọc 12px/ngang 14px cộng safe-area theo D-161.
+- Header thu gọn/mở lại trong 220ms; h1 giữ tỷ lệ 50% và tracking -0.025em. Cụm sync và All/Note/Task vẫn hiện trên desktop; mobile giữ cụm nổi trên dock. Eyebrow/thống kê ẩn khi compact. Dải màu 5px, blur 8px giữ nguyên; padding desktop 20px, mobile 15px cả bốn phía cộng safe-area theo D-161.
 - Khởi động bằng lớp Navy #111742, logo negative gồm icon + chữ spark ở giữa và tiến trình theo giai đoạn. Chờ xác định phiên, cache đúng user, tải projects/items và xử lý queue; không render dữ liệu mẫu trong lúc chờ. Khi sẵn sàng, logo/thanh tiến trình fade 500ms rồi nền thu về phải trong 600ms (D-149).
 - Local mới bắt đầu rỗng. Chỉ dọn bộ seed local cũ khi nhận diện đầy đủ và chưa sửa; giữ dữ liệu thật, bộ seed đã sửa/không rõ và toàn bộ dữ liệu cloud. Khi offline có cache thì mở bản lưu; lỗi đồng bộ có Thử lại và lựa chọn dùng dữ liệu đã lưu. Phần trăm là tiến trình từng bước, không phải phần trăm byte tải về.
 - Chỉ bỏ Violet #8951C7 (và sắc nhãn #BA99DF), giữ Deep Purple #65458A. Dự án Violet chuyển Amber #D6A84F khi đọc local/cloud; cloud chỉ cập nhật trường color với điều kiện user/id/màu cũ. Queue ghi project cũng chuẩn hóa màu để không đưa Violet trở lại. Không đổi tên, quan hệ, thứ tự hay nội dung dự án.
@@ -312,4 +312,8 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 
 ### D-161 — Header mobile gọn hơn (2026-10-26)
 
-Eyebrow mobile dùng weight 400. Header padding dọc 12px/ngang 14px cộng safe-area; gap hàng menu/tên/sửa 4px. H1 còn 1.625rem (31.2px với root mobile), tracking -0.025em; compact vẫn 50%. Nút mở menu và sửa dự án giữ vùng bấm 44px, giảm khoảng trống hai đầu bằng margin ngoài. Desktop giữ typography và spacing hiện hành.
+Eyebrow mobile dùng weight 400. Header padding 15px cả bốn phía cộng safe-area; gap hàng menu/tên/sửa 4px. H1 còn 30px, tracking -0.025em; compact mobile 16px, dải màu còn 2.5px (D-162). Nút mở menu và sửa dự án giữ vùng bấm 44px, giảm khoảng trống hai đầu bằng margin ngoài. Desktop giữ typography và spacing hiện hành.
+
+### D-162 — Kích thước header và active dock mobile (2026-10-26)
+
+Eyebrow 0.75rem bằng dòng thống kê, weight 400. Tiêu đề 30px, compact 16px; padding 15px cộng safe-area. Dải màu thường 5px, compact 2.5px. Dock active không có nền riêng: icon dùng heading (#111742 sáng, #E9ECF5 tối) và nhãn bold; bảo đảm contrast ≥4.5:1 trên nền dock. Nút + tròn 64px, glyph 36px, nhô nhẹ lên khỏi dock 58px và chừa home indicator. Desktop giữ nguyên.

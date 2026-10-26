@@ -309,6 +309,10 @@ Thay dock pill/icon-only: thanh liền khối nền surface theo theme, sát mé
 
 Theo ảnh tên dự án xuống dòng chiếm nhiều chỗ: eyebrow mobile bỏ bold (400), padding header dọc 12px/ngang 14px cộng safe-area; gap giữa menu/tên/sửa giảm 8px→4px. H1 mobile giảm 2.3125rem→1.625rem (44.4px→31.2px), giữ tracking -0.025em, compact bằng 50% và motion 220ms Quint. Giữ vùng bấm 44px cho menu/sửa và cho tên dài xuống dòng nếu cần. Chỉ đổi mobile, desktop giữ nguyên. Thay phần padding 20px và cỡ tiêu đề mobile ở quyết định cũ.
 
+## D-162 — Header và active dock mobile (2026-10-26)
+
+Thay kích thước mobile trong D-160/D-161: eyebrow bằng thống kê (0.75rem, weight 400); h1 30px thường/16px compact, padding 15px cộng safe-area; dải màu 5px thường/2.5px compact. Dock active bỏ nền, icon dùng heading (Navy #111742 sáng, sắc sáng #E9ECF5 tối để đủ contrast) và nhãn bold. Nút + tăng vòng tròn 52→64px, glyph 31→36px, nhô nhẹ phía trên dock; giữ dock 58px và safe-area. Giữ gap title 4px, vùng bấm 44px, motion Quint và desktop.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

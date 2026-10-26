@@ -34,7 +34,7 @@ for (const width of [1280, 390, 320]) {
       expect(await page.evaluate(() => scrollY)).toBe(36);
       await expect(header).toHaveClass(/is-compact/);
       const compactSize = await title.evaluate(el => parseFloat(getComputedStyle(el).fontSize));
-      expect(compactSize).toBeCloseTo(fullSize / 2, 2);
+      expect(compactSize).toBeCloseTo(width < 700 ? 16 : fullSize / 2, 2);
       expect(await title.evaluate(el => parseFloat(getComputedStyle(el).letterSpacing) / parseFloat(getComputedStyle(el).fontSize))).toBeCloseTo(-0.025, 4);
       for (const selector of [".eyebrow", "p", ".view-title-row button"]) {
         for (const el of await header.locator(selector).all()) await expect(el).toBeHidden();
@@ -46,7 +46,7 @@ for (const width of [1280, 390, 320]) {
         expect(titleBox.y + titleBox.height / 2).toBeCloseTo(controlsBox.y + controlsBox.height / 2, 1);
       }
       else await expect(page.locator(".mobile-sync-status")).toBeVisible();
-      await expect(header.locator(".view-project-band")).toHaveCSS("height", "5px");
+      await expect(header.locator(".view-project-band")).toHaveCSS("height", width < 700 ? "2.5px" : "5px");
       await page.mouse.wheel(0, 500);
       await expect.poll(async () => (await header.boundingBox())?.y).toBe(0);
       await page.mouse.wheel(0, -2000);
@@ -60,10 +60,12 @@ for (const width of [1280, 390, 320]) {
       await expect(title).toHaveText(projectName);
       if (width < 700) {
         await expect(header.locator(".eyebrow")).toHaveCSS("font-weight", "400");
-        await expect(header).toHaveCSS("padding-left", "14px");
-        await expect(header).toHaveCSS("padding-top", "12px");
+        await expect(header.locator(".eyebrow")).toHaveCSS("font-size", await header.locator("p").evaluate(el => getComputedStyle(el).fontSize));
+        await expect(header.locator(".view-project-band")).toHaveCSS("height", "5px");
+        await expect(header).toHaveCSS("padding-left", "15px");
+        await expect(header).toHaveCSS("padding-top", "15px");
         await expect(header.locator(".view-title-row")).toHaveCSS("gap", "4px");
-        expect(await title.evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeCloseTo(31.2, 1);
+        expect(await title.evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeCloseTo(30, 1);
         const menu = header.getByRole("button", { name: "Mở sidebar", exact: true });
         const edit = header.getByRole("button", { name: /Chỉnh sửa dự án/ });
         for (const control of [menu, edit]) {
