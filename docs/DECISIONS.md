@@ -293,6 +293,10 @@ Sửa lỗi kéo chọn Nội dung đang sửa rồi thả ngoài khung làm đ�
 
 Task/note mở chi tiết toàn màn hình ở breakpoint mobile dưới 700px, nền trắng theo yêu cầu kể cả khi app ở dark mode; dùng màu chữ/control sáng trong phạm vi màn chi tiết. Bỏ viền bo, bóng và khoảng hở nhìn xuống danh sách. Giữ bố cục tiêu đề/Tên/Nội dung/metadata; header và metadata ở hai đầu, nội dung đọc/sửa giãn hết phần còn lại thay giới hạn 40dvh của D-120. Nội dung dài cuộn trong vùng giữa; chừa safe-area và khớp visual viewport khi bàn phím mở. Khóa cuộn danh sách trong lúc xem chi tiết, khôi phục khi đóng. Nút Đóng, lưu/hủy và dữ liệu giữ hành vi hiện tại; desktop vẫn popup tối đa 880px và dùng theme của app. D-156 tiếp tục bảo vệ thao tác kéo chọn chữ trên desktop.
 
+## D-158 — Nền chi tiết mobile theo theme (2026-10-26)
+
+Thay phần màu nền của D-157: bỏ ép palette sáng trên toàn màn chi tiết. Nền chung dùng canvas, khối Nội dung đọc/sửa dùng surface (trắng khi sáng, tối khi tối), có padding 12px để chữ không sát mép vùng tương phản. Header, Tên, metadata, chữ và control theo theme hiện hành. Giữ toàn màn hình, safe-area, xử lý bàn phím và bố cục desktop.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

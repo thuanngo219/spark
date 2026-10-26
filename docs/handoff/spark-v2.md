@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## Nền chi tiết mobile theo theme — D-158 (2026-10-26)
+
+Bỏ ép nền trắng/palette sáng của D-157. Mobile dùng canvas theo theme; khối Nội dung dùng surface trắng/tối tương ứng, padding 12px. Giữ toàn màn hình và mọi hành vi. Thay đổi globals.css, mobile-detail.spec.ts và tài liệu brand/brief/UI/implementation/decisions/handoff. Lint/typecheck/build, 175 test logic và 8/8 browser test mobile 320/390px sáng/tối đạt; đã xem ảnh cả hai theme. Chưa kiểm tra iPhone/Safari vật lý.
+
 ## Chi tiết mobile toàn màn hình — D-157 (2026-10-26)
 
 Chi tiết task/note dưới 700px chuyển thành trang nền trắng tràn màn hình (cả hai theme), không lộ danh sách bên dưới. Giữ bố cục hiện tại; đọc/sửa Nội dung giãn hết chiều cao còn lại, header/metadata không cuộn theo nội dung. Safe-area và visual viewport cho bàn phím; khóa cuộn nền khi mở, khôi phục khi đóng. Desktop và quick-add giữ bố cục cũ. D-157 thay giới hạn mobile 40dvh và popup mobile cũ. File: globals.css, SparkApp.tsx, content.spec.ts/mobile-detail.spec.ts, brand/brief/UI/implementation/decisions/handoff.
