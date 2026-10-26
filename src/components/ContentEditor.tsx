@@ -1,24 +1,27 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useImperativeHandle, useState, type Ref } from "react";
 import { EditorContent, Extension, useEditor, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Plugin } from "@tiptap/pm/state";
 import { CONTENT_LIMIT, contentLength, contentToDocument, documentToContent, type ContentRun, type ItemContent } from "@/lib/content-format";
 
-export default function ContentEditor({ value, format, onChange, autoFocus = false, label, onCancel }: {
+export type ContentEditorHandle = { focusEnd: () => void };
+
+export default function ContentEditor({ value, format, onChange, focusHandle, label, onCancel }: {
   value: string;
   format?: ContentRun[] | null;
   onChange: (content: ItemContent) => void;
-  autoFocus?: boolean;
+  focusHandle?: Ref<ContentEditorHandle>;
   label: string;
   onCancel?: () => void;
 }) {
   const counterId = useId();
   const [limitReached, setLimitReached] = useState(false);
   const editor = useEditor({
-    immediatelyRender: false,
-    autofocus: autoFocus ? "end" : false,
+    // Both callers mount this editor only after user interaction, never during SSR.
+    immediatelyRender: true,
+    autofocus: false,
     enableInputRules: false,
     enablePasteRules: false,
     extensions: [
@@ -54,6 +57,17 @@ export default function ContentEditor({ value, format, onChange, autoFocus = fal
     },
     onUpdate: ({ editor }) => onChange(documentToContent(editor.getJSON())),
   });
+  useImperativeHandle(focusHandle, () => ({
+    focusEnd() {
+      if (!editor || editor.isDestroyed) return;
+      editor.commands.setTextSelection(editor.state.doc.content.size - 1);
+      // Keep focus inside the originating tap: delayed autofocus cannot reliably
+      // open the iOS keyboard. Scroll only the editor, never the document.
+      editor.view.dom.focus({ preventScroll: true });
+      editor.view.focus();
+      editor.view.dom.scrollTop = editor.view.dom.scrollHeight;
+    },
+  }), [editor]);
   const state = useEditorState({ editor, selector: ({ editor }) => ({ bold: editor?.isActive("bold") ?? false, italic: editor?.isActive("italic") ?? false, underline: editor?.isActive("underline") ?? false }) });
 
   return (

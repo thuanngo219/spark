@@ -1,5 +1,11 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-166 — Focus trực tiếp và chống cuộn vượt biên Nội dung mobile (2026-10-26)
+
+Bấm Sửa Nội dung mount editor và đặt caret cuối tài liệu ngay trong click/tap, focus đồng bộ để iOS có thể mở keyboard theo user gesture; không dùng autofocus qua timeout. Chỉ cuộn editor tới cuối, không cuộn trang. Editor chỉ mount sau tương tác người dùng, không render Tiptap trên server. Trong focus mode mobile, touchmove một ngón theo chiều dọc bị chặn khi nội dung không đủ cuộn hoặc vuốt ra ngoài đầu/cuối vùng nhập; vuốt vào vùng có thể cuộn vẫn native. Listener chỉ trên backdrop chi tiết, cleanup khi đóng/đổi breakpoint; không chặn tap, pinch, vuốt ngang, nhấn giữ hoặc kéo vùng chọn. Lưu/Hủy và định dạng B/I/U không đổi. Bổ sung D-164/D-165; không thay thanh bàn phím iOS.
+
+Đo năm cảnh báo animation: xem [báo cáo hiệu năng](../performance/2026-10-26-motion.md). Không thay motion đã duyệt. Thay đổi ContentEditor.tsx, SparkApp.tsx, detail-scroll-lock.ts, regression mobile-editor-input.spec.ts và tài liệu. Lint/typecheck/build và 175 test logic đạt. Browser kiểm tra B/I/U, lưu/hủy/reload, ngày/metadata, chi tiết task/note 320/390px sáng/tối, cuộn nền, khoảng trống bàn phím và focus/selection. Test desktop kéo chọn note từng thất bại khi reload sát sau Save; bổ sung xác nhận UI đã hiển thị bản lưu trước khi đóng/reload và chạy lại 3 lần đạt. Không đổi cơ chế persistence. Test touch có sự kiện tổng hợp kiểm tra preventDefault và CDP touch swipe kiểm tra vị trí; không thay thế kiểm chứng rubber-band/keyboard thật trên iPhone. Chưa kiểm tra iPhone/Safari vật lý.
+
 ## D-165 — Khoảng trống đáy editor khi mở bàn phím (2026-10-26)
 
 Trong focus mode sửa Nội dung mobile, bỏ padding đáy 12px và safe-area dưới khi visual viewport co hơn 120px so với innerHeight ở scale xấp xỉ 1. Giữ padding trong vùng nhập để caret không sát mép; đóng bàn phím khôi phục 12px + safe-area ngay cả khi editor còn focus. Ngưỡng là heuristic để tránh nhầm thay đổi chrome trình duyệt; pinch zoom không kích hoạt. Giữ safe-area trên/hai bên, full backdrop và khóa nền D-164; desktop/quick-add không đổi. Thanh ↑/↓/Done của iOS giữ nguyên do trình duyệt quản lý. Cần kiểm tra iPhone thật để xác nhận phần khoảng hở còn lại do hệ thống.

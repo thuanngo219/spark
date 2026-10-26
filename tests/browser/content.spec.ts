@@ -477,6 +477,7 @@ for (const width of [1280]) {
       await page.mouse.up();
       await expect(editor).toBeVisible();
       await page.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
+      await expect(page.locator(".detail-description .formatted-content")).toHaveText(draft);
       // A genuine backdrop click still closes, and the saved draft survives reload.
       await page.mouse.click(outside.x, outside.y);
       await expect(sheet).toBeHidden();

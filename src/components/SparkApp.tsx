@@ -7,7 +7,8 @@ import { PROJECT_COLORS, normalizeProjectColor } from "@/lib/project-colors";
 import { ThemePreference } from "@/components/ThemePreference";
 
 import Image from "next/image";
-import ContentEditor from "@/components/ContentEditor";
+import ContentEditor, { type ContentEditorHandle } from "@/components/ContentEditor";
+import { flushSync } from "react-dom";
 import { FormattedContent } from "@/components/FormattedContent";
 import { CONTENT_LIMIT, contentLength, normalizeContent, type ContentRun } from "@/lib/content-format";
 import { defaultStartDate } from "@/lib/quick-add";
@@ -2342,6 +2343,7 @@ function DateStrip({ selected, today, onSelect }: { selected: string; today: str
 function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { item: SparkItem; projects: Project[]; onArchive: () => void; onClose: () => void; onDelete: () => void; onSave: (update: Partial<SparkItem>) => void }) {
   const backdropPointer = useRef<number | null>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
+  const contentEditorRef = useRef<ContentEditorHandle>(null);
   useLayoutEffect(() => {
     const backdrop = backdropRef.current;
     if (!backdrop) return;
@@ -2424,7 +2426,11 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
     if (editingField === field) return;
     if (editingField === "title" && !saveTitle()) return;
     if (editingField === "content" && !saveContent()) return;
-    setEditingField(field);
+    if (field === "content") {
+      // Mount and focus before leaving the user gesture so iOS opens its keyboard.
+      flushSync(() => setEditingField(field));
+      contentEditorRef.current?.focusEnd();
+    } else setEditingField(field);
   };
   const saveDates = (start: string, due: string) => {
     setStartDate(start); setDueDate(due);
@@ -2519,7 +2525,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
               </div>
               {editingField === "content" ? (
                 <div className="detail-inline-editor">
-                  <ContentEditor autoFocus value={description} format={descriptionFormat} label={item.type === "task" ? "Nội dung task" : "Nội dung ghi chú"} onChange={(content) => { setDescription(content.description ?? ""); setDescriptionFormat(content.descriptionFormat); }} onCancel={cancelContent} />
+                  <ContentEditor focusHandle={contentEditorRef} value={description} format={descriptionFormat} label={item.type === "task" ? "Nội dung task" : "Nội dung ghi chú"} onChange={(content) => { setDescription(content.description ?? ""); setDescriptionFormat(content.descriptionFormat); }} onCancel={cancelContent} />
                 </div>
               ) : (
                 <div className="detail-read-row align-start">

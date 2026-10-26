@@ -38,7 +38,42 @@ export function lockDetailScroll(backdrop: HTMLElement) {
   root.style.overscrollBehavior = "none";
   for (const { element } of background) element.inert = true;
 
+  // iOS can pan the visual viewport even when overflow/overscroll are disabled,
+  // especially if the editor has too little text to create a scroll range.
+  let gesture: { x: number; y: number; time: number; target: Element; mode: "pending" | "scroll" | "selection" } | null = null;
+  const startTouch = (event: TouchEvent) => {
+    gesture = event.touches.length === 1 && event.target instanceof Element
+      ? { x: event.touches[0].clientX, y: event.touches[0].clientY, time: performance.now(), target: event.target, mode: "pending" }
+      : null;
+  };
+  const moveTouch = (event: TouchEvent) => {
+    if (!gesture || event.touches.length !== 1 || !backdrop.querySelector(".item-detail-sheet.editing-content")) return;
+    const touch = event.touches[0];
+    const dy = touch.clientY - gesture.y;
+    const dx = touch.clientX - gesture.x;
+    gesture.y = touch.clientY;
+    gesture.x = touch.clientX;
+    // Leave taps, horizontal gestures, pinch zoom and native text selection alone.
+    const selection = window.getSelection();
+    if (Math.abs(dy) < 2 || Math.abs(dx) >= Math.abs(dy) || (selection && !selection.isCollapsed && selection.toString().length > 0)) return;
+    if (gesture.mode === "pending") gesture.mode = performance.now() - gesture.time > 450 ? "selection" : "scroll";
+    if (gesture.mode === "selection") return;
+    const input = gesture.target.closest<HTMLElement>(".content-editor-input");
+    const maxScroll = input ? input.scrollHeight - input.clientHeight : 0;
+    const atBoundary = !input || maxScroll <= 1 || (dy > 0 && input.scrollTop <= 1) || (dy < 0 && input.scrollTop >= maxScroll - 1);
+    if (atBoundary && event.cancelable) event.preventDefault();
+  };
+  const endTouch = () => { gesture = null; };
+  backdrop.addEventListener("touchstart", startTouch, { passive: true });
+  backdrop.addEventListener("touchmove", moveTouch, { passive: false });
+  backdrop.addEventListener("touchend", endTouch);
+  backdrop.addEventListener("touchcancel", endTouch);
+
   return () => {
+    backdrop.removeEventListener("touchstart", startTouch);
+    backdrop.removeEventListener("touchmove", moveTouch);
+    backdrop.removeEventListener("touchend", endTouch);
+    backdrop.removeEventListener("touchcancel", endTouch);
     for (const { element, inert } of background) element.inert = inert;
     restoreBody();
     restoreRoot();
