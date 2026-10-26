@@ -301,6 +301,10 @@ Thay phần màu nền của D-157: bỏ ép palette sáng trên toàn màn chi 
 
 Thay phần nền riêng của D-158 theo xác nhận của chủ dự án: bỏ surface và padding 12px vừa thêm cho khối Nội dung mobile. Khối đọc/sửa trong suốt trên nền chung canvas theo theme, không tạo vùng trắng riêng. Giữ toolbar hiện có, bố cục toàn màn hình, safe-area và xử lý bàn phím.
 
+## D-160 — Dock mobile sát mép và có nhãn (2026-10-26)
+
+Thay dock pill/icon-only: thanh liền khối nền surface theo theme, sát mép trái/phải/dưới, không bo góc, không blur hoặc bóng nổi. Giữ vùng dock cao 58px, cộng safe-area dưới; các nút có vùng bấm tối thiểu 44px. Hôm nay/Sắp tới/Theo ngày/Tất cả có icon 24px trên và nhãn 11px dưới. Active giữ nền selected tròn 32px sau icon và nhấn chữ. Nút + 52px không có nhãn, nằm gọn trong thanh. Cụm lọc/sync cách dock 20px; giữ năm cột bằng nhau, chức năng và desktop. Thay các mô tả dock 72px/pill/icon-only trước đây.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

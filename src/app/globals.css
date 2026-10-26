@@ -608,14 +608,16 @@ button:focus-visible { filter: brightness(.88); }
   .sidebar-mobile .nav-item { min-height: 44px; }
   .sidebar-mobile .sidebar-brand { overflow: visible; }
   .sidebar-close { position: absolute; right: -2px; top: 1px; color: white; border-color: rgba(255,255,255,.1); background: rgba(255,255,255,.07); }
-  .mobile-dock { position: fixed; inset: auto 10px max(10px, calc(env(safe-area-inset-bottom) - 10px)); z-index: 72; height: 58px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; padding: 0; border: 1px solid var(--floating-border); border-radius: 999px; background: color-mix(in srgb, var(--surface) 94%, transparent); box-shadow: 0 15px 42px rgba(17,23,66,.2); backdrop-filter: blur(22px); }
-  .mobile-dock > button { min-width: 0; width: 100%; height: 58px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--control-muted); }
-  .mobile-dock > button.active, .mobile-dock > button[aria-current="page"] { width: min(52px, calc(100% - 4px)); height: 52px; justify-self: center; border-radius: 999px; background: var(--selected); color: var(--selected-ink); }
-  .mobile-dock > button > svg { stroke-width: 1.8; }
-  .mobile-dock .mobile-dock-add { position: relative; z-index: 2; }
-  .mobile-dock .mobile-dock-add > span { position: absolute; width: 72px; height: 72px; display: grid; place-items: center; border-radius: 999px; background: var(--turquoise); color: var(--navy-900); box-shadow: 0 12px 30px rgba(101,69,138,.28), inset 0 0 0 1px rgba(255,255,255,.28); }
+  .mobile-dock { position: fixed; inset: auto 0 0; z-index: 72; height: calc(58px + env(safe-area-inset-bottom)); display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: start; padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); border-top: 1px solid var(--line); background: var(--surface); }
+  .mobile-dock > button { min-width: 0; width: 100%; height: 57px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--muted); }
+  .mobile-dock > button[aria-current="page"] { color: var(--heading); font-weight: 700; }
+  .mobile-dock-icon { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 999px; }
+  .mobile-dock > button[aria-current="page"] .mobile-dock-icon { background: var(--selected); color: var(--selected-ink); }
+  .mobile-dock-icon > svg { stroke-width: 1.8; }
+  .mobile-dock-label { max-width: 100%; font-size: 11px; line-height: 14px; white-space: nowrap; }
+  .mobile-dock .mobile-dock-add > span { width: 52px; height: 52px; display: grid; place-items: center; border-radius: 999px; background: var(--turquoise); color: var(--navy-900); }
   .mobile-dock .mobile-dock-add:active > span { transform: scale(.98); }
-  .mobile-floating-controls { position: fixed; left: 14px; right: 14px; bottom: max(88px, calc(68px + env(safe-area-inset-bottom))); z-index: 71; display: flex; align-items: center; justify-content: space-between; gap: 10px; pointer-events: none; }
+  .mobile-floating-controls { position: fixed; left: 14px; right: 14px; bottom: calc(78px + env(safe-area-inset-bottom)); z-index: 71; display: flex; align-items: center; justify-content: space-between; gap: 10px; pointer-events: none; }
   .mobile-floating-controls > * { pointer-events: auto; }
   .item-display-switcher.mobile { --switcher-size: 44px; --switcher-padding: 2px; min-height: 48px; background: color-mix(in srgb, var(--well) 94%, transparent); box-shadow: 0 7px 22px rgba(17,23,66,.13); backdrop-filter: blur(16px); }
   .mobile-sync-status { min-height: 44px; display: flex; align-items: center; gap: 7px; padding: 0 12px; border: 1px solid var(--floating-border); border-radius: 999px; background: color-mix(in srgb, var(--surface) 94%, transparent); color: var(--muted); box-shadow: 0 7px 22px rgba(17,23,66,.13); backdrop-filter: blur(16px); font-size: 0.625rem; }

@@ -73,7 +73,8 @@ export function MobileDock({
           aria-current={isActive(entry.view) ? "page" : undefined}
           key={entry.label}
         >
-          <Icon name={entry.icon} size={27} />
+          <span className="mobile-dock-icon"><Icon name={entry.icon} size={24} /></span>
+          <span className="mobile-dock-label">{entry.label}</span>
         </button>
       ))}
       <button className="mobile-dock-add" type="button" onClick={onAdd} aria-label="Thêm công việc">
@@ -88,7 +89,8 @@ export function MobileDock({
           aria-current={isActive(entry.view) ? "page" : undefined}
           key={entry.label}
         >
-          <Icon name={entry.icon} size={27} />
+          <span className="mobile-dock-icon"><Icon name={entry.icon} size={24} /></span>
+          <span className="mobile-dock-label">{entry.label}</span>
         </button>
       ))}
     </nav>

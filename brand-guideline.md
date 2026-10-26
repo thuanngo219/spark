@@ -193,7 +193,7 @@ Phần này là source of truth cho web app. Khi CSS/component mới khác bản
 | Semantic | Star, Ưu tiên, checkbox, project color | Màu theo ý nghĩa hoặc trạng thái | Chỉ đổi khi giúp nhận biết hành động | Phải giữ icon/shape/label làm tín hiệu bổ sung. |
 
 - Vùng chạm mobile mặc định là `44×44px`, kể cả khi artwork icon nhỏ hơn. Ngoại lệ đã duyệt D-155: selector sắp xếp cao 30px và nút đổi chiều 30×30px trên desktop/mobile.
-- Desktop floating quick-add là ngoại lệ Primary icon `48×48px`, dấu `+` 32px, neo góc dưới phải. Mobile dùng nút Primary icon 72px ở giữa dock 58px, cho phép trồi khỏi dock; cả hai luôn có accessible label/tooltip “Thêm công việc”.
+- Desktop floating quick-add là ngoại lệ Primary icon `48×48px`, dấu `+` 32px, neo góc dưới phải. Mobile dùng nút Primary icon 52px nằm gọn giữa dock 58px sát ba mép màn hình; cả hai luôn có accessible label/tooltip “Thêm công việc”.
 - D-135: nút chỉ có icon dùng hình tròn; nút có chữ/navigation bo hai đầu. Checkbox checked dùng #8B8F9E/tick trắng trên desktop và mobile.
 - Nút trong cùng một action row dùng cùng chiều cao và radius; Primary và Hủy vẫn giữ phân cấp màu khác nhau.
 - Navigation button, color swatch, date tile và project dot không bị ép vào màu Primary vì chúng là selection/navigation control.
@@ -264,7 +264,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 - CSS lưu type size bằng `rem` trên base 16px. Web app đặt root scale `112.5%` trên desktop và `120%` dưới 700px; nhờ vậy typography tăng đồng bộ mà không phóng to icon, rail hoặc control geometry.
 - Item title mặc định dùng Inter base `13px`, render khoảng `14.6px` desktop và `15.6px` mobile, weight `400`; không tự động bold task/note.
 - List density: desktop row khoảng `35px` với gap `6px`; mobile row tối thiểu `52px` với gap `2px`, canvas tràn viền và title một dòng, ellipsis khi thiếu chỗ. Marker/action mobile vẫn giữ vùng chạm tối thiểu `44px`.
-- D-144/D-145: Header desktop/mobile thu gọn khi cuộn quá 28px, chuyển động 220ms; compact giữ h1 ở 50% cỡ chữ thường và dải màu 5px/radius 5px. H1 compact căn giữa chiều dọc với cụm trạng thái. Desktop giữ cụm sync/bộ lọc trong header, mobile giữ cụm nổi trên dock. Ẩn eyebrow, thống kê, nút mở sidebar mobile và nút sửa dự án; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Giữ padding 20px/safe-area, blur 8px/WebKit và opacity dark 75% cho h1/dải màu. Mobile bottom dock icon-only cao 58px và overlay trên canvas.
+- D-144/D-145: Header desktop/mobile thu gọn khi cuộn quá 28px, chuyển động 220ms; compact giữ h1 ở 50% cỡ chữ thường và dải màu 5px/radius 5px. H1 compact căn giữa chiều dọc với cụm trạng thái. Desktop giữ cụm sync/bộ lọc trong header, mobile giữ cụm nổi trên dock. Ẩn eyebrow, thống kê, nút mở sidebar mobile và nút sửa dự án; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Giữ padding 20px/safe-area, blur 8px/WebKit và opacity dark 75% cho h1/dải màu. Mobile bottom dock cao 58px cộng safe-area, sát ba mép màn hình, icon trên/nhãn dưới; riêng + không có nhãn (D-160).
 - Marker task/note và project dot luôn căn theo dòng chữ đầu tiên; không căn giữa toàn bộ row khi title hoặc metadata làm row cao hơn.
 - Trên desktop, due-date metadata và tâm artwork star/điện xẹt phải cùng trục giữa với dòng title; không căn theo mép trên của hit target icon.
 - Danh sách hỗn hợp luôn đặt task trước note; trong từng loại giữ thứ tự thời gian. Đây là phân cấp nội dung, không dùng divider hoặc card riêng để tách hai loại.
@@ -285,7 +285,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 - Dùng outline/monoline với đầu nét và góc bo tròn.
 - Duy trì cùng optical size và stroke weight trong một bộ; ở lưới 24px, bắt đầu từ stroke khoảng 1.75–2px rồi cân chỉnh quang học.
 - Hình phải nhận ra được ở 16–20px và không phụ thuộc vào chi tiết trang trí nhỏ.
-- Active state ưu tiên nền neutral nhẹ, thay đổi weight hoặc một accent nhỏ; riêng current destination trong mobile dock dùng nền Navy và icon trắng để tạo trạng thái đảo màu rõ ràng. Không tô nhiều màu cho toàn bộ sidebar.
+- Active state ưu tiên nền neutral nhẹ, thay đổi weight hoặc một accent nhỏ; riêng icon của current destination trong mobile dock dùng nền selected theo theme và màu selected-ink để tạo trạng thái đảo màu rõ ràng. Không tô nhiều màu cho toàn bộ sidebar.
 - Dùng màu chủ đạo neutral/Navy. Chỉ thêm Turquoise hoặc Muted Coral khi màu có ý nghĩa hoặc giúp dẫn mắt.
 - Luôn có accessible label hoặc tooltip cho icon-only control.
 - Các icon cùng nhóm phải thống nhất perspective, corner radius, khoảng âm và mức độ chi tiết.

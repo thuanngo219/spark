@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## Dock mobile sát mép — D-160 (2026-10-26)
+
+Dock thành thanh liền khối sát ba mép, nền surface theo sáng/tối; cao 58px cộng safe-area. Bốn đích có icon trên/nhãn dưới, nút + 52px không nhãn nằm gọn trong thanh; cụm lọc/sync cách 20px. Thay đổi SparkNavigation.tsx, globals.css, mobile-dock.spec.ts và tài liệu brand/brief/UI/implementation/decisions/handoff. Lint/typecheck/build, 175 test logic, 6/6 browser case tại 320/390/600px sáng/tối đạt; kiểm tra bổ sung safe-area 34px dưới và 20px hai bên đạt. Đã kiểm tra icon/nhãn, chuyển view, quick-add, không che mục cuối, desktop ẩn dock; đã xem ảnh. Chưa thử Safari/iPhone vật lý.
+
 ## Nội dung dùng chung nền chi tiết — D-159 (2026-10-26)
 
 Bỏ nền riêng và padding 12px của Nội dung từ D-158. Nội dung trong suốt trên nền chung theo theme; giữ toolbar và toàn màn hình mobile. Thay đổi globals.css, mobile-detail.spec.ts và tài liệu brand/brief/UI/implementation/decisions/handoff. Lint/typecheck/build, 175 test logic và 8/8 browser test mobile 320/390px sáng/tối đạt; đã xem ảnh cả hai theme. Chưa kiểm tra Safari/iPhone vật lý.
