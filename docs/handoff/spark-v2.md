@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## Editor mobile tập trung — D-163 (2026-10-26)
+
+Khi sửa Nội dung, ẩn header Chi tiết/Tên/metadata, giữ Lưu/Hủy/B/I/U và editor 16px giãn theo visual viewport. Lưu/Hủy trả về chi tiết; desktop và quick-add giữ nguyên. Eyebrow mobile 0.65rem/400/tracking 0; compact h1 21px. File: globals.css, SparkApp.tsx, header.spec.ts, mobile-detail.spec.ts, content.spec.ts và brand/brief/UI/implementation/decisions/handoff. Lint/typecheck/build, 175 test logic và 31/31 browser test đạt, gồm offline/format/lưu/hủy/metadata/desktop/header. Mobile sáng/tối 320/390px, viewport 420px còn vùng nhập >240px; thêm safe-area 59px trên/34px dưới vẫn >150px, caret trong editor sau di chuyển bàn phím. Đã xem ảnh; đây là mô phỏng Chrome, chưa xác minh Safari/iPhone vật lý.
+
 ## Header và dock mobile — D-162 (2026-10-26)
 
 Eyebrow bằng thống kê (0.75rem/400), h1 30px/compact 16px, padding 15px cộng safe-area; band 5px/compact 2.5px. Dock active không nền, icon heading theo theme và nhãn bold. Nút + 64px/glyph 36px nhô nhẹ khỏi dock 58px. File: globals.css, SparkNavigation.tsx, header.spec.ts, mobile-dock.spec.ts và brand/brief/UI/implementation/decisions/handoff. Lint/typecheck/build, 175 test logic và 13/13 browser test đạt: mobile 320/390/600px, desktop 1280px, sáng/tối, compact 16px/band 2.5px, safe-area, active không nền/contrast ≥4.5:1 và quick-add. Đã xem ảnh; chưa kiểm tra Safari/iPhone vật lý.

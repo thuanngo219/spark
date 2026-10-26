@@ -313,6 +313,10 @@ Theo ảnh tên dự án xuống dòng chiếm nhiều chỗ: eyebrow mobile b�
 
 Thay kích thước mobile trong D-160/D-161: eyebrow bằng thống kê (0.75rem, weight 400); h1 30px thường/16px compact, padding 15px cộng safe-area; dải màu 5px thường/2.5px compact. Dock active bỏ nền, icon dùng heading (Navy #111742 sáng, sắc sáng #E9ECF5 tối để đủ contrast) và nhãn bold. Nút + tăng vòng tròn 52→64px, glyph 31→36px, nhô nhẹ phía trên dock; giữ dock 58px và safe-area. Giữ gap title 4px, vùng bấm 44px, motion Quint và desktop.
 
+## D-163 — Editor tập trung và typography mobile (2026-10-26)
+
+Theo ảnh iPhone khi bàn phím mở, header/Tên/metadata chiếm gần hết vùng nhập: sửa Nội dung mobile chuyển sang focus mode, ẩn ba khu này cùng lỗi ngày (vẫn giữ state), chỉ hiện hàng Nội dung/Lưu/Hủy, B/I/U và editor giãn hết visual viewport. Lưu hoặc Hủy hiện lại chi tiết đầy đủ; không tự lưu draft khi Hủy. Giữ nền theo theme, safe-area, giới hạn 4.000 và font editor mobile 16px. Desktop/quick-add không đổi. Eyebrow view-header mobile chuyển 0.75rem→0.65rem, tracking 0; h1 compact chuyển 16→21px; h1 thường 30px/padding 15px/band compact 2.5px giữ nguyên.
+
 ## Cần chủ dự án xác nhận
 
 ### Q-002 — Đồng bộ (đã chốt bởi D-021)

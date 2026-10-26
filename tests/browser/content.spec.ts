@@ -313,7 +313,7 @@ test("mobile title uses compact input, saves on blur and leaves the next action 
 });
 
 for (const width of [1280, 390]) {
-  test(`detail metadata remains clickable while editing content at ${width}px`, async ({ page }) => {
+  test(`detail metadata remains clickable ${width < 700 ? "after focused editing" : "while editing content"} at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 });
     const title = `Metadata click ${width}`;
     const quickEditor = await openQuickAdd(page);
@@ -335,6 +335,11 @@ for (const width of [1280, 390]) {
       await editor.press("Meta+a");
       if (await editor.locator("strong").count() === 0) await editor.press("Meta+b");
       await expect(editor.locator("strong")).toHaveText(text);
+      if (width < 700) {
+        await expect(sheet.locator(".detail-metadata")).toBeHidden();
+        await sheet.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
+        await expect(sheet.locator(".detail-metadata")).toBeVisible();
+      }
     };
     const reopen = async (text: string) => {
       await sheet.getByRole("button", { name: "Đóng", exact: true }).click();

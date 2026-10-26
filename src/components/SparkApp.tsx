@@ -2460,7 +2460,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
         if (dismiss) onClose();
       }}
     >
-      <section className={`editor-sheet item-detail-sheet ${editingField === "content" ? "editing-content" : ""}`} role="dialog" aria-modal="true" aria-labelledby="item-detail-title" onClick={(event) => event.stopPropagation()}>
+      <section className={`editor-sheet item-detail-sheet ${editingField === "content" ? "editing-content" : ""}`} role="dialog" aria-modal="true" aria-labelledby={editingField === "content" ? "item-content-title" : "item-detail-title"} onClick={(event) => event.stopPropagation()}>
         <div className="editor-header"><div><span>{item.type === "task" ? "Task" : "Ghi chú"}</span><h2 id="item-detail-title">{item.type === "task" ? "Chi tiết task" : "Chi tiết ghi chú"}</h2></div><button type="button" className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
 
         <div className="detail-content">
@@ -2493,7 +2493,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
 
           <section className={`detail-text-block detail-description ${editingField === "content" ? "editing" : ""}`}>
               <div className="detail-field-heading">
-                <span className="detail-label">Nội dung</span>
+                <span className="detail-label" id="item-content-title">Nội dung</span>
                 {editingField === "content" ? (
                   <div className="detail-edit-actions">
                     <button type="button" className="detail-icon-action save" onClick={() => saveContent()} aria-label="Lưu Nội dung"><Icon name="check" size={18} /></button>

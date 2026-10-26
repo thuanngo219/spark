@@ -34,7 +34,7 @@ for (const width of [1280, 390, 320]) {
       expect(await page.evaluate(() => scrollY)).toBe(36);
       await expect(header).toHaveClass(/is-compact/);
       const compactSize = await title.evaluate(el => parseFloat(getComputedStyle(el).fontSize));
-      expect(compactSize).toBeCloseTo(width < 700 ? 16 : fullSize / 2, 2);
+      expect(compactSize).toBeCloseTo(width < 700 ? 21 : fullSize / 2, 2);
       expect(await title.evaluate(el => parseFloat(getComputedStyle(el).letterSpacing) / parseFloat(getComputedStyle(el).fontSize))).toBeCloseTo(-0.025, 4);
       for (const selector of [".eyebrow", "p", ".view-title-row button"]) {
         for (const el of await header.locator(selector).all()) await expect(el).toBeHidden();
@@ -60,7 +60,8 @@ for (const width of [1280, 390, 320]) {
       await expect(title).toHaveText(projectName);
       if (width < 700) {
         await expect(header.locator(".eyebrow")).toHaveCSS("font-weight", "400");
-        await expect(header.locator(".eyebrow")).toHaveCSS("font-size", await header.locator("p").evaluate(el => getComputedStyle(el).fontSize));
+        await expect(header.locator(".eyebrow")).toHaveCSS("font-size", "12.48px");
+        await expect(header.locator(".eyebrow")).toHaveCSS("letter-spacing", "normal");
         await expect(header.locator(".view-project-band")).toHaveCSS("height", "5px");
         await expect(header).toHaveCSS("padding-left", "15px");
         await expect(header).toHaveCSS("padding-top", "15px");
