@@ -1,5 +1,11 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-177 — Sidebar blur 5px (2026-10-27)
+
+Theo yêu cầu mới, giảm blur phía sau sidebar từ 10px xuống 5px cho cả backdrop-filter và -webkit-backdrop-filter. Giữ nền phủ trong suốt. Thay giá trị D-173; không đổi blur header, overlay dialog hoặc trạng thái màu.
+
+Kiểm tra: lint/typecheck/build, 175 test logic và 4/4 browser case mobile-status-chrome đạt (390px sáng/tối, mở/đóng sidebar và breakpoint desktop). File: globals.css, mobile-status-chrome.spec.ts và tài liệu dự án.
+
 ## D-176 — Tách nền loading khỏi vùng status bar (2026-10-27)
 
 Sau kiểm tra thực tế iPhone, D-175 vẫn để status bar giữ Navy một lúc sau loading. Không tiếp tục đổi màu vùng lấy mẫu từ Navy về theme. browser-top-surface luôn dùng --browser-background theo theme ngay từ đầu, không clip-path và không override màu khi startup. Nền Navy và progress cùng bắt đầu ngay dưới vùng này: top=max(12px, safe-area-top) trên mobile, top=0 desktop. Dải màu theme nằm phía trên thanh tiến trình và nối với status bar; phía dưới thanh luôn liền Navy. Chủ dự án đã cho phép dời thanh về mép trên phần nền Navy.
