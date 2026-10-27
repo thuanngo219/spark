@@ -364,3 +364,17 @@ Preference cố định thắng OS; Theo hệ thống dùng media hiện hành. 
 StartupScreen xử lý onAnimationStart, lọc animationName startup-reveal rồi phát spark:theme-refresh trực tiếp. Handler bootstrap apply đồng bộ và đọc media mới; không có timer riêng. Bootstrap trước paint và các listener resume vẫn là nguồn theme duy nhất. Hai selector backdrop dùng chung layout nhưng tách hiệu ứng: dialog-backdrop giữ var(--overlay), mobile-nav-backdrop transparent + blur(20px), gồm khai báo WebKit. Không thay transition/duration hiện hành.
 
 Regression startup-theme.spec.ts ghi nhận theme trước animation, mô phỏng media đổi im lặng khi loading sẵn sàng, rồi xác nhận màu và đúng một lượt refresh trong cùng sự kiện animationstart (capture ở document, đọc ở window sau React delegation). Bao phủ system/fixed, sáng/tối và reduced motion. Status/surfaces tests xác nhận sidebar trong suốt, blur 20px và dialog vẫn có lớp phủ riêng. Chrome không dùng tiền tố -webkit-backdrop-filter; kiểm tra computed prefix chỉ khi CSS.supports trả true. Chưa thay thế kiểm tra Safari/iOS vật lý.
+
+### D-172 — Khắc phục màu lấy mẫu tại mép trên iOS (2026-10-27)
+
+D-171 chưa giải quyết được native status bar theo kiểm tra thực tế của chủ dự án. Trong browser regression, bản cũ vẽ Navy tại mép trên khi metadata đã là sáng. WebKit có thể lấy màu từ fixed element trên cùng thay vì theme-color: [bug 305546](https://bugs.webkit.org/show_bug.cgi?id=305546). Mã nguồn [LocalFrameView.cpp](https://github.com/WebKit/WebKit/blob/d3afea7d89fd2b062ef39b644c3f026dc4904070/Source/WebCore/page/LocalFrameView.cpp) cho thấy sampling mép trên ở 4px, loại primary background của box cao <=10px và có đường giữ màu cũ cho container phủ viewport. Đây là cơ sở cho giải pháp; chưa chứng minh chính xác engine của iOS 27.0.1 trên máy người dùng đi qua nhánh nào.
+
+Thêm browser-top-surface được render từ server, fixed full-width trên mobile, cao max(12px, safe-area-top), background đặc từ --browser-background, z-index 1001 trên splash, không pointer event/animation/blur. Nó cùng root/body/meta dùng nguồn theme duy nhất của bootstrap; đổi preference, OS hoặc resume cập nhật ngay, menu mở dùng Navy, đóng trả theme mới. Mép trên giữ theme cả khi loading, không phải chờ Navy reveal. Không tạo timer, fake scroll, reload hoặc xóa cache/dữ liệu. Padding header/sidebar thành max(12px, 8px + safe-area) để lớp nền không che text trên máy có inset 0; trên iPhone có inset >=4px không tăng khoảng trống.
+
+Manifest bổ sung color_scheme_dark với background/theme #121622, giữ fallback sáng #F7F8FA. WebKit đã triển khai trường này theo [bug 311727](https://bugs.webkit.org/show_bug.cgi?id=311727); đây là fallback theo OS trước JS, không thay preference riêng của app. Không đổi start_url/scope/icon/identity và không yêu cầu gỡ/cài lại PWA. Không thể hứa bản PWA đã cài sẽ nhận manifest mới tức thì.
+
+Regression status-edge.spec.ts chụp pixel ở y=4/5 trên loading thật đang pause, sau reveal, OS/fixed theme và sidebar; kiểm tra dark manifest. Đây là kiểm tra paint của trang, chưa đo được native status bar. Không coi metadata đúng là đủ bằng chứng. Giữ tests resume/startup-theme để kiểm tra thời điểm cập nhật.
+
+### D-173 — Giảm blur phía sau sidebar (2026-10-27)
+
+Theo yêu cầu mới, sidebar dùng backdrop-filter blur(10px) và -webkit-backdrop-filter blur(10px), thay 20px của D-171. Giữ nền phủ trong suốt, không làm tối nội dung. Không đổi blur header hoặc overlay dialog.

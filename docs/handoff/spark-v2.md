@@ -1,5 +1,15 @@
 # Spark v2 — bàn giao hiện hành
 
+### D-173 — Giảm blur phía sau sidebar (2026-10-27)
+
+Theo yêu cầu mới, sidebar dùng backdrop-filter blur(10px) và -webkit-backdrop-filter blur(10px), thay 20px của D-171. Giữ nền phủ trong suốt, không làm tối nội dung. Không đổi blur header hoặc overlay dialog.
+
+## D-172 — Nền đặc tại mép trên mobile (2026-10-27)
+
+Sau phản hồi iPhone vẫn giữ Navy và không đổi màu theo theme, bổ sung một lớp nền cố định, không tương tác và không animation tại mép trên mobile. Lớp này dùng màu chrome hiện hành ngay từ lúc tải, nằm trên splash/blur: sáng #F7F8FA, tối #121622, mở menu #111742. Màn loading vẫn Navy bên dưới; vùng mép trên không chờ reveal. Không thêm màu mới. Chiều cao max(12px, safe-area-top); padding trên header/sidebar tối thiểu 12px, còn trên máy có safe-area vẫn giữ 8px + safe-area. Desktop không hiển thị lớp này. Native iOS cần xác nhận lại trên thiết bị.
+
+Bản cũ thất bại regression pixel: expected sáng [247,248,250], actual Navy [17,23,66]. File: layout.tsx, globals.css, manifest.ts, status-edge/mobile-status-chrome tests và tài liệu dự án. Bản sửa đạt lint/typecheck/build, 175 test logic và 30/30 browser test: pixel sáng/tối khi loading và đổi theme/menu, resume bỏ lỡ OS event, reduced motion, safe-area 59px và responsive 320/390/699/700/1280px. Đã xem ảnh loading và app; native status bar iPhone vẫn cần kiểm tra lại trên thiết bị. Không chạy Impeccable.
+
 ## D-171 — Theme tại reveal và sidebar blur (2026-10-27)
 
 StartupScreen phát theme-refresh đồng bộ trong animationstart của startup-reveal; không thêm timer/frame hoặc chờ animationend. Bootstrap trước paint và đường resume D-169 tiếp tục đọc đúng preference/OS. Giữ fade logo 500ms + reveal 600ms, motion Quint và reduced motion. Sidebar chuyển lớp phủ sang transparent + blur(20px), gồm khai báo WebKit; các dialog giữ overlay cũ. Không đổi màu nội dung riêng của D-170.

@@ -43,6 +43,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="vi" suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeBootstrap }} /></head>
       <body>
+        <div className="browser-top-surface" aria-hidden="true" />
         {children}
         <ThemeSync />
         <OfflineBootstrap />

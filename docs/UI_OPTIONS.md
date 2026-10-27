@@ -211,3 +211,11 @@ App-shell luôn có nền canvas đặc và scheme theo theme hiện hành; menu
 ### D-171 — Reveal và blur menu (2026-10-27)
 
 Sidebar dùng blur 20px với nền phủ trong suốt, bỏ lớp phủ tối; không đổi overlay của dialog. Giữ Navy/sidebar, palette và motion Quint. Màu chrome được cập nhật lại ngay tại animationstart của reveal, không thêm delay; thời lượng logo/reveal giữ nguyên và tiếp tục đọc theme lúc mở mới/resume.
+
+### D-172 — Nền đặc tại mép trên mobile (2026-10-27)
+
+Sau phản hồi iPhone vẫn giữ Navy và không đổi màu theo theme, bổ sung một lớp nền cố định, không tương tác và không animation tại mép trên mobile. Lớp này dùng màu chrome hiện hành ngay từ lúc tải, nằm trên splash/blur: sáng #F7F8FA, tối #121622, mở menu #111742. Màn loading vẫn Navy bên dưới; vùng mép trên không chờ reveal. Không thêm màu mới. Chiều cao max(12px, safe-area-top); padding trên header/sidebar tối thiểu 12px, còn trên máy có safe-area vẫn giữ 8px + safe-area. Desktop không hiển thị lớp này. Native iOS cần xác nhận lại trên thiết bị.
+
+### D-173 — Giảm blur phía sau sidebar (2026-10-27)
+
+Theo yêu cầu mới, sidebar dùng backdrop-filter blur(10px) và -webkit-backdrop-filter blur(10px), thay 20px của D-171. Giữ nền phủ trong suốt, không làm tối nội dung. Không đổi blur header hoặc overlay dialog.

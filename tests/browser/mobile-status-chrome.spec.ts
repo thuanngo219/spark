@@ -19,7 +19,7 @@ for (const theme of ["light", "dark"] as const) {
     await expect(page.locator('meta[name="color-scheme"]')).toHaveCount(1);
     await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", hex);
     await expect(page.locator('meta[name="color-scheme"]')).toHaveAttribute("content", theme);
-    await expect(page.locator(".view-header")).toHaveCSS("padding-top", "8px");
+    await expect(page.locator(".view-header")).toHaveCSS("padding-top", "12px");
 
     const cdp = await page.context().newCDPSession(page);
     await cdp.send("Emulation.setSafeAreaInsetsOverride", { insets: { top: 59, bottom: 34, left: 0, right: 0 } });
@@ -28,9 +28,9 @@ for (const theme of ["light", "dark"] as const) {
     const menu = page.locator(".sidebar-mobile");
     await expect(menu).toBeVisible();
     await expect(page.locator(".mobile-nav-backdrop")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
-    await expect(page.locator(".mobile-nav-backdrop")).toHaveCSS("backdrop-filter", "blur(20px)");
-    if (await page.evaluate(() => CSS.supports("-webkit-backdrop-filter", "blur(20px)"))) {
-      await expect(page.locator(".mobile-nav-backdrop")).toHaveCSS("-webkit-backdrop-filter", "blur(20px)");
+    await expect(page.locator(".mobile-nav-backdrop")).toHaveCSS("backdrop-filter", "blur(10px)");
+    if (await page.evaluate(() => CSS.supports("-webkit-backdrop-filter", "blur(10px)"))) {
+      await expect(page.locator(".mobile-nav-backdrop")).toHaveCSS("-webkit-backdrop-filter", "blur(10px)");
     }
     await expect(menu).toHaveCSS("padding-top", "67px");
     await expect(menu).toHaveCSS("background-color", "rgb(17, 23, 66)");
