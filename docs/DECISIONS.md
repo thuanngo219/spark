@@ -373,3 +373,9 @@ iOS tự quyết định màu chữ/icon và diện tích status bar, web không
 Bổ sung D-168 sau phản hồi iPhone giữ màu status bar sáng khi iOS đã chuyển tối trong lúc Spark nằm nền. Bootstrap kiểm tra lại hệ thống bằng truy vấn media mới khi trang trở lại visible, nhận pageshow hoặc window focus; cập nhật cùng lúc data-theme, nền html/body, color-scheme và theme-color. Kiểm tra ngay và thêm một lần ở frame kế tiếp, gộp các sự kiện cùng lượt; không polling hoặc reload. Bỏ qua trang hidden và hủy frame đang chờ khi ẩn.
 
 Chỉ chế độ Theo hệ thống đi theo OS; Sáng/Tối chọn cố định vẫn được giữ, kể cả khi localStorage không ghi được. Sidebar đang mở giữ Navy và khi đóng trả về theme mới. Giữ bản nháp, cuộn và màn đang mở. Không thay status-bar-style, safe-area hoặc CSS. Regression mô phỏng bỏ lỡ sự kiện media khi app bị treo nền; vẫn cần xác nhận status bar hệ thống trên iPhone thật.
+
+## D-170 — Tách màu nội dung khỏi màu vùng trình duyệt (2026-10-27)
+
+Sửa D-168/D-169: mở sidebar ở theme sáng làm nền html/body thành Navy trong khi app-shell trong suốt, khiến danh sách phía sau cũng tối. Root color-scheme dark còn truyền xuống native controls dù data-theme vẫn light. App-shell nay có nền canvas đặc và color-scheme riêng theo data-theme; sidebar luôn Navy/scheme dark. Root/body và metadata tiếp tục cung cấp màu vùng trình duyệt theo menu. Giữ lớp phủ làm mờ danh sách, không đổi độ đậm overlay, palette, layout, motion hoặc preference.
+
+Khi menu đóng: nội dung và chrome cùng theme. Khi menu mở: nội dung/ô chọn/hộp thoại giữ theme hiện hành, chỉ sidebar/chrome Navy. Đổi theme hoặc OS theo chế độ hệ thống cập nhật nội dung ngay cả khi menu mở; đóng menu, chọn dự án hoặc sang desktop khôi phục chrome theo theme mới. Giữ đường resume D-169. Tests phải kiểm tra cả lớp nội dung và native controls, không chỉ html/body/meta.

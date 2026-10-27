@@ -27,6 +27,8 @@ async function expectChrome(page: Page, theme: "light" | "dark", sidebar = false
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", color);
   await expect(page.locator('meta[name="color-scheme"]')).toHaveCount(1);
   await expect(page.locator('meta[name="color-scheme"]')).toHaveAttribute("content", sidebar ? "dark" : theme);
+  await expect(page.locator(".app-shell")).toHaveCSS("background-color", theme === "dark" ? "rgb(18, 22, 34)" : "rgb(247, 248, 250)");
+  await expect(page.locator("main")).toHaveCSS("color-scheme", theme);
 }
 
 for (const event of ["visibilitychange", "pageshow", "focus"] as const) {

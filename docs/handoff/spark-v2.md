@@ -1,5 +1,13 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-170 — Giữ màu nội dung khi mở menu (2026-10-27)
+
+Nguyên nhân: D-168 đổi root/body sang Navy cho chrome nhưng app-shell trong suốt; nền danh sách vì vậy lộ Navy, còn native controls kế thừa scheme dark. Sửa selector app-shell gốc: nền canvas đặc và scheme theo data-theme qua token riêng; sidebar luôn scheme dark. Giữ root/body/meta phục vụ chrome, giữ lớp phủ, palette, layout và motion. Toàn bộ dialog hiện nằm trong shell nên cũng giữ đúng theme. D-169 tiếp tục cập nhật khi resume.
+
+Regression đã thất bại trên bản cũ ở theme sáng (app-shell transparent), sau sửa đạt. Đã kiểm tra 29 case trình duyệt khác nhau: theme/status/resume/offline/header và ma trận màu tại 320/390/699/700/1280px, mở bằng nút/vuốt, đóng bằng nút/vùng ngoài/chọn dự án, radio/OS/cross-tab, hộp thoại trên menu, dropdown và mở/đóng lặp lại. Lượt đầu 27/29 đạt; hai case mới kiểm tra màu dock khi dock đã ẩn ở desktop nên sửa điều kiện assertion và chạy lại cả ba case ma trận đạt. Không phải lỗi app còn tồn tại. Lint/typecheck/build và 175 test logic đạt. Đã xem ảnh menu ở hai theme và đối chiếu ảnh lỗi trước sửa. Chưa kiểm chứng native status bar iOS trên thiết bị thật; không chạy Impeccable.
+
+File: globals.css, theme.ts (comment phân lớp), test mobile-status-chrome/theme-resume/theme-surfaces; brand/brief/UI/implementation/decisions/handoff. Bảng màu từng trạng thái nằm trong Implementation guide D-170; test mới phải kiểm tra nền nội dung/native controls cùng với chrome.
+
 ## D-169 — Theme khi mở lại app từ nền (2026-10-27)
 
 Sửa thiếu đường cập nhật sau khi hệ thống đổi sáng/tối lúc Spark nằm nền: bootstrap đọc truy vấn media mới trên visibilitychange (visible), pageshow và focus, apply ngay và kiểm tra lại một frame; hủy/gộp frame trùng, không polling/reload. Giữ theme chọn cố định và lựa chọn trong phiên khi storage bị chặn; sidebar vẫn Navy, đóng trả về theme hiện hành. Không sửa CSS hoặc metadata cấu hình của D-168.

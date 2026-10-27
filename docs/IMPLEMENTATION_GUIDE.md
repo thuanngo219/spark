@@ -345,3 +345,16 @@ Bấm Sửa Nội dung mount editor và đặt caret cuối tài liệu ngay tro
 ### Khôi phục theme sau khi nằm nền — D-169
 
 Bootstrap theo dõi `visibilitychange`, `pageshow` và window `focus`; chỉ xử lý khi visible. Mỗi lần apply dùng truy vấn `matchMedia` mới để không phụ thuộc object/sự kiện trước khi bị suspend. Resume apply ngay rồi kiểm tra lại bằng một requestAnimationFrame; các sự kiện trùng hủy frame cũ và hidden hủy lượt chờ. Giữ preference trong bộ nhớ (kể cả khi ghi storage thất bại), không reload hoặc đổi state React. Regression `theme-resume.spec.ts` mô phỏng media không phát change, cả ba đường resume, draft đang nhập, sidebar, explicit override, storage bị chặn và media cập nhật sau sự kiện lifecycle. Nguồn API: [visibilitychange](https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event), [pageshow](https://developer.mozilla.org/en-US/docs/Web/API/Window/pageshow_event). Native status bar vẫn cần thử trên thiết bị.
+
+### Phân lớp màu — D-170
+
+`themeBootstrap` quản lý root/body và metadata dành cho vùng trình duyệt. CSS `--canvas` và `--app-color-scheme` theo data-theme quản lý app-shell; shell phải có nền đặc để root Navy không lộ qua danh sách. Tất cả dialog hiện là con của app-shell và kế thừa scheme này. Sidebar có scheme dark riêng trên nền Navy. Nếu thêm portal bên ngoài shell, phải đặt scheme của app cho portal thay vì kế thừa root. Không dùng màu chrome làm nền content.
+
+| Theme hiện hành | Sidebar mobile | Nội dung / native controls | Root/body và chrome |
+| --- | --- | --- | --- |
+| Sáng | Đóng hoặc desktop | #F7F8FA / light | #F7F8FA / light |
+| Sáng | Mở | #F7F8FA / light | #111742 / dark |
+| Tối | Đóng hoặc desktop | #121622 / dark | #121622 / dark |
+| Tối | Mở | #121622 / dark | #111742 / dark |
+
+Preference cố định thắng OS; Theo hệ thống dùng media hiện hành. Test `theme-surfaces.spec.ts` kiểm tra bảng trạng thái, radio đổi theme phía trên menu, OS/cross-tab, đóng nhiều cách và breakpoint 699/700; hai test status/resume cũng xác nhận nền app và scheme của controls. Native iOS chrome không được mô phỏng bởi Chrome.

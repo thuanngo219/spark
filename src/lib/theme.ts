@@ -22,6 +22,8 @@ export const themeBootstrap = `(() => {
     const color = sidebar ? '#111742' : theme === 'dark' ? '#121622' : '#f7f8fa';
     const scheme = sidebar ? 'dark' : theme;
     root.style.colorScheme = scheme;
+    // Browser chrome only. CSS gives .app-shell its own canvas/color-scheme so
+    // a Navy status bar never changes the theme of content or native controls.
     // Available before CSS/hydration, including an explicit theme opposite to OS.
     root.style.backgroundColor = color;
     root.style.setProperty('--browser-background', color);

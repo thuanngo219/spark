@@ -33,6 +33,12 @@ for (const theme of ["light", "dark"] as const) {
     await expect(page.locator("body")).toHaveCSS("background-color", "rgb(17, 23, 66)");
     await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#111742");
     await expect(page.locator('meta[name="color-scheme"]')).toHaveAttribute("content", "dark");
+    // Browser chrome can be Navy without repainting the content below the scrim
+    // or switching native controls to dark in an otherwise light app.
+    await expect(page.locator(".app-shell")).toHaveCSS("background-color", canvas);
+    await expect(page.locator("main")).toHaveCSS("color-scheme", theme);
+    await expect(page.locator("main select").first()).toHaveCSS("color-scheme", theme);
+    await expect(menu).toHaveCSS("color-scheme", "dark");
     expect(await page.evaluate(() => localStorage.getItem("spark:theme:v1"))).toBe(theme);
     await expect(root).toHaveAttribute("data-theme", theme);
     await page.locator(".mobile-nav-backdrop").evaluate(el => Promise.all(el.getAnimations({ subtree: true }).map(a => a.finished)));
@@ -43,6 +49,8 @@ for (const theme of ["light", "dark"] as const) {
     await page.setViewportSize({ width: 1280, height: 844 });
     await expect(root).toHaveCSS("background-color", canvas);
     await expect(root).toHaveCSS("color-scheme", theme);
+    await expect(page.locator(".app-shell")).toHaveCSS("background-color", canvas);
+    await expect(page.locator("main")).toHaveCSS("color-scheme", theme);
     await page.setViewportSize({ width: 390, height: 844 });
     await expect(root).toHaveCSS("background-color", "rgb(17, 23, 66)");
     await menu.getByRole("button", { name: "Đóng điều hướng" }).click();

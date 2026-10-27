@@ -23,6 +23,7 @@
   --sidebar-width: 248px;
   --ease: cubic-bezier(.22, 1, .36, 1);
   color-scheme: light;
+  --app-color-scheme: light;
   --heading: var(--navy-900);
   --view-accent-opacity: 1;
   --link: var(--navy-800);
@@ -45,6 +46,7 @@
 /* Light-only neutral fallbacks retain the established light palette. */
 :root[data-theme="dark"] {
   color-scheme: dark;
+  --app-color-scheme: dark;
   --canvas: #121622;
   --surface: #1b2030;
   --field: #242b3d;
@@ -98,9 +100,10 @@ button, select { cursor: pointer; }
 select option, select optgroup { background: var(--surface); color: var(--ink); }
 button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: none; box-shadow: none; }
 
-.app-shell { min-height: 100dvh; display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr); transition: grid-template-columns var(--motion-duration, 240ms) var(--ease); }
+/* Keep app surfaces/native controls independent of the browser's sidebar tint. */
+.app-shell { min-height: 100dvh; background: var(--canvas); color-scheme: var(--app-color-scheme); display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr); transition: grid-template-columns var(--motion-duration, 240ms) var(--ease); }
 .app-shell.sidebar-compact { grid-template-columns: 56px minmax(0, 1fr); }
-.sidebar { background: var(--navy-900); color: rgba(255,255,255,.76); min-height: 100dvh; padding: 20px 10px 14px; display: flex; flex-direction: column; position: sticky; top: 0; height: 100dvh; z-index: 20; }
+.sidebar { background: var(--navy-900); color-scheme: dark; color: rgba(255,255,255,.76); min-height: 100dvh; padding: 20px 10px 14px; display: flex; flex-direction: column; position: sticky; top: 0; height: 100dvh; z-index: 20; }
 .sidebar-brand { flex: 0 0 58px; height: 58px; margin: 0 0 6px; display: flex; align-items: center; position: relative; overflow: hidden; }
 /* The SVG badge is 480 units wide at x=133. At .075 scale it is 36px;
    removing its 9.975px inset keeps its center at x=28 in both sidebar states. */

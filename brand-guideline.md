@@ -411,3 +411,7 @@ Trong focus mode sửa Nội dung mobile, bỏ padding đáy 12px và safe-area 
 ### D-168 — Status bar và khoảng trống mobile (2026-10-27)
 
 Nền chrome cùng canvas sáng #F7F8FA/tối #121622; khi mở sidebar mobile dùng Navy #111742, đóng khôi phục đúng theme, không đổi preference. Padding trên header/sidebar là 8px cộng safe-area; các cạnh khác giữ nguyên. Bỏ meta status-bar-style cũ, để iOS chọn cách hiển thị theo nền và color-scheme. Không hứa thu nhỏ/ẩn vùng đồng hồ hoặc Dynamic Island do hệ thống quản lý.
+
+### D-170 — Nền nội dung khi mở sidebar (2026-10-27)
+
+App-shell luôn có nền canvas đặc và scheme theo theme hiện hành; menu mở không làm nền danh sách hoặc native controls chuyển tối. Sidebar/chrome vẫn Navy; giữ overlay làm mờ như cũ. Đổi theme, resume và đóng menu không thay palette đã duyệt. Bổ sung D-168.
