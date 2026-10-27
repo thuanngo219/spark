@@ -1,5 +1,11 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-178 — Sidebar blur 2px (2026-10-27)
+
+Giảm blur phía sau sidebar từ 5px xuống 2px theo yêu cầu mới, áp dụng cho backdrop-filter và -webkit-backdrop-filter. Giữ nền phủ trong suốt. Thay giá trị D-177; các hiệu ứng khác giữ nguyên.
+
+Kiểm tra: lint/typecheck/build, 175 test logic và 4/4 browser case mobile-status-chrome đạt ở sáng/tối, mobile 390px và breakpoint desktop. File: globals.css, mobile-status-chrome.spec.ts và tài liệu dự án.
+
 ## D-177 — Sidebar blur 5px (2026-10-27)
 
 Theo yêu cầu mới, giảm blur phía sau sidebar từ 10px xuống 5px cho cả backdrop-filter và -webkit-backdrop-filter. Giữ nền phủ trong suốt. Thay giá trị D-173; không đổi blur header, overlay dialog hoặc trạng thái màu.

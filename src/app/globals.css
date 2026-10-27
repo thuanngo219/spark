@@ -342,7 +342,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
 .dialog-backdrop, .mobile-nav-backdrop { position: fixed; inset: 0; z-index: 80; display: flex; align-items: flex-end; justify-content: center; padding: 20px; animation: fade-in var(--motion-duration, 160ms) var(--ease); }
 .dialog-backdrop { background: var(--overlay); }
-.mobile-nav-backdrop { background: transparent; -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
+.mobile-nav-backdrop { background: transparent; -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
 .dialog-backdrop.quick-add-backdrop { align-items: flex-end; justify-content: flex-end; }
 .editor-sheet, .shortcut-dialog, .sync-dialog { width: min(560px, 100%); background: var(--surface); border-radius: 24px; padding: 23px; box-shadow: 0 24px 70px rgba(11,16,57,.24); animation: slide-up var(--motion-duration, 200ms) var(--ease); }
 .compact-editor { width: min(440px, 100%); }
