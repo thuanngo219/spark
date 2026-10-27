@@ -544,10 +544,11 @@ button:focus-visible { filter: brightness(.88); }
 
 @media (max-width: 699px) {
   body:has(.startup-screen) { --startup-edge-clearance: 3px; }
+  body:has(.startup-screen:not([data-revealing])) { --startup-edge-background: var(--navy-900); }
   /* WebKit samples fixed top surfaces. Keep an opaque, non-animated edge above
      the splash/blur layers, with a box taller than its 10px border exclusion.
      No hit target or layout height; existing safe-area padding protects content. */
-  .browser-top-surface { display: block; position: fixed; inset: 0 0 auto; height: max(12px, env(safe-area-inset-top)); z-index: 1001; background: var(--browser-background, var(--canvas)); clip-path: inset(var(--startup-edge-clearance, 0px) 0 0); pointer-events: none; }
+  .browser-top-surface { display: block; position: fixed; inset: 0 0 auto; height: max(12px, env(safe-area-inset-top)); z-index: 1001; background: var(--startup-edge-background, var(--browser-background, var(--canvas))); clip-path: inset(var(--startup-edge-clearance, 0px) 0 0); pointer-events: none; }
   html { font-size: 120%; }
   .app-shell, .app-shell.sidebar-compact { display: block; }
   .app-shell > .sidebar { display: none; }

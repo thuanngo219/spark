@@ -8,7 +8,7 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
         await page.emulateMedia({ colorScheme: initial, reducedMotion });
         await page.addInitScript(({ preference, initial }) => {
           localStorage.setItem("spark:theme:v1", preference);
-          const record = { initialTheme: "", initialColor: "", refreshes: 0, theme: "", color: "", scheme: "", reveal: false };
+          const record = { initialTheme: "", initialColor: "", edgeColor: "", refreshes: 0, theme: "", color: "", scheme: "", reveal: false };
           Object.assign(window, { revealThemeRecord: record });
           let revealing = false;
           const readyObserver = new MutationObserver(() => {
@@ -39,6 +39,7 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
             record.theme = document.documentElement.dataset.theme ?? "";
             record.color = document.querySelector('meta[name="theme-color"]')?.getAttribute("content") ?? "";
             record.scheme = document.documentElement.style.colorScheme;
+            record.edgeColor = getComputedStyle(document.querySelector(".browser-top-surface")!).backgroundColor;
             record.reveal = true;
             revealing = false;
           });
@@ -46,11 +47,12 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
         await page.goto("/");
         await page.getByRole("region", { name: "Khởi động Spark" }).waitFor({ state: "hidden" });
         const record = await page.evaluate(() => (window as unknown as {
-          revealThemeRecord: { initialTheme: string; initialColor: string; refreshes: number; theme: string; color: string; scheme: string; reveal: boolean };
+          revealThemeRecord: { initialTheme: string; initialColor: string; edgeColor: string; refreshes: number; theme: string; color: string; scheme: string; reveal: boolean };
         }).revealThemeRecord);
         const expected = preference === "system" ? initial === "light" ? "dark" : "light" : initial;
         expect(record).toEqual({
           initialTheme: initial, initialColor: initial === "light" ? "#f7f8fa" : "#121622",
+          edgeColor: expected === "light" ? "rgb(247, 248, 250)" : "rgb(18, 22, 34)",
           refreshes: 1, theme: expected, color: expected === "light" ? "#f7f8fa" : "#121622", scheme: expected, reveal: true,
         });
         await expect(page.locator(".app-shell")).not.toHaveAttribute("inert");

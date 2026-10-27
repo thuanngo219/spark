@@ -2,8 +2,8 @@ import { test, expect } from "./fixtures";
 import type { Page } from "@playwright/test";
 import sharp from "sharp";
 
-// Check painted pixels, not just metadata: the splash used to paint Navy here
-// while theme-color already contained the correct light/dark value.
+// Loading is uniformly Navy. From reveal onward, inspect the painted theme
+// surface, not just metadata, so it cannot leave a stale Navy strip behind.
 async function expectPaintedEdge(page: Page, rgb: number[]) {
   const image = await sharp(await page.screenshot({ clip: { x: 0, y: 0, width: 390, height: 12 } })).removeAlpha().raw().toBuffer();
   for (const x of [5, 195, 384]) {
@@ -33,7 +33,7 @@ for (const initial of ["light", "dark"] as const) {
     const splash = page.getByRole("region", { name: "Khởi động Spark" });
     await expect(splash).toHaveClass(/is-ready/);
     const colors = { light: [247, 248, 250], dark: [18, 22, 34] };
-    await expectPaintedEdge(page, colors[initial]);
+    await expectPaintedEdge(page, [17, 23, 66]);
     await page.screenshot({ path: `/tmp/spark-status-loading-${initial}.png` });
     await splash.evaluate(el => el.getAnimations({ subtree: true }).forEach(animation => animation.play()));
     await expect(splash).toBeHidden();
