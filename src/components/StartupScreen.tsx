@@ -29,7 +29,6 @@ export function StartupScreen({ state, canContinue, onContinue, onRetry, onCompl
         // Refresh in the same event as the reveal, including reduced motion.
         // Do not wait for animationend or add a timer/frame before updating chrome.
         if (event.animationName === "startup-reveal") {
-          event.currentTarget.dataset.revealing = "true";
           window.dispatchEvent(new Event("spark:theme-refresh"));
         }
       }}

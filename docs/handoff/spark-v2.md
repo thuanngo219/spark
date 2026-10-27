@@ -1,5 +1,15 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-176 — Tách nền loading khỏi vùng status bar (2026-10-27)
+
+Sau kiểm tra thực tế iPhone, D-175 vẫn để status bar giữ Navy một lúc sau loading. Không tiếp tục đổi màu vùng lấy mẫu từ Navy về theme. browser-top-surface luôn dùng --browser-background theo theme ngay từ đầu, không clip-path và không override màu khi startup. Nền Navy và progress cùng bắt đầu ngay dưới vùng này: top=max(12px, safe-area-top) trên mobile, top=0 desktop. Dải màu theme nằm phía trên thanh tiến trình và nối với status bar; phía dưới thanh luôn liền Navy. Chủ dự án đã cho phép dời thanh về mép trên phần nền Navy.
+
+Dùng một token --browser-top-height cho vùng màu, nền loading và thanh tiến trình. Caption cách thanh 12px, không cộng safe-area lần thứ hai. Logo vẫn nhỏ hơn 20% và ở tâm toàn màn hình. Giữ refresh tại reveal, resume/fixed/system theme, timing Quint và reduced motion. Bỏ marker data-revealing và hai selector startup đổi màu/clip vì không còn cần. D-176 thay phần màu loading của D-175.
+
+Không khẳng định độ trễ native iOS bằng 0ms từ kiểm tra Chrome: thay đổi này tránh cho trang cung cấp Navy ở vùng lấy mẫu trong suốt startup; vẫn cần xác nhận trên iPhone thật.
+
+Kiểm tra D-176: regression bản cũ cho thấy Navy ở vùng cần giữ theme. Bản sửa đạt lint/typecheck/build, 175 test logic và 26/26 browser case (loading, lỗi/retry/offline, reveal, resume). Pixel vùng trên đúng sáng/tối cả khi OS đổi trong loading; progress và Navy cùng dịch đến 59px khi giả lập safe-area 59px. Đã đo và xem ảnh 320/390/1280px; logo giữ đúng tâm/kích thước, dưới progress không có dải sáng. File runtime: globals.css, StartupScreen.tsx; regression startup/status-edge; tài liệu brand/brief/UI/implementation/decisions/handoff.
+
 ## D-175 — Loading liền Navy, đổi màu mép trên tại reveal (2026-10-27)
 
 Sửa dải sáng dưới progress của D-174: khi startup chưa reveal, browser-top-surface dùng Navy #111742, liền nền loading ở cả theme sáng/tối. Ngay trong animationstart của startup-reveal, StartupScreen đánh dấu data-revealing rồi phát theme-refresh đồng bộ: lớp nền đặc trở về --browser-background theo theme hiện hành, không chờ hết animation và không thêm delay. Khi startup unmount, selector tự hết hiệu lực. Giữ lớp fixed để WebKit lấy mẫu, phần hở 3px cho progress, logo ở giữa, safe-area, metadata và đường cập nhật theme/resume. D-175 thay quy tắc mép trên dùng màu theme xuyên suốt loading của D-172.

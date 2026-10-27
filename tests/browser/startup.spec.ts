@@ -90,7 +90,7 @@ test("startup waits for both cloud datasets, migrates only Violet, fades then re
       delay: background.animationDelay,
       duration: background.animationDuration,
       origin: background.transformOrigin,
-      rightCenter: `${el.clientWidth}px ${el.clientHeight / 2}px`,
+      rightCenter: `${parseFloat(background.width)}px ${parseFloat(background.height) / 2}px`,
     };
   });
   expect(timing).toEqual({ fade: "0.5s", delay: "0.5s", duration: "0.6s", origin: timing.rightCenter, rightCenter: timing.rightCenter });
