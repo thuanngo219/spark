@@ -13,6 +13,7 @@ import { FormattedContent } from "@/components/FormattedContent";
 import { CONTENT_LIMIT, contentLength, normalizeContent, type ContentRun } from "@/lib/content-format";
 import { defaultStartDate } from "@/lib/quick-add";
 import { lockDetailScroll, pageScrollY } from "@/lib/detail-scroll-lock";
+import { installDetailMotion } from "@/lib/detail-motion";
 import {
   CSSProperties,
   FormEvent,
@@ -2344,11 +2345,16 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
   const backdropPointer = useRef<number | null>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
   const contentEditorRef = useRef<ContentEditorHandle>(null);
+  const closeRef = useRef(onClose);
+  const detailMotionRef = useRef<ReturnType<typeof installDetailMotion> | null>(null);
+  useLayoutEffect(() => { closeRef.current = onClose; }, [onClose]);
   useLayoutEffect(() => {
     const backdrop = backdropRef.current;
     if (!backdrop) return;
     const mobile = window.matchMedia("(max-width: 699px)");
     const viewport = window.visualViewport;
+    const motion = installDetailMotion(backdrop, () => closeRef.current());
+    detailMotionRef.current = motion;
     let unlockScroll: (() => void) | undefined;
     const fitViewport = () => {
       if (mobile.matches && !unlockScroll) unlockScroll = lockDetailScroll(backdrop);
@@ -2376,6 +2382,8 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
     viewport?.addEventListener("resize", fitViewport);
     viewport?.addEventListener("scroll", fitViewport);
     return () => {
+      motion.destroy();
+      detailMotionRef.current = null;
       mobile.removeEventListener("change", fitViewport);
       viewport?.removeEventListener("resize", fitViewport);
       viewport?.removeEventListener("scroll", fitViewport);
@@ -2396,6 +2404,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
   const [dateError, setDateError] = useState(false);
   const [titleError, setTitleError] = useState(false);
   const project = projects.find((entry) => entry.id === projectId);
+  const closeDetail = () => detailMotionRef.current?.close();
 
   const saveTitle = (finishEditing = true) => {
     const value = title.trim();
@@ -2477,11 +2486,11 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
       onClick={(event) => {
         const dismiss = backdropPointer.current !== null && event.target === event.currentTarget;
         backdropPointer.current = null;
-        if (dismiss && !window.matchMedia("(max-width: 699px)").matches) onClose();
+        if (dismiss && !window.matchMedia("(max-width: 699px)").matches) closeDetail();
       }}
     >
       <section className={`editor-sheet item-detail-sheet ${editingField === "content" ? "editing-content" : ""}`} role="dialog" aria-modal="true" aria-labelledby={editingField === "content" ? "item-content-title" : "item-detail-title"} onClick={(event) => event.stopPropagation()}>
-        <div className="editor-header"><div><span>{item.type === "task" ? "Task" : "Ghi chú"}</span><h2 id="item-detail-title">{item.type === "task" ? "Chi tiết task" : "Chi tiết ghi chú"}</h2></div><button type="button" className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
+        <div className="editor-header"><div><span>{item.type === "task" ? "Task" : "Ghi chú"}</span><h2 id="item-detail-title">{item.type === "task" ? "Chi tiết task" : "Chi tiết ghi chú"}</h2></div><button type="button" className="icon-button" onClick={closeDetail} aria-label="Đóng"><Icon name="close" /></button></div>
 
         <div className="detail-content">
           <section className={`detail-text-block ${editingField === "title" ? "editing" : ""}`}>

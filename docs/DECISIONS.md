@@ -353,3 +353,9 @@ Chọn Muted Coral `#D9776A` và Deep Purple `#65458A`; không dùng Soft Amber 
 ## Cách thêm quyết định
 
 Thêm dòng D-xxx với ngày, quyết định, bối cảnh và ảnh hưởng. Không xóa quyết định cũ; nếu thay đổi, tạo quyết định mới ghi rõ quyết định nào bị thay thế.
+
+## D-167 — Chi tiết mobile trượt ngang và vuốt mép để đóng (2026-10-27)
+
+Dưới 700px, chi tiết task/note trượt từ phải vào màn hình; nút Đóng và vuốt từ dải 24px sát mép trái sang phải cho màn trượt ra phải. Mở/đóng và trả về khi vuốt chưa đủ dùng 240ms easeOutQuint (`cubic-bezier(.22,1,.36,1)`). Trong lúc kéo, màn theo ngón tay; thả sau ít nhất 25% bề rộng (tối thiểu 72px) sẽ đóng. Vuốt ngắn hoặc touchcancel trả về. Không nhận thao tác bắt đầu ở giữa màn, cuộn dọc, pinch, nhấn giữ/chọn chữ hoặc trên button/select/link.
+
+Dùng CSS cho mở và Web Animations API của trình duyệt cho đóng/trả về, không thêm thư viện. Giữ khóa cuộn/inert nền đến khi đóng hoàn tất; swipe có cùng hành vi dữ liệu với nút × (không tự lưu bản nháp Nội dung). Giữ desktop và focus/keyboard D-166; reduced motion bỏ dịch chuyển. Cần xác nhận thao tác mép trên iPhone thật vì Safari có thể ưu tiên gesture điều hướng hệ thống.

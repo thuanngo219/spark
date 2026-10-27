@@ -13,7 +13,7 @@ for (const width of [320, 390]) {
         const open = () => page.locator(".item-main").filter({ hasText: title }).click();
         await open();
         const sheet = page.locator(".item-detail-sheet");
-        await sheet.evaluate(el => Promise.all(el.getAnimations().map(a => a.finished)));
+        await page.locator(".item-detail-backdrop").evaluate(el => Promise.all(el.getAnimations().map(a => a.finished)));
         expect(await sheet.boundingBox()).toEqual({ x: 0, y: 0, width, height: 844 });
         await expect(sheet).toHaveCSS("background-color", theme === "dark" ? "rgb(18, 22, 34)" : "rgb(247, 248, 250)");
         await expect(sheet.locator(".detail-description")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");

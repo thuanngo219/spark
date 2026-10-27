@@ -1,5 +1,15 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-167 — Chi tiết mobile trượt ngang và vuốt mép để đóng (2026-10-27)
+
+Dưới 700px, chi tiết task/note trượt từ phải vào màn hình; nút Đóng và vuốt từ dải 24px sát mép trái sang phải cho màn trượt ra phải. Mở/đóng và trả về khi vuốt chưa đủ dùng 240ms easeOutQuint (`cubic-bezier(.22,1,.36,1)`). Trong lúc kéo, màn theo ngón tay; thả sau ít nhất 25% bề rộng (tối thiểu 72px) sẽ đóng. Vuốt ngắn hoặc touchcancel trả về. Không nhận thao tác bắt đầu ở giữa màn, cuộn dọc, pinch, nhấn giữ/chọn chữ hoặc trên button/select/link.
+
+Dùng CSS cho mở và Web Animations API của trình duyệt cho đóng/trả về, không thêm thư viện. Giữ khóa cuộn/inert nền đến khi đóng hoàn tất; swipe có cùng hành vi dữ liệu với nút × (không tự lưu bản nháp Nội dung). Giữ desktop và focus/keyboard D-166; reduced motion bỏ dịch chuyển. Cần xác nhận thao tác mép trên iPhone thật vì Safari có thể ưu tiên gesture điều hướng hệ thống.
+
+Kiểm tra: lint/typecheck/build và 175 test logic đạt. 7/7 browser case mới đạt: entry/exit đúng chiều và 240ms Quint, vuốt đủ/thiếu/cancel, cuộn dọc/vuốt giữa màn, reduced motion và desktop. Kiểm tra thêm mobile 320/390px hai theme, focus/keyboard, khóa cuộn và B/I/U. Lượt tổng: 35 đạt, 1 offline case bỏ qua, 1 case desktop note save/reload thất bại không ổn định (nội dung trống sau reload, đã từng ghi nhận D-166); không sửa persistence trong thay đổi này, chạy lại task/note ba lượt = 6/6 đạt. Đây vẫn là điểm cần theo dõi, không coi là đã sửa. Đã xem ảnh mobile; chưa thử iPhone/Safari vật lý.
+
+Impeccable: motion mới chỉ animate transform; không thêm suppression. Giữ ignore Inter đã có theo D-027. Năm cảnh báo layout-transition cũ vẫn giữ như kết quả đo D-166. File thay đổi: SparkApp.tsx, globals.css, detail-motion.ts, mobile-detail-motion.spec.ts, hai test đợi entry trên backdrop và brief/implementation/decisions/handoff.
+
 ## D-166 — Focus trực tiếp và chống cuộn vượt biên Nội dung mobile (2026-10-26)
 
 Bấm Sửa Nội dung mount editor và đặt caret cuối tài liệu ngay trong click/tap, focus đồng bộ để iOS có thể mở keyboard theo user gesture; không dùng autofocus qua timeout. Chỉ cuộn editor tới cuối, không cuộn trang. Editor chỉ mount sau tương tác người dùng, không render Tiptap trên server. Trong focus mode mobile, touchmove một ngón theo chiều dọc bị chặn khi nội dung không đủ cuộn hoặc vuốt ra ngoài đầu/cuối vùng nhập; vuốt vào vùng có thể cuộn vẫn native. Listener chỉ trên backdrop chi tiết, cleanup khi đóng/đổi breakpoint; không chặn tap, pinch, vuốt ngang, nhấn giữ hoặc kéo vùng chọn. Lưu/Hủy và định dạng B/I/U không đổi. Bổ sung D-164/D-165; không thay thanh bàn phím iOS.

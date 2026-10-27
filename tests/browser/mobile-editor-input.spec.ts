@@ -53,7 +53,7 @@ for (const type of ["task", "note"] as const) {
     expect(await move(60)).toBe(true);
     expect(await move(-60, 2)).toBe(false);
     const sheet = page.locator(".item-detail-sheet");
-    await sheet.evaluate(el => Promise.all(el.getAnimations().map(animation => animation.finished)));
+    await page.locator(".item-detail-backdrop").evaluate(el => Promise.all(el.getAnimations().map(animation => animation.finished)));
     const sheetBeforeSwipe = await sheet.boundingBox();
     const inputBeforeSwipe = await editor.boundingBox();
     const cdp = await page.context().newCDPSession(page);

@@ -333,3 +333,7 @@ Trong focus mode sửa Nội dung mobile, bỏ padding đáy 12px và safe-area 
 ## D-166 — Focus trực tiếp và chống cuộn vượt biên Nội dung mobile (2026-10-26)
 
 Bấm Sửa Nội dung mount editor và đặt caret cuối tài liệu ngay trong click/tap, focus đồng bộ để iOS có thể mở keyboard theo user gesture; không dùng autofocus qua timeout. Chỉ cuộn editor tới cuối, không cuộn trang. Editor chỉ mount sau tương tác người dùng, không render Tiptap trên server. Trong focus mode mobile, touchmove một ngón theo chiều dọc bị chặn khi nội dung không đủ cuộn hoặc vuốt ra ngoài đầu/cuối vùng nhập; vuốt vào vùng có thể cuộn vẫn native. Listener chỉ trên backdrop chi tiết, cleanup khi đóng/đổi breakpoint; không chặn tap, pinch, vuốt ngang, nhấn giữ hoặc kéo vùng chọn. Lưu/Hủy và định dạng B/I/U không đổi. Bổ sung D-164/D-165; không thay thanh bàn phím iOS.
+
+### Motion chi tiết mobile — D-167
+
+`detail-motion.ts` quản lý touch gesture và exit/return với Web Animations API; `globals.css` giữ entry và nguồn duration/easing. `ItemEditor` giữ controller trong ref, cleanup listener/animation khi unmount và khôi phục khóa nền sau exit. Gesture chỉ nhận touch từ mép trái, xác nhận hướng ngang trước khi preventDefault; bỏ qua selection/control và reduced motion. Desktop không đổi. Regression: `tests/browser/mobile-detail-motion.spec.ts`.
