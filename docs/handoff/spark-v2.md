@@ -1,5 +1,13 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-169 — Theme khi mở lại app từ nền (2026-10-27)
+
+Sửa thiếu đường cập nhật sau khi hệ thống đổi sáng/tối lúc Spark nằm nền: bootstrap đọc truy vấn media mới trên visibilitychange (visible), pageshow và focus, apply ngay và kiểm tra lại một frame; hủy/gộp frame trùng, không polling/reload. Giữ theme chọn cố định và lựa chọn trong phiên khi storage bị chặn; sidebar vẫn Navy, đóng trả về theme hiện hành. Không sửa CSS hoặc metadata cấu hình của D-168.
+
+Regression mới tái hiện trên bản cũ: sau resume vẫn data-theme light thay vì dark. Sau sửa, 6 case mới đạt tại 390px: ba đường resume cả sáng→tối/tối→sáng, bản nháp đang nhập, sidebar, explicit light/dark khi storage lỗi, trang hidden và media cập nhật sau sự kiện. Tổng 19/19 browser test theme/status/offline đạt; lint/typecheck/build và 175 test logic đạt. Chưa xác minh native status bar trên iPhone/iOS 27.0.1; Chrome chỉ kiểm tra tín hiệu màu do app cung cấp. Không chạy Impeccable.
+
+File: `src/lib/theme.ts`, `tests/browser/theme-resume.spec.ts`, brief/implementation/decisions/handoff. Giữ nguyên các thư mục untracked không thuộc thay đổi này.
+
 ## D-168 — Màu vùng trạng thái iOS và khoảng cách phía trên (2026-10-27)
 
 Chủ dự án dùng iPhone 17, iOS 27.0.1, mở Spark từ Home Screen. Bỏ meta `apple-mobile-web-app-status-bar-style`; không dùng `black-translucent`. Next nhận `appleWebApp: true` và title qua `other` để tránh tự sinh style `default`; giữ manifest standalone và viewport-fit cover. Bootstrap trước paint đặt nền html/body, color-scheme và theme-color theo theme đã lưu: sáng #F7F8FA, tối #121622. Manifest dùng #F7F8FA làm fallback tĩnh.

@@ -341,3 +341,9 @@ Chủ dự án dùng iPhone 17, iOS 27.0.1, mở Spark từ Home Screen. Bỏ me
 Khi sidebar mobile mở (bằng nút hoặc vuốt), nền trình duyệt chuyển Navy #111742 và scheme tối cho đồng hồ/icon hệ thống; đóng menu hoặc sang desktop khôi phục theme hiện hành. Không đổi preference đã lưu. Padding trên header mobile giảm 15→8px và sidebar 19→8px, vẫn cộng safe-area do thiết bị cung cấp; không sửa khoảng cách ngang/dưới, kích thước tiêu đề hoặc vùng chạm. Không trừ chiều cao status bar bằng số đo màn hình hoặc UA heuristic.
 
 iOS tự quyết định màu chữ/icon và diện tích status bar, web không thể vẽ tùy ý dưới vùng này. Hướng xử lý theo [WebKit 317153, comment 2](https://www2.webkit.org/show_bug.cgi?id=317153#c2); [301994](https://www2.webkit.org/show_bug.cgi?id=301994) vẫn ghi nhận vấn đề vùng hệ thống/cache màu ở một số bản iOS. Kiểm tra DOM/Chrome chỉ xác nhận màu app cung cấp, không thay kiểm tra status bar thực tế trên iPhone.
+
+## D-169 — Cập nhật theme khi app trở về từ nền (2026-10-27)
+
+Bổ sung D-168 sau phản hồi iPhone giữ màu status bar sáng khi iOS đã chuyển tối trong lúc Spark nằm nền. Bootstrap kiểm tra lại hệ thống bằng truy vấn media mới khi trang trở lại visible, nhận pageshow hoặc window focus; cập nhật cùng lúc data-theme, nền html/body, color-scheme và theme-color. Kiểm tra ngay và thêm một lần ở frame kế tiếp, gộp các sự kiện cùng lượt; không polling hoặc reload. Bỏ qua trang hidden và hủy frame đang chờ khi ẩn.
+
+Chỉ chế độ Theo hệ thống đi theo OS; Sáng/Tối chọn cố định vẫn được giữ, kể cả khi localStorage không ghi được. Sidebar đang mở giữ Navy và khi đóng trả về theme mới. Giữ bản nháp, cuộn và màn đang mở. Không thay status-bar-style, safe-area hoặc CSS. Regression mô phỏng bỏ lỡ sự kiện media khi app bị treo nền; vẫn cần xác nhận status bar hệ thống trên iPhone thật.

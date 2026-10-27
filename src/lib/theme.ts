@@ -14,7 +14,8 @@ export const themeBootstrap = `(() => {
   let sidebarOpen = false;
   try { preference = normalize(localStorage.getItem(key)); } catch {}
   function apply() {
-    const theme = preference === 'system' ? (media.matches ? 'dark' : 'light') : preference;
+    // A suspended Home Screen app can miss the original MQL's change event.
+    const theme = preference === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : preference;
     root.dataset.theme = theme;
     root.dataset.themePreference = preference;
     const sidebar = sidebarOpen && mobile.matches;
@@ -42,6 +43,22 @@ export const themeBootstrap = `(() => {
     schemeMeta.content = scheme;
     window.dispatchEvent(new Event('spark:theme-change'));
   }
+  let resumeFrame = 0;
+  function refreshOnResume() {
+    cancelAnimationFrame(resumeFrame);
+    resumeFrame = 0;
+    if (document.visibilityState !== 'visible') return;
+    apply();
+    // Recheck on the next rendering frame in case media state settles after the
+    // lifecycle event. Coalesce focus/pageshow/visibility events; never poll.
+    resumeFrame = requestAnimationFrame(() => {
+      resumeFrame = 0;
+      if (document.visibilityState === 'visible') apply();
+    });
+  }
+  document.addEventListener('visibilitychange', refreshOnResume);
+  window.addEventListener('pageshow', refreshOnResume);
+  window.addEventListener('focus', refreshOnResume);
   window.addEventListener('spark:theme-select', event => {
     preference = normalize(event.detail);
     try { localStorage.setItem(key, preference); } catch {}
