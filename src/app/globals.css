@@ -544,7 +544,7 @@ button:focus-visible { filter: brightness(.88); }
   .detail-main-inner { display: flex; flex-direction: column; flex: 0 0 auto; width: var(--detail-column-width); min-height: 0; height: 100%; }
   .item-detail-sheet .detail-content { padding-top: 0; }
   .item-detail-sheet .detail-description { position: relative; }
-  .item-detail-sheet .content-toolbar { position: absolute; top: 13.4px; left: min(268px, calc(100% - 250px)); right: 70px; height: 30px; padding: 0 6px; flex-wrap: nowrap; }
+  .item-detail-sheet .content-toolbar { position: absolute; top: 13.4px; left: 50%; transform: translateX(-50%); width: max(180px, calc(100% - 338px)); height: 30px; padding: 0 6px; flex-wrap: nowrap; }
   .item-detail-sheet .content-toolbar button { width: 26px; height: 26px; }
   .item-detail-sheet .content-counter { font-size: 10px; white-space: nowrap; }
   .item-detail-sheet .content-editor-input { padding: 0; color: var(--text-secondary, #4e5569); font-weight: 450; }

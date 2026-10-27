@@ -57,8 +57,8 @@ for (const { width, theme, type, expanded } of cases) {
     expect(editStart.x).toBeCloseTo(readStart.x, 1);
     const toolbar = (await sheet.locator(".content-toolbar").boundingBox())!;
     expect(toolbar.height).toBe(30);
-    const label = (await sheet.locator(".detail-field-heading .detail-label").boundingBox())!;
-    expect(Math.abs(toolbar.x - label.x - label.width - 200)).toBeLessThan(1);
+    expect(toolbar.x + toolbar.width / 2).toBeCloseTo(heading.x + heading.width / 2, 1);
+    expect(toolbar.width).toBeCloseTo(Math.max(180, heading.width - 338), 1);
     expect(toolbar.y + toolbar.height / 2).toBeCloseTo(heading.y + heading.height / 2, 1);
     expect(toolbar.y + toolbar.height).toBeLessThanOrEqual(readStart.y);
     await expect(sheet.getByRole("button", { name: "In đậm", exact: true })).toBeInViewport();

@@ -493,3 +493,7 @@ Desktop: hàng tên task/note bắt đầu ở y=80px; cột chi tiết luôn d�
 ## D-186 — Toolbar desktop 30px (2026-10-27)
 
 Toolbar định dạng trong chi tiết desktop cao 30px, nút 26px; bắt đầu cách mép phải nhãn Nội dung khoảng 200px. Giữ cùng hàng, màu hiện hành và vị trí tên/nội dung. Nếu cột quá hẹp, khoảng cách tự giảm để còn đủ chỗ cho toolbar và nút lưu/hủy. Mobile và quick-add giữ nguyên.
+
+## D-187 — Căn giữa toolbar desktop (2026-10-27)
+
+Toolbar định dạng được căn giữa theo chiều ngang trong cột chi tiết desktop, giữ chiều rộng responsive của D-186 và chiều cao 30px. Thay khoảng cách cố định với nhãn Nội dung bằng căn giữa; giữ hàng hiện hành, màu sắc, vị trí tên/nội dung, mobile và quick-add.
