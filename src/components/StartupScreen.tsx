@@ -25,6 +25,11 @@ export function StartupScreen({ state, canContinue, onContinue, onRetry, onCompl
   return (
     <div className={`startup-screen ${state.status === "ready" ? "is-ready" : ""}`}
       role="region" aria-label="Khởi động Spark" aria-busy={state.status === "loading"}
+      onAnimationStart={(event) => {
+        // Refresh in the same event as the reveal, including reduced motion.
+        // Do not wait for animationend or add a timer/frame before updating chrome.
+        if (event.animationName === "startup-reveal") window.dispatchEvent(new Event("spark:theme-refresh"));
+      }}
       onAnimationEnd={(event) => { if (event.animationName === "startup-reveal") onComplete(); }}>
       <div className="startup-content">
         <Image src="/brand/spark-logo-negative-v2.svg" alt="Spark" width={320} height={120} priority className="startup-logo" />

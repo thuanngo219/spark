@@ -29,6 +29,8 @@ for (const width of [320, 699]) {
     await page.locator(".sidebar-mobile").getByRole("button", { name: "Phím tắt", exact: true }).click();
     const dialog = page.getByRole("dialog", { name: "Phím tắt & hiển thị" });
     await expect(dialog).toHaveCSS("color-scheme", "light");
+    await expect(page.locator(".dialog-backdrop")).toHaveCSS("background-color", "rgba(11, 16, 57, 0.58)");
+    await expect(page.locator(".dialog-backdrop")).toHaveCSS("backdrop-filter", "none");
     for (const [label, theme] of [["Tối", "dark"], ["Sáng", "light"]] as const) {
       await dialog.getByRole("radio", { name: label, exact: true }).check();
       await surfaces(page, theme, true);

@@ -27,6 +27,11 @@ for (const theme of ["light", "dark"] as const) {
     await page.getByRole("button", { name: "Mở sidebar", exact: true }).click();
     const menu = page.locator(".sidebar-mobile");
     await expect(menu).toBeVisible();
+    await expect(page.locator(".mobile-nav-backdrop")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await expect(page.locator(".mobile-nav-backdrop")).toHaveCSS("backdrop-filter", "blur(20px)");
+    if (await page.evaluate(() => CSS.supports("-webkit-backdrop-filter", "blur(20px)"))) {
+      await expect(page.locator(".mobile-nav-backdrop")).toHaveCSS("-webkit-backdrop-filter", "blur(20px)");
+    }
     await expect(menu).toHaveCSS("padding-top", "67px");
     await expect(menu).toHaveCSS("background-color", "rgb(17, 23, 66)");
     await expect(root).toHaveCSS("background-color", "rgb(17, 23, 66)");

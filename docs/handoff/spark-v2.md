@@ -1,5 +1,13 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-171 — Theme tại reveal và sidebar blur (2026-10-27)
+
+StartupScreen phát theme-refresh đồng bộ trong animationstart của startup-reveal; không thêm timer/frame hoặc chờ animationend. Bootstrap trước paint và đường resume D-169 tiếp tục đọc đúng preference/OS. Giữ fade logo 500ms + reveal 600ms, motion Quint và reduced motion. Sidebar chuyển lớp phủ sang transparent + blur(20px), gồm khai báo WebKit; các dialog giữ overlay cũ. Không đổi màu nội dung riêng của D-170.
+
+Đã kiểm tra 40 case browser khác nhau: startup mới/rỗng, chờ dữ liệu và queue qua mock, lỗi/retry/offline, chuyển theme/cross-tab, cold paint, resume, sidebar và native controls. Tám case mới ghi nhận refresh trong cùng animationstart ở sáng/tối, system/fixed, normal/reduced motion. Hai regression mới xác nhận bản cũ chưa có refresh tại reveal và còn overlay tối. Lượt đầu có 10 failure do phép đo test: listener đọc trước React delegation và đòi prefix WebKit trên Chrome; đã chỉnh đọc ở window sau delegation, chỉ kiểm tra computed prefix nếu hỗ trợ. Chạy lại cả 12 case startup-theme/status đạt, 28 case còn lại đã đạt trong lượt trước. Lint/typecheck/build và 175 test logic đạt. Đã xem ảnh sidebar blur hai theme ở 390px; ma trận màu bao phủ thêm 320/699/700px và theme desktop 1280px. Không chạy Impeccable.
+
+File: StartupScreen.tsx, globals.css, startup-theme/mobile-status-chrome/theme-surfaces tests; brand/brief/UI/implementation/decisions/handoff. Đây là xác nhận tín hiệu web gửi và DOM/Chrome; chưa đo thời điểm native status bar vẽ trên iPhone/iOS 27.0.1 nên không cam kết độ trễ hệ thống bằng 0ms.
+
 ## D-170 — Giữ màu nội dung khi mở menu (2026-10-27)
 
 Nguyên nhân: D-168 đổi root/body sang Navy cho chrome nhưng app-shell trong suốt; nền danh sách vì vậy lộ Navy, còn native controls kế thừa scheme dark. Sửa selector app-shell gốc: nền canvas đặc và scheme theo data-theme qua token riêng; sidebar luôn scheme dark. Giữ root/body/meta phục vụ chrome, giữ lớp phủ, palette, layout và motion. Toàn bộ dialog hiện nằm trong shell nên cũng giữ đúng theme. D-169 tiếp tục cập nhật khi resume.

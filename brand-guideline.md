@@ -415,3 +415,7 @@ Nền chrome cùng canvas sáng #F7F8FA/tối #121622; khi mở sidebar mobile d
 ### D-170 — Nền nội dung khi mở sidebar (2026-10-27)
 
 App-shell luôn có nền canvas đặc và scheme theo theme hiện hành; menu mở không làm nền danh sách hoặc native controls chuyển tối. Sidebar/chrome vẫn Navy; giữ overlay làm mờ như cũ. Đổi theme, resume và đóng menu không thay palette đã duyệt. Bổ sung D-168.
+
+### D-171 — Reveal và blur menu (2026-10-27)
+
+Sidebar dùng blur 20px với nền phủ trong suốt, bỏ lớp phủ tối; không đổi overlay của dialog. Giữ Navy/sidebar, palette và motion Quint. Màu chrome được cập nhật lại ngay tại animationstart của reveal, không thêm delay; thời lượng logo/reveal giữ nguyên và tiếp tục đọc theme lúc mở mới/resume.

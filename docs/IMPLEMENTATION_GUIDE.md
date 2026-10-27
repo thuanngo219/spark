@@ -358,3 +358,9 @@ Bootstrap theo dõi `visibilitychange`, `pageshow` và window `focus`; chỉ x�
 | Tối | Mở | #121622 / dark | #111742 / dark |
 
 Preference cố định thắng OS; Theo hệ thống dùng media hiện hành. Test `theme-surfaces.spec.ts` kiểm tra bảng trạng thái, radio đổi theme phía trên menu, OS/cross-tab, đóng nhiều cách và breakpoint 699/700; hai test status/resume cũng xác nhận nền app và scheme của controls. Native iOS chrome không được mô phỏng bởi Chrome.
+
+### Đồng bộ reveal và lớp phủ sidebar — D-171
+
+StartupScreen xử lý onAnimationStart, lọc animationName startup-reveal rồi phát spark:theme-refresh trực tiếp. Handler bootstrap apply đồng bộ và đọc media mới; không có timer riêng. Bootstrap trước paint và các listener resume vẫn là nguồn theme duy nhất. Hai selector backdrop dùng chung layout nhưng tách hiệu ứng: dialog-backdrop giữ var(--overlay), mobile-nav-backdrop transparent + blur(20px), gồm khai báo WebKit. Không thay transition/duration hiện hành.
+
+Regression startup-theme.spec.ts ghi nhận theme trước animation, mô phỏng media đổi im lặng khi loading sẵn sàng, rồi xác nhận màu và đúng một lượt refresh trong cùng sự kiện animationstart (capture ở document, đọc ở window sau React delegation). Bao phủ system/fixed, sáng/tối và reduced motion. Status/surfaces tests xác nhận sidebar trong suốt, blur 20px và dialog vẫn có lớp phủ riêng. Chrome không dùng tiền tố -webkit-backdrop-filter; kiểm tra computed prefix chỉ khi CSS.supports trả true. Chưa thay thế kiểm tra Safari/iOS vật lý.
