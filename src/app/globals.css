@@ -512,14 +512,8 @@ button:focus-visible { filter: brightness(.88); }
 @keyframes startup-logo-out { to { opacity: 0; } }
 @keyframes startup-reveal { to { transform: scaleX(0); } }
 
-.sync-benefits { display: grid; gap: 12px; margin-bottom: 22px; }
-.sync-benefits > div { display: grid; grid-template-columns: 37px 1fr; gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 13px; background: var(--field); }
-.sync-benefits > div > span { width: 31px; height: 31px; border-radius: 9px; background: var(--turquoise-soft); color: var(--accent-ink, #1ca5a3); display: grid; place-items: center; font-size: 0.625rem; font-weight: 750; }
-.sync-benefits p { margin: 0; color: var(--text-subtle, #8a8f9f); font-size: 0.6875rem; line-height: 1.45; }
-.sync-benefits strong { display: block; color: var(--heading); font-size: 0.75rem; margin-bottom: 2px; }
-.sync-form { border-top: 1px solid var(--line); padding-top: 18px; }
 .sync-form .primary-button { width: 100%; }
-.otp-step .sync-form { margin: 17px 0 11px; text-align: left; }
+.otp-step .sync-form { margin: 17px 0 11px; padding-top: 18px; border-top: 1px solid var(--line); text-align: left; }
 .otp-input { text-align: center; font-size: 1.4375rem; font-weight: 750; letter-spacing: .28em; font-variant-numeric: tabular-nums; }
 .form-error { color: var(--urgent-ink); margin: -5px 0 12px; font-size: 0.6875rem; }
 .sync-hero { text-align: center; padding: 9px 13px 21px; }
@@ -541,6 +535,9 @@ button:focus-visible { filter: brightness(.88); }
 @media (min-width: 700px) {
   .utility-content > .editor-header { padding-right: 48px; }
   .utility-content > .editor-header > .icon-button { position: absolute; top: max(20px, env(safe-area-inset-top)); right: max(20px, env(safe-area-inset-right)); }
+  .sync-dialog .utility-content { display: grid; grid-template-rows: minmax(0, 1fr) auto auto minmax(0, 1fr); overflow-y: auto; padding-block: 24px; }
+  .sync-dialog .editor-header { grid-row: 2; padding-block: 0 16px; border-bottom: 0; }
+  .sync-dialog .utility-body { grid-row: 3; overflow: visible; padding-block: 0; }
   .dialog-backdrop { align-items: center; }
   .item-detail-sheet { width: min(880px, calc(100vw - 48px)); max-height: min(86dvh, 820px); }
   .item-detail-sheet.editing-content { height: min(86dvh, 820px); }

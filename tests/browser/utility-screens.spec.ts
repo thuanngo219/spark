@@ -68,7 +68,16 @@ for (const width of [320, 390, 1280]) {
       if (width >= 700) expect(closeSync.x + closeSync.width).toBe(width - 20);
       const syncBody = (await sync.locator(".utility-body").boundingBox())!;
       const syncContent = (await sync.locator(".utility-body-inner").boundingBox())!;
-      expect(Math.abs(syncContent.y + syncContent.height / 2 - syncBody.y - syncBody.height / 2)).toBeLessThan(2);
+      await expect(sync.locator(".sync-benefits")).toHaveCount(0);
+      const syncHeader = (await sync.locator(".editor-header").boundingBox())!;
+      if (width >= 700) {
+        expect(Math.abs((syncHeader.y + syncContent.y + syncContent.height) / 2 - 350)).toBeLessThan(2);
+        expect(syncContent.y - syncHeader.y - syncHeader.height).toBeLessThan(2);
+        expect(syncHeader.y).toBeGreaterThan(100);
+      } else {
+        expect(syncHeader.y).toBe(0);
+        expect(Math.abs(syncContent.y + syncContent.height / 2 - syncBody.y - syncBody.height / 2)).toBeLessThan(2);
+      }
       await page.screenshot({ path: `/tmp/spark-sync-layout-${width}-${theme}.png` });
       const email = sync.locator('input[type="email"]');
       await email.fill("test@example.invalid");

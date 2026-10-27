@@ -422,3 +422,7 @@ Sidebar mobile bỏ nút X; chạm ngoài menu, chọn mục điều hướng ho
 Phím tắt và Đồng bộ giữ headline ở đầu màn hình, nội dung căn giữa phần còn lại khi đủ chỗ. Khi thiếu chiều cao, chỉ phần nội dung cuộn; header vẫn nhìn thấy. Desktop đặt nút X tại góc trên bên phải viewport, cách mép 20px hoặc safe-area lớn hơn; mobile giữ X cùng hàng tiêu đề. Giữ nền sáng/tối, focus trap, khóa cuộn nền và xử lý bàn phím của D-179.
 
 `.utility-content` dùng flex column toàn chiều cao; `.utility-body` là vùng cuộn có min-height:0, `.utility-body-inner` dùng margin-block:auto để căn giữa mà không cắt nội dung dài. Nút X desktop định vị absolute trong `.utility-screen`, độc lập chiều rộng đọc 640px. Không đổi luồng OTP hoặc dữ liệu.
+
+## D-181 — Rút gọn màn hình Đồng bộ (2026-10-27)
+
+Bỏ hai khối giải thích 01/02 khỏi bước kết nối Đồng bộ trên mobile và desktop. Bước này chỉ giữ ô email và nút gửi mã kết nối; bỏ đường phân cách dư trước form. Trên desktop, headline nằm ngay trên form và cả cụm được căn giữa màn hình, nút X giữ ở góc trên bên phải. Mobile giữ headline ở đầu màn hình và form căn giữa phần còn lại. Giữ nguyên luồng OTP, trạng thái đã kết nối, theme và khóa cuộn nền; màn Phím tắt không đổi.
