@@ -224,7 +224,6 @@ export function SparkApp() {
   const [attentionOpen, setAttentionOpen] = useState(true);
   const [projectsOpen, setProjectsOpen] = useState(true);
   const [mobileNav, setMobileNav] = useState(false);
-  useSidebarChrome(mobileNav);
   const [helpOpen, setHelpOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
   const [itemDisplayMode, setItemDisplayMode] = useState<ItemDisplayMode>("all");
@@ -248,6 +247,7 @@ export function SparkApp() {
   const [cloudUser, setCloudUser] = useState<CloudUser | null>(null);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>(isSupabaseConfigured() ? "loading" : "not-configured");
   const [syncDialogOpen, setSyncDialogOpen] = useState(false);
+  useSidebarChrome(mobileNav && !helpOpen && !syncDialogOpen);
   const undoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dataRef = useRef(data);
   const dataScopeRef = useRef<"demo" | string>("demo");
@@ -798,7 +798,7 @@ export function SparkApp() {
         }));
         return;
       }
-      if (projectEditor || projectArchiveOpen) return;
+      if (projectEditor || projectArchiveOpen || helpOpen || syncDialogOpen) return;
       if (event.key === "Escape") {
         setHelpOpen(false);
         setMobileNav(false);
@@ -2578,7 +2578,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
   );
 }
 
-function useProjectDialog(onClose: () => void) {
+function useDialogControls(onClose: () => void, focusInput = true) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef(onClose);
   const [previous] = useState(() => typeof document !== "undefined" && document.activeElement instanceof HTMLElement ? document.activeElement : null);
@@ -2586,7 +2586,7 @@ function useProjectDialog(onClose: () => void) {
   useEffect(() => {
     const dialog = dialogRef.current;
     const controls = () => Array.from(dialog?.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), [tabindex="0"]') ?? []);
-    if (!dialog?.contains(document.activeElement)) (dialog?.querySelector<HTMLInputElement>('input:not([disabled])') ?? controls()[0])?.focus();
+    if (!dialog?.contains(document.activeElement)) ((focusInput ? dialog?.querySelector<HTMLInputElement>('input:not([disabled])') : null) ?? controls()[0])?.focus();
     const handleKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
@@ -2606,7 +2606,7 @@ function useProjectDialog(onClose: () => void) {
       if (previous?.isConnected) previous.focus();
       else document.getElementById("view-title")?.focus();
     };
-  }, [previous]);
+  }, [previous, focusInput]);
   return dialogRef;
 }
 
@@ -2616,7 +2616,7 @@ function ArchivedProjects({ projects, onClose, onView, onEdit }: {
   onView: (project: Project) => void;
   onEdit: (project: Project) => void;
 }) {
-  const dialogRef = useProjectDialog(onClose);
+  const dialogRef = useDialogControls(onClose);
   return (
     <div ref={dialogRef} className="dialog-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="project-archive-title">
       <section className="editor-sheet compact-editor project-archive-sheet" onClick={(event) => event.stopPropagation()}>
@@ -2650,7 +2650,7 @@ function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose, onSav
   const usesCustomColor = !projectColors.some((entry) => entry.toLowerCase() === color.toLowerCase());
   const customPickerValue = /^#[0-9a-f]{6}$/i.test(color) ? color : projectColors[0];
   const nameInputRef = useRef<HTMLInputElement>(null);
-  const dialogRef = useProjectDialog(onClose);
+  const dialogRef = useDialogControls(onClose);
   useEffect(() => {
     if (project || confirmDelete || !window.matchMedia("(max-width: 699px)").matches) return;
     const input = nameInputRef.current;
@@ -2736,6 +2736,39 @@ function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose, onSav
   );
 }
 
+function useUtilityScreen(onClose: () => void) {
+  const dialogRef = useDialogControls(onClose, false);
+  // Release inert/scroll in layout cleanup before dialog controls restore focus.
+  useLayoutEffect(() => {
+    const screen = dialogRef.current?.parentElement;
+    if (!screen) return;
+    const unlock = lockDetailScroll(screen);
+    const viewport = window.visualViewport;
+    const fitViewport = () => {
+      if (!viewport || viewport.scale !== 1) return;
+      screen.style.setProperty("--utility-top", `${viewport.offsetTop}px`);
+      screen.style.setProperty("--utility-height", `${viewport.height}px`);
+      const focused = document.activeElement;
+      if (focused instanceof HTMLInputElement && screen.contains(focused)) {
+        const bounds = focused.getBoundingClientRect();
+        const headerBottom = screen.querySelector(".editor-header")?.getBoundingClientRect().bottom ?? viewport.offsetTop;
+        if (bounds.bottom > viewport.offsetTop + viewport.height - 16 || bounds.top < headerBottom) {
+          focused.scrollIntoView({ block: "end", inline: "nearest" });
+        }
+      }
+    };
+    fitViewport();
+    viewport?.addEventListener("resize", fitViewport);
+    viewport?.addEventListener("scroll", fitViewport);
+    return () => {
+      viewport?.removeEventListener("resize", fitViewport);
+      viewport?.removeEventListener("scroll", fitViewport);
+      unlock();
+    };
+  }, [dialogRef]);
+  return dialogRef;
+}
+
 function ShortcutHelp({
   onClose,
   projectLabelsEnabled,
@@ -2745,56 +2778,59 @@ function ShortcutHelp({
   projectLabelsEnabled: boolean;
   onProjectLabelsEnabledChange: (enabled: boolean) => void;
 }) {
+  const dialogRef = useUtilityScreen(onClose);
   const navigation = [["T", "Hôm nay"], ["S", "Sắp tới"], ["D", "Theo ngày"], ["A", "Tất cả"]];
   const focus = [["I", "Quan Trọng"], ["U", "Ưu tiên"]];
   return (
-    <div className="dialog-backdrop" onClick={onClose}>
-      <div className="shortcut-dialog" role="dialog" aria-modal="true" aria-labelledby="shortcut-title" onClick={(event) => event.stopPropagation()}>
-        <div className="editor-header">
-          <div><span>Đi nhanh hơn</span><h2 id="shortcut-title">Phím tắt & hiển thị</h2></div>
-          <button className="icon-button" onClick={onClose} aria-label="Đóng bảng phím tắt"><Icon name="close" /></button>
-        </div>
-        <div className="shortcut-columns">
-          <section className="shortcut-group" aria-labelledby="shortcut-navigation">
-            <h3 id="shortcut-navigation">Điều hướng</h3>
-            {navigation.map(([key, label]) => <div key={key}><kbd>{key}</kbd><span>{label}</span></div>)}
+    <div className="utility-screen">
+      <div ref={dialogRef} className="shortcut-dialog" role="dialog" aria-modal="true" aria-labelledby="shortcut-title">
+        <div className="utility-content">
+          <div className="editor-header">
+            <div><span>Đi nhanh hơn</span><h2 id="shortcut-title">Phím tắt & hiển thị</h2></div>
+            <button className="icon-button" onClick={onClose} aria-label="Đóng bảng phím tắt"><Icon name="close" /></button>
+          </div>
+          <div className="shortcut-columns">
+            <section className="shortcut-group" aria-labelledby="shortcut-navigation">
+              <h3 id="shortcut-navigation">Điều hướng</h3>
+              {navigation.map(([key, label]) => <div key={key}><kbd>{key}</kbd><span>{label}</span></div>)}
+            </section>
+            <section className="shortcut-group" aria-labelledby="shortcut-focus">
+              <h3 id="shortcut-focus">Tập trung</h3>
+              {focus.map(([key, label]) => <div key={key}><kbd>{key}</kbd><span>{label}</span></div>)}
+              <div><kbd>1–9</kbd><span>Dự án theo thứ tự</span></div>
+            </section>
+          </div>
+          <div className="shortcut-footer">
+            <span><kbd>[</kbd> Chỉ note</span>
+            <span><kbd>]</kbd> Chỉ task</span>
+            <span><kbd>\</kbd> Tất cả nội dung</span>
+            <span><kbd>N</kbd> Thêm task</span>
+            <span><kbd>⌘/Ctrl + \</kbd> Sidebar</span>
+            <span><kbd>?</kbd> Trợ giúp</span>
+            <span><kbd>Esc</kbd> Đóng</span>
+            <span><kbd>&lt;</kbd> Giao diện sáng</span>
+            <span><kbd>&gt;</kbd> Giao diện tối</span>
+            <span><kbd>M</kbd> Theo hệ thống</span>
+          </div>
+          <ThemePreference />
+          <section className="display-preference" aria-labelledby="project-label-preference">
+            <span>
+              <strong id="project-label-preference">Mở tên dự án khi chạm</strong>
+              <small>Mở hoặc thu gọn đồng loạt trong mọi view.</small>
+            </span>
+            <button
+              className="preference-switch"
+              type="button"
+              role="switch"
+              aria-checked={projectLabelsEnabled}
+              aria-labelledby="project-label-preference"
+              onClick={() => onProjectLabelsEnabledChange(!projectLabelsEnabled)}
+            >
+              <span aria-hidden="true" />
+            </button>
           </section>
-          <section className="shortcut-group" aria-labelledby="shortcut-focus">
-            <h3 id="shortcut-focus">Tập trung</h3>
-            {focus.map(([key, label]) => <div key={key}><kbd>{key}</kbd><span>{label}</span></div>)}
-            <div><kbd>1–9</kbd><span>Dự án theo thứ tự</span></div>
-          </section>
+          <p>Phím tắt sẽ tạm dừng khi bạn đang nhập nội dung.</p>
         </div>
-        <div className="shortcut-footer">
-          <span><kbd>[</kbd> Chỉ note</span>
-          <span><kbd>]</kbd> Chỉ task</span>
-          <span><kbd>\</kbd> Tất cả nội dung</span>
-          <span><kbd>N</kbd> Thêm task</span>
-          <span><kbd>⌘/Ctrl + \</kbd> Sidebar</span>
-          <span><kbd>?</kbd> Trợ giúp</span>
-          <span><kbd>Esc</kbd> Đóng</span>
-          <span><kbd>&lt;</kbd> Giao diện sáng</span>
-          <span><kbd>&gt;</kbd> Giao diện tối</span>
-          <span><kbd>M</kbd> Theo hệ thống</span>
-        </div>
-        <ThemePreference />
-        <section className="display-preference" aria-labelledby="project-label-preference">
-          <span>
-            <strong id="project-label-preference">Mở tên dự án khi chạm</strong>
-            <small>Mở hoặc thu gọn đồng loạt trong mọi view.</small>
-          </span>
-          <button
-            className="preference-switch"
-            type="button"
-            role="switch"
-            aria-checked={projectLabelsEnabled}
-            aria-labelledby="project-label-preference"
-            onClick={() => onProjectLabelsEnabledChange(!projectLabelsEnabled)}
-          >
-            <span aria-hidden="true" />
-          </button>
-        </section>
-        <p>Phím tắt sẽ tạm dừng khi bạn đang nhập nội dung.</p>
       </div>
     </div>
   );
@@ -2807,6 +2843,7 @@ function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
   onClose: () => void;
   onSignedOut: () => void;
 }) {
+  const dialogRef = useUtilityScreen(onClose);
   const [email, setEmail] = useState("");
   const [token, setToken] = useState("");
   const [sending, setSending] = useState(false);
@@ -2870,37 +2907,39 @@ function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
   };
 
   return (
-    <div className="dialog-backdrop" onClick={onClose}>
-      <div className="sync-dialog" role="dialog" aria-modal="true" aria-labelledby="sync-title" onClick={(event) => event.stopPropagation()}>
-        <div className="editor-header">
-          <div><span>Cloud sync</span><h2 id="sync-title">Dữ liệu luôn bên bạn</h2></div>
-          <button className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button>
-        </div>
-        {!configured ? (
-          <div className="sync-message warning"><Icon name="zap" /><div><strong>Chưa kết nối Supabase</strong><p>Thêm hai biến môi trường trong <code>.env.local</code> và chạy migration để bật đồng bộ.</p></div></div>
-        ) : user ? (
-          <>
-            <div className="sync-hero"><span><Icon name={status === "error" || status === "offline" ? "zap" : "check"} size={27} /></span><h3>{syncStatusTitle(status)}</h3><p>{status === "offline" || status === "error" ? "Mọi thay đổi vẫn được giữ trên thiết bị và sẽ tự thử lại; bạn không cần nhập lại." : "Task, note và dự án của bạn sẽ xuất hiện trên mọi browser sau khi đăng nhập bằng cùng email."}</p></div>
-            <div className="signed-in-row"><div><small>Đang dùng</small><strong>{user.email}</strong></div><button className="text-button" onClick={onSignedOut}>Ngắt kết nối</button></div>
-          </>
-        ) : sent ? (
-          <div className="sync-hero otp-step">
-            <span><Icon name="check" size={27} /></span>
-            <h3>Nhập mã trong email</h3>
-            <p>Mình đã gửi mã đăng nhập tới <strong>{email}</strong>. Nhập mã mới nhất ngay tại đây; không cần mở liên kết.</p>
-            <form className="sync-form" onSubmit={verify}>
-              <label className="field"><span>Mã đăng nhập gồm 6 số</span><input className="otp-input" name="otp" type="text" autoFocus autoComplete="one-time-code" inputMode="numeric" enterKeyHint="done" minLength={EMAIL_OTP_LENGTH} maxLength={EMAIL_OTP_LENGTH} pattern="[0-9]{6}" required value={token} onChange={(event) => setToken(normalizeEmailOtp(event.target.value))} placeholder="000000" aria-label="Mã đăng nhập gồm 6 chữ số" /></label>
-              {error && <p className="form-error">{error}</p>}
-              <button className="primary-button" disabled={verifying || !isCompleteEmailOtp(token)}>{verifying ? "Đang xác nhận…" : "Xác nhận và đồng bộ"}</button>
-            </form>
-            <button className="text-button" onClick={() => { setSent(false); setToken(""); setError(""); }}>Gửi lại hoặc dùng email khác</button>
+    <div className="utility-screen">
+      <div ref={dialogRef} className="sync-dialog" role="dialog" aria-modal="true" aria-labelledby="sync-title">
+        <div className="utility-content">
+          <div className="editor-header">
+            <div><span>Cloud sync</span><h2 id="sync-title">Dữ liệu luôn bên bạn</h2></div>
+            <button className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button>
           </div>
-        ) : (
-          <>
-            <div className="sync-benefits"><div><span>01</span><p><strong>Website vẫn mở public</strong>Ai cũng xem được giao diện, không có màn hình login chặn lối vào.</p></div><div><span>02</span><p><strong>Dữ liệu của bạn vẫn riêng tư</strong>Mã email nhận diện bạn; RLS ngăn người khác đọc hoặc sửa danh sách.</p></div></div>
-            <form className="sync-form" onSubmit={submit}><label className="field"><span>Email nhận mã đăng nhập</span><input type="email" required autoComplete="email" placeholder="ban@example.com" value={email} onChange={(event) => setEmail(event.target.value)} /></label>{error && <p className="form-error">{error}</p>}<button className="primary-button" disabled={sending || !email.trim()}>{sending ? "Đang gửi…" : "Gửi mã và bật đồng bộ"}</button></form>
-          </>
-        )}
+          {!configured ? (
+            <div className="sync-message warning"><Icon name="zap" /><div><strong>Chưa kết nối Supabase</strong><p>Thêm hai biến môi trường trong <code>.env.local</code> và chạy migration để bật đồng bộ.</p></div></div>
+          ) : user ? (
+            <>
+              <div className="sync-hero"><span><Icon name={status === "error" || status === "offline" ? "zap" : "check"} size={27} /></span><h3>{syncStatusTitle(status)}</h3><p>{status === "offline" || status === "error" ? "Mọi thay đổi vẫn được giữ trên thiết bị và sẽ tự thử lại; bạn không cần nhập lại." : "Task, note và dự án của bạn sẽ xuất hiện trên mọi browser sau khi đăng nhập bằng cùng email."}</p></div>
+              <div className="signed-in-row"><div><small>Đang dùng</small><strong>{user.email}</strong></div><button className="text-button" onClick={onSignedOut}>Ngắt kết nối</button></div>
+            </>
+          ) : sent ? (
+            <div className="sync-hero otp-step">
+              <span><Icon name="check" size={27} /></span>
+              <h3>Nhập mã trong email</h3>
+              <p>Mình đã gửi mã đăng nhập tới <strong>{email}</strong>. Nhập mã mới nhất ngay tại đây; không cần mở liên kết.</p>
+              <form className="sync-form" onSubmit={verify}>
+                <label className="field"><span>Mã đăng nhập gồm 6 số</span><input className="otp-input" name="otp" type="text" autoFocus autoComplete="one-time-code" inputMode="numeric" enterKeyHint="done" minLength={EMAIL_OTP_LENGTH} maxLength={EMAIL_OTP_LENGTH} pattern="[0-9]{6}" required value={token} onChange={(event) => setToken(normalizeEmailOtp(event.target.value))} placeholder="000000" aria-label="Mã đăng nhập gồm 6 chữ số" /></label>
+                {error && <p className="form-error">{error}</p>}
+                <button className="primary-button" disabled={verifying || !isCompleteEmailOtp(token)}>{verifying ? "Đang xác nhận…" : "Xác nhận và đồng bộ"}</button>
+              </form>
+              <button className="text-button" onClick={() => { setSent(false); setToken(""); setError(""); }}>Gửi lại hoặc dùng email khác</button>
+            </div>
+          ) : (
+            <>
+              <div className="sync-benefits"><div><span>01</span><p><strong>Website vẫn mở public</strong>Ai cũng xem được giao diện, không có màn hình login chặn lối vào.</p></div><div><span>02</span><p><strong>Dữ liệu của bạn vẫn riêng tư</strong>Mã email nhận diện bạn; RLS ngăn người khác đọc hoặc sửa danh sách.</p></div></div>
+              <form className="sync-form" onSubmit={submit}><label className="field"><span>Email nhận mã đăng nhập</span><input type="email" required autoComplete="email" placeholder="ban@example.com" value={email} onChange={(event) => setEmail(event.target.value)} /></label>{error && <p className="form-error">{error}</p>}<button className="primary-button" disabled={sending || !email.trim()}>{sending ? "Đang gửi…" : "Gửi mã và bật đồng bộ"}</button></form>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

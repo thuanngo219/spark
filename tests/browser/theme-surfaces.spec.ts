@@ -29,20 +29,20 @@ for (const width of [320, 699]) {
     await page.locator(".sidebar-mobile").getByRole("button", { name: "Phím tắt", exact: true }).click();
     const dialog = page.getByRole("dialog", { name: "Phím tắt & hiển thị" });
     await expect(dialog).toHaveCSS("color-scheme", "light");
-    await expect(page.locator(".dialog-backdrop")).toHaveCSS("background-color", "rgba(11, 16, 57, 0.58)");
-    await expect(page.locator(".dialog-backdrop")).toHaveCSS("backdrop-filter", "none");
+    await expect(page.locator(".utility-screen")).toHaveCSS("background-color", "rgb(247, 248, 250)");
+    await expect(page.locator(".utility-screen")).toHaveCSS("backdrop-filter", "none");
     for (const [label, theme] of [["Tối", "dark"], ["Sáng", "light"]] as const) {
       await dialog.getByRole("radio", { name: label, exact: true }).check();
-      await surfaces(page, theme, true);
+      await surfaces(page, theme, false);
       await expect(dialog).toHaveCSS("color-scheme", theme);
       await expect(dialog.locator('input[type="radio"]').first()).toHaveCSS("color-scheme", theme);
     }
     await page.emulateMedia({ colorScheme: "dark" });
-    await surfaces(page, "light", true); // Explicit light ignores OS changes.
+    await surfaces(page, "light", false); // Explicit light ignores OS changes.
     await dialog.getByRole("radio", { name: "Theo hệ thống", exact: true }).check();
-    await surfaces(page, "dark", true);
+    await surfaces(page, "dark", false);
     await page.emulateMedia({ colorScheme: "light" });
-    await surfaces(page, "light", true);
+    await surfaces(page, "light", false);
     await page.getByRole("button", { name: "Đóng bảng phím tắt" }).click();
 
     // Retained mobile-menu state must not tint a desktop view.

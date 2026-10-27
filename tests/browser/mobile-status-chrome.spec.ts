@@ -28,9 +28,9 @@ for (const theme of ["light", "dark"] as const) {
     const menu = page.locator(".sidebar-mobile");
     await expect(menu).toBeVisible();
     await expect(page.locator(".mobile-nav-backdrop")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
-    await expect(page.locator(".mobile-nav-backdrop")).toHaveCSS("backdrop-filter", "blur(2px)");
-    if (await page.evaluate(() => CSS.supports("-webkit-backdrop-filter", "blur(2px)"))) {
-      await expect(page.locator(".mobile-nav-backdrop")).toHaveCSS("-webkit-backdrop-filter", "blur(2px)");
+    await expect(page.locator(".mobile-nav-backdrop")).toHaveCSS("backdrop-filter", "none");
+    if (await page.evaluate(() => CSS.supports("-webkit-backdrop-filter", "none"))) {
+      await expect(page.locator(".mobile-nav-backdrop")).toHaveCSS("-webkit-backdrop-filter", "none");
     }
     await expect(menu).toHaveCSS("padding-top", "67px");
     await expect(menu).toHaveCSS("background-color", "rgb(17, 23, 66)");

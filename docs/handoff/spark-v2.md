@@ -1,5 +1,15 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-179 — Sidebar trong suốt và màn hình tiện ích toàn màn hình (2026-10-27)
+
+Bỏ hoàn toàn backdrop-filter/-webkit-backdrop-filter phía sau sidebar; lớp phủ vẫn trong suốt và chạm ngoài vẫn đóng menu. Thay blur 2px của D-178. Phím tắt & hiển thị và Đồng bộ hiển thị toàn viewport trên mobile lẫn desktop, nền canvas theo sáng/tối, không bo góc/đổ bóng hoặc lộ danh sách quanh box. Nội dung đọc được giới hạn 640px, căn giữa trên desktop; header/nút đóng sticky, safe-area trên/dưới và cuộn nội bộ.
+
+Hai màn hình dùng chung cơ chế focus trap/Escape/khôi phục focus hiện có (đổi tên useProjectDialog thành useDialogControls), không tự mở bàn phím khi vừa vào Đồng bộ. Tái sử dụng scroll lock để khóa nền, điều chỉnh viewport theo visualViewport khi bàn phím mở, gỡ listener/khôi phục cuộn khi đóng. Phím điều hướng nền tạm dừng khi tiện ích đang mở; shortcut theme vẫn hoạt động ngoài input. Không đổi luồng gửi/xác nhận OTP hoặc dữ liệu/auth.
+
+Khi tiện ích phủ lên sidebar, chrome dùng theme của tiện ích; đóng tiện ích trả chrome về Navy nếu sidebar vẫn mở. Sidebar giữ trạng thái mở để quay lại. Bỏ các rule box/mobile max-height cũ của shortcut/sync thay vì chồng override. Các dialog khác giữ bố cục cũ.
+
+Kiểm tra D-179: lint/typecheck/build và 175 test logic đạt. 22 tình huống browser đã được kiểm tra: lượt đầu 20/22 đạt, phát hiện focus desktop khôi phục trước khi gỡ inert. Đã chuyển cleanup scroll lock sang layout effect; chạy lại 13 case sidebar/theme/fullscreen đạt, rồi 6 case fullscreen đạt sau khi thêm cuộn ô nhập vào vùng nhìn thấy lúc keyboard resize. Bao phủ 320/390/699/700/1280px, sáng/tối, Escape/Tab, restore focus, body scroll lock, giả lập chiều cao keyboard 360px và theme qua sidebar. Đã xem ảnh mobile/desktop; chưa thử bàn phím iPhone thật. Không gửi OTP hoặc đổi dữ liệu cloud. File: SparkApp.tsx, globals.css, mobile-status-chrome/theme-surfaces/utility-screens tests và tài liệu dự án.
+
 ## D-178 — Sidebar blur 2px (2026-10-27)
 
 Giảm blur phía sau sidebar từ 5px xuống 2px theo yêu cầu mới, áp dụng cho backdrop-filter và -webkit-backdrop-filter. Giữ nền phủ trong suốt. Thay giá trị D-177; các hiệu ứng khác giữ nguyên.
