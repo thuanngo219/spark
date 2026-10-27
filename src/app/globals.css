@@ -533,11 +533,10 @@ button:focus-visible { filter: brightness(.88); }
 @keyframes sync-pulse { 50% { opacity: .35; transform: scale(.78); } }
 
 @media (min-width: 700px) {
-  .utility-content > .editor-header { padding-right: 48px; }
   .utility-content > .editor-header > .icon-button { position: absolute; top: max(20px, env(safe-area-inset-top)); right: max(20px, env(safe-area-inset-right)); }
-  .sync-dialog .utility-content { display: grid; grid-template-rows: minmax(0, 1fr) auto auto minmax(0, 1fr); overflow-y: auto; padding-block: 24px; }
-  .sync-dialog .editor-header { grid-row: 2; padding-block: 0 16px; border-bottom: 0; }
-  .sync-dialog .utility-body { grid-row: 3; overflow: visible; padding-block: 0; }
+  .utility-content { display: grid; grid-template-rows: minmax(0, 1fr) auto auto minmax(0, 1fr); overflow-y: auto; padding-block: 24px; }
+  .utility-content > .editor-header { grid-row: 2; padding: 0 48px 16px 0; border-bottom: 0; }
+  .utility-body { grid-row: 3; overflow: visible; padding-block: 0; }
   .dialog-backdrop { align-items: center; }
   .item-detail-sheet { width: min(880px, calc(100vw - 48px)); max-height: min(86dvh, 820px); }
   .item-detail-sheet.editing-content { height: min(86dvh, 820px); }

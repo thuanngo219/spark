@@ -39,7 +39,12 @@ for (const width of [320, 390, 1280]) {
       for (const label of ["Theo hệ thống", "Sáng", "Tối"]) await expect(help.getByRole("radio", { name: label, exact: true })).toHaveCount(1);
       const body = (await help.locator(".utility-body").boundingBox())!;
       const content = (await help.locator(".utility-body-inner").boundingBox())!;
-      if (content.height <= body.height - 48) expect(Math.abs(content.y + content.height / 2 - body.y - body.height / 2)).toBeLessThan(2);
+      if (width >= 700) {
+        const header = (await help.locator(".editor-header").boundingBox())!;
+        expect(content.y - header.y - header.height).toBeLessThan(2);
+        if (content.height + header.height <= 652) expect(Math.abs((header.y + content.y + content.height) / 2 - 350)).toBeLessThan(2);
+        else expect(header.y).toBe(24);
+      } else if (content.height <= body.height - 48) expect(Math.abs(content.y + content.height / 2 - body.y - body.height / 2)).toBeLessThan(2);
       else expect(content.y).toBeGreaterThanOrEqual(body.y + 23);
       await page.screenshot({ path: `/tmp/spark-help-layout-${width}-${theme}.png` });
       await page.keyboard.press("Shift+Tab");
