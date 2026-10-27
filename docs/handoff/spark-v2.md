@@ -1,5 +1,13 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-180 — Bố cục Phím tắt, Đồng bộ và sidebar mobile (2026-10-27)
+
+Sidebar mobile bỏ nút X; chạm ngoài menu, chọn mục điều hướng hoặc Escape vẫn đóng menu. Phím tắt chia bốn nhóm Điều hướng, Lọc nội dung, Thao tác và Giao diện theo lưới hai cột; tên thao tác bên trái, phím bên phải. Ghi chú về bàn phím nằm ngay dưới danh sách phím tắt, trước hàng Giao diện. Hàng Giao diện dùng nhãn trái và ba icon bên phải: màn hình (Theo hệ thống), mặt trời (Sáng), mặt trăng (Tối). Bỏ dòng mô tả phụ và chữ trên lựa chọn; giữ tên truy cập, tooltip và điều khiển radio bằng bàn phím. Icon 18px trong vòng tròn 32px; vùng bấm desktop 36px, mobile 44px.
+
+Phím tắt và Đồng bộ giữ headline ở đầu màn hình, nội dung căn giữa phần còn lại khi đủ chỗ. Khi thiếu chiều cao, chỉ phần nội dung cuộn; header vẫn nhìn thấy. Desktop đặt nút X tại góc trên bên phải viewport, cách mép 20px hoặc safe-area lớn hơn; mobile giữ X cùng hàng tiêu đề. Giữ nền sáng/tối, focus trap, khóa cuộn nền và xử lý bàn phím của D-179.
+
+Kiểm tra D-180: lint/typecheck/build và 175 test logic đạt. 15 case sidebar/status/theme-resume đạt; sau đổi sang icon, chạy lại 15 case theme/utility đạt (320/390/1280px, sáng/tối, chọn bằng bàn phím, lưu preference/offline, căn giữa, X desktop cách mép 20px, cuộn khi giả lập keyboard 360px). Đã xem ảnh mobile/desktop; chưa kiểm tra bàn phím iPhone thật. Không gửi OTP hoặc đổi dữ liệu cloud. File: SparkApp.tsx, ThemePreference.tsx, ui/Icon.tsx, globals.css, browser tests và tài liệu D-180.
+
 ## D-179 — Sidebar trong suốt và màn hình tiện ích toàn màn hình (2026-10-27)
 
 Bỏ hoàn toàn backdrop-filter/-webkit-backdrop-filter phía sau sidebar; lớp phủ vẫn trong suốt và chạm ngoài vẫn đóng menu. Thay blur 2px của D-178. Phím tắt & hiển thị và Đồng bộ hiển thị toàn viewport trên mobile lẫn desktop, nền canvas theo sáng/tối, không bo góc/đổ bóng hoặc lộ danh sách quanh box. Nội dung đọc được giới hạn 640px, căn giữa trên desktop; header/nút đóng sticky, safe-area trên/dưới và cuộn nội bộ.

@@ -1,4 +1,4 @@
-import { test, expect } from "./fixtures";
+import { test, expect, closeMobileSidebar } from "./fixtures";
 import type { Page } from "@playwright/test";
 import sharp from "sharp";
 
@@ -65,7 +65,7 @@ for (const initial of ["light", "dark"] as const) {
     await expectPaintedEdge(page, [17, 23, 66]);
     await page.emulateMedia({ colorScheme: initial });
     await expectPaintedEdge(page, [17, 23, 66]);
-    await page.getByRole("button", { name: "Đóng điều hướng" }).click();
+    await closeMobileSidebar(page);
     await expectPaintedEdge(page, colors[initial]);
     // Explicit app preference wins over the OS and updates the same painted edge.
     await page.evaluate(theme => window.dispatchEvent(new CustomEvent("spark:theme-select", { detail: theme })), next);

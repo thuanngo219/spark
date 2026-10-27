@@ -23,7 +23,7 @@ test("system changes, explicit override, persistence, keyboard and cross-tab pre
   await expect(page.getByRole("radio", { name: "Theo hệ thống" })).toBeChecked();
   await page.emulateMedia({ colorScheme: "light" });
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  await page.getByText("Tối", { exact: true }).click();
+  await page.locator('.theme-options label[title="Tối"]').click();
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#121622");
@@ -38,7 +38,7 @@ test("system changes, explicit override, persistence, keyboard and cross-tab pre
   const other = await context.newPage();
   await ready(other);
   await preferences(other);
-  await other.getByText("Tối", { exact: true }).click();
+  await other.locator('.theme-options label[title="Tối"]').click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await expect(darkRadio).toBeChecked();
   await other.evaluate(key => localStorage.removeItem(key), THEME_STORAGE_KEY);
@@ -77,7 +77,7 @@ test("invalid storage falls back to system; blocked storage still allows a sessi
   }, THEME_STORAGE_KEY);
   await page.reload();
   await preferences(page);
-  await page.getByText("Sáng", { exact: true }).click();
+  await page.locator('.theme-options label[title="Sáng"]').click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await page.emulateMedia({ colorScheme: "light" });
   await page.emulateMedia({ colorScheme: "dark" });
@@ -147,7 +147,7 @@ test("320px theme options remain usable and calendar uses dark surfaces", async 
   await ready(page);
   await preferences(page);
   for (const label of ["Theo hệ thống", "Sáng", "Tối"]) {
-    const option = page.getByText(label, { exact: true });
+    const option = page.locator(".theme-options").locator(`label[title="${label}"]`);
     expect((await option.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -160,7 +160,7 @@ test("offline cold start retains dark preference and can change theme", async ({
   test.skip(process.env.SPARK_TEST_OFFLINE !== "1", "Requires production service worker");
   await ready(page);
   await preferences(page);
-  await page.getByText("Tối", { exact: true }).click();
+  await page.locator('.theme-options label[title="Tối"]').click();
   await page.keyboard.press("Escape");
   await page.evaluate(() => navigator.serviceWorker.ready.then(() => true));
   await expect.poll(() => page.evaluate(async () => {
@@ -172,7 +172,7 @@ test("offline cold start retains dark preference and can change theme", async ({
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await preferences(page);
   await expect(page.getByRole("radio", { name: "Tối", exact: true })).toBeChecked();
-  await page.getByText("Sáng", { exact: true }).click();
+  await page.locator('.theme-options label[title="Sáng"]').click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await context.setOffline(false);
 });
@@ -212,8 +212,8 @@ test("theme shortcuts select, persist and follow system without intercepting typ
   await preferences(page);
   await page.keyboard.press(">");
   await expect(page.getByRole("radio", { name: "Tối", exact: true })).toBeChecked();
-  await expect(page.locator(".shortcut-footer")).toContainText("Giao diện sáng");
-  await expect(page.locator(".shortcut-footer")).toContainText("Giao diện tối");
+  await expect(page.locator('[aria-labelledby="shortcut-theme"]')).toContainText("Sáng");
+  await expect(page.locator('[aria-labelledby="shortcut-theme"]')).toContainText("Tối");
 });
 
 test("reduced motion keeps all animated controls brief and OTP retains its size", async ({ page }) => {

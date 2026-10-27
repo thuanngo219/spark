@@ -1,12 +1,13 @@
 "use client";
 
 import { useLayoutEffect, useSyncExternalStore } from "react";
+import { Icon } from "@/components/ui/Icon";
 import type { ThemePreference as Preference } from "@/lib/theme";
 
-const options: { value: Preference; label: string }[] = [
-  { value: "system", label: "Theo hệ thống" },
-  { value: "light", label: "Sáng" },
-  { value: "dark", label: "Tối" },
+const options: { value: Preference; label: string; icon: "monitor" | "sun" | "moon" }[] = [
+  { value: "system", label: "Theo hệ thống", icon: "monitor" },
+  { value: "light", label: "Sáng", icon: "sun" },
+  { value: "dark", label: "Tối", icon: "moon" },
 ];
 
 function subscribe(callback: () => void) {
@@ -24,19 +25,19 @@ export function ThemePreference() {
     <section className="display-preference theme-preference" aria-labelledby="theme-preference-label">
       <span>
         <strong id="theme-preference-label">Giao diện</strong>
-        <small>Ghi nhớ trên thiết bị này.</small>
       </span>
       <div className="theme-options" role="radiogroup" aria-labelledby="theme-preference-label">
-        {options.map(({ value, label }) => (
-          <label key={value}>
+        {options.map(({ value, label, icon }) => (
+          <label key={value} title={label}>
             <input
               type="radio"
+              aria-label={label}
               name="theme-preference"
               value={value}
               checked={preference === value}
               onChange={() => window.dispatchEvent(new CustomEvent("spark:theme-select", { detail: value }))}
             />
-            <span>{label}</span>
+            <span><Icon name={icon} size={18} /></span>
           </label>
         ))}
       </div>

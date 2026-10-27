@@ -1,4 +1,4 @@
-import { test, expect } from "./fixtures";
+import { test, expect, closeMobileSidebar } from "./fixtures";
 
 for (const width of [320, 390, 1280]) {
   for (const theme of ["light", "dark"] as const) {
@@ -13,6 +13,7 @@ for (const width of [320, 390, 1280]) {
         await expect(page.locator(".mobile-nav-backdrop")).toHaveCSS("backdrop-filter", "none");
         await expect(page.locator(".mobile-nav-backdrop")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
       }
+      if (width < 700) await expect(page.getByRole("button", { name: "Đóng điều hướng" })).toHaveCount(0);
       const helpTrigger = page.locator(width < 700 ? ".sidebar-mobile" : ".app-shell > .sidebar").getByRole("button", { name: "Phím tắt", exact: true });
       await helpTrigger.click();
       const help = page.locator(".shortcut-dialog");
@@ -25,11 +26,27 @@ for (const width of [320, 390, 1280]) {
       await expect(page.locator("body")).toHaveCSS("position", "fixed");
       const closeHelp = help.getByRole("button", { name: "Đóng bảng phím tắt" });
       await expect(closeHelp).toBeFocused();
+      if (width >= 700) expect((await closeHelp.boundingBox())!.x + (await closeHelp.boundingBox())!.width).toBe(width - 20);
+      await expect(help.locator(".shortcut-group > div")).toHaveCount(17);
+      await expect(help.locator(".shortcut-columns + .shortcut-note + .theme-preference")).toHaveCount(1);
+      const preferenceLabel = (await help.locator(".theme-preference > span").boundingBox())!;
+      const options = (await help.locator(".theme-options").boundingBox())!;
+      expect(options.x).toBeGreaterThan(preferenceLabel.x + preferenceLabel.width);
+      expect(Math.abs(options.y + options.height / 2 - preferenceLabel.y - preferenceLabel.height / 2)).toBeLessThan(2);
+      expect(options.width).toBeLessThanOrEqual(136);
+      expect(options.height).toBeLessThanOrEqual(44);
+      await expect(help.locator(".theme-options svg")).toHaveCount(3);
+      for (const label of ["Theo hệ thống", "Sáng", "Tối"]) await expect(help.getByRole("radio", { name: label, exact: true })).toHaveCount(1);
+      const body = (await help.locator(".utility-body").boundingBox())!;
+      const content = (await help.locator(".utility-body-inner").boundingBox())!;
+      if (content.height <= body.height - 48) expect(Math.abs(content.y + content.height / 2 - body.y - body.height / 2)).toBeLessThan(2);
+      else expect(content.y).toBeGreaterThanOrEqual(body.y + 23);
+      await page.screenshot({ path: `/tmp/spark-help-layout-${width}-${theme}.png` });
       await page.keyboard.press("Shift+Tab");
       await expect(help.getByRole("switch")).toBeFocused();
       await page.keyboard.press("Tab");
       await expect(closeHelp).toBeFocused();
-      await help.evaluate(el => { el.scrollTop = el.scrollHeight; });
+      await help.locator(".utility-body").evaluate(el => { el.scrollTop = el.scrollHeight; });
       expect((await closeHelp.boundingBox())!.y).toBeGreaterThanOrEqual(0);
       expect((await closeHelp.boundingBox())!.y).toBeLessThan(120);
       await page.screenshot({ path: `/tmp/spark-help-full-${width}-${theme}.png` });
@@ -39,7 +56,7 @@ for (const width of [320, 390, 1280]) {
       await expect(page.locator("body")).not.toHaveCSS("position", "fixed");
       if (width < 700) {
         await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#111742");
-        await page.getByRole("button", { name: "Đóng điều hướng" }).click();
+        await closeMobileSidebar(page);
       }
       await page.locator(width < 700 ? ".mobile-sync-status" : ".local-mode-card").click();
       const sync = page.locator(".sync-dialog");
@@ -47,6 +64,12 @@ for (const width of [320, 390, 1280]) {
       await page.locator(".utility-screen").evaluate(el => Promise.all(el.getAnimations().map(a => a.finished)));
       expect(await sync.boundingBox()).toEqual({ x: 0, y: 0, width, height: 700 });
       await expect(sync.getByRole("button", { name: "Đóng", exact: true })).toBeFocused();
+      const closeSync = (await sync.getByRole("button", { name: "Đóng", exact: true }).boundingBox())!;
+      if (width >= 700) expect(closeSync.x + closeSync.width).toBe(width - 20);
+      const syncBody = (await sync.locator(".utility-body").boundingBox())!;
+      const syncContent = (await sync.locator(".utility-body-inner").boundingBox())!;
+      expect(Math.abs(syncContent.y + syncContent.height / 2 - syncBody.y - syncBody.height / 2)).toBeLessThan(2);
+      await page.screenshot({ path: `/tmp/spark-sync-layout-${width}-${theme}.png` });
       const email = sync.locator('input[type="email"]');
       await email.fill("test@example.invalid");
       if (width < 700) {

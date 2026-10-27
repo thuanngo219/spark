@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { test, expect } from "./fixtures";
+import { test, expect, closeMobileSidebar } from "./fixtures";
 
 async function surfaces(page: Page, theme: "light" | "dark", menu: boolean) {
   const canvas = theme === "light" ? "rgb(247, 248, 250)" : "rgb(18, 22, 34)";
@@ -56,7 +56,7 @@ for (const width of [320, 699]) {
     for (let i = 0; i < 2; i++) {
       await page.getByRole("button", { name: "Mở sidebar", exact: true }).click();
       await surfaces(page, "light", true);
-      await page.getByRole("button", { name: "Đóng điều hướng" }).click();
+      await closeMobileSidebar(page);
       await surfaces(page, "light", false);
     }
   });
@@ -75,6 +75,6 @@ test("390px: cross-tab preference changes while menu is open preserve app surfac
   await surfaces(page, "light", true);
   await expect(page.locator("html")).toHaveAttribute("data-theme-preference", "system");
   await other.close();
-  await page.getByRole("button", { name: "Đóng điều hướng" }).click();
+  await closeMobileSidebar(page);
   await surfaces(page, "light", false);
 });

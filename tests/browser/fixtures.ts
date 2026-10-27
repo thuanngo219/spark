@@ -1,4 +1,4 @@
-import { test as base, expect } from "@playwright/test";
+import { test as base, expect, type Page } from "@playwright/test";
 import { getLocalDateKey } from "../../src/lib/dates";
 import { seedData } from "../seed-data";
 
@@ -17,3 +17,7 @@ export const test = base.extend({
   },
 });
 export { expect };
+
+export async function closeMobileSidebar(page: Page) {
+  await page.locator(".mobile-nav-backdrop").click({ position: { x: page.viewportSize()!.width - 2, y: 200 } });
+}

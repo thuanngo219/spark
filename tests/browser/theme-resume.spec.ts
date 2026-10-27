@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { test, expect } from "./fixtures";
+import { test, expect, closeMobileSidebar } from "./fixtures";
 
 // Model a suspended page: the OS changes without notifying existing MQL listeners.
 // New queries see the current OS value; old query objects retain their snapshot.
@@ -58,7 +58,7 @@ for (const event of ["visibilitychange", "pageshow", "focus"] as const) {
     await setSystemThemeSilently(page, false);
     await resume();
     await expectChrome(page, "light", true);
-    await page.getByRole("button", { name: "Đóng điều hướng", exact: true }).click();
+    await closeMobileSidebar(page);
     await expectChrome(page, "light");
     await expect(page.locator("html")).toHaveAttribute("data-theme-preference", "system");
   });

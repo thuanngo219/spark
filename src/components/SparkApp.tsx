@@ -1194,7 +1194,6 @@ export function SparkApp() {
         counts={sidebarCounts}
         currentView={view}
         attentionOpen={attentionOpen}
-        onCloseMobile={() => setMobileNav(false)}
         onEditProject={setProjectEditor}
         onHelp={() => setHelpOpen(true)}
         onNavigate={navigate}
@@ -1221,7 +1220,6 @@ export function SparkApp() {
               currentView={view}
               attentionOpen={attentionOpen}
               mobile
-              onCloseMobile={() => setMobileNav(false)}
               onEditProject={setProjectEditor}
               onHelp={() => setHelpOpen(true)}
               onNavigate={navigate}
@@ -1603,7 +1601,6 @@ function Sidebar({
   counts,
   currentView,
   mobile = false,
-  onCloseMobile,
   onEditProject,
   onHelp,
   onNavigate,
@@ -1625,7 +1622,6 @@ function Sidebar({
   counts: { today: number; upcoming: number; all: number };
   currentView: View;
   mobile?: boolean;
-  onCloseMobile: () => void;
   onEditProject: (project: Project | "new") => void;
   onHelp: () => void;
   onNavigate: (view: View) => void;
@@ -1713,7 +1709,6 @@ function Sidebar({
     <aside className={`sidebar ${mobile ? "sidebar-mobile" : ""}`}>
       <div className="sidebar-brand">
         <span className="brand-full-wrap"><Image className="brand-full" src={SPARK_LOGO_NEGATIVE_SRC} width={153.6} height={57.6} alt="Spark" priority unoptimized /></span>
-        {mobile && <button className="icon-button sidebar-close" onClick={onCloseMobile} aria-label="Đóng điều hướng"><Icon name="close" /></button>}
       </div>
       <nav aria-label="Điều hướng chính">
         {!mobile && <div className="nav-section">
@@ -2779,8 +2774,12 @@ function ShortcutHelp({
   onProjectLabelsEnabledChange: (enabled: boolean) => void;
 }) {
   const dialogRef = useUtilityScreen(onClose);
-  const navigation = [["T", "Hôm nay"], ["S", "Sắp tới"], ["D", "Theo ngày"], ["A", "Tất cả"]];
-  const focus = [["I", "Quan Trọng"], ["U", "Ưu tiên"]];
+  const groups = [
+    { id: "navigation", title: "Điều hướng", rows: [["T", "Hôm nay"], ["S", "Sắp tới"], ["D", "Theo ngày"], ["A", "Tất cả"], ["1–9", "Dự án theo thứ tự"]] },
+    { id: "filter", title: "Lọc nội dung", rows: [["I", "Quan Trọng"], ["U", "Ưu tiên"], ["[", "Chỉ ghi chú"], ["]", "Chỉ task"], ["\\", "Tất cả nội dung"]] },
+    { id: "actions", title: "Thao tác", rows: [["N", "Thêm task"], ["⌘/Ctrl + \\", "Sidebar"], ["?", "Trợ giúp"], ["Esc", "Đóng"]] },
+    { id: "theme", title: "Giao diện", rows: [["<", "Sáng"], [">", "Tối"], ["M", "Theo hệ thống"]] },
+  ];
   return (
     <div className="utility-screen">
       <div ref={dialogRef} className="shortcut-dialog" role="dialog" aria-modal="true" aria-labelledby="shortcut-title">
@@ -2789,47 +2788,34 @@ function ShortcutHelp({
             <div><span>Đi nhanh hơn</span><h2 id="shortcut-title">Phím tắt & hiển thị</h2></div>
             <button className="icon-button" onClick={onClose} aria-label="Đóng bảng phím tắt"><Icon name="close" /></button>
           </div>
-          <div className="shortcut-columns">
-            <section className="shortcut-group" aria-labelledby="shortcut-navigation">
-              <h3 id="shortcut-navigation">Điều hướng</h3>
-              {navigation.map(([key, label]) => <div key={key}><kbd>{key}</kbd><span>{label}</span></div>)}
-            </section>
-            <section className="shortcut-group" aria-labelledby="shortcut-focus">
-              <h3 id="shortcut-focus">Tập trung</h3>
-              {focus.map(([key, label]) => <div key={key}><kbd>{key}</kbd><span>{label}</span></div>)}
-              <div><kbd>1–9</kbd><span>Dự án theo thứ tự</span></div>
-            </section>
+          <div className="utility-body">
+            <div className="utility-body-inner">
+              <div className="shortcut-columns">
+                {groups.map(group => <section className="shortcut-group" key={group.id} aria-labelledby={"shortcut-" + group.id}>
+                  <h3 id={"shortcut-" + group.id}>{group.title}</h3>
+                  {group.rows.map(([key, label]) => <div key={key}><span>{label}</span><kbd>{key}</kbd></div>)}
+                </section>)}
+              </div>
+              <p className="shortcut-note">Phím tắt dùng với bàn phím và tạm dừng khi bạn đang nhập nội dung.</p>
+              <ThemePreference />
+              <section className="display-preference" aria-labelledby="project-label-preference">
+                <span>
+                  <strong id="project-label-preference">Mở tên dự án khi chạm</strong>
+                  <small>Mở hoặc thu gọn đồng loạt trong mọi view.</small>
+                </span>
+                <button
+                  className="preference-switch"
+                  type="button"
+                  role="switch"
+                  aria-checked={projectLabelsEnabled}
+                  aria-labelledby="project-label-preference"
+                  onClick={() => onProjectLabelsEnabledChange(!projectLabelsEnabled)}
+                >
+                  <span aria-hidden="true" />
+                </button>
+              </section>
+            </div>
           </div>
-          <div className="shortcut-footer">
-            <span><kbd>[</kbd> Chỉ note</span>
-            <span><kbd>]</kbd> Chỉ task</span>
-            <span><kbd>\</kbd> Tất cả nội dung</span>
-            <span><kbd>N</kbd> Thêm task</span>
-            <span><kbd>⌘/Ctrl + \</kbd> Sidebar</span>
-            <span><kbd>?</kbd> Trợ giúp</span>
-            <span><kbd>Esc</kbd> Đóng</span>
-            <span><kbd>&lt;</kbd> Giao diện sáng</span>
-            <span><kbd>&gt;</kbd> Giao diện tối</span>
-            <span><kbd>M</kbd> Theo hệ thống</span>
-          </div>
-          <ThemePreference />
-          <section className="display-preference" aria-labelledby="project-label-preference">
-            <span>
-              <strong id="project-label-preference">Mở tên dự án khi chạm</strong>
-              <small>Mở hoặc thu gọn đồng loạt trong mọi view.</small>
-            </span>
-            <button
-              className="preference-switch"
-              type="button"
-              role="switch"
-              aria-checked={projectLabelsEnabled}
-              aria-labelledby="project-label-preference"
-              onClick={() => onProjectLabelsEnabledChange(!projectLabelsEnabled)}
-            >
-              <span aria-hidden="true" />
-            </button>
-          </section>
-          <p>Phím tắt sẽ tạm dừng khi bạn đang nhập nội dung.</p>
         </div>
       </div>
     </div>
@@ -2914,31 +2900,35 @@ function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
             <div><span>Cloud sync</span><h2 id="sync-title">Dữ liệu luôn bên bạn</h2></div>
             <button className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button>
           </div>
-          {!configured ? (
-            <div className="sync-message warning"><Icon name="zap" /><div><strong>Chưa kết nối Supabase</strong><p>Thêm hai biến môi trường trong <code>.env.local</code> và chạy migration để bật đồng bộ.</p></div></div>
-          ) : user ? (
-            <>
-              <div className="sync-hero"><span><Icon name={status === "error" || status === "offline" ? "zap" : "check"} size={27} /></span><h3>{syncStatusTitle(status)}</h3><p>{status === "offline" || status === "error" ? "Mọi thay đổi vẫn được giữ trên thiết bị và sẽ tự thử lại; bạn không cần nhập lại." : "Task, note và dự án của bạn sẽ xuất hiện trên mọi browser sau khi đăng nhập bằng cùng email."}</p></div>
-              <div className="signed-in-row"><div><small>Đang dùng</small><strong>{user.email}</strong></div><button className="text-button" onClick={onSignedOut}>Ngắt kết nối</button></div>
-            </>
-          ) : sent ? (
-            <div className="sync-hero otp-step">
-              <span><Icon name="check" size={27} /></span>
-              <h3>Nhập mã trong email</h3>
-              <p>Mình đã gửi mã đăng nhập tới <strong>{email}</strong>. Nhập mã mới nhất ngay tại đây; không cần mở liên kết.</p>
-              <form className="sync-form" onSubmit={verify}>
-                <label className="field"><span>Mã đăng nhập gồm 6 số</span><input className="otp-input" name="otp" type="text" autoFocus autoComplete="one-time-code" inputMode="numeric" enterKeyHint="done" minLength={EMAIL_OTP_LENGTH} maxLength={EMAIL_OTP_LENGTH} pattern="[0-9]{6}" required value={token} onChange={(event) => setToken(normalizeEmailOtp(event.target.value))} placeholder="000000" aria-label="Mã đăng nhập gồm 6 chữ số" /></label>
-                {error && <p className="form-error">{error}</p>}
-                <button className="primary-button" disabled={verifying || !isCompleteEmailOtp(token)}>{verifying ? "Đang xác nhận…" : "Xác nhận và đồng bộ"}</button>
-              </form>
-              <button className="text-button" onClick={() => { setSent(false); setToken(""); setError(""); }}>Gửi lại hoặc dùng email khác</button>
+          <div className="utility-body">
+            <div className="utility-body-inner">
+              {!configured ? (
+                <div className="sync-message warning"><Icon name="zap" /><div><strong>Chưa kết nối Supabase</strong><p>Thêm hai biến môi trường trong <code>.env.local</code> và chạy migration để bật đồng bộ.</p></div></div>
+              ) : user ? (
+                <>
+                  <div className="sync-hero"><span><Icon name={status === "error" || status === "offline" ? "zap" : "check"} size={27} /></span><h3>{syncStatusTitle(status)}</h3><p>{status === "offline" || status === "error" ? "Mọi thay đổi vẫn được giữ trên thiết bị và sẽ tự thử lại; bạn không cần nhập lại." : "Task, note và dự án của bạn sẽ xuất hiện trên mọi browser sau khi đăng nhập bằng cùng email."}</p></div>
+                  <div className="signed-in-row"><div><small>Đang dùng</small><strong>{user.email}</strong></div><button className="text-button" onClick={onSignedOut}>Ngắt kết nối</button></div>
+                </>
+              ) : sent ? (
+                <div className="sync-hero otp-step">
+                  <span><Icon name="check" size={27} /></span>
+                  <h3>Nhập mã trong email</h3>
+                  <p>Mình đã gửi mã đăng nhập tới <strong>{email}</strong>. Nhập mã mới nhất ngay tại đây; không cần mở liên kết.</p>
+                  <form className="sync-form" onSubmit={verify}>
+                    <label className="field"><span>Mã đăng nhập gồm 6 số</span><input className="otp-input" name="otp" type="text" autoFocus autoComplete="one-time-code" inputMode="numeric" enterKeyHint="done" minLength={EMAIL_OTP_LENGTH} maxLength={EMAIL_OTP_LENGTH} pattern="[0-9]{6}" required value={token} onChange={(event) => setToken(normalizeEmailOtp(event.target.value))} placeholder="000000" aria-label="Mã đăng nhập gồm 6 chữ số" /></label>
+                    {error && <p className="form-error">{error}</p>}
+                    <button className="primary-button" disabled={verifying || !isCompleteEmailOtp(token)}>{verifying ? "Đang xác nhận…" : "Xác nhận và đồng bộ"}</button>
+                  </form>
+                  <button className="text-button" onClick={() => { setSent(false); setToken(""); setError(""); }}>Gửi lại hoặc dùng email khác</button>
+                </div>
+              ) : (
+                <>
+                  <div className="sync-benefits"><div><span>01</span><p><strong>Website vẫn mở public</strong>Ai cũng xem được giao diện, không có màn hình login chặn lối vào.</p></div><div><span>02</span><p><strong>Dữ liệu của bạn vẫn riêng tư</strong>Mã email nhận diện bạn; RLS ngăn người khác đọc hoặc sửa danh sách.</p></div></div>
+                  <form className="sync-form" onSubmit={submit}><label className="field"><span>Email nhận mã đăng nhập</span><input type="email" required autoComplete="email" placeholder="ban@example.com" value={email} onChange={(event) => setEmail(event.target.value)} /></label>{error && <p className="form-error">{error}</p>}<button className="primary-button" disabled={sending || !email.trim()}>{sending ? "Đang gửi…" : "Gửi mã và bật đồng bộ"}</button></form>
+                </>
+              )}
             </div>
-          ) : (
-            <>
-              <div className="sync-benefits"><div><span>01</span><p><strong>Website vẫn mở public</strong>Ai cũng xem được giao diện, không có màn hình login chặn lối vào.</p></div><div><span>02</span><p><strong>Dữ liệu của bạn vẫn riêng tư</strong>Mã email nhận diện bạn; RLS ngăn người khác đọc hoặc sửa danh sách.</p></div></div>
-              <form className="sync-form" onSubmit={submit}><label className="field"><span>Email nhận mã đăng nhập</span><input type="email" required autoComplete="email" placeholder="ban@example.com" value={email} onChange={(event) => setEmail(event.target.value)} /></label>{error && <p className="form-error">{error}</p>}<button className="primary-button" disabled={sending || !email.trim()}>{sending ? "Đang gửi…" : "Gửi mã và bật đồng bộ"}</button></form>
-            </>
-          )}
+          </div>
         </div>
       </div>
     </div>

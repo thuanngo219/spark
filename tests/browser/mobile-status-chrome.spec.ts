@@ -1,4 +1,4 @@
-import { test, expect } from "./fixtures";
+import { test, expect, closeMobileSidebar } from "./fixtures";
 
 for (const theme of ["light", "dark"] as const) {
   test(`mobile ${theme}: browser colors follow theme and sidebar without changing preference`, async ({ page }) => {
@@ -47,7 +47,8 @@ for (const theme of ["light", "dark"] as const) {
     expect(await page.evaluate(() => localStorage.getItem("spark:theme:v1"))).toBe(theme);
     await expect(root).toHaveAttribute("data-theme", theme);
     await page.locator(".mobile-nav-backdrop").evaluate(el => Promise.all(el.getAnimations({ subtree: true }).map(a => a.finished)));
-    expect((await menu.getByRole("button", { name: "Đóng điều hướng" }).boundingBox())!.y).toBeGreaterThanOrEqual(59);
+    await expect(menu.getByRole("button", { name: "Đóng điều hướng" })).toHaveCount(0);
+    expect((await menu.locator(".sidebar-brand").boundingBox())!.y).toBeGreaterThanOrEqual(59);
     await page.screenshot({ path: `/tmp/spark-status-sidebar-${theme}.png` });
 
     // An open mobile menu must not tint desktop after crossing the breakpoint.
@@ -58,7 +59,7 @@ for (const theme of ["light", "dark"] as const) {
     await expect(page.locator("main")).toHaveCSS("color-scheme", theme);
     await page.setViewportSize({ width: 390, height: 844 });
     await expect(root).toHaveCSS("background-color", "rgb(17, 23, 66)");
-    await menu.getByRole("button", { name: "Đóng điều hướng" }).click();
+    await closeMobileSidebar(page);
     await expect(root).toHaveCSS("background-color", canvas);
     await expect(root).toHaveCSS("color-scheme", theme);
     await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", hex);
