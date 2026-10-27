@@ -2191,9 +2191,11 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
     const visualViewport = window.visualViewport;
 
     const revealInput = () => {
+      const activeElement = document.activeElement;
+      if (activeElement !== inputRef.current && activeElement && backdropRef.current?.contains(activeElement)) return;
       inputRef.current?.focus({ preventScroll: true });
       window.requestAnimationFrame(() => {
-        inputRef.current?.scrollIntoView({ block: "center", inline: "nearest" });
+        if (document.activeElement === inputRef.current) inputRef.current?.scrollIntoView({ block: "center", inline: "nearest" });
       });
     };
 
@@ -2204,7 +2206,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
       backdrop.style.bottom = "auto";
       backdrop.style.height = `${visualViewport.height}px`;
       window.requestAnimationFrame(() => {
-        inputRef.current?.scrollIntoView({ block: "center", inline: "nearest" });
+        if (document.activeElement === inputRef.current) inputRef.current?.scrollIntoView({ block: "center", inline: "nearest" });
       });
     };
 

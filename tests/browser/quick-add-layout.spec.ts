@@ -23,6 +23,7 @@ for (const width of [320, 390, 1280]) {
       await title.fill("Kiểm tra quick-add giữa màn hình");
       await page.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
       await centered(800);
+      await expect(form.locator(".content-editor-input")).toHaveCSS("height", "300px");
       if (width < 700) {
         await page.evaluate(() => {
           Object.defineProperty(window.visualViewport!, "height", { configurable: true, value: 360 });

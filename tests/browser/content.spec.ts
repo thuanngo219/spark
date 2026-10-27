@@ -102,7 +102,7 @@ test("quick-add defaults follow view and type, preserve explicit choices", async
   await expect(dates.nth(1)).toHaveValue("");
 });
 
-test("mobile 390px: formatting toolbar, 160px editor and no overflow", async ({ page }) => {
+test("mobile 390px: formatting toolbar, 300px editor and no overflow", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   const editor = await openQuickAdd(page);
   await editor.fill("Nội dung mobile");
@@ -110,7 +110,7 @@ test("mobile 390px: formatting toolbar, 160px editor and no overflow", async ({ 
   await page.getByRole("button", { name: "In đậm", exact: true }).click();
   await expect(editor.locator("strong")).toHaveText("Nội dung mobile");
   const box = await editor.boundingBox();
-  expect(box?.height).toBe(160);
+  expect(box?.height).toBe(300);
   for (const name of ["In đậm", "In nghiêng", "Gạch chân"]) {
     const button = await page.getByRole("button", { name, exact: true }).boundingBox();
     expect(button!.height).toBeGreaterThanOrEqual(44);
@@ -415,7 +415,7 @@ for (const width of [1280, 390]) {
     expect(await title.evaluate(e => {
       const s = getComputedStyle(e);
       return [s.borderTopWidth, s.borderRightWidth, s.borderBottomWidth, s.borderLeftWidth, s.outlineStyle, s.backgroundColor, s.boxShadow];
-    })).toEqual(["0px", "0px", "1px", "0px", "none", "rgba(0, 0, 0, 0)", "none"]);
+    })).toEqual(["0px", "0px", width < 700 ? "1px" : "0px", "0px", "none", "rgba(0, 0, 0, 0)", "none"]);
     await title.fill("Minimal editor saved");
     await page.getByRole("button", { name: "Sửa Nội dung", exact: true }).click();
     const input = page.getByRole("textbox", { name: "Nội dung task", exact: true });

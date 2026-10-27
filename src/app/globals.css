@@ -303,7 +303,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .content-toolbar button:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 .content-counter { margin-left: auto; color: var(--muted); font-size: .625rem; white-space: nowrap; }
 .content-editor-body { min-height: 0; }
-.content-editor-input { height: 160px; overflow-y: auto; overscroll-behavior: contain; padding: 11px 13px; outline: none; color: var(--ink); font-size: .8125rem; font-weight: 400; line-height: 1.6; overflow-wrap: anywhere; white-space: pre-wrap; }
+.content-editor-input { height: 300px; overflow-y: auto; overscroll-behavior: contain; padding: 11px 13px; outline: none; color: var(--ink); font-size: .8125rem; font-weight: 400; line-height: 1.6; overflow-wrap: anywhere; white-space: pre-wrap; }
 .content-editor-input p, .formatted-content p { margin: 0; }
 .content-editor-input strong, .detail-description strong { font-weight: 700; }
 .content-editor .form-error { flex: 0 0 auto; margin: 0; padding: 5px 12px; }
@@ -544,10 +544,11 @@ button:focus-visible { filter: brightness(.88); }
   .detail-main-inner { display: flex; flex-direction: column; flex: 0 0 auto; width: var(--detail-column-width); min-height: 0; height: 100%; }
   .item-detail-sheet .detail-content { padding-top: 0; }
   .item-detail-sheet .detail-description { position: relative; }
-  .item-detail-sheet .content-toolbar { position: absolute; top: 14.4px; left: 80px; right: 70px; height: 28px; padding: 0 6px; flex-wrap: nowrap; }
-  .item-detail-sheet .content-toolbar button { width: 24px; height: 24px; }
+  .item-detail-sheet .content-toolbar { position: absolute; top: 11.4px; left: 80px; right: 70px; height: 34px; padding: 0 6px; flex-wrap: nowrap; }
+  .item-detail-sheet .content-toolbar button { width: 30px; height: 30px; }
   .item-detail-sheet .content-counter { font-size: 10px; white-space: nowrap; }
-  .item-detail-sheet .content-editor-input { padding: 0; font-weight: 450; }
+  .item-detail-sheet .content-editor-input { padding: 0; color: var(--text-secondary, #4e5569); font-weight: 450; }
+  .detail-inline-editor input { border-bottom: 0; color: var(--heading); }
   .item-detail-sheet .editor-header > .icon-button { position: absolute; top: 20px; right: 20px; }
   .item-detail-sheet .detail-metadata { padding-inline: max(22px, calc((100% - var(--detail-column-width)) / 2 + 22px)); }
   .item-detail-sheet .detail-date-error { padding-inline: max(22px, calc((100% - var(--detail-column-width)) / 2 + 22px)); }

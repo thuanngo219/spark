@@ -35,6 +35,13 @@ for (const { width, theme, type, expanded } of cases) {
     const metadata = sheet.locator(".detail-metadata");
     const metaBox = (await metadata.boundingBox())!;
     expect(metaBox.y + metaBox.height).toBe(800);
+    const titleColor = await sheet.locator(".detail-title-row > p").evaluate(el => getComputedStyle(el).color);
+    await sheet.getByRole("button", { name: "Sửa tên", exact: true }).click();
+    const titleInput = sheet.locator(".detail-title-row > input");
+    await expect(titleInput).toHaveCSS("border-bottom-width", "0px");
+    await expect(titleInput).toHaveCSS("color", titleColor);
+    await expect(titleInput).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await sheet.getByRole("button", { name: "Lưu", exact: true }).click();
     const titleRow = (await sheet.locator(".detail-title-row").boundingBox())!;
     const heading = (await sheet.locator(".detail-field-heading").boundingBox())!;
     const readStart = (await sheet.locator(".detail-description .detail-read-row").boundingBox())!;
@@ -49,7 +56,8 @@ for (const { width, theme, type, expanded } of cases) {
     expect(editStart.y).toBeCloseTo(readStart.y, 1);
     expect(editStart.x).toBeCloseTo(readStart.x, 1);
     const toolbar = (await sheet.locator(".content-toolbar").boundingBox())!;
-    expect(toolbar.y).toBeCloseTo(heading.y, 1);
+    expect(toolbar.height).toBe(34);
+    expect(toolbar.y + toolbar.height / 2).toBeCloseTo(heading.y + heading.height / 2, 1);
     expect(toolbar.y + toolbar.height).toBeLessThanOrEqual(readStart.y);
     await expect(sheet.getByRole("button", { name: "In đậm", exact: true })).toBeInViewport();
     const text = "Một dòng nội dung dài để kiểm tra vùng cuộn.\n".repeat(80);
@@ -62,7 +70,9 @@ for (const { width, theme, type, expanded } of cases) {
     expect(await close.boundingBox()).toEqual(closeBox);
     expect(await sheet.getByRole("button", { name: "Sửa Nội dung" }).boundingBox()).toEqual(editBefore);
     await expect(sheet.getByRole("button", { name: "Xóa mục" })).toBeInViewport();
+    const contentColor = await sheet.locator(".formatted-content").evaluate(el => getComputedStyle(el).color);
     await sheet.getByRole("button", { name: "Sửa Nội dung" }).click();
+    await expect(input).toHaveCSS("color", contentColor);
     expect((await input.innerText()).replace(/\s+/g, " ").trim()).toBe(text.replace(/\s+/g, " ").trim());
     expect((await input.boundingBox())!.height).toBeGreaterThan(150);
     await sheet.getByRole("button", { name: "Quan Trọng", exact: true }).click();
