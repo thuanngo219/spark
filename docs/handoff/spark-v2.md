@@ -1,5 +1,11 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-184 — Neo chi tiết desktop và căn giữa quick-add (2026-10-27)
+
+Desktop: hàng tên task/note bắt đầu ở y=80px; cột chi tiết luôn dùng cùng chiều cao khả dụng ở cả trạng thái đọc/sửa, thay cách căn giữa nội dung ngắn của D-183. Khi sửa Nội dung, toolbar B/I/U chuyển vào cùng hàng với label Nội dung; padding vùng nhập bằng vùng đọc để không đẩy chữ hoặc tên mục. Giữ metadata ở đáy và X ở góc phải. Mobile giữ focus mode sửa nội dung hiện hành. Quick-add căn giữa ngang/dọc trên cả desktop và mobile, giới hạn chiều cao form trong vùng nhìn thấy và cho form cuộn khi mở bàn phím hoặc có nhiều nội dung.
+
+Kiểm tra D-184: lint/build (bao gồm TypeScript), 175 test logic và 28/28 browser case đạt. Bao phủ task/note, sáng/tối, mốc 80px và tọa độ đọc/sửa không đổi, quick-add căn giữa ở 320/390/1280px, viewport bàn phím giả lập 360px và nút Thêm truy cập được bằng cuộn. Đã xem ảnh desktop/mobile; chưa thử bàn phím iPhone thật. File: globals.css, desktop-detail.spec.ts, quick-add-layout.spec.ts và tài liệu dự án.
+
 ## D-183 — Chi tiết desktop toàn màn hình (2026-10-27)
 
 Chi tiết task/note trên desktop phủ toàn viewport bằng nền canvas sáng/tối, bỏ box, bo góc và shadow. Bỏ nhãn TASK/GHI CHÚ và heading “Chi tiết task/ghi chú” ở cả desktop/mobile; dialog dùng tên thật của mục làm nhãn truy cập. Cột tên + Nội dung dùng cùng độ rộng canvas danh sách theo viewport và trạng thái sidebar (token --canvas-width). Cụm ngắn căn giữa phần màn hình còn lại; cụm dài giới hạn chiều cao và cuộn riêng phần Nội dung, giữ nút sửa dễ truy cập. Khi sửa Nội dung, editor tận dụng chiều cao khả dụng. Metadata và Xóa neo sát đáy, căn theo cùng cột; nút X luôn ở góc trên bên phải, cách mép 20px. Khóa cuộn và tương tác danh sách nền cả desktop, khôi phục khi đóng. Mobile giữ bố cục và focus mode hiện hành; wrapper mới dùng display:contents trên mobile.
