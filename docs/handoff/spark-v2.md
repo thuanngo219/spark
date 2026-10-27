@@ -1,5 +1,13 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-174 — Bố cục loading (2026-10-27)
+
+Theo yêu cầu mới nhất: logo còn 80% kích thước cũ (tối đa 256px, co tương ứng trên màn hẹp), căn giữa theo cả hai trục màn hình. Thanh tiến trình 3px sát mép trên, toàn chiều ngang; nhãn trạng thái và phần trăm căn giữa bên dưới, chừa safe-area để chữ không bị che. Nút thử lại/dùng cache căn giữa bên dưới nhãn.
+
+Giữ fade 500ms và reveal 600ms Quint, reduced motion, trạng thái lỗi/offline và đồng bộ theme lúc reveal. Mobile mở đúng 3px đầu của browser-top-surface bằng clip-path chỉ trong lúc loading để hiện progress; vùng lấy mẫu y=4/5 của D-172 vẫn giữ màu theme. Không đổi màu status bar hoặc chiều cao safe-area.
+
+Kiểm tra D-174: lint/typecheck/build, 175 test logic và 20/20 browser case startup/status đều đạt. Đo ở 320/390/1280px: logo lần lượt rộng 204.8/256/256px, tâm khớp tâm viewport; bar x=0/y=0/rộng bằng viewport, cao 3px, pixel turquoise hiển thị ở mép trên; caption căn giữa. Đã xem screenshot mobile. File runtime: StartupScreen.tsx và globals.css; tài liệu brand/brief/UI/implementation/decision/handoff cùng cập nhật.
+
 ### D-173 — Giảm blur phía sau sidebar (2026-10-27)
 
 Theo yêu cầu mới, sidebar dùng backdrop-filter blur(10px) và -webkit-backdrop-filter blur(10px), thay 20px của D-171. Giữ nền phủ trong suốt, không làm tối nội dung. Không đổi blur header hoặc overlay dialog.

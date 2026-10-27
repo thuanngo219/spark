@@ -33,14 +33,16 @@ export function StartupScreen({ state, canContinue, onContinue, onRetry, onCompl
       onAnimationEnd={(event) => { if (event.animationName === "startup-reveal") onComplete(); }}>
       <div className="startup-content">
         <Image src="/brand/spark-logo-negative-v2.svg" alt="Spark" width={320} height={120} priority className="startup-logo" />
-        <div className="startup-progress" role="progressbar" aria-label="Tiến trình khởi động" aria-valuemin={0} aria-valuemax={100} aria-valuenow={state.progress} aria-valuetext={`${state.progress}% · ${state.label}`}>
-          <span style={{ width: `${state.progress}%` }} />
+        <div className="startup-loading">
+          <div className="startup-progress" role="progressbar" aria-label="Tiến trình khởi động" aria-valuemin={0} aria-valuemax={100} aria-valuenow={state.progress} aria-valuetext={`${state.progress}% · ${state.label}`}>
+            <span style={{ width: `${state.progress}%` }} />
+          </div>
+          <div className="startup-caption" role="status"><span>{state.label}</span><span>{state.progress}%</span></div>
+          {state.status === "error" && <div className="startup-actions">
+            <button type="button" onClick={onRetry}>Thử lại</button>
+            {canContinue && <button type="button" onClick={onContinue}>Dùng dữ liệu đã lưu</button>}
+          </div>}
         </div>
-        <div className="startup-caption" role="status"><span>{state.label}</span><span>{state.progress}%</span></div>
-        {state.status === "error" && <div className="startup-actions">
-          <button type="button" onClick={onRetry}>Thử lại</button>
-          {canContinue && <button type="button" onClick={onContinue}>Dùng dữ liệu đã lưu</button>}
-        </div>}
       </div>
     </div>
   );

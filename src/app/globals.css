@@ -492,13 +492,14 @@ button:focus-visible { filter: brightness(.88); }
 .mobile-nav-backdrop, .mobile-dock, .mobile-floating-controls { display: none; }
 .startup-screen { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; isolation: isolate; color: #fff; }
 .startup-screen::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--navy-900); transform-origin: right center; }
-.startup-content { width: min(320px, calc(100vw - 64px)); }
-.startup-logo { display: block; width: 100%; height: auto; }
-.startup-progress { height: 3px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.2); }
+.startup-content { position: absolute; inset: 0; display: grid; place-items: center; }
+.startup-logo { display: block; width: min(256px, calc(80vw - 51.2px)); height: auto; }
+.startup-loading { position: absolute; inset: 0 0 auto; }
+.startup-progress { height: 3px; overflow: hidden; background: rgba(255,255,255,.2); }
 .startup-progress > span { display: block; height: 100%; background: var(--turquoise); transition: width var(--motion-duration, 180ms) var(--ease); }
-.startup-caption { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-top: 12px; font-size: .6875rem; color: rgba(255,255,255,.8); }
+.startup-caption { display: flex; align-items: flex-start; justify-content: center; gap: 12px; margin-top: calc(12px + env(safe-area-inset-top)); padding-inline: max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right)); text-align: center; font-size: .6875rem; color: rgba(255,255,255,.8); }
 .startup-caption > span:last-child { flex-shrink: 0; font-variant-numeric: tabular-nums; }
-.startup-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.startup-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 20px 16px 0; }
 .startup-actions button { min-height: 44px; border: 1px solid rgba(255,255,255,.3); border-radius: 999px; padding: 8px 16px; background: transparent; color: #fff; font: inherit; font-size: .75rem; }
 .startup-actions button:hover { background: rgba(255,255,255,.1); }
 .startup-screen.is-ready .startup-content { animation: startup-logo-out var(--motion-duration, 500ms) var(--ease) forwards; }
@@ -542,10 +543,11 @@ button:focus-visible { filter: brightness(.88); }
 }
 
 @media (max-width: 699px) {
+  body:has(.startup-screen) { --startup-edge-clearance: 3px; }
   /* WebKit samples fixed top surfaces. Keep an opaque, non-animated edge above
      the splash/blur layers, with a box taller than its 10px border exclusion.
      No hit target or layout height; existing safe-area padding protects content. */
-  .browser-top-surface { display: block; position: fixed; inset: 0 0 auto; height: max(12px, env(safe-area-inset-top)); z-index: 1001; background: var(--browser-background, var(--canvas)); pointer-events: none; }
+  .browser-top-surface { display: block; position: fixed; inset: 0 0 auto; height: max(12px, env(safe-area-inset-top)); z-index: 1001; background: var(--browser-background, var(--canvas)); clip-path: inset(var(--startup-edge-clearance, 0px) 0 0); pointer-events: none; }
   html { font-size: 120%; }
   .app-shell, .app-shell.sidebar-compact { display: block; }
   .app-shell > .sidebar { display: none; }
