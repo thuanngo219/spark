@@ -2351,13 +2351,8 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
     const viewport = window.visualViewport;
     const motion = installDetailMotion(backdrop, () => closeRef.current());
     detailMotionRef.current = motion;
-    let unlockScroll: (() => void) | undefined;
+    const unlockScroll = lockDetailScroll(backdrop);
     const fitViewport = () => {
-      if (mobile.matches && !unlockScroll) unlockScroll = lockDetailScroll(backdrop);
-      else if (!mobile.matches && unlockScroll) {
-        unlockScroll();
-        unlockScroll = undefined;
-      }
       if (mobile.matches && viewport) {
         backdrop.style.setProperty("--detail-viewport-height", `${viewport.height}px`);
         backdrop.style.setProperty("--detail-viewport-top", `${viewport.offsetTop}px`);
@@ -2485,59 +2480,63 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
         if (dismiss && !window.matchMedia("(max-width: 699px)").matches) closeDetail();
       }}
     >
-      <section className={`editor-sheet item-detail-sheet ${editingField === "content" ? "editing-content" : ""}`} role="dialog" aria-modal="true" aria-labelledby={editingField === "content" ? "item-content-title" : "item-detail-title"} onClick={(event) => event.stopPropagation()}>
-        <div className="editor-header"><div><span>{item.type === "task" ? "Task" : "Ghi chú"}</span><h2 id="item-detail-title">{item.type === "task" ? "Chi tiết task" : "Chi tiết ghi chú"}</h2></div><button type="button" className="icon-button" onClick={closeDetail} aria-label="Đóng"><Icon name="close" /></button></div>
+      <section className={`editor-sheet item-detail-sheet ${editingField === "content" ? "editing-content" : ""}`} role="dialog" aria-modal="true" aria-label={editingField === "content" ? "Nội dung" : title} onClick={(event) => event.stopPropagation()}>
+        <div className="detail-main">
+          <div className="detail-main-inner">
+            <div className="editor-header"><button type="button" className="icon-button" onClick={closeDetail} aria-label="Đóng"><Icon name="close" /></button></div>
 
-        <div className="detail-content">
-          <section className={`detail-text-block ${editingField === "title" ? "editing" : ""}`}>
-            {editingField === "title" ? (
-              <>
-                <div className="detail-inline-editor detail-title-row">
-                  {titleMarker}
-                  <input autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} onBlur={() => {
-                    if (window.matchMedia("(max-width: 699px)").matches) saveTitle(false);
-                  }} onKeyDown={(event) => {
-                    if (event.key === "Enter") { event.preventDefault(); saveTitle(); }
-                    if (event.key === "Escape") { setTitle(item.title); setTitleError(false); setEditingField(null); }
-                  }} aria-label={item.type === "task" ? "Tên task" : "Tên ghi chú"} />
-                  <div className="detail-edit-actions">
-                    <button type="button" className="detail-icon-action save" onClick={() => saveTitle()} aria-label="Lưu"><Icon name="check" size={18} /></button>
-                    <button type="button" className="detail-icon-action cancel" onClick={() => { setTitle(item.title); setTitleError(false); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
-                  </div>
-                </div>
-                {titleError && <p className="form-error" role="status">Tên không được để trống.</p>}
-              </>
-            ) : (
-              <div className="detail-read-row detail-title-row">
-                {titleMarker}
-                <p>{title}</p>
-                <button type="button" className="detail-icon-action edit" onClick={() => switchField("title")} aria-label="Sửa tên"><Icon name="edit" size={17} /></button>
-              </div>
-            )}
-          </section>
-
-          <section className={`detail-text-block detail-description ${editingField === "content" ? "editing" : ""}`}>
-              <div className="detail-field-heading">
-                <span className="detail-label" id="item-content-title">Nội dung</span>
-                {editingField === "content" ? (
-                  <div className="detail-edit-actions">
-                    <button type="button" className="detail-icon-action save" onClick={() => saveContent()} aria-label="Lưu Nội dung"><Icon name="check" size={18} /></button>
-                    <button type="button" className="detail-icon-action cancel" onClick={cancelContent} aria-label="Hủy"><Icon name="close" size={18} /></button>
-                  </div>
+            <div className="detail-content">
+              <section className={`detail-text-block ${editingField === "title" ? "editing" : ""}`}>
+                {editingField === "title" ? (
+                  <>
+                    <div className="detail-inline-editor detail-title-row">
+                      {titleMarker}
+                      <input autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} onBlur={() => {
+                        if (window.matchMedia("(max-width: 699px)").matches) saveTitle(false);
+                      }} onKeyDown={(event) => {
+                        if (event.key === "Enter") { event.preventDefault(); saveTitle(); }
+                        if (event.key === "Escape") { setTitle(item.title); setTitleError(false); setEditingField(null); }
+                      }} aria-label={item.type === "task" ? "Tên task" : "Tên ghi chú"} />
+                      <div className="detail-edit-actions">
+                        <button type="button" className="detail-icon-action save" onClick={() => saveTitle()} aria-label="Lưu"><Icon name="check" size={18} /></button>
+                        <button type="button" className="detail-icon-action cancel" onClick={() => { setTitle(item.title); setTitleError(false); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
+                      </div>
+                    </div>
+                    {titleError && <p className="form-error" role="status">Tên không được để trống.</p>}
+                  </>
                 ) : (
-                  <button type="button" className="detail-icon-action edit" onClick={() => switchField("content")} aria-label="Sửa Nội dung"><Icon name="edit" size={17} /></button>
+                  <div className="detail-read-row detail-title-row">
+                    {titleMarker}
+                    <p>{title}</p>
+                    <button type="button" className="detail-icon-action edit" onClick={() => switchField("title")} aria-label="Sửa tên"><Icon name="edit" size={17} /></button>
+                  </div>
                 )}
-              </div>
-              {editingField === "content" ? (
-                <div className="detail-inline-editor">
-                  <ContentEditor focusHandle={contentEditorRef} value={description} format={descriptionFormat} label={item.type === "task" ? "Nội dung task" : "Nội dung ghi chú"} onChange={(content) => { setDescription(content.description ?? ""); setDescriptionFormat(content.descriptionFormat); }} onCancel={cancelContent} />
-                </div>
-              ) : (
-                <div className="detail-read-row align-start">
-                  <div className={`formatted-content ${description ? "" : "empty"}`}>{description ? <FormattedContent value={description} format={descriptionFormat} /> : "Chưa có nội dung"}</div>
-                </div>
-              )}
-          </section>
+              </section>
+
+              <section className={`detail-text-block detail-description ${editingField === "content" ? "editing" : ""}`}>
+                  <div className="detail-field-heading">
+                    <span className="detail-label" id="item-content-title">Nội dung</span>
+                    {editingField === "content" ? (
+                      <div className="detail-edit-actions">
+                        <button type="button" className="detail-icon-action save" onClick={() => saveContent()} aria-label="Lưu Nội dung"><Icon name="check" size={18} /></button>
+                        <button type="button" className="detail-icon-action cancel" onClick={cancelContent} aria-label="Hủy"><Icon name="close" size={18} /></button>
+                      </div>
+                    ) : (
+                      <button type="button" className="detail-icon-action edit" onClick={() => switchField("content")} aria-label="Sửa Nội dung"><Icon name="edit" size={17} /></button>
+                    )}
+                  </div>
+                  {editingField === "content" ? (
+                    <div className="detail-inline-editor">
+                      <ContentEditor focusHandle={contentEditorRef} value={description} format={descriptionFormat} label={item.type === "task" ? "Nội dung task" : "Nội dung ghi chú"} onChange={(content) => { setDescription(content.description ?? ""); setDescriptionFormat(content.descriptionFormat); }} onCancel={cancelContent} />
+                    </div>
+                  ) : (
+                    <div className="detail-read-row align-start">
+                      <div className={`formatted-content ${description ? "" : "empty"}`}>{description ? <FormattedContent value={description} format={descriptionFormat} /> : "Chưa có nội dung"}</div>
+                    </div>
+                  )}
+              </section>
+            </div>
+          </div>
         </div>
 
         {dateError && <p className="form-error detail-date-error" role="status">Ngày đến hạn không thể trước ngày bắt đầu. Thay đổi ngày chưa được lưu.</p>}

@@ -20,7 +20,7 @@ for (const width of [320, 390]) {
         await expect(sheet.locator(".detail-description")).toHaveCSS("padding-left", "0px");
         await expect(sheet).toHaveCSS("border-radius", "0px");
         await expect(sheet).toHaveCSS("box-shadow", "none");
-        await expect(sheet.locator(".editor-header > div > span")).toHaveCSS("color", theme === "dark" ? "rgb(160, 168, 188)" : "rgb(115, 120, 141)");
+        await expect(sheet.locator(".editor-header h2, .editor-header > div")).toHaveCount(0);
         await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
         await expect(page.getByRole("button", { name: "Đóng", exact: true })).toBeInViewport();
         const read = sheet.locator(".detail-description .detail-read-row");

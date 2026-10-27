@@ -104,7 +104,7 @@ test("reduced motion keeps edge-close without sliding", async ({ page }) => {
   await expect(backdrop(page)).toBeHidden();
 });
 
-test("desktop keeps its popup and ignores edge swipes", async ({ page }) => {
+test("desktop fullscreen detail ignores mobile edge swipes", async ({ page }) => {
   await load(page); await open(page); await settled(page);
   await expect(backdrop(page)).toHaveCSS("animation-name", "fade-in");
   expect(await swipe(page, 8, 150)).toBe(0);

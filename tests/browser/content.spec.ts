@@ -67,7 +67,7 @@ test("4000 characters including newlines; rejects 4001; fixed edit header", asyn
   await page.getByRole("button", { name: "Hủy", exact: true }).click();
   await openTestItem(page, "Browser long test");
   const sheet = await page.locator(".item-detail-sheet").boundingBox();
-  expect(sheet?.width).toBe(880);
+  expect(sheet?.width).toBe(page.viewportSize()!.width);
   const edit = page.getByRole("button", { name: "Sửa Nội dung" });
   await page.locator(".item-detail-sheet").evaluate((element) => Promise.all(element.getAnimations().map((animation) => animation.finished)));
   const before = await edit.boundingBox();
@@ -141,7 +141,7 @@ test("field switching saves drafts, dates reject invalid ranges, editor fills av
   await title.fill("Saved switched title");
   await page.getByRole("button", { name: "Sửa Nội dung" }).click();
   await page.locator(".item-detail-sheet").evaluate((e) => Promise.all(e.getAnimations().map(a => a.finished)));
-  expect((await page.locator(".item-detail-sheet").boundingBox())!.height).toBeCloseTo(688, 0);
+  expect((await page.locator(".item-detail-sheet").boundingBox())!.height).toBe(page.viewportSize()!.height);
   await page.screenshot({ path: "/tmp/spark-refined-editor-desktop.png" });
   expect(await detail.evaluate(e => getComputedStyle(e).backgroundColor)).toBe("rgba(0, 0, 0, 0)");
   await page.getByRole("button", { name: "Hủy", exact: true }).click();
@@ -478,8 +478,10 @@ for (const width of [1280]) {
       await expect(editor).toBeVisible();
       await page.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
       await expect(page.locator(".detail-description .formatted-content")).toHaveText(draft);
-      // A genuine backdrop click still closes, and the saved draft survives reload.
+      // Fullscreen has no dismissible outer backdrop; only Close exits.
       await page.mouse.click(outside.x, outside.y);
+      await expect(sheet).toBeVisible();
+      await sheet.getByRole("button", { name: "Đóng", exact: true }).click();
       await expect(sheet).toBeHidden();
       await page.reload();
       await page.getByRole("region", { name: "Khởi động Spark" }).waitFor({ state: "hidden" });
