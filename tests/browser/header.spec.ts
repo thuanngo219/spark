@@ -64,7 +64,7 @@ for (const width of [1280, 390, 320]) {
         await expect(header.locator(".eyebrow")).toHaveCSS("letter-spacing", "normal");
         await expect(header.locator(".view-project-band")).toHaveCSS("height", "5px");
         await expect(header).toHaveCSS("padding-left", "15px");
-        await expect(header).toHaveCSS("padding-top", "15px");
+        await expect(header).toHaveCSS("padding-top", "8px");
         await expect(header.locator(".view-title-row")).toHaveCSS("gap", "4px");
         expect(await title.evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeCloseTo(30, 1);
         const menu = header.getByRole("button", { name: "Mở sidebar", exact: true });

@@ -337,3 +337,7 @@ Bấm Sửa Nội dung mount editor và đặt caret cuối tài liệu ngay tro
 ### Motion chi tiết mobile — D-167
 
 `detail-motion.ts` quản lý touch gesture và exit/return với Web Animations API; `globals.css` giữ entry và nguồn duration/easing. `ItemEditor` giữ controller trong ref, cleanup listener/animation khi unmount và khôi phục khóa nền sau exit. Gesture chỉ nhận touch từ mép trái, xác nhận hướng ngang trước khi preventDefault; bỏ qua selection/control và reduced motion. Desktop không đổi. Regression: `tests/browser/mobile-detail-motion.spec.ts`.
+
+### Browser chrome mobile — D-168
+
+`themeBootstrap` sở hữu duy nhất theme-color/color-scheme meta và nền html/body trước paint. `useSidebarChrome` phát sự kiện từ state menu; bootstrap xử lý breakpoint để không giữ Navy trên desktop và không đổi preference. Cleanup trả về nền app. Next `appleWebApp: true` không tạo status-bar-style; object form tự thêm `default` nên title chuyển sang `metadata.other`. Manifest màu tĩnh #F7F8FA chỉ là fallback; dark/theme tùy chỉnh do bootstrap quyết định. CSS chỉ giảm padding trên hai selector gốc, giữ safe-area. Test `mobile-status-chrome.spec.ts` kiểm tra Chrome/DOM, không mô phỏng được system status bar iOS.

@@ -18,11 +18,10 @@ export const metadata: Metadata = {
     shortcut: [{ url: "/icons/spark-favicon-v2-32.png", sizes: "32x32", type: "image/png" }],
     apple: [{ url: "/icons/spark-apple-v2-180.png", sizes: "180x180", type: "image/png" }],
   },
-  appleWebApp: {
-    capable: true,
-    title: "Spark",
-    statusBarStyle: "default",
-  },
+  // Object form makes Next inject the legacy "default" status-bar style.
+  // Let current iOS derive its status bar from the page background instead.
+  appleWebApp: true,
+  other: { "apple-mobile-web-app-title": "Spark" },
   openGraph: {
     title: "Spark — Make todo easy & fun",
     description: "Biết hôm nay cần làm gì. Ghi lại điều đáng nhớ.",

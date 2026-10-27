@@ -4,7 +4,7 @@ import { StartupScreen, type StartupState } from "@/components/StartupScreen";
 import { EMPTY_SPARK_DATA, removePristineDemoSeed, withStartupTimeout } from "@/lib/startup";
 
 import { PROJECT_COLORS, normalizeProjectColor } from "@/lib/project-colors";
-import { ThemePreference } from "@/components/ThemePreference";
+import { ThemePreference, useSidebarChrome } from "@/components/ThemePreference";
 
 import Image from "next/image";
 import ContentEditor, { type ContentEditorHandle } from "@/components/ContentEditor";
@@ -224,6 +224,7 @@ export function SparkApp() {
   const [attentionOpen, setAttentionOpen] = useState(true);
   const [projectsOpen, setProjectsOpen] = useState(true);
   const [mobileNav, setMobileNav] = useState(false);
+  useSidebarChrome(mobileNav);
   const [helpOpen, setHelpOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
   const [itemDisplayMode, setItemDisplayMode] = useState<ItemDisplayMode>("all");

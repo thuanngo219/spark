@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/",
     scope: "/",
     display: "standalone",
-    background_color: "#F5F7FA",
-    theme_color: "#111742",
+    background_color: "#F7F8FA",
+    theme_color: "#F7F8FA",
     lang: "vi",
     icons: [
       { src: "/icons/spark-pwa-v2-192.png", sizes: "192x192", type: "image/png", purpose: "any" },

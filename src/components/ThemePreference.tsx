@@ -49,3 +49,10 @@ export function ThemeSync() {
   useLayoutEffect(() => { window.dispatchEvent(new Event("spark:theme-refresh")); }, []);
   return null;
 }
+
+export function useSidebarChrome(open: boolean) {
+  useLayoutEffect(() => {
+    window.dispatchEvent(new CustomEvent("spark:sidebar-chrome", { detail: open }));
+    return () => { window.dispatchEvent(new CustomEvent("spark:sidebar-chrome", { detail: false })); };
+  }, [open]);
+}

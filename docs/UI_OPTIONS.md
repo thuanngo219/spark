@@ -199,3 +199,7 @@ Trong focus mode sửa Nội dung mobile, bỏ padding đáy 12px và safe-area 
 ## D-166 — Focus trực tiếp và chống cuộn vượt biên Nội dung mobile (2026-10-26)
 
 Bấm Sửa Nội dung mount editor và đặt caret cuối tài liệu ngay trong click/tap, focus đồng bộ để iOS có thể mở keyboard theo user gesture; không dùng autofocus qua timeout. Chỉ cuộn editor tới cuối, không cuộn trang. Editor chỉ mount sau tương tác người dùng, không render Tiptap trên server. Trong focus mode mobile, touchmove một ngón theo chiều dọc bị chặn khi nội dung không đủ cuộn hoặc vuốt ra ngoài đầu/cuối vùng nhập; vuốt vào vùng có thể cuộn vẫn native. Listener chỉ trên backdrop chi tiết, cleanup khi đóng/đổi breakpoint; không chặn tap, pinch, vuốt ngang, nhấn giữ hoặc kéo vùng chọn. Lưu/Hủy và định dạng B/I/U không đổi. Bổ sung D-164/D-165; không thay thanh bàn phím iOS.
+
+### D-168 — Status bar và khoảng trống mobile (2026-10-27)
+
+Nền chrome cùng canvas sáng #F7F8FA/tối #121622; khi mở sidebar mobile dùng Navy #111742, đóng khôi phục đúng theme, không đổi preference. Padding trên header/sidebar là 8px cộng safe-area; các cạnh khác giữ nguyên. Bỏ meta status-bar-style cũ, để iOS chọn cách hiển thị theo nền và color-scheme. Không hứa thu nhỏ/ẩn vùng đồng hồ hoặc Dynamic Island do hệ thống quản lý.

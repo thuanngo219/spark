@@ -10,5 +10,12 @@
         "reason": "User confirmed: docs/DECISIONS.md D-027 and brand-guideline.md Typography specify Inter for Spark UI and body text."
       }
     ]
+  },
+  "hook": {
+    "enabled": false,
+    "limits": {
+      "maxFindings": 5,
+      "maxChars": 8000
+    }
   }
 }

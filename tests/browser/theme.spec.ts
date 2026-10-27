@@ -115,8 +115,6 @@ for (const width of [1280, 390]) {
     await expect(editor).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
     await expect(editor).toHaveCSS("color", "rgb(233, 236, 245)");
     await editor.fill("Nội dung đã sửa trong giao diện tối.");
-    await page.getByRole("dialog").getByRole("button", { name: "Quan Trọng", exact: true }).click();
-    await expect(page.getByRole("dialog").getByRole("button", { name: "Quan Trọng", exact: true })).toHaveClass(/selected/);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.screenshot({ path: `/tmp/spark-dark-editor-${width}.png` });
     // Verify actual computed colors, not just token spelling.
@@ -132,6 +130,10 @@ for (const width of [1280, 390]) {
       });
     });
     for (const ratio of ratios) expect(ratio).toBeGreaterThanOrEqual(4.5);
+    // D-163 hides metadata while mobile content editing is focused.
+    if (width < 700) await page.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
+    await page.getByRole("dialog").getByRole("button", { name: "Quan Trọng", exact: true }).click();
+    await expect(page.getByRole("dialog").getByRole("button", { name: "Quan Trọng", exact: true })).toHaveClass(/selected/);
     await page.getByRole("button", { name: "Đóng", exact: true }).click();
     await page.reload();
     await page.locator(".item-main").filter({ hasText: "Kiểm tra giao diện tối" }).click();

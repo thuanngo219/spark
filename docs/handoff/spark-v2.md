@@ -1,5 +1,17 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-168 — Màu vùng trạng thái iOS và khoảng cách phía trên (2026-10-27)
+
+Chủ dự án dùng iPhone 17, iOS 27.0.1, mở Spark từ Home Screen. Bỏ meta `apple-mobile-web-app-status-bar-style`; không dùng `black-translucent`. Next nhận `appleWebApp: true` và title qua `other` để tránh tự sinh style `default`; giữ manifest standalone và viewport-fit cover. Bootstrap trước paint đặt nền html/body, color-scheme và theme-color theo theme đã lưu: sáng #F7F8FA, tối #121622. Manifest dùng #F7F8FA làm fallback tĩnh.
+
+Khi sidebar mobile mở (bằng nút hoặc vuốt), nền trình duyệt chuyển Navy #111742 và scheme tối cho đồng hồ/icon hệ thống; đóng menu hoặc sang desktop khôi phục theme hiện hành. Không đổi preference đã lưu. Padding trên header mobile giảm 15→8px và sidebar 19→8px, vẫn cộng safe-area do thiết bị cung cấp; không sửa khoảng cách ngang/dưới, kích thước tiêu đề hoặc vùng chạm. Không trừ chiều cao status bar bằng số đo màn hình hoặc UA heuristic.
+
+iOS tự quyết định màu chữ/icon và diện tích status bar, web không thể vẽ tùy ý dưới vùng này. Hướng xử lý theo [WebKit 317153, comment 2](https://www2.webkit.org/show_bug.cgi?id=317153#c2); [301994](https://www2.webkit.org/show_bug.cgi?id=301994) vẫn ghi nhận vấn đề vùng hệ thống/cache màu ở một số bản iOS. Kiểm tra DOM/Chrome chỉ xác nhận màu app cung cấp, không thay kiểm tra status bar thực tế trên iPhone.
+
+Kiểm tra D-168: lint/typecheck/build, 175 test logic đạt; 4/4 case màu mới đạt (390px, hai theme đối lập OS, trước CSS/hydration, metadata không trùng, safe-area 59px, mở menu bằng nút/vuốt, chọn dự án, chuyển breakpoint và khôi phục preference). 7 case header 320/390/1280px và 7 case detail motion đạt. Theme/offline kiểm tra được cache dark, đổi theme, keyboard và contrast. Cập nhật test theme cũ để lưu Nội dung trước khi bấm metadata mobile đã ẩn theo D-163. Test nhập `<M>` trong quick-add có một lần chỉ nhận `<`; chạy lại nguyên case ba lượt đều đạt, không đổi code nhập liệu hoặc coi đây là lỗi đã xử lý. Đã xem ảnh header/sidebar sau khi animation kết thúc. Chưa kiểm tra system status bar thật trên iOS 27.0.1.
+
+File: layout.tsx, manifest.ts, theme.ts, ThemePreference.tsx, SparkApp.tsx, globals.css; test mobile-status-chrome/header/theme; brand/brief/UI/implementation/decisions/handoff. Ghi cùng đợt cấu hình hook Impeccable đã tắt theo yêu cầu trước và quy tắc chỉ dùng khi được yêu cầu trong AGENTS.md. Không chạy Impeccable.
+
 ## D-167 — Chi tiết mobile trượt ngang và vuốt mép để đóng (2026-10-27)
 
 Dưới 700px, chi tiết task/note trượt từ phải vào màn hình; nút Đóng và vuốt từ dải 24px sát mép trái sang phải cho màn trượt ra phải. Mở/đóng và trả về khi vuốt chưa đủ dùng 240ms easeOutQuint (`cubic-bezier(.22,1,.36,1)`). Trong lúc kéo, màn theo ngón tay; thả sau ít nhất 25% bề rộng (tối thiểu 72px) sẽ đóng. Vuốt ngắn hoặc touchcancel trả về. Không nhận thao tác bắt đầu ở giữa màn, cuộn dọc, pinch, nhấn giữ/chọn chữ hoặc trên button/select/link.

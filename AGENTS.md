@@ -32,6 +32,7 @@
 - Khi đưa ra quyết định ảnh hưởng đến scope, data model hoặc UX, cập nhật `docs/DECISIONS.md`.
 - Khi thay đổi hành vi đã mô tả, cập nhật tài liệu cùng commit/thay đổi mã nguồn.
 - Bảo toàn thay đổi đang có; không ghi đè phần chưa rõ nguồn gốc.
+- Chỉ dùng Impeccable khi chủ dự án yêu cầu rõ ràng; không tự chạy hoặc bật lại hook tự động.
 - Kiểm tra ít nhất: lint, typecheck, test logic ngày và responsive ở 390px trước khi bàn giao.
 - Trong phần bàn giao, ghi rõ: đã làm gì, đã kiểm tra gì, còn thiếu gì và file nào thay đổi.
 
