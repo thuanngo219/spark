@@ -1,5 +1,15 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-189 — Tinh gọn mobile và cách ly quick-add (2026-10-28)
+
+Chỉ đổi mobile (<700px); giữ giao diện desktop của D-188. Phím tắt và Đồng bộ: nội dung tiếp ngay sau headline, cách 16px, bỏ căn giữa dọc. Nút X cố định 44×44px, không co ngang khi headline dài.
+
+Sửa tên trong chi tiết dùng ô tự giãn nhiều dòng theo độ dài, không gạch dưới; giữ giới hạn 100 ký tự và dữ liệu tên một dòng, Enter hoặc đổi focus để lưu, Escape hủy. Không thêm nút lưu/hủy vào hàng tên mobile.
+
+Quick-add: lớp nền canvas đặc luôn che toàn màn hình kể cả khi bàn phím làm co/dịch vùng nhìn; chỉ form bên trong bám visualViewport. Khóa cuộn trang và các nhánh nền quanh quick-add, chặn kéo quá biên khi nội dung ngắn; khôi phục vị trí cuộn và tương tác khi đóng. Metadata giữ hai ngày cùng hàng; hàng dưới gồm selector dự án (ẩn label nhìn thấy, giữ nhãn truy cập), Hủy và Thêm. Giữ chế độ nhập Nội dung tập trung và bản nháp.
+
+Kiểm tra D-189: lint, build/TypeScript và 175 unit test đạt. Tổng cộng 47 tình huống browser đã kiểm tra, các case ảnh hưởng được chạy lại đạt sau khi sửa chiều cao một dòng; gồm 320/390px sáng/tối, desktop 700/1280/1440px, tài khoản giả lập, title tự giãn và lưu khi blur, quick-add giữ nháp/định dạng, viewport keyboard giả lập và vuốt trên danh sách 40 mục. Đã xem ảnh Phím tắt, Đồng bộ, quick-add và tên dài. Kiểm tra vuốt chờ hiệu ứng thu gọn header kết thúc để tách chuyển động header khỏi phép đo cuộn nền. Chưa thử bàn phím iPhone vật lý. File: globals.css, SparkApp.tsx, detail-scroll-lock.ts, content/mobile-detail/quick-add-layout/utility-screens browser tests và sáu tài liệu dự án.
+
 ## D-188 — Quick-add mobile tập trung và đồng bộ tiện ích (2026-10-28)
 
 Desktop: toolbar Nội dung giữ cao 30px, chiều rộng và căn giữa ngang; căn giữa dọc theo nhãn Nội dung và nút lưu/hủy, chừa 14px bên dưới trước vùng chữ. Cùng khoảng cách ở trạng thái đọc/sửa để không làm dịch tên hoặc nội dung.

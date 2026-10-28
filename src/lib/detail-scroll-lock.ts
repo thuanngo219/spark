@@ -15,7 +15,7 @@ function preserveStyles(element: HTMLElement, properties: string[]) {
   };
 }
 
-export function lockDetailScroll(backdrop: HTMLElement) {
+export function lockDetailScroll(backdrop: HTMLElement, isolateAncestors = false) {
   const body = document.body;
   const root = document.documentElement;
   const x = window.scrollX;
@@ -23,9 +23,19 @@ export function lockDetailScroll(backdrop: HTMLElement) {
   const previousFrozenY = frozenScrollY;
   const restoreBody = preserveStyles(body, ["position", "top", "left", "width", "overflow"]);
   const restoreRoot = preserveStyles(root, ["overflow", "overscroll-behavior"]);
-  const background = Array.from(backdrop.parentElement?.children ?? [])
-    .filter((element): element is HTMLElement => element instanceof HTMLElement && element.matches("main, aside, .mobile-dock, .mobile-floating-controls"))
-    .map(element => ({ element, inert: element.inert }));
+  const backgroundElements: HTMLElement[] = [];
+  if (isolateAncestors) {
+    // Quick-add is nested inside the list canvas: keep every sibling branch
+    // inert without disabling the ancestors that contain the dialog itself.
+    for (let branch: HTMLElement | null = backdrop; branch && branch !== body; branch = branch.parentElement) {
+      for (const sibling of Array.from(branch.parentElement?.children ?? [])) {
+        if (sibling !== branch && sibling instanceof HTMLElement && !sibling.matches("script, style, link")) backgroundElements.push(sibling);
+      }
+    }
+  } else {
+    backgroundElements.push(...Array.from(backdrop.parentElement?.children ?? []).filter((element): element is HTMLElement => element instanceof HTMLElement && element.matches("main, aside, .mobile-dock, .mobile-floating-controls")));
+  }
+  const background = backgroundElements.map(element => ({ element, inert: element.inert }));
 
   frozenScrollY = y;
   // overflow:hidden alone does not reliably lock the document with the iOS keyboard.
@@ -47,7 +57,7 @@ export function lockDetailScroll(backdrop: HTMLElement) {
       : null;
   };
   const moveTouch = (event: TouchEvent) => {
-    if (!gesture || event.touches.length !== 1 || !backdrop.querySelector(".item-detail-sheet.editing-content, .quick-add-dialog.focused-content")) return;
+    if (!gesture || event.touches.length !== 1 || (!isolateAncestors && !backdrop.querySelector(".item-detail-sheet.editing-content, .quick-add-dialog.focused-content"))) return;
     const touch = event.touches[0];
     const dy = touch.clientY - gesture.y;
     const dx = touch.clientX - gesture.x;
@@ -58,7 +68,7 @@ export function lockDetailScroll(backdrop: HTMLElement) {
     if (Math.abs(dy) < 2 || Math.abs(dx) >= Math.abs(dy) || (selection && !selection.isCollapsed && selection.toString().length > 0)) return;
     if (gesture.mode === "pending") gesture.mode = performance.now() - gesture.time > 450 ? "selection" : "scroll";
     if (gesture.mode === "selection") return;
-    const input = gesture.target.closest<HTMLElement>(".content-editor-input");
+    const input = gesture.target.closest<HTMLElement>(isolateAncestors ? ".content-editor-input, .quick-add-body" : ".content-editor-input");
     const maxScroll = input ? input.scrollHeight - input.clientHeight : 0;
     const atBoundary = !input || maxScroll <= 1 || (dy > 0 && input.scrollTop <= 1) || (dy < 0 && input.scrollTop >= maxScroll - 1);
     if (atBoundary && event.cancelable) event.preventDefault();

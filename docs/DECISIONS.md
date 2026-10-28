@@ -477,3 +477,11 @@ Desktop: toolbar Nội dung giữ cao 30px, chiều rộng và căn giữa ngang
 Quick-add mobile phủ toàn màn hình theo theme: header và nút đóng ở trên, tên/loại/nội dung trong vùng cuộn; metadata gọn với hai ngày cùng hàng, dự án toàn hàng và hành động ở dưới. Thêm Nội dung mở chế độ tập trung, ẩn các phần khác, chỉ còn nhãn/Xong, toolbar và vùng nhập tận dụng chiều cao còn lại. Cursor vào cuối và mở bàn phím trong thao tác chạm. Xong hoặc Escape quay về form, giữ nguyên nháp và định dạng; chọn Sửa Nội dung mở lại. Chỉ Thêm mới tạo task/note. Giữ giới hạn 4000 ký tự, B/I/U và các quy tắc ngày. Khóa cuộn nền, cập nhật theo visualViewport, bỏ khoảng safe-area dưới dư khi keyboard mở. Quick-add desktop giữ bố cục căn giữa và vùng nhập 300px.
 
 Chi tiết mobile: tên bắt đầu cách mép trên 16px cộng safe-area, checkbox/dấu gạch ngang căn với dòng đầu tên. Nút đóng nằm góc trên phải, có khoảng riêng trong hàng tên để không đè nút sửa. Giữ chế độ sửa Nội dung riêng và thao tác vuốt đóng.
+
+## D-189 — Tinh gọn mobile và cách ly quick-add (2026-10-28)
+
+Chỉ đổi mobile (<700px); giữ giao diện desktop của D-188. Phím tắt và Đồng bộ: nội dung tiếp ngay sau headline, cách 16px, bỏ căn giữa dọc. Nút X cố định 44×44px, không co ngang khi headline dài.
+
+Sửa tên trong chi tiết dùng ô tự giãn nhiều dòng theo độ dài, không gạch dưới; giữ giới hạn 100 ký tự và dữ liệu tên một dòng, Enter hoặc đổi focus để lưu, Escape hủy. Không thêm nút lưu/hủy vào hàng tên mobile.
+
+Quick-add: lớp nền canvas đặc luôn che toàn màn hình kể cả khi bàn phím làm co/dịch vùng nhìn; chỉ form bên trong bám visualViewport. Khóa cuộn trang và các nhánh nền quanh quick-add, chặn kéo quá biên khi nội dung ngắn; khôi phục vị trí cuộn và tương tác khi đóng. Metadata giữ hai ngày cùng hàng; hàng dưới gồm selector dự án (ẩn label nhìn thấy, giữ nhãn truy cập), Hủy và Thêm. Giữ chế độ nhập Nội dung tập trung và bản nháp.

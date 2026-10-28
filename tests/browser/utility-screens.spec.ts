@@ -46,8 +46,7 @@ for (const width of [320, 390, 1280]) {
         expect(content.y - header.y - header.height).toBeLessThan(2);
         if (content.height + header.height <= 652) expect(Math.abs((header.y + content.y + content.height) / 2 - 350)).toBeLessThan(2);
         else expect(header.y).toBe(24);
-      } else if (content.height <= body.height - 48) expect(Math.abs(content.y + content.height / 2 - body.y - body.height / 2)).toBeLessThan(2);
-      else expect(content.y).toBeGreaterThanOrEqual(body.y + 23);
+      } else expect(content.y - body.y).toBe(16);
       await page.screenshot({ path: `/tmp/spark-help-layout-${width}-${theme}.png` });
       await page.keyboard.press("Shift+Tab");
       await expect(help.getByRole("switch")).toBeFocused();
@@ -85,7 +84,9 @@ for (const width of [320, 390, 1280]) {
         expect(syncHeader.y).toBeGreaterThan(100);
       } else {
         expect(syncHeader.y).toBe(0);
-        expect(Math.abs(syncContent.y + syncContent.height / 2 - syncBody.y - syncBody.height / 2)).toBeLessThan(2);
+        expect(syncContent.y - syncBody.y).toBe(16);
+        expect(closeSync.width).toBe(44);
+        expect(closeSync.height).toBe(44);
       }
       await page.screenshot({ path: `/tmp/spark-sync-layout-${width}-${theme}.png` });
       const email = sync.locator('input[type="email"]');

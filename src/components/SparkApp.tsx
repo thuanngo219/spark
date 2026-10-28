@@ -2205,7 +2205,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
 
   useLayoutEffect(() => {
     if (!expanded || !backdropRef.current) return;
-    return lockDetailScroll(backdropRef.current);
+    return lockDetailScroll(backdropRef.current, window.matchMedia("(max-width: 699px)").matches);
   }, [expanded]);
 
   useEffect(() => {
@@ -2224,9 +2224,8 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
     const fitOverlayToMobileViewport = () => {
       const backdrop = backdropRef.current;
       if (!backdrop || !visualViewport || !window.matchMedia("(max-width: 699px)").matches) return;
-      backdrop.style.top = `${visualViewport.offsetTop}px`;
-      backdrop.style.bottom = "auto";
-      backdrop.style.height = `${visualViewport.height}px`;
+      backdrop.style.setProperty("--quick-viewport-top", `${visualViewport.offsetTop}px`);
+      backdrop.style.setProperty("--quick-viewport-height", `${visualViewport.height}px`);
       const keyboardOpen = visualViewport.scale === 1 && window.innerHeight - visualViewport.height > 120;
       backdrop.style.setProperty("--quick-bottom", keyboardOpen ? "12px" : "calc(16px + env(safe-area-inset-bottom))");
       window.requestAnimationFrame(() => {
@@ -2358,7 +2357,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
         <div className="quick-add-controls">
           <label className="quick-add-field"><span>Ngày bắt đầu</span><span className="quick-add-control"><Icon name="play" size={16} /><input type="date" max={dueDate || undefined} value={startDate} onChange={(event) => setStartDateOverride(event.target.value)} /></span></label>
           <label className="quick-add-field"><span>Ngày đến hạn</span><span className="quick-add-control"><Icon name="flag" size={16} /><input type="date" min={startDate || undefined} value={dueDate} onChange={(event) => setDueDate(event.target.value)} /></span></label>
-          <label className="quick-add-field quick-add-project"><span>Dự án</span><span className="quick-add-control"><span className="project-dot empty" /><select value={projectId} onChange={(event) => setProjectId(event.target.value)}><option value="">Không có dự án</option>{projects.map((project) => <option value={project.id} key={project.id}>{project.name}</option>)}</select></span></label>
+          <label className="quick-add-field quick-add-project"><span>Dự án</span><span className="quick-add-control"><span className="project-dot empty" /><select aria-label="Dự án" value={projectId} onChange={(event) => setProjectId(event.target.value)}><option value="">Không có dự án</option>{projects.map((project) => <option value={project.id} key={project.id}>{project.name}</option>)}</select></span></label>
           <div className="quick-add-actions"><button type="button" className="text-button" onClick={close}>Hủy</button><button className="primary-button" disabled={!title.trim() || !hasUpcomingDate || Boolean(startDate && dueDate && startDate > dueDate)}>Thêm</button></div>
         </div>
       </form>
@@ -2379,6 +2378,49 @@ function DateStrip({ selected, today, onSelect }: { selected: string; today: str
       {selected !== today && <button className="today-button" onClick={() => onSelect(today)}>Về hôm nay</button>}
     </div>
   );
+}
+
+function DetailTitleField({ value, label, onChange, onSave, onBlur, onCancel }: {
+  value: string;
+  label: string;
+  onChange: (value: string) => void;
+  onSave: () => void;
+  onBlur: () => void;
+  onCancel: () => void;
+}) {
+  // This field mounts only when the user opens inline editing.
+  const [mobile, setMobile] = useState(() => window.matchMedia("(max-width: 699px)").matches);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 699px)");
+    const change = () => setMobile(query.matches);
+    query.addEventListener("change", change);
+    return () => query.removeEventListener("change", change);
+  }, []);
+  useLayoutEffect(() => {
+    const field = textareaRef.current;
+    if (!mobile || !field) return;
+    const fit = () => {
+      field.style.height = "0px";
+      field.style.height = `${Math.max(28, field.scrollHeight)}px`;
+    };
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, [mobile, value]);
+  const shared = {
+    autoFocus: true,
+    maxLength: 100,
+    value,
+    "aria-label": label,
+    onBlur,
+    onChange: (event: { target: { value: string } }) => onChange(event.target.value.replace(/[\r\n]+/g, " ")),
+    onKeyDown: (event: { key: string; preventDefault: () => void }) => {
+      if (event.key === "Enter") { event.preventDefault(); onSave(); }
+      if (event.key === "Escape") onCancel();
+    },
+  };
+  return mobile ? <textarea {...shared} ref={textareaRef} rows={1} /> : <input {...shared} />;
 }
 
 function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { item: SparkItem; projects: Project[]; onArchive: () => void; onClose: () => void; onDelete: () => void; onSave: (update: Partial<SparkItem>) => void }) {
@@ -2535,12 +2577,9 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
                   <>
                     <div className="detail-inline-editor detail-title-row">
                       {titleMarker}
-                      <input autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} onBlur={() => {
+                      <DetailTitleField value={title} label={item.type === "task" ? "Tên task" : "Tên ghi chú"} onChange={setTitle} onSave={() => saveTitle()} onBlur={() => {
                         if (window.matchMedia("(max-width: 699px)").matches) saveTitle(false);
-                      }} onKeyDown={(event) => {
-                        if (event.key === "Enter") { event.preventDefault(); saveTitle(); }
-                        if (event.key === "Escape") { setTitle(item.title); setTitleError(false); setEditingField(null); }
-                      }} aria-label={item.type === "task" ? "Tên task" : "Tên ghi chú"} />
+                      }} onCancel={() => { setTitle(item.title); setTitleError(false); setEditingField(null); }} />
                       <div className="detail-edit-actions">
                         <button type="button" className="detail-icon-action save" onClick={() => saveTitle()} aria-label="Lưu"><Icon name="check" size={18} /></button>
                         <button type="button" className="detail-icon-action cancel" onClick={() => { setTitle(item.title); setTitleError(false); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>

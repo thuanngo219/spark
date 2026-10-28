@@ -273,7 +273,7 @@ test("detail task checkbox saves drafts and completion without striking the titl
   await expect(page.locator(".detail-title-row .note-mark")).toBeVisible();
 });
 
-test("mobile title uses compact input, saves on blur and leaves the next action clickable", async ({ page }) => {
+test("mobile title wraps without underline, saves on blur and leaves the next action clickable", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
   await page.getByRole("textbox", { name: "Tên mục" }).fill("Compact title");
@@ -292,7 +292,10 @@ test("mobile title uses compact input, saves on blur and leaves the next action 
   expect((await input.boundingBox())!.x + (await input.boundingBox())!.width).toBeLessThanOrEqual(closeBox.x);
   await expect(row.getByRole("button", { name: "Lưu", exact: true })).toBeHidden();
   await expect(row.getByRole("button", { name: "Hủy", exact: true })).toBeHidden();
+  await expect(input).toHaveJSProperty("tagName", "TEXTAREA");
+  await expect(input).toHaveCSS("border-bottom-width", "0px");
   await input.fill("Tên đủ dài để kiểm tra không gian nhập trên mobile");
+  expect((await input.boundingBox())!.height).toBeGreaterThan(45);
   await page.locator(".detail-description .detail-label").click();
   await expect(input).not.toBeFocused();
   await page.getByRole("button", { name: "Đóng", exact: true }).click();
@@ -419,7 +422,7 @@ for (const width of [1280, 390]) {
     expect(await title.evaluate(e => {
       const s = getComputedStyle(e);
       return [s.borderTopWidth, s.borderRightWidth, s.borderBottomWidth, s.borderLeftWidth, s.outlineStyle, s.backgroundColor, s.boxShadow];
-    })).toEqual(["0px", "0px", width < 700 ? "1px" : "0px", "0px", "none", "rgba(0, 0, 0, 0)", "none"]);
+    })).toEqual(["0px", "0px", "0px", "0px", "none", "rgba(0, 0, 0, 0)", "none"]);
     await title.fill("Minimal editor saved");
     await page.getByRole("button", { name: "Sửa Nội dung", exact: true }).click();
     const input = page.getByRole("textbox", { name: "Nội dung task", exact: true });

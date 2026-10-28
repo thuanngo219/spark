@@ -31,6 +31,14 @@ for (const width of [320, 390]) {
         expect(marker.y).toBe(titleBox.y);
         expect(editBox.x + editBox.width).toBeLessThanOrEqual(closeBox.x);
         await page.screenshot({ path: `/tmp/spark-detail-top-${width}-${theme}-${type}.png` });
+        await sheet.getByRole("button", { name: "Sửa tên", exact: true }).click();
+        const titleInput = sheet.getByRole("textbox", { name: type === "task" ? "Tên task" : "Tên ghi chú", exact: true });
+        await expect(titleInput).toHaveJSProperty("tagName", "TEXTAREA");
+        await expect(titleInput).toHaveCSS("border-bottom-width", "0px");
+        await titleInput.fill("Một tên dài để kiểm tra tự xuống dòng và hiển thị đầy đủ trên màn hình điện thoại");
+        expect((await titleInput.boundingBox())!.height).toBeGreaterThan(48);
+        await page.screenshot({ path: `/tmp/spark-title-wrap-${width}-${theme}-${type}.png` });
+        await titleInput.press("Escape");
         const read = sheet.locator(".detail-description .detail-read-row");
         expect((await read.boundingBox())!.height).toBeGreaterThan(844 * .4);
         await page.getByRole("button", { name: "Sửa Nội dung", exact: true }).click();
