@@ -29,6 +29,8 @@ for (const width of [320, 390, 1280]) {
       if (width >= 700) expect((await closeHelp.boundingBox())!.x + (await closeHelp.boundingBox())!.width).toBe(width - 20);
       await expect(help.locator(".shortcut-group > div")).toHaveCount(17);
       await expect(help.locator(".shortcut-columns + .shortcut-note + .theme-preference")).toHaveCount(1);
+      const headingColor = await help.locator("#project-label-preference").evaluate(el => getComputedStyle(el).color);
+      for (const label of await help.locator(".shortcut-group h3").all()) await expect(label).toHaveCSS("color", headingColor);
       const preferenceLabel = (await help.locator(".theme-preference > span").boundingBox())!;
       const options = (await help.locator(".theme-options").boundingBox())!;
       expect(options.x).toBeGreaterThan(preferenceLabel.x + preferenceLabel.width);
@@ -69,6 +71,8 @@ for (const width of [320, 390, 1280]) {
       await page.locator(".utility-screen").evaluate(el => Promise.all(el.getAnimations().map(a => a.finished)));
       expect(await sync.boundingBox()).toEqual({ x: 0, y: 0, width, height: 700 });
       await expect(sync.getByRole("button", { name: "Đóng", exact: true })).toBeFocused();
+      await expect(sync.locator(".editor-header span")).toHaveText("ĐỒNG BỘ TỪ CLOUD");
+      await expect(sync.locator("h2")).toHaveText("Dữ liệu luôn bên bạn, trên mọi thiết bị.");
       const closeSync = (await sync.getByRole("button", { name: "Đóng", exact: true }).boundingBox())!;
       if (width >= 700) expect(closeSync.x + closeSync.width).toBe(width - 20);
       const syncBody = (await sync.locator(".utility-body").boundingBox())!;

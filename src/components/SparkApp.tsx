@@ -2160,6 +2160,9 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
   const [description, setDescription] = useState("");
   const [descriptionFormat, setDescriptionFormat] = useState<ContentRun[] | null>(null);
   const [descriptionOpen, setDescriptionOpen] = useState(false);
+  const [contentFocused, setContentFocused] = useState(false);
+  const contentEditorRef = useRef<ContentEditorHandle>(null);
+  const descriptionToggleRef = useRef<HTMLButtonElement>(null);
   const [startDateOverride, setStartDateOverride] = useState<string | null>(null);
   const startDate = startDateOverride ?? defaultStartDate(view, type, today);
   const [dueDate, setDueDate] = useState(view.type === "today" ? today : view.type === "calendar" ? view.date : "");
@@ -2179,15 +2182,34 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
     setDescription("");
     setDescriptionFormat(null);
     setDescriptionOpen(false);
+    setContentFocused(false);
     setType("task");
     setStartDateOverride(null);
     window.requestAnimationFrame(() => triggerRef.current?.focus());
   }, [onExpandedChange]);
 
+  const finishContent = useCallback(() => {
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+    setContentFocused(false);
+    window.requestAnimationFrame(() => descriptionToggleRef.current?.focus({ preventScroll: true }));
+  }, []);
+
+  const openContent = () => {
+    const mobile = window.matchMedia("(max-width: 699px)").matches;
+    flushSync(() => {
+      setDescriptionOpen(mobile ? true : !descriptionOpen);
+      setContentFocused(mobile);
+    });
+    if (mobile) contentEditorRef.current?.focusEnd();
+  };
+
+  useLayoutEffect(() => {
+    if (!expanded || !backdropRef.current) return;
+    return lockDetailScroll(backdropRef.current);
+  }, [expanded]);
+
   useEffect(() => {
     if (!expanded) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     const visualViewport = window.visualViewport;
 
     const revealInput = () => {
@@ -2205,11 +2227,14 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
       backdrop.style.top = `${visualViewport.offsetTop}px`;
       backdrop.style.bottom = "auto";
       backdrop.style.height = `${visualViewport.height}px`;
+      const keyboardOpen = visualViewport.scale === 1 && window.innerHeight - visualViewport.height > 120;
+      backdrop.style.setProperty("--quick-bottom", keyboardOpen ? "12px" : "calc(16px + env(safe-area-inset-bottom))");
       window.requestAnimationFrame(() => {
         if (document.activeElement === inputRef.current) inputRef.current?.scrollIntoView({ block: "center", inline: "nearest" });
       });
     };
 
+    fitOverlayToMobileViewport();
     const focusFrame = window.requestAnimationFrame(revealInput);
     const keyboardTimer = window.setTimeout(() => {
       fitOverlayToMobileViewport();
@@ -2218,20 +2243,28 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
     visualViewport?.addEventListener("resize", fitOverlayToMobileViewport);
     visualViewport?.addEventListener("scroll", fitOverlayToMobileViewport);
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Tab") {
+        const controls = Array.from(backdropRef.current?.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), select, [contenteditable="true"]') ?? []).filter(el => el.getClientRects().length > 0);
+        const first = controls[0];
+        const last = controls.at(-1);
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+        return;
+      }
       if (event.key !== "Escape") return;
       event.preventDefault();
-      close();
+      if (window.matchMedia("(max-width: 699px)").matches && backdropRef.current?.querySelector(".focused-content")) finishContent();
+      else close();
     };
     window.addEventListener("keydown", onKeyDown);
     return () => {
-      document.body.style.overflow = previousOverflow;
       window.cancelAnimationFrame(focusFrame);
       window.clearTimeout(keyboardTimer);
       visualViewport?.removeEventListener("resize", fitOverlayToMobileViewport);
       visualViewport?.removeEventListener("scroll", fitOverlayToMobileViewport);
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [close, expanded]);
+  }, [close, expanded, finishContent]);
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -2255,6 +2288,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
     setDescription("");
     setDescriptionFormat(null);
     setDescriptionOpen(false);
+    setContentFocused(false);
     setType("task");
     setStartDateOverride(null);
     inputRef.current?.focus();
@@ -2277,46 +2311,54 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
   return (
     <div ref={backdropRef} className="dialog-backdrop quick-add-backdrop" onClick={close}>
       <form
-        className="quick-add quick-add-dialog"
+        className={`quick-add quick-add-dialog ${contentFocused ? "focused-content" : ""}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="quick-add-title"
         onClick={(event) => event.stopPropagation()}
         onSubmit={submit}
       >
-        <div className="quick-add-entry">
-          <label className="quick-title-field">
-            <span id="quick-add-title">{type === "task" ? "Tên công việc" : "Tên ghi chú"}</span>
-            <input ref={inputRef} autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} placeholder={type === "task" ? "Bạn muốn hoàn thành điều gì?" : "Đặt tên ghi chú…"} aria-label="Tên mục" />
-          </label>
-          <div className="quick-add-entry-actions">
-            <label className="note-toggle"><input type="checkbox" checked={type === "note"} onChange={(event) => {
-              const nextType = event.target.checked ? "note" : "task";
-              setType(nextType);
-            }} />Ghi chú</label>
-            <button
-              className="quick-description-toggle"
-              type="button"
-              aria-expanded={descriptionOpen}
-              onClick={() => setDescriptionOpen((value) => !value)}
-            >
-              <Icon name="description" size={16} />
-              {descriptionOpen ? "Ẩn Nội dung" : "Thêm Nội dung"}
-            </button>
-          </div>
+        <div className="quick-mobile-header">
+          <h2>{type === "task" ? "Thêm task" : "Thêm ghi chú"}</h2>
+          <button type="button" className="icon-button" onClick={close} aria-label="Đóng thêm nhanh"><Icon name="close" /></button>
         </div>
-        {descriptionOpen && (
-          <div className="quick-description-field">
-            <span>Nội dung (nếu cần)</span>
-            <ContentEditor value={description} format={descriptionFormat} label="Nội dung (nếu cần)" onChange={(content) => { setDescription(content.description ?? ""); setDescriptionFormat(content.descriptionFormat); }} />
+        <div className="quick-add-body">
+          <div className="quick-add-entry">
+            <label className="quick-title-field">
+              <span id="quick-add-title">{type === "task" ? "Tên công việc" : "Tên ghi chú"}</span>
+              <input ref={inputRef} autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} placeholder={type === "task" ? "Bạn muốn hoàn thành điều gì?" : "Đặt tên ghi chú…"} aria-label="Tên mục" />
+            </label>
+            <div className="quick-add-entry-actions">
+              <label className="note-toggle"><input type="checkbox" checked={type === "note"} onChange={(event) => {
+                const nextType = event.target.checked ? "note" : "task";
+                setType(nextType);
+              }} />Ghi chú</label>
+              <button
+                ref={descriptionToggleRef}
+                className="quick-description-toggle"
+                type="button"
+                aria-expanded={descriptionOpen}
+                onClick={openContent}
+              >
+                <Icon name="description" size={16} />
+                {descriptionOpen ? <><span className="quick-description-desktop-label">Ẩn Nội dung</span><span className="quick-description-mobile-label">Sửa Nội dung</span></> : "Thêm Nội dung"}
+              </button>
+            </div>
           </div>
-        )}
-        {startDate && dueDate && startDate > dueDate && <p className="form-error quick-date-error">Ngày đến hạn không thể trước ngày bắt đầu.</p>}
-        {!hasUpcomingDate && <p className="form-error quick-date-error">Chọn ngày bắt đầu hoặc ngày đến hạn trong ba ngày sắp tới.</p>}
+          {descriptionOpen && (
+            <div className="quick-description-field">
+              <div className="quick-content-heading"><span>Nội dung (nếu cần)</span><button type="button" className="primary-button quick-content-done" onClick={finishContent}>Xong</button></div>
+              <button type="button" className="quick-description-preview" onClick={openContent} aria-label="Sửa Nội dung thêm nhanh">{description || "Chưa có nội dung"}<Icon name="edit" size={17} /></button>
+              <ContentEditor focusHandle={contentEditorRef} onCancel={contentFocused ? finishContent : undefined} value={description} format={descriptionFormat} label="Nội dung (nếu cần)" onChange={(content) => { setDescription(content.description ?? ""); setDescriptionFormat(content.descriptionFormat); }} />
+            </div>
+          )}
+          {startDate && dueDate && startDate > dueDate && <p className="form-error quick-date-error">Ngày đến hạn không thể trước ngày bắt đầu.</p>}
+          {!hasUpcomingDate && <p className="form-error quick-date-error">Chọn ngày bắt đầu hoặc ngày đến hạn trong ba ngày sắp tới.</p>}
+        </div>
         <div className="quick-add-controls">
           <label className="quick-add-field"><span>Ngày bắt đầu</span><span className="quick-add-control"><Icon name="play" size={16} /><input type="date" max={dueDate || undefined} value={startDate} onChange={(event) => setStartDateOverride(event.target.value)} /></span></label>
           <label className="quick-add-field"><span>Ngày đến hạn</span><span className="quick-add-control"><Icon name="flag" size={16} /><input type="date" min={startDate || undefined} value={dueDate} onChange={(event) => setDueDate(event.target.value)} /></span></label>
-          <label className="quick-add-field"><span>Dự án</span><span className="quick-add-control"><span className="project-dot empty" /><select value={projectId} onChange={(event) => setProjectId(event.target.value)}><option value="">Không có dự án</option>{projects.map((project) => <option value={project.id} key={project.id}>{project.name}</option>)}</select></span></label>
+          <label className="quick-add-field quick-add-project"><span>Dự án</span><span className="quick-add-control"><span className="project-dot empty" /><select value={projectId} onChange={(event) => setProjectId(event.target.value)}><option value="">Không có dự án</option>{projects.map((project) => <option value={project.id} key={project.id}>{project.name}</option>)}</select></span></label>
           <div className="quick-add-actions"><button type="button" className="text-button" onClick={close}>Hủy</button><button className="primary-button" disabled={!title.trim() || !hasUpcomingDate || Boolean(startDate && dueDate && startDate > dueDate)}>Thêm</button></div>
         </div>
       </form>
@@ -2898,7 +2940,7 @@ function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
       <div ref={dialogRef} className="sync-dialog" role="dialog" aria-modal="true" aria-labelledby="sync-title">
         <div className="utility-content">
           <div className="editor-header">
-            <div><span>Cloud sync</span><h2 id="sync-title">Dữ liệu luôn bên bạn</h2></div>
+            <div><span>ĐỒNG BỘ TỪ CLOUD</span><h2 id="sync-title">Dữ liệu luôn bên bạn, trên mọi thiết bị.</h2></div>
             <button className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button>
           </div>
           <div className="utility-body">
@@ -2908,7 +2950,7 @@ function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
               ) : user ? (
                 <>
                   <div className="sync-hero"><span><Icon name={status === "error" || status === "offline" ? "zap" : "check"} size={27} /></span><h3>{syncStatusTitle(status)}</h3><p>{status === "offline" || status === "error" ? "Mọi thay đổi vẫn được giữ trên thiết bị và sẽ tự thử lại; bạn không cần nhập lại." : "Task, note và dự án của bạn sẽ xuất hiện trên mọi browser sau khi đăng nhập bằng cùng email."}</p></div>
-                  <div className="signed-in-row"><div><small>Đang dùng</small><strong>{user.email}</strong></div><button className="text-button" onClick={onSignedOut}>Ngắt kết nối</button></div>
+                  <div className="signed-in-row"><div><small>Tài khoản</small><strong>{user.email}</strong></div><button className="disconnect-button" onClick={onSignedOut}><Icon name="log-out" size={17} />Ngắt kết nối</button></div>
                 </>
               ) : sent ? (
                 <div className="sync-hero otp-step">

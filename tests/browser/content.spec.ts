@@ -102,7 +102,7 @@ test("quick-add defaults follow view and type, preserve explicit choices", async
   await expect(dates.nth(1)).toHaveValue("");
 });
 
-test("mobile 390px: formatting toolbar, 300px editor and no overflow", async ({ page }) => {
+test("mobile 390px: focused formatting editor and no overflow", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   const editor = await openQuickAdd(page);
   await editor.fill("Nội dung mobile");
@@ -110,7 +110,7 @@ test("mobile 390px: formatting toolbar, 300px editor and no overflow", async ({ 
   await page.getByRole("button", { name: "In đậm", exact: true }).click();
   await expect(editor.locator("strong")).toHaveText("Nội dung mobile");
   const box = await editor.boundingBox();
-  expect(box?.height).toBe(300);
+  expect(box!.height).toBeGreaterThan(600);
   for (const name of ["In đậm", "In nghiêng", "Gạch chân"]) {
     const button = await page.getByRole("button", { name, exact: true }).boundingBox();
     expect(button!.height).toBeGreaterThanOrEqual(44);
@@ -287,7 +287,9 @@ test("mobile title uses compact input, saves on blur and leaves the next action 
   const input = page.getByRole("textbox", { name: "Tên task", exact: true });
   expect((await row.boundingBox())!.height).toBe(readHeight);
   expect((await input.boundingBox())!.height).toBe(28);
-  expect((await input.boundingBox())!.width).toBeGreaterThan(300);
+  expect((await input.boundingBox())!.width).toBeGreaterThan(250);
+  const closeBox = (await page.getByRole("button", { name: "Đóng", exact: true }).boundingBox())!;
+  expect((await input.boundingBox())!.x + (await input.boundingBox())!.width).toBeLessThanOrEqual(closeBox.x);
   await expect(row.getByRole("button", { name: "Lưu", exact: true })).toBeHidden();
   await expect(row.getByRole("button", { name: "Hủy", exact: true })).toBeHidden();
   await input.fill("Tên đủ dài để kiểm tra không gian nhập trên mobile");
@@ -316,10 +318,12 @@ for (const width of [1280, 390]) {
   test(`detail metadata remains clickable ${width < 700 ? "after focused editing" : "while editing content"} at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 });
     const title = `Metadata click ${width}`;
-    const quickEditor = await openQuickAdd(page);
+    await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
     await page.getByRole("textbox", { name: "Tên mục" }).fill(title);
     await page.getByRole("checkbox", { name: "Ghi chú" }).check();
-    await quickEditor.fill("Nội dung ngắn");
+    await page.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
+    await page.getByRole("textbox", { name: "Nội dung (nếu cần)", exact: true }).fill("Nội dung ngắn");
+    if (width < 700) await page.getByRole("button", { name: "Xong", exact: true }).click();
     await page.getByRole("button", { name: "Thêm", exact: true }).click();
     await page.getByRole("button", { name: "Hủy", exact: true }).click();
     await page.getByRole("button", { name: "Tất cả", exact: true }).click();

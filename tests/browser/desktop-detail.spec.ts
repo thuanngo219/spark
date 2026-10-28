@@ -60,7 +60,7 @@ for (const { width, theme, type, expanded } of cases) {
     expect(toolbar.x + toolbar.width / 2).toBeCloseTo(heading.x + heading.width / 2, 1);
     expect(toolbar.width).toBeCloseTo(Math.max(180, heading.width - 338), 1);
     expect(toolbar.y + toolbar.height / 2).toBeCloseTo(heading.y + heading.height / 2, 1);
-    expect(toolbar.y + toolbar.height).toBeLessThanOrEqual(readStart.y);
+    expect(readStart.y - toolbar.y - toolbar.height).toBeGreaterThanOrEqual(13);
     await expect(sheet.getByRole("button", { name: "In đậm", exact: true })).toBeInViewport();
     const text = "Một dòng nội dung dài để kiểm tra vùng cuộn.\n".repeat(80);
     await input.fill(text);

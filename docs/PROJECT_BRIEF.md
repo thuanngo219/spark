@@ -441,3 +441,13 @@ Toolbar định dạng trong chi tiết desktop cao 30px, nút 26px; bắt đầ
 ## D-187 — Căn giữa toolbar desktop (2026-10-27)
 
 Toolbar định dạng được căn giữa theo chiều ngang trong cột chi tiết desktop, giữ chiều rộng responsive của D-186 và chiều cao 30px. Thay khoảng cách cố định với nhãn Nội dung bằng căn giữa; giữ hàng hiện hành, màu sắc, vị trí tên/nội dung, mobile và quick-add.
+
+## D-188 — Quick-add mobile tập trung và đồng bộ tiện ích (2026-10-28)
+
+Desktop: toolbar Nội dung giữ cao 30px, chiều rộng và căn giữa ngang; căn giữa dọc theo nhãn Nội dung và nút lưu/hủy, chừa 14px bên dưới trước vùng chữ. Cùng khoảng cách ở trạng thái đọc/sửa để không làm dịch tên hoặc nội dung.
+
+Đồng bộ trên desktop/mobile: eyebrow “ĐỒNG BỘ TỪ CLOUD”; heading “Dữ liệu luôn bên bạn, trên mọi thiết bị.”; nhãn tài khoản “Tài khoản”. Badge tick màu trắng trên vòng tròn Navy. Ngắt kết nối là nút nền Coral nhạt, có icon thoát; giữ luồng đăng nhập/đăng xuất hiện hành. Nhãn Điều hướng, Lọc nội dung, Thao tác, Giao diện của Phím tắt dùng cùng token heading như Mở tên dự án khi chạm.
+
+Quick-add mobile phủ toàn màn hình theo theme: header và nút đóng ở trên, tên/loại/nội dung trong vùng cuộn; metadata gọn với hai ngày cùng hàng, dự án toàn hàng và hành động ở dưới. Thêm Nội dung mở chế độ tập trung, ẩn các phần khác, chỉ còn nhãn/Xong, toolbar và vùng nhập tận dụng chiều cao còn lại. Cursor vào cuối và mở bàn phím trong thao tác chạm. Xong hoặc Escape quay về form, giữ nguyên nháp và định dạng; chọn Sửa Nội dung mở lại. Chỉ Thêm mới tạo task/note. Giữ giới hạn 4000 ký tự, B/I/U và các quy tắc ngày. Khóa cuộn nền, cập nhật theo visualViewport, bỏ khoảng safe-area dưới dư khi keyboard mở. Quick-add desktop giữ bố cục căn giữa và vùng nhập 300px.
+
+Chi tiết mobile: tên bắt đầu cách mép trên 16px cộng safe-area, checkbox/dấu gạch ngang căn với dòng đầu tên. Nút đóng nằm góc trên phải, có khoảng riêng trong hàng tên để không đè nút sửa. Giữ chế độ sửa Nội dung riêng và thao tác vuốt đóng.

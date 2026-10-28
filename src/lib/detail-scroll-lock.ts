@@ -47,7 +47,7 @@ export function lockDetailScroll(backdrop: HTMLElement) {
       : null;
   };
   const moveTouch = (event: TouchEvent) => {
-    if (!gesture || event.touches.length !== 1 || !backdrop.querySelector(".item-detail-sheet.editing-content")) return;
+    if (!gesture || event.touches.length !== 1 || !backdrop.querySelector(".item-detail-sheet.editing-content, .quick-add-dialog.focused-content")) return;
     const touch = event.touches[0];
     const dy = touch.clientY - gesture.y;
     const dx = touch.clientX - gesture.x;

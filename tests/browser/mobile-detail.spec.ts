@@ -23,6 +23,14 @@ for (const width of [320, 390]) {
         await expect(sheet.locator(".editor-header h2, .editor-header > div")).toHaveCount(0);
         await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
         await expect(page.getByRole("button", { name: "Đóng", exact: true })).toBeInViewport();
+        const titleBox = (await sheet.locator(".detail-title-row").boundingBox())!;
+        const marker = (await sheet.locator(".detail-title-marker").boundingBox())!;
+        const closeBox = (await sheet.getByRole("button", { name: "Đóng", exact: true }).boundingBox())!;
+        const editBox = (await sheet.getByRole("button", { name: "Sửa tên", exact: true }).boundingBox())!;
+        expect(titleBox.y).toBe(16);
+        expect(marker.y).toBe(titleBox.y);
+        expect(editBox.x + editBox.width).toBeLessThanOrEqual(closeBox.x);
+        await page.screenshot({ path: `/tmp/spark-detail-top-${width}-${theme}-${type}.png` });
         const read = sheet.locator(".detail-description .detail-read-row");
         expect((await read.boundingBox())!.height).toBeGreaterThan(844 * .4);
         await page.getByRole("button", { name: "Sửa Nội dung", exact: true }).click();
@@ -91,7 +99,7 @@ for (const width of [320, 390]) {
           await page.setViewportSize({ width, height: 844 });
         }
         await page.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
-        await expect(sheet.locator(".editor-header")).toBeVisible();
+        await expect(sheet.getByRole("button", { name: "Đóng", exact: true })).toBeVisible();
         await expect(sheet.locator(".detail-title-row")).toBeVisible();
         await expect(sheet.locator(".detail-metadata")).toBeVisible();
         await page.getByRole("button", { name: "Sửa Nội dung", exact: true }).click();
