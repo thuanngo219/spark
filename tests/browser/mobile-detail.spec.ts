@@ -24,6 +24,7 @@ for (const width of [320, 390]) {
         await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
         await expect(page.getByRole("button", { name: "Đóng", exact: true })).toBeInViewport();
         const titleBox = (await sheet.locator(".detail-title-row").boundingBox())!;
+        const readTitleSize = await sheet.locator(".detail-title-row > p").evaluate(el => getComputedStyle(el).fontSize);
         const marker = (await sheet.locator(".detail-title-marker").boundingBox())!;
         const closeBox = (await sheet.getByRole("button", { name: "Đóng", exact: true }).boundingBox())!;
         const editBox = (await sheet.getByRole("button", { name: "Sửa tên", exact: true }).boundingBox())!;
@@ -33,12 +34,22 @@ for (const width of [320, 390]) {
         expect(editBox.x + editBox.width).toBeLessThanOrEqual(width);
         expect(closeBox.x + closeBox.width / 2).toBeCloseTo(width / 2, 1);
         expect(metadataBox.y - (closeBox.y + closeBox.height)).toBeCloseTo(10, 1);
+        await expect(sheet.getByRole("button", { name: "Đóng", exact: true })).toHaveText("Đóng");
+        await expect(sheet.getByRole("button", { name: "Đóng", exact: true })).toHaveCSS("background-color", "rgb(17, 23, 66)");
+        await sheet.getByRole("button", { name: "Đóng", exact: true }).hover();
+        await expect(sheet.getByRole("button", { name: "Đóng", exact: true })).toHaveCSS("background-color", "rgb(25, 34, 95)");
         await page.screenshot({ path: `/tmp/spark-detail-top-${width}-${theme}-${type}.png` });
         await sheet.getByRole("button", { name: "Sửa tên", exact: true }).click();
         const titleInput = sheet.getByRole("textbox", { name: type === "task" ? "Tên task" : "Tên ghi chú", exact: true });
         await expect(titleInput).toHaveJSProperty("tagName", "TEXTAREA");
         await expect(titleInput).toHaveCSS("border-bottom-width", "0px");
         await expect(sheet.locator(".detail-title-row .detail-edit-actions button")).toHaveCount(2);
+        expect(await titleInput.evaluate(el => getComputedStyle(el).fontSize)).toBe(readTitleSize);
+        const titleActions = await sheet.locator(".detail-title-row .detail-edit-actions button").all();
+        const saveAction = (await titleActions[0].boundingBox())!;
+        const cancelAction = (await titleActions[1].boundingBox())!;
+        expect(cancelAction.x - saveAction.x - saveAction.width).toBe(8);
+        expect(width - cancelAction.x - cancelAction.width).toBe(17);
         await titleInput.fill("Một tên dài để kiểm tra tự xuống dòng và hiển thị đầy đủ trên màn hình điện thoại");
         expect((await titleInput.boundingBox())!.height).toBeGreaterThan(48);
         await page.screenshot({ path: `/tmp/spark-title-wrap-${width}-${theme}-${type}.png` });
@@ -77,6 +88,9 @@ for (const width of [320, 390]) {
         expect(await heading.boundingBox()).toEqual(headerBefore);
         await expect(page.getByRole("button", { name: "Lưu Nội dung", exact: true })).toBeInViewport();
         await expect(page.getByRole("button", { name: "Hủy", exact: true })).toBeInViewport();
+        await expect(sheet.locator(".content-toolbar")).toHaveCSS("height", "44px");
+        const headingBottom = (await heading.boundingBox())!.y + (await heading.boundingBox())!.height;
+        expect((await sheet.locator(".content-toolbar").boundingBox())!.y - headingBottom).toBe(6);
         expect((await editor.boundingBox())!.height).toBeGreaterThan(844 * .4);
         const draftBeforeViewportChange = await editor.innerText();
         if (width === 390) {

@@ -283,8 +283,6 @@ export function SparkApp() {
         const header = headerRef.current;
         if (header && compact !== header.classList.contains("is-compact")) {
           headerMotionUntil.current = performance.now() + 260;
-          // Reserve before animation; keep room for each layout frame on short lists.
-          header.parentElement?.style.setProperty("--header-collapse-space", `${expandedHeaderHeight.current}px`);
         }
         setHeaderCompact(compact);
       });
@@ -308,7 +306,7 @@ export function SparkApp() {
       const animating = performance.now() < headerMotionUntil.current;
       if (!headerCompact && !animating) expandedHeaderHeight.current = height;
       const space = Math.max(0, expandedHeaderHeight.current - height);
-      header.parentElement?.style.setProperty("--header-collapse-space", `${space + (animating ? expandedHeaderHeight.current : 0)}px`);
+      header.parentElement?.style.setProperty("--header-collapse-space", `${space}px`);
     };
     preserveHeaderSpace();
     const observer = new ResizeObserver(preserveHeaderSpace);
@@ -2113,14 +2111,7 @@ const SwipeableItemRow = memo(function SwipeableItemRow({
           closeActions();
           if (action === "open-details") onEdit(item);
         }}>
-          <span className="item-title-wrap">
-            <span className="item-title">{item.title}</span>
-            {item.description && (
-              <span className="item-description-indicator" aria-label="Có nội dung" title="Có nội dung">
-                <Icon name="description" size={15} />
-              </span>
-            )}
-          </span>
+          <span className="item-title-wrap"><span className="item-title">{item.title}</span></span>
           <span className="item-meta">
             {(item.startDate || showEmptyDates) && (
               <span className={`item-date ${item.startDate ? "" : "empty"}`} title="Ngày bắt đầu">
@@ -2134,6 +2125,7 @@ const SwipeableItemRow = memo(function SwipeableItemRow({
                 {item.dueDate ? formatListDate(item.dueDate, today) : "Chưa có hạn"}
               </span>
             )}
+            {item.description && <span className="item-description-indicator" aria-label="Có nội dung" title="Có nội dung"><Icon name="description" size={15} /></span>}
             <span className="item-state-icons" aria-label={[item.isImportant ? "Quan Trọng" : "", item.isUrgent ? "Ưu tiên" : ""].filter(Boolean).join(", ")}>
               {item.isImportant && <Icon className="item-state-important" name="star" size={14} />}
               {item.isUrgent && <Icon className="item-state-urgent" name="zap" size={14} />}
@@ -2166,6 +2158,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
   const [classificationOpen, setClassificationOpen] = useState(false);
   const classificationToggleRef = useRef<HTMLButtonElement>(null);
   const contentEditorRef = useRef<ContentEditorHandle>(null);
+  const contentBeforeEditRef = useRef<{ description: string; format: ContentRun[] | null; open: boolean } | null>(null);
   const descriptionToggleRef = useRef<HTMLButtonElement>(null);
   const [startDateOverride, setStartDateOverride] = useState<string | null>(null);
   const startDate = startDateOverride ?? defaultStartDate(view, type, today);
@@ -2187,6 +2180,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
     setDescriptionFormat(null);
     setDescriptionOpen(false);
     setContentFocused(false);
+    contentBeforeEditRef.current = null;
     setClassificationOpen(false);
     setType("task");
     setStartDateOverride(null);
@@ -2194,6 +2188,20 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
   }, [onExpandedChange]);
 
   const finishContent = useCallback(() => {
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+    contentBeforeEditRef.current = null;
+    setContentFocused(false);
+    window.requestAnimationFrame(() => descriptionToggleRef.current?.focus({ preventScroll: true }));
+  }, []);
+
+  const cancelContent = useCallback(() => {
+    const previous = contentBeforeEditRef.current;
+    if (previous) {
+      setDescription(previous.description);
+      setDescriptionFormat(previous.format);
+      setDescriptionOpen(previous.open);
+    }
+    contentBeforeEditRef.current = null;
     if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
     setContentFocused(false);
     window.requestAnimationFrame(() => descriptionToggleRef.current?.focus({ preventScroll: true }));
@@ -2206,6 +2214,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
 
   const openContent = () => {
     const mobile = window.matchMedia("(max-width: 699px)").matches;
+    if (mobile) contentBeforeEditRef.current = { description, format: descriptionFormat, open: descriptionOpen };
     flushSync(() => {
       setDescriptionOpen(mobile ? true : !descriptionOpen);
       setContentFocused(mobile);
@@ -2263,7 +2272,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
       }
       if (event.key !== "Escape") return;
       event.preventDefault();
-      if (window.matchMedia("(max-width: 699px)").matches && backdropRef.current?.querySelector(".focused-content")) finishContent();
+      if (window.matchMedia("(max-width: 699px)").matches && backdropRef.current?.querySelector(".focused-content")) cancelContent();
       else close();
     };
     window.addEventListener("keydown", onKeyDown);
@@ -2274,7 +2283,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
       visualViewport?.removeEventListener("scroll", fitOverlayToMobileViewport);
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [close, expanded, finishContent]);
+  }, [close, expanded, cancelContent]);
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -2361,9 +2370,9 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
         <div className="quick-add-body">
           {descriptionOpen && (
             <div className="quick-description-field">
-              <div className="quick-content-heading"><span>Nội dung</span><button type="button" className="detail-icon-action save quick-content-done" onClick={finishContent} aria-label="Xong" title="Xong"><Icon name="check" size={18} /></button></div>
+              <div className="quick-content-heading"><span>Nội dung</span><div className="detail-edit-actions"><button type="button" className="detail-icon-action save quick-content-done" onClick={finishContent} aria-label="Lưu Nội dung" title="Lưu Nội dung"><Icon name="check" size={18} /></button><button type="button" className="detail-icon-action cancel quick-content-cancel" onClick={cancelContent} aria-label="Hủy Nội dung" title="Hủy Nội dung"><Icon name="close" size={18} /></button></div></div>
               <button type="button" className="quick-description-preview" onClick={openContent} aria-label="Sửa Nội dung thêm nhanh"><span>{description || "Chưa có nội dung"}</span><Icon name="edit" size={17} /></button>
-              <ContentEditor focusHandle={contentEditorRef} onCancel={contentFocused ? finishContent : undefined} value={description} format={descriptionFormat} label="Nội dung" onChange={(content) => { setDescription(content.description ?? ""); setDescriptionFormat(content.descriptionFormat); }} />
+              <ContentEditor focusHandle={contentEditorRef} onCancel={contentFocused ? cancelContent : undefined} value={description} format={descriptionFormat} label="Nội dung" onChange={(content) => { setDescription(content.description ?? ""); setDescriptionFormat(content.descriptionFormat); }} />
             </div>
           )}
           {startDate && dueDate && startDate > dueDate && <p className="form-error quick-date-error">Ngày đến hạn không thể trước ngày bắt đầu.</p>}
@@ -2378,7 +2387,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
               <label className="quick-add-field quick-add-project"><span>Dự án</span><span className="quick-add-control"><span className="project-dot empty" /><select aria-label="Dự án" value={projectId} onChange={(event) => setProjectId(event.target.value)}><option value="">Không có dự án</option>{projects.map((project) => <option value={project.id} key={project.id}>{project.name}</option>)}</select></span></label>
             </div>
           </div>
-          <div className="quick-add-actions"><button type="button" className="text-button" onClick={close}><Icon name="close" size={18} />Hủy</button><button className="primary-button" disabled={!title.trim() || !hasUpcomingDate || Boolean(startDate && dueDate && startDate > dueDate)}><Icon name="plus" size={18} />Thêm</button></div>
+          <div className="quick-add-actions"><button type="button" className="text-button" onClick={close}><Icon name="arrow-left" size={18} />Hủy</button><button className="primary-button" disabled={!title.trim() || !hasUpcomingDate || Boolean(startDate && dueDate && startDate > dueDate)}><Icon name="check" size={18} />Thêm</button></div>
         </div>
       </form>
     </div>
@@ -2646,7 +2655,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
           </div>
         </div>
         {dateError && <p className="form-error detail-date-error" role="status">Ngày đến hạn không thể trước ngày bắt đầu. Thay đổi ngày chưa được lưu.</p>}
-        <div className="editor-header"><button type="button" className="icon-button" onClick={closeDetail} aria-label="Đóng"><Icon name="close" /></button></div>
+        <div className="editor-header"><button type="button" className="icon-button detail-close-button" onClick={closeDetail} aria-label="Đóng"><Icon name="close" size={16} /><span>Đóng</span></button></div>
         <div className="detail-metadata" aria-label="Thông tin mục" onFocusCapture={() => {
           // Save without moving the focused control between pointerdown and click.
           if (editingField === "title") saveTitle(false);

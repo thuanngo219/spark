@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-198 — Tinh chỉnh header và thao tác mobile (2026-10-28)
+
+Header bỏ phần đệm dư gây nhảy khi thu gọn; line 3px. Icon có Nội dung xuống hàng ngày, trước cờ. Chi tiết: Đóng Navy/chữ trắng có nhãn/hover; tên sửa cùng cỡ chữ đọc, tick/X sát phải; toolbar Nội dung mobile 44px, cách nhãn 6px. Quick-add mobile: nền hành động đậm hơn, Hủy/Thêm chữ nhỏ với icon quay lại/tick, Thêm Navy, X Phân loại Navy. Sửa Nội dung có tick lưu/X hủy và khôi phục bản nháp khi hủy. Typecheck, 175 unit test, bản build và 32/32 browser case trên bản build production cục bộ đạt ở 320/390px sáng/tối và desktop; đã xem ảnh 390px. Lint file sửa đạt; lint toàn repo có warning từ thư mục không thuộc Spark và chưa được theo dõi. Cần kiểm tra iPhone thật sau phát hành.
+
 ## D-197 — Quick-add và chi tiết mobile (2026-10-28)
 
 Quick-add sửa Nội dung dùng tick nhỏ, toolbar 46px sát nhãn; Phân loại đổi màu khi mở, sheet trượt lên 240ms easeOutQuint, bỏ chữ và đặt nút X giữa nhô nửa ra ngoài. Vuốt mép trái trong quick-add không mở sidebar. Chi tiết mobile đặt nút Đóng giữa và cách metadata 10px; sửa tên có tick/X bên phải thay tự lưu khi blur. Khi bàn phím mở, metadata sửa tên ở dưới bàn phím; editor Nội dung bám visual viewport và bỏ padding đáy. Desktop giữ nguyên. Lint, typecheck, 175 unit test, build production, 39/39 browser case trên dev và 6/6 case trên production local đạt; xem ảnh 390px sáng/tối. Cần kiểm tra trên iPhone thật sau phát hành.

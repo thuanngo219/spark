@@ -523,3 +523,9 @@ Quick-add hiển thị nhãn “Nội dung” trên desktop và mobile, bỏ ph�
 Quick-add mobile: chế độ sửa Nội dung dùng nút tick nhỏ thay Xong; toolbar cao 46px, cách hàng nhãn Nội dung 4px. Phân loại dùng màu selected khi mở, sheet trượt lên 240ms easeOutQuint, bỏ chữ Phân loại trong sheet; nút X nằm giữa và nhô một nửa qua viền trên. Khi quick-add mở, vuốt từ mép trái không mở sidebar. Desktop giữ nguyên.
 
 Chi tiết mobile: nút Đóng nằm giữa, cách hàng metadata 10px; desktop giữ X góc phải trên. Sửa tên có nút tick và X nhỏ ở bên phải, thay quy tắc tự lưu khi blur của D-189; Enter, tick và chuyển trường vẫn lưu tên hợp lệ, X hủy bản nháp. Input tên dùng 16px để tránh iOS tự phóng trang. Khi bàn phím mở lúc sửa tên, sheet giữ chiều cao layout và metadata ở dưới bàn phím; khi sửa Nội dung, chỉ editor theo visual viewport và bỏ padding đáy lúc bàn phím mở. Không thể điều khiển thanh công cụ bàn phím do iOS cung cấp.
+
+## D-198 — Header, metadata và thao tác sửa mobile (2026-10-28)
+
+Thu gọn header không cộng thêm một chiều cao header vào khoảng đệm trong lúc chuyển trạng thái; dải màu dưới header cao 3px trên desktop và mobile. Dấu có Nội dung nằm ở hàng ngày, trước Quan Trọng/Ưu tiên. Nút Đóng chi tiết có nền Navy, chữ trắng, nhãn nhỏ và hover; vị trí giữ như D-197. Chữ tên lúc sửa có cùng cỡ với lúc đọc; tick/X sát nhau và bên phải. Toolbar Nội dung mobile cao 44px, cách hàng nhãn 6px; tick/X của phần này và phần tên dùng cùng kích thước/khoảng cách.
+
+Quick-add mobile: hàng Hủy/Thêm có chữ nhỏ, nền tương phản hơn; Thêm nền Navy, chữ trắng, hover sáng hơn. Hủy dùng mũi tên quay lại, Thêm dùng tick; giữ nhãn chữ. Phân loại có nút X nền Navy/chữ trắng. Sửa Nội dung dùng tick lưu và X hủy bên phải; hủy trả lại đúng nội dung/định dạng trước lần sửa, Escape cũng hủy. Desktop giữ hành vi và bố cục quick-add.

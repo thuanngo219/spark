@@ -343,3 +343,7 @@ Quick-add hiển thị nhãn “Nội dung” trên desktop và mobile, bỏ ph�
 ## D-197 — Bố cục thao tác mobile (2026-10-28)
 
 Quick-add Nội dung dùng tick nhỏ và toolbar 46px sát nhãn. Phân loại có trạng thái selected, sheet trượt từ dưới lên, nút X giữa nhô nửa khỏi sheet; không hiện chữ Phân loại trong sheet. Quick-add chặn vuốt mở sidebar. Chi tiết mobile đặt Đóng giữa phía trên metadata 10px; sửa tên dùng tick/X bên phải và giữ metadata dưới bàn phím. Desktop không đổi.
+
+## D-198 — Màu và bố cục thao tác mobile (2026-10-28)
+
+Line header 3px; icon có Nội dung chuyển xuống hàng ngày. Nút Đóng chi tiết và X Phân loại Navy/chữ trắng, có hover. Cỡ chữ tên lúc sửa bằng lúc đọc; nút lưu/hủy liền nhau ở mép phải. Toolbar Nội dung mobile 44px, cách nhãn 6px. Quick-add dùng Hủy với mũi tên quay lại, Thêm với tick và nhãn chữ nhỏ; hàng nút có nền tương phản gần sheet Phân loại. Thêm nền Navy/chữ trắng. Nội dung quick-add có tick lưu và X hủy, cùng style với chi tiết.

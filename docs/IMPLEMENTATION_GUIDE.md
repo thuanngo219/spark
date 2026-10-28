@@ -506,3 +506,7 @@ Quick-add hiển thị nhãn “Nội dung” trên desktop và mobile, bỏ ph�
 ## D-197 — Quick-add, title editor và bàn phím mobile (2026-10-28)
 
 Chặn nav edge gesture khi `quickAddOpen`. Sheet Phân loại dùng `classification-enter` (transform từ dưới lên, 240ms easeOutQuint), màu selected theo `aria-expanded`, nội dung field cuộn riêng để nút X nhô ngoài viền vẫn chạm được. Quick-add focus mode dùng tick nhỏ, toolbar 46px và gap 4px dưới nhãn. Chi tiết mobile chuyển editor-header ra sau detail-content để nút Đóng ở giữa, trước metadata 10px. Sửa tên dùng tick/X, không tự lưu onBlur; input 16px. `editing-title` giữ chiều cao layout viewport khi visual viewport co do bàn phím; `editing-content` vẫn theo visual viewport và bỏ padding đáy. Desktop giữ vị trí close góc trên phải.
+
+## D-198 — Tinh chỉnh header và trình sửa mobile (2026-10-28)
+
+Giữ `--header-collapse-space` bằng chênh lệch chiều cao thực của header và chiều cao mở; bỏ phần cộng thêm chiều cao header khi `headerMotionUntil` còn hiệu lực. Dải màu dùng 3px. Chuyển `item-description-indicator` vào `item-meta` sau hai ngày, trước `item-state-icons`. Sửa tên mobile dùng cùng `font-size` 0.9375rem như text đọc; nút tick/X ở mép phải, cỡ 36px, khoảng cách 8px và vùng bấm 44px. Toolbar Nội dung mobile cao 44px, gap 6px dưới nhãn. Quick-add lưu snapshot nội dung/định dạng trước khi focus để X hoặc Escape khôi phục; tick chấp nhận bản nháp. Hàng Hủy/Thêm dùng nền `well` bán trong suốt, nút Thêm Navy; popup Phân loại X Navy. CSS chỉnh tại selector hiện có, không thêm override chồng lớp.

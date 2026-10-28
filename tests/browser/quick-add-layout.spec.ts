@@ -36,6 +36,8 @@ for (const width of [320, 390, 1280]) {
         await expect(form.getByRole("button", { name: "Thêm", exact: true }).locator("svg")).toBeVisible();
         await expect(form.locator(".quick-add-controls")).toHaveCSS("backdrop-filter", "blur(12px)");
         await expect(form.locator(".quick-add-controls")).toHaveCSS("border-top-width", "1px");
+        await expect(form.locator(".quick-add-controls")).toHaveCSS("background-color", theme === "light" ? "color(srgb 0.913725 0.921569 0.937255 / 0.92)" : "color(srgb 0.141176 0.168627 0.239216 / 0.92)");
+        await expect(form.getByRole("button", { name: "Thêm", exact: true })).toHaveCSS("background-color", "rgb(17, 23, 66)");
         const toggles = await form.locator(".quick-add-entry-actions > *").all();
         const rows = await Promise.all(toggles.map(async el => (await el.boundingBox())!.y));
         expect(new Set(rows).size).toBe(1);
@@ -51,6 +53,10 @@ for (const width of [320, 390, 1280]) {
       const title = form.getByRole("textbox", { name: "Tên mục", exact: true });
       await expect(title).toBeFocused();
       await title.fill("Mục thử toàn màn hình");
+      if (width < 700) {
+        await form.getByRole("button", { name: "Thêm", exact: true }).hover();
+        await expect(form.getByRole("button", { name: "Thêm", exact: true })).toHaveCSS("background-color", "rgb(25, 34, 95)");
+      }
       if (theme === "dark") await form.getByRole("checkbox", { name: "Ghi chú", exact: true }).check();
       if (width < 700) {
         const classification = form.getByRole("button", { name: "Phân loại", exact: true });
@@ -62,6 +68,7 @@ for (const width of [320, 390, 1280]) {
         await expect(form.locator(".quick-classification-heading")).not.toContainText("Phân loại");
         const sheetTop = (await form.locator(".quick-classification").boundingBox())!.y;
         const sheetClose = (await form.getByRole("button", { name: "Ẩn Phân loại", exact: true }).boundingBox())!;
+        await expect(form.getByRole("button", { name: "Ẩn Phân loại", exact: true })).toHaveCSS("background-color", "rgb(17, 23, 66)");
         expect(sheetClose.x + sheetClose.width / 2).toBeCloseTo(width / 2, 1);
         expect(sheetClose.y + sheetClose.height / 2).toBeCloseTo(sheetTop, 1);
         const dates = await form.locator('.quick-add-controls input[type="date"]').all();
@@ -118,10 +125,11 @@ for (const width of [320, 390, 1280]) {
         await expect(form.locator(".quick-add-entry")).toBeHidden();
         await expect(form.locator(".quick-add-controls")).toBeHidden();
         const toolbar = form.locator(".content-toolbar");
-        await expect(toolbar).toHaveCSS("height", "46px");
+        await expect(toolbar).toHaveCSS("height", "44px");
         const headingBottom = (await form.locator(".quick-content-heading").boundingBox())!.y + (await form.locator(".quick-content-heading").boundingBox())!.height;
-        expect((await toolbar.boundingBox())!.y - headingBottom).toBeLessThanOrEqual(5);
-        await expect(form.getByRole("button", { name: "Xong", exact: true }).locator("svg")).toBeVisible();
+        expect((await toolbar.boundingBox())!.y - headingBottom).toBe(6);
+        await expect(form.getByRole("button", { name: "Lưu Nội dung", exact: true }).locator("svg")).toBeVisible();
+        await expect(form.getByRole("button", { name: "Hủy Nội dung", exact: true }).locator("svg")).toBeVisible();
         expect((await editor.boundingBox())!.height).toBeGreaterThan(600);
         await page.evaluate(() => {
           Object.defineProperty(window.visualViewport!, "height", { configurable: true, value: 360 });
@@ -142,17 +150,19 @@ for (const width of [320, 390, 1280]) {
         const bounds = (await editor.boundingBox())!;
         expect(bounds.height).toBeGreaterThan(180);
         expect(bounds.y + bounds.height).toBeLessThanOrEqual(360);
-        await expect(form.getByRole("button", { name: "Xong", exact: true })).toBeInViewport();
+        await expect(form.getByRole("button", { name: "Lưu Nội dung", exact: true })).toBeInViewport();
         await page.screenshot({ path: `/tmp/spark-quick-focus-${width}-${theme}.png`, clip: { x: 0, y: 0, width, height: 360 } });
-        await form.getByRole("button", { name: "Xong", exact: true }).click();
+        await form.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
         await expect(title).toHaveValue("Mục thử toàn màn hình");
         await expect(form.locator(".quick-description-preview")).toContainText("Nội dung nháp cần giữ");
         await form.getByRole("button", { name: "Sửa Nội dung", exact: true }).click();
         await expect(editor).toBeFocused();
         await expect(editor.locator("strong")).toHaveText("Nội dung nháp cần giữ");
-        await editor.press("Escape");
+        await editor.fill("Bản nháp cần hủy");
+        await form.getByRole("button", { name: "Hủy Nội dung", exact: true }).click();
         await expect(form).toBeVisible();
         await expect(form.locator(".quick-add-controls")).toBeVisible();
+        await expect(form.locator(".quick-description-preview")).toContainText("Nội dung nháp cần giữ");
         await page.evaluate(() => {
           Reflect.deleteProperty(window.visualViewport!, "height");
           window.visualViewport!.dispatchEvent(new Event("resize"));
@@ -167,7 +177,9 @@ for (const width of [320, 390, 1280]) {
       await expect(page.locator("body")).not.toHaveCSS("position", "fixed");
       expect(await page.locator(".item-main").first().evaluate(el => Boolean(el.closest("[inert]")))).toBe(false);
       await page.keyboard.press("a");
-      await page.locator(".item-main").filter({ hasText: "Mục thử toàn màn hình" }).click();
+      const addedItem = page.locator(".item-row").filter({ hasText: "Mục thử toàn màn hình" });
+      await expect(addedItem.locator(".item-meta .item-description-indicator")).toBeVisible();
+      await addedItem.locator(".item-main").click();
       await expect(page.locator(".formatted-content strong")).toHaveText("Nội dung nháp cần giữ");
       if (width < 700) {
         await expect(page.getByLabel("Ngày bắt đầu", { exact: true })).toHaveValue("2026-11-01");
@@ -206,7 +218,7 @@ test("mobile quick-add shows a long content draft without clipping or a filled p
   const editor = page.getByRole("textbox", { name: "Nội dung", exact: true });
   const content = Array.from({ length: 20 }, (_, index) => `Dòng nội dung ${index + 1} cần hiển thị đầy đủ trong quick-add.`).join("\n");
   await editor.fill(content);
-  await page.getByRole("button", { name: "Xong", exact: true }).click();
+  await page.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
   const preview = page.locator(".quick-description-preview");
   await expect(preview).toBeVisible();
   expect(await preview.locator("span").textContent()).toBe(content);
@@ -288,8 +300,8 @@ test("mobile quick-add blocks background gestures and restores the scrolled list
   expect(await background.boundingBox()).toEqual(before);
   await edgeSwipe();
   await expect(page.locator(".mobile-nav-backdrop")).toHaveCount(0);
-  await expect(form.getByRole("button", { name: "Xong", exact: true })).toBeInViewport();
-  await form.getByRole("button", { name: "Xong", exact: true }).click();
+  await expect(form.getByRole("button", { name: "Lưu Nội dung", exact: true })).toBeInViewport();
+  await form.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
   await form.getByRole("button", { name: "Hủy", exact: true }).click();
   await expect.poll(() => page.evaluate(() => scrollY)).toBe(400);
   expect(await background.evaluate(el => Boolean(el.closest("[inert]")))).toBe(false);
