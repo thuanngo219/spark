@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-194 — Đóng quick-add sau khi thêm; Phân loại mobile không bóng (2026-10-28)
+
+Sau khi lưu task/note thành công, quick-add đóng trên desktop và mobile, đưa người dùng về đúng view đã mở trước đó. Mobile sheet Phân loại giữ nền tương phản và viền trên 1px, bỏ shadow của D-192. Kiểm tra: typecheck, build, ESLint cho file sửa, 175 unit test và 10 browser case đạt; bao phủ 320/390px sáng/tối và desktop 1280px, lưu task/note, giữ view Tất cả, nội dung dài, nền cuộn và viền sheet. Chưa thử trên iPhone vật lý.
+
 ## D-193 — Xem trước Nội dung quick-add mobile (2026-10-28)
 
 Sau khi nhập Nội dung và bấm Xong, bản nháp hiển thị thành chữ thường trên nền trong suốt, không có padding hoặc giới hạn chiều cao 112px. Toàn bộ văn bản xuống dòng trong vùng form và cuộn cùng quick-add; icon sửa vẫn mở lại editor, giữ dữ liệu và định dạng khi lưu mục. Không thay đổi editor tập trung hoặc giao diện desktop.

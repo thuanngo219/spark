@@ -9,6 +9,7 @@ for (const width of [320, 390, 1280]) {
       await page.emulateMedia({ colorScheme: theme });
       await page.goto("/");
       await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
+      const previousViewTitle = await page.locator(".view-header h1").textContent();
       await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
       const form = page.locator(".quick-add-dialog");
       await page.locator(".quick-add-backdrop").evaluate(el => Promise.all(el.getAnimations({ subtree: true }).map(a => a.finished)));
@@ -63,6 +64,8 @@ for (const width of [320, 390, 1280]) {
         const panel = (await form.locator(".quick-classification").boundingBox())!;
         await expect(form.locator(".quick-classification")).toHaveCSS("border-radius", "0px");
         await expect(form.locator(".quick-classification")).toHaveCSS("background-color", theme === "light" ? "rgb(233, 235, 239)" : "rgb(36, 43, 61)");
+        await expect(form.locator(".quick-classification")).toHaveCSS("box-shadow", "none");
+        await expect(form.locator(".quick-classification")).toHaveCSS("border-top-width", "1px");
         const cancel = (await form.getByRole("button", { name: "Hủy", exact: true }).boundingBox())!;
         const add = (await form.getByRole("button", { name: "Thêm", exact: true }).boundingBox())!;
         expect(panel.y).toBeLessThan(cancel.y);
@@ -143,8 +146,8 @@ for (const width of [320, 390, 1280]) {
         await centered(800);
       }
       await form.getByRole("button", { name: "Thêm", exact: true }).click();
-      await form.getByRole("button", { name: "Hủy", exact: true }).click();
       await expect(form).toBeHidden();
+      await expect(page.locator(".view-header h1")).toHaveText(previousViewTitle!);
       await expect(page.locator("body")).not.toHaveCSS("position", "fixed");
       expect(await page.locator(".item-main").first().evaluate(el => Boolean(el.closest("[inert]")))).toBe(false);
       await page.keyboard.press("a");
@@ -158,6 +161,23 @@ for (const width of [320, 390, 1280]) {
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     });
   }
+}
+
+for (const width of [390, 1280]) {
+  test(`quick-add returns to the All view after saving at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto("/");
+    await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
+    await page.keyboard.press("a");
+    await expect(page.locator(".view-header h1")).toHaveText("Tất cả");
+    await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
+    const form = page.locator(".quick-add-dialog");
+    await form.getByRole("textbox", { name: "Tên mục", exact: true }).fill(`Mục mới ở Tất cả ${width}`);
+    await form.getByRole("button", { name: "Thêm", exact: true }).click();
+    await expect(form).toBeHidden();
+    await expect(page.locator(".view-header h1")).toHaveText("Tất cả");
+    await expect(page.locator(".item-main").filter({ hasText: `Mục mới ở Tất cả ${width}` })).toBeVisible();
+  });
 }
 
 test("mobile quick-add shows a long content draft without clipping or a filled preview", async ({ page }) => {

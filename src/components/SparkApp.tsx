@@ -988,7 +988,7 @@ export function SparkApp() {
 
   const addItem = useCallback((item: SparkItem) => {
     const currentData = dataRef.current;
-    if (!currentData) return;
+    if (!currentData) return false;
     const nextItem = { ...item, projectId: currentData.projects.some((project) => project.id === item.projectId && !project.archivedAt) ? item.projectId : null };
     commitLocalData({ ...currentData, items: [...currentData.items, nextItem] });
     enqueueCloudMutation({
@@ -996,6 +996,7 @@ export function SparkApp() {
       kind: "upsert-item",
       item: nextItem,
     });
+    return true;
   }, [commitLocalData, enqueueCloudMutation]);
 
   const saveProject = (input: Project) => {
@@ -2152,7 +2153,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
   projects: Project[];
   today: string;
   view: View;
-  onAdd: (item: SparkItem) => void;
+  onAdd: (item: SparkItem) => boolean;
   onExpandedChange: (expanded: boolean) => void;
 }) {
   const [type, setType] = useState<ItemType>("task");
@@ -2278,7 +2279,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
     event.preventDefault();
     const invalidDateRange = !isValidDateRange(startDate, dueDate);
     if (!title.trim() || invalidDateRange || !hasUpcomingDate || contentLength(description) > CONTENT_LIMIT) return;
-    onAdd({
+    const added = onAdd({
       id: createUuid(),
       type,
       title: title.trim(),
@@ -2292,15 +2293,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
       isUrgent: false,
       createdAt: new Date().toISOString(),
     });
-    setTitle("");
-    setDescription("");
-    setDescriptionFormat(null);
-    setDescriptionOpen(false);
-    setContentFocused(false);
-    setClassificationOpen(false);
-    setType("task");
-    setStartDateOverride(null);
-    inputRef.current?.focus();
+    if (added) close();
   };
 
   if (!expanded) {

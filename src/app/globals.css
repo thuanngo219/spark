@@ -665,7 +665,7 @@ button:focus-visible { filter: brightness(.88); }
   .quick-classification-toggle { display: flex; }
   .quick-add-controls { position: relative; flex: 0 0 auto; display: flex; flex-direction: column; align-items: stretch; gap: 12px; padding: 12px 17px var(--quick-bottom, calc(16px + env(safe-area-inset-bottom))); background: var(--canvas); }
   .quick-classification { display: none; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
-  .quick-classification.is-open { position: absolute; z-index: 1; bottom: 0; left: 0; right: 0; display: block; max-height: calc(var(--quick-viewport-height, 100dvh) - 68px); padding: 12px 17px var(--quick-bottom, calc(16px + env(safe-area-inset-bottom))); border-top: 1px solid var(--line); border-radius: 0; background: var(--well); box-shadow: 0 -8px 25px var(--header-shadow); }
+  .quick-classification.is-open { position: absolute; z-index: 1; bottom: 0; left: 0; right: 0; display: block; max-height: calc(var(--quick-viewport-height, 100dvh) - 68px); padding: 12px 17px var(--quick-bottom, calc(16px + env(safe-area-inset-bottom))); border-top: 1px solid var(--line); border-radius: 0; background: var(--well); }
   .quick-classification-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; color: var(--heading); font-size: .6875rem; font-weight: 650; }
   .quick-classification-heading .icon-button { flex: 0 0 44px; width: 44px; height: 44px; }
   .quick-classification-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
