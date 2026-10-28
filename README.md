@@ -10,7 +10,7 @@ Hướng UI đã chọn: **Option C — Compact Canvas**, dùng Navy, Turquoise,
 
 Logo chính thức và mọi icon app dùng biểu tượng tick/vòng tròn trắng trên badge gradient xanh–Navy do chủ dự án cung cấp. Wordmark `spark` giữ vector cũ: primary Deep Purple, negative trắng. D-134 áp dụng cho logo chính, sidebar desktop/mobile, compact rail, icon cài đặt và favicon; source/cách sinh asset ở [assets/logo/README.md](assets/logo/README.md).
 
-Domain đích: **https://spark.thuanngo.com**.
+Production: **https://spark.thuanngo.com**. Chủ dự án xác nhận ngày 2026-10-28 rằng bản mới nhất hoạt động tốt trên iPhone. Trạng thái phát hành, giới hạn kiểm chứng và điểm bắt đầu cho v3 ở [handoff hiện hành](docs/handoff/spark-v3.md).
 
 Vercel owner: team **Thuan Ngo** tại [vercel.com/thuanngo](https://vercel.com/thuanngo). Liên kết local trong `.vercel/repo.json` dùng team ID ổn định nên không phụ thuộc vào việc đổi tên hoặc URL slug của team.
 
@@ -18,7 +18,7 @@ Supabase production nằm trong project hạ tầng dùng chung **WorkSpace**, g
 
 ## Giao diện sáng/tối
 
-Chọn THEO HỆ THỐNG / SÁNG / TỐI tại **Phím tắt & hiển thị → Giao diện**, ghi nhớ riêng thiết bị. Chủ dự án đã duyệt phát hành production ngày 05/10/2026; chi tiết và kiểm tra ở [handoff](docs/handoff/spark-v2.md), quyết định D-138–D-143.
+Chọn THEO HỆ THỐNG / SÁNG / TỐI tại **Phím tắt & hiển thị → Giao diện**, ghi nhớ riêng thiết bị. Handoff v3 ghi trạng thái giao diện đang chạy; quyết định D-138–D-143 trong decision log là lịch sử triển khai dark mode.
 
 ## Chạy local
 
@@ -38,14 +38,13 @@ npm run dev
 - [Implementation guide](docs/IMPLEMENTATION_GUIDE.md): kiến trúc, dữ liệu, lộ trình triển khai, publish và cài lên iPhone.
 - [Offline và đồng bộ](docs/OFFLINE_SYNC.md): app-shell cache, IndexedDB, migration, mutation lifecycle và checklist kiểm thử.
 - [Decision log](docs/DECISIONS.md): lịch sử quyết định; quyết định mới thay phần tương ứng của quyết định cũ.
-- [Handoff hiện hành](docs/handoff/spark-v2.md): thông số đang áp dụng, bảng đối chiếu yêu cầu trong chat, bản phát hành đã xác minh và việc còn thiếu. Đọc trước khi tiếp tục ở chat mới.
+- [Handoff hiện hành](docs/handoff/spark-v3.md): trạng thái production, quy tắc còn hiệu lực, bản đồ mã nguồn và những phép kiểm chưa thực hiện. Đọc trước khi tiếp tục ở chat mới.
 - [Product backlog](docs/BACKLOG.md): ý tưởng đang cân nhắc, chưa phải hành vi hoặc phạm vi đã chốt.
 - [AGENTS.md](AGENTS.md): quy tắc bàn giao cho các phiên Codex tiếp theo.
 - [Logo concepts](assets/logo-concepts/README.md): năm hướng nhận diện ban đầu cho Spark.
 - [Official logo](assets/logo/README.md): logo chính thức, palette và quy tắc sử dụng hiện tại.
 
-## Bước tiếp theo đề xuất
+## Việc cần cân nhắc cho v3
 
-1. Build và chạy bản production qua HTTPS, sau đó kiểm thử cold-start offline trên iPhone thật.
-2. Chạy toàn bộ Supabase migration, xác nhận RLS và sync giữa hai thiết bị.
-3. Sau giai đoạn dùng thật, bổ sung version/conflict detection trước khi mở rộng phạm vi người dùng.
+- Kiểm tra riêng cold-start offline trên iPhone, sync hai thiết bị và cách ly hai tài khoản thật trước khi sửa sâu luồng dữ liệu. Handoff v3 phân biệt rõ những phép kiểm này với xác nhận dùng iPhone của chủ dự án.
+- Nếu mở rộng phạm vi người dùng hoặc dùng offline đồng thời trên nhiều thiết bị, thiết kế version/conflict detection cho full-row upsert hiện tại trước khi triển khai.

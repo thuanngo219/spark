@@ -10,7 +10,7 @@
 4. `docs/UI_OPTIONS.md`
 5. `docs/DECISIONS.md`
 6. `docs/IMPLEMENTATION_GUIDE.md` nếu công việc liên quan kỹ thuật hoặc deploy
-7. `docs/handoff/spark-v2.md` để lấy trạng thái hiện hành, thay đổi đã phát hành và việc còn thiếu. Quyết định mới thay phần tương ứng của quyết định cũ; release note cũ chỉ là lịch sử.
+7. `docs/handoff/spark-v3.md` để lấy trạng thái hiện hành, bản đã phát hành và việc còn thiếu. Handoff chỉ giữ quy tắc còn hiệu lực; quyết định cũ đã bị thay thế tra trong Git khi thực sự cần.
 
 ## Nguyên tắc sản phẩm
 

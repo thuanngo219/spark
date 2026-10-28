@@ -1,5 +1,7 @@
 # Product Brief — Spark
 
+Bản production mới nhất được chủ dự án xác nhận hoạt động tốt trên iPhone ngày 2026-10-28. [Handoff v3](handoff/spark-v3.md) chỉ ghi quy tắc còn hiệu lực và phạm vi đã kiểm chứng; các mục D-xxx phía dưới là lịch sử phát triển, nên đọc cùng quyết định mới nhất khi một thông số thay đổi.
+
 ## 1. Tóm tắt
 
 **Spark** là web app quản lý task và note cá nhân giúp người dùng biết hôm nay cần làm gì, lưu nhanh điều cần nhớ, thấy những việc sắp đến trong ba ngày và xem nội dung theo ngày hoặc dự án. Tên gọi gợi cảm giác một ý tưởng mới lóe lên và những bước nhỏ giúp người dùng hoàn thành ước mơ. Trải nghiệm phải nhanh, thanh lịch, ít nhiễu và dễ mở từ màn hình chính iPhone như một ứng dụng.
@@ -246,10 +248,10 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Mỗi khu sort độc lập và lưu theo browser; task luôn trước note kể cả note có cả hai cờ hoặc đến hạn sớm hơn. Mức chú ý giữ cả hai cờ → Quan Trọng → Ưu tiên → bình thường và chỉ đảo ngày đến hạn trong từng mức. Ngày trống cuối trong từng loại/từng mức ở cả hai chiều; hòa khóa tuân theo quy tắc trên, không sửa dữ liệu đầu vào.
 - Tất cả cho đóng/mở độc lập cả sáu khu thời gian, mặc định mở và giữ trạng thái trong phiên khi chuyển view; không ảnh hưởng trạng thái khu Hôm nay. Khoảng cách giữa các khu thống nhất 12px, kể cả khu đã hoàn thành/lưu trữ. Nhãn sort NGÀY TRẠNG THÁI phải hiển thị đầy đủ trên desktop/mobile.
 - Email OTP của Spark hiển thị mã 36px, một dòng trong ô nền nhạt; tiêu đề thư bắt đầu bằng mã rồi đến “Mã đăng nhập Spark”. Chỉ template Spark trong shared hook thay đổi, không đổi thương hiệu/template của ứng dụng khác.
-- Detail sheet giữ edit button ở mép phải của từng khối đọc; URL trong Nội dung task/note là liên kết mở tab mới và không cho phép protocol ngoài HTTP(S). Trên desktop, header, Tên và cụm metadata/control không dịch chuyển khi xem item dài; bánh xe chuột chỉ cuộn vùng Nội dung.
-- Canvas liệt kê task/note trên desktop rộng responsive trong dải `940–1200px` khi vùng nội dung đủ chỗ; màn hình hẹp và mobile co vừa vùng hiển thị, không phát sinh horizontal scroll. Detail sheet desktop giữ chiều rộng `880px`.
-- Khung sửa Nội dung desktop dùng chiều cao tối đa như khung đọc nội dung dài: `min(86dvh, 820px)`, vùng nhập giãn theo phần còn lại. Quick-add giữ `160px`; mobile đọc/sửa giãn phần còn lại của màn hình theo D-157. Tên không có nhãn, nút sửa nằm cùng hàng text; khi sửa trên desktop, input và ✓/× cùng hàng; mobile ẩn ✓/× của Tên và tự lưu hợp lệ khi blur. Nội dung giữ ✓/× trên hàng nhãn để editor dùng trọn chiều rộng; control desktop là `28px` với icon `16px`, mobile giữ touch target `44px`. Hàng nhãn Nội dung cao 28px ở cả trạng thái đọc/sửa; mobile đặt Dự án và Lưu trữ/Xóa cùng một hàng, không tràn ngang ở 320px.
-- Dock mobile bo tròn hai đầu; active navigation dùng pill đồng tâm và vẫn giữ vùng chạm tối thiểu 44px.
+- Chi tiết toàn màn hình trên desktop/mobile, chỉ vùng Nội Dung cuộn khi dài; URL trong Nội Dung mở tab mới và chỉ nhận HTTP(S). Tên và action sửa không dịch khi cuộn Nội Dung; metadata nằm sát đáy. Nút Đóng desktop ở góc trên phải, mobile phủ trên vùng Nội Dung.
+- Canvas desktop rộng responsive trong dải `940–1200px` khi vùng nội dung đủ chỗ; cột chi tiết desktop cùng chiều rộng canvas. Màn hình hẹp/mobile co vừa vùng hiển thị, không phát sinh horizontal scroll ngoài thành phần chủ đích.
+- Quick-add desktop căn giữa với vùng nhập Nội Dung cao 300px; mobile toàn màn hình, Tên và ba nút Ghi chú/Nội Dung/Phân Loại đứng yên, vùng xem trước Nội Dung dài cuộn riêng. Khi sửa Tên/Nội Dung trong chi tiết, desktop/mobile đều có tick/X để lưu hoặc hủy; edit Tên giữ cỡ chữ và không có gạch dưới. Nhãn/action Nội Dung ngoài vùng cuộn; vùng chạm mobile tối thiểu 44px. Mobile đặt Dự án và Lưu trữ/Xóa cùng một hàng, không tràn ngang ở 320px.
+- Dock mobile là khối sát mép trái/phải/dưới, active navigation đổi màu icon và in đậm nhãn, không thêm nền riêng; vùng chạm giữ tối thiểu 44px.
 - Email đồng bộ gửi OTP 6 chữ số; input chỉ nhận tối đa 6 số và nút xác nhận chỉ bật khi có đúng 6 số.
 - Switcher Tất cả/Note/Task hoạt động nhất quán ở mọi view và không làm thay đổi dữ liệu item.
 - Toast Hoàn tác nằm ngoài vùng navigation/dock trên desktop và mobile.
@@ -261,10 +263,10 @@ Vì đây là sản phẩm cá nhân, ưu tiên tín hiệu hành vi đơn giả
 - Compact sidebar hiển thị tooltip tên hạng mục/project ngay khi hover hoặc focus vào icon/dot.
 - App cài được lên Home Screen với tên/icon riêng và mở ở chế độ standalone khi nền tảng hỗ trợ.
 
-### Nghiệm thu editor và giao diện hiện hành (D-117–D-132)
+### Lịch sử nghiệm thu editor và giao diện (D-117–D-132)
 
 - Nội dung tối đa 4.000 ký tự (Unicode code points, bao gồm xuống dòng), hỗ trợ B/I/U và ⌘/Ctrl+B/I/U cho task/note trong quick-add/detail. Định dạng giữ qua lưu, reload, offline và cloud sync.
-- Nút Sửa Nội dung nằm ngang nhãn Nội dung và không di chuyển khi cuộn vùng nội dung dài; desktop detail rộng 880px.
+- Nút Sửa Nội Dung nằm ngang nhãn và không di chuyển khi cuộn vùng nội dung dài. Chi tiết desktop hiện là màn hình toàn phần theo quy tắc ở trên.
 - Quick-add chỉ mặc định Ngày bắt đầu hôm nay cho task trong Hôm nay. Note và mọi view khác để trống; vẫn cho chọn/xóa ngày thủ công. Ngày đến hạn giữ quy tắc hiện có.
 
 - D-135 thay style D-120: Quick-add Tên focus dùng control-hover; Nội dung quick-add/chi tiết không border/nền. Chỉ toolbar giữ border và nền pha 5% đen (D-123), không bullet/numbering. Input sửa Tên chỉ gạch dưới, nền trong suốt, không outline/shadow. Nút icon tròn, nút chữ bo hai đầu; checked task màu xám. Badge logo full/compact giữ cùng size/vị trí, không cắt chân. Lưu/hủy Nội dung hiển thị 28px ở desktop/mobile, mobile hit area 44px.

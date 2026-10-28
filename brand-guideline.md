@@ -2,6 +2,8 @@
 
 Tài liệu này là nguồn tham chiếu chính cho cách Spark xuất hiện và giao tiếp trên website, web app và presentation. Khi một thiết kế hoặc nội dung mới mâu thuẫn với tài liệu này, ưu tiên guideline này và ghi quyết định mới vào `docs/DECISIONS.md`.
 
+Trạng thái giao diện production và chỉ các quy tắc còn hiệu lực được tóm tắt trong [handoff v3](docs/handoff/spark-v3.md). Các mục D-xxx ở cuối guideline ghi lại lịch sử tinh chỉnh; giá trị mới thay giá trị cũ. Chủ dự án xác nhận bản mới nhất hoạt động tốt trên iPhone ngày 2026-10-28.
+
 ## 1. Brand foundation
 
 ### Purpose
@@ -318,12 +320,12 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 
 D-145: màn hình khởi động phủ Navy #111742, giữa màn hình là logo negative chính thức (icon + chữ spark) cùng thanh tiến trình và %. Sau khi dữ liệu sẵn sàng, cụm logo/progress mờ dần 500ms rồi nền thu về phải 600ms (D-149). Không lộ dữ liệu mẫu lúc chờ; lỗi/offline có lối tiếp tục rõ ràng.
 
-- D-136: Header padding 20px cả bốn phía desktop/mobile (mobile cộng safe-area top), cả thường/compact; chiều cao theo nội dung. Dải màu 5px, radius 5px dưới tiêu đề và thống kê (D-137). Eyebrow các view ngày/Tất cả dùng xám #73788D như view dự án; Tất cả ghi “Mọi ngày. Mọi việc.”, giữ chữ uppercase như hệ thống. Không dùng border dưới; bóng Navy rất nhẹ ở chân header rõ hơn giữa và tan ở hai mép. Backdrop blur 8px desktop/mobile (cả thường/compact), có WebKit prefix.
+- Header dùng padding desktop 20px, mobile 15px ngang cộng safe-area top; chiều cao theo nội dung. Dải màu 4px, radius 5px dưới tiêu đề và thống kê. Eyebrow các view ngày/Tất cả dùng xám như view dự án; Tất cả ghi “Mọi ngày. Mọi việc.”. Không dùng border dưới; bóng Navy rất nhẹ ở chân header rõ hơn giữa và tan ở hai mép. Backdrop blur 8px desktop/mobile, có WebKit prefix.
 
 - Bố cục đơn giản, rõ thứ bậc, có khoảng thở nhưng không làm giảm mật độ hữu ích của Compact Canvas.
-- Canvas liệt kê task/note trên desktop rộng responsive từ `940px` đến tối đa `1200px`; khi vùng nội dung không đủ chỗ thì co theo chiều rộng khả dụng, không tạo cuộn ngang. Mobile tiếp tục dùng trọn chiều rộng màn hình. Detail sheet desktop rộng `880px`; header, Tên và cụm metadata/control giữ cố định, chỉ vùng Nội dung cuộn khi nội dung dài. Nhãn Nội dung và nút sửa nằm cùng hàng cố định bên ngoài vùng cuộn. Toolbar B/I/U dùng control neutral, trạng thái chọn Navy/trắng và vùng chạm 44px trên mobile.
-- Khung desktop khi sửa Nội dung cao `min(86dvh, 820px)`, editor giãn theo phần còn lại; mobile đọc/sửa giãn phần còn lại của màn hình theo D-157. Quick-add cao `160px`, chữ nhập regular trên desktop. Toolbar giữ border và pha 5% đen trên nền field; wrapper/vùng nhập không border hoặc nền. Không có bullet/numbering.
-- Tên không có label; nút sửa ngang text. Input Tên cao 28px, chỉ gạch dưới 1px, nền trong suốt, không outline/glow/shadow. Desktop có ✓/× cùng hàng; mobile ẩn hai nút này và tự lưu tên hợp lệ khi blur. Nhãn Nội dung cao 28px, cách field 4px desktop/8px mobile; nút lưu/hủy Nội dung hiển thị 28px/icon 16px ở cả desktop/mobile, mobile có vùng chạm 44px. Nút Sửa mobile vẫn có control 44px.
+- Canvas liệt kê task/note trên desktop rộng responsive từ `940px` đến tối đa `1200px`; khi vùng nội dung không đủ chỗ thì co theo chiều rộng khả dụng. Mobile dùng trọn chiều rộng màn hình. Chi tiết desktop/mobile toàn màn hình; cột chi tiết desktop cùng chiều rộng canvas. Chỉ vùng Nội Dung dài cuộn, metadata neo mép dưới. Nhãn Nội Dung và action nằm ngoài vùng cuộn. Toolbar B/I/U dùng control neutral, trạng thái chọn Navy/trắng và vùng chạm 44px trên mobile.
+- Quick-add desktop căn giữa với vùng nhập Nội Dung cao 300px; mobile là màn hình toàn phần, vùng nhập tập trung và xử lý bàn phím qua `visualViewport`. Toolbar giữ border/nền field pha 5% đen; vùng nhập không border hoặc nền. Không có bullet/numbering.
+- Tên không có label; nút sửa ngang text. Ô sửa Tên giữ cỡ chữ khi đọc, nền trong suốt, không gạch dưới/outline/glow/shadow. Desktop/mobile đều có tick/X để lưu/hủy khi sửa Tên. Nút sửa/lưu/hủy Nội Dung đứng cạnh nhãn; mobile giữ vùng chạm 44px.
 - Khối Nội dung cách đường phân cách 16px phía trước và 14.4px phía sau, giảm 20%. Checkbox/dấu note trong chi tiết không có padding ngang, cách tên 10px, hover không đổi nền; tên task hoàn thành không gạch ngang.
 - Metadata mobile có Dự án và Lưu trữ/Xóa cùng hàng thứ hai. Focus vào metadata tự lưu draft nhưng giữ editor/kích thước khung để click không mất đích (D-132).
 - Dùng bo góc nhất quán và surface trung tính; tránh card lồng card hoặc shadow nặng.

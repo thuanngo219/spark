@@ -1,6 +1,6 @@
 # Decision Log
 
-File này ghi lại lịch sử quyết định sản phẩm/kỹ thuật. Quyết định mới thay phần tương ứng của quyết định cũ; không đọc từng dòng lịch sử như yêu cầu hiện hành độc lập. Bản tổng hợp hiện hành và bảng đối chiếu yêu cầu trong chat nằm ở [handoff Spark v2](handoff/spark-v2.md).
+File này ghi lại lịch sử quyết định sản phẩm/kỹ thuật. Quyết định mới thay phần tương ứng của quyết định cũ; không đọc từng dòng lịch sử như yêu cầu hiện hành độc lập. Bản bàn giao chỉ gồm quy tắc còn hiệu lực nằm ở [handoff Spark v3](handoff/spark-v3.md). Chủ dự án đã xác nhận ngày 2026-10-28 rằng bản production mới nhất hoạt động tốt trên iPhone; đây là ghi nhận nghiệm thu, không tạo thêm quyết định sản phẩm.
 
 Các thay thế cần chú ý: D-123 bỏ danh sách của D-119 và thay toolbar 20% ở D-122 bằng 5%; D-126 bỏ label Tên ở D-125; D-129 ẩn nút lưu/hủy Tên trên mobile; D-130 bỏ gradient D-077 và chuyển dải màu xuống dưới header; D-131 chốt blur 8px thay 12px desktop của D-130, cùng control sort 36px; D-132 giữ editor khi focus metadata. D-120 thay chiều cao editor 350px/160px cũ bằng khung desktop tối đa và mobile 40dvh.
 

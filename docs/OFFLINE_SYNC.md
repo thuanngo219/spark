@@ -2,6 +2,8 @@
 
 Tài liệu này mô tả hành vi offline-first hiện tại của Spark. Supabase vẫn là nguồn dữ liệu cloud có thẩm quyền; IndexedDB là nguồn dữ liệu tức thời trên từng browser đã đăng nhập.
 
+Trạng thái phát hành và phạm vi đã được kiểm chứng cho v3 nằm ở [handoff hiện hành](handoff/spark-v3.md). Danh sách “Kiểm thử bắt buộc” bên dưới là checklist cho thay đổi tiếp theo, không có nghĩa từng mục đã được tái kiểm trên iPhone trong lượt bàn giao này.
+
 ## Mục tiêu
 
 - Sau ít nhất một lần mở bản production khi có mạng, Spark có thể cold-start, đọc và sửa dữ liệu khi thiết bị offline.
@@ -41,7 +43,7 @@ Preferences nhỏ như trạng thái sidebar và sort theo từng view/khu vẫn
 ## Vòng đời một mutation
 
 1. UI cập nhật ngay trong memory.
-2. Snapshot mới và toàn bộ queue hiện tại được ghi đúng một lần trong cùng transaction IndexedDB. Nếu nhiều thao tác đến sát nhau, Spark chờ transaction mới nhất hoàn tất trước khi bắt đầu gửi.
+2. Snapshot mới và toàn bộ queue hiện tại được ghi đúng một lần trong cùng transaction IndexedDB. Với scope local, app còn ghi snapshot chờ đồng bộ vào `localStorage` trước transaction để reload sát thao tác vẫn phục hồi được dữ liệu; xóa bản chờ sau khi IndexedDB ghi xong. Nếu nhiều thao tác đến sát nhau, Spark chờ transaction mới nhất hoàn tất trước khi bắt đầu gửi.
 3. Nếu offline, mutation dừng ở queue và UI hiển thị Ngoại tuyến.
 4. Nếu online, Spark gửi mutation đầu queue tới Supabase.
 5. Sau khi server xác nhận, mutation được xóa khỏi IndexedDB.

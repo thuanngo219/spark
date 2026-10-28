@@ -1,11 +1,13 @@
 # Implementation Guide
 
-## 1. Kiến trúc đề xuất
+Trạng thái triển khai hiện hành và đường dẫn mã nguồn ở [handoff v3](handoff/spark-v3.md). Các mục D-117–D-199 ở cuối file ghi lại quá trình triển khai và có thể chứa thông số đã được quyết định sau thay thế; dùng handoff v3 và code để lấy giá trị đang chạy. Chủ dự án xác nhận bản production mới nhất hoạt động tốt trên iPhone ngày 2026-10-28.
+
+## 1. Kiến trúc đã triển khai
 
 ### Stack
 
 - **Frontend/full-stack:** Next.js App Router + TypeScript.
-- **Styling:** Tailwind CSS hoặc CSS Modules + CSS variables. Dùng design tokens, không hard-code màu lặp lại trong component.
+- **Styling:** CSS variables và chín file CSS theo thành phần trong `src/app/styles/`; `globals.css` giữ thứ tự import.
 - **Backend đồng bộ:** Supabase Postgres + Supabase Auth.
 - **Deploy:** Vercel.
 - **PWA:** Web App Manifest, icon set, standalone display và service worker cache app shell để cold-start offline.
@@ -22,7 +24,7 @@ Migration history của WorkSpace là project-wide nên có version do nhiều a
 
 ### Hai chế độ dữ liệu
 
-**Khuyến nghị cho MVP: cloud sync ngay từ đầu.** Đăng nhập passwordless bằng mã OTP gửi qua email, dữ liệu lưu ở Supabase và được bảo vệ theo user. Người dùng nhập mã ngay trong Spark để tránh magic link bị mở ở browser khác trên mobile. Cách này cho phép iPhone và desktop thấy cùng một danh sách.
+Cloud sync đã triển khai. Đăng nhập passwordless bằng mã OTP gửi qua email, dữ liệu lưu ở Supabase và được bảo vệ theo user. Người dùng nhập mã ngay trong Spark để tránh magic link bị mở ở browser khác trên mobile. Cách này cho phép iPhone và desktop thấy cùng một danh sách khi đồng bộ hoàn tất.
 
 Email template của hosted Supabase phải dùng `{{ .Token }}` để gửi OTP 6 chữ số thay vì `{{ .ConfirmationURL }}`. Client chỉ giữ ký tự số, giới hạn đúng 6 ký tự và không gọi `verifyOtp` khi mã chưa khớp `^[0-9]{6}$`.
 
@@ -142,10 +144,10 @@ tests/browser/                       # Kiểm tra giao diện responsive và lu�
 - Quick-add overlay phải có `role="dialog"`, `aria-modal="true"`, đóng được bằng Hủy, click backdrop và phím Escape; khi đóng trả focus về nút “Thêm công việc”. Backdrop của mọi overlay chỉ dùng lớp Navy dim đủ đậm, không dùng blur.
 - Quick-add giữ checkbox Ghi chú. Secondary button **Thêm Nội dung** mở textarea tùy chọn tối đa 4.000 ký tự cho cả task và note; chuyển loại không xóa draft. Ngày bắt đầu mặc định trống, chỉ task mới trong Hôm nay mặc định hôm nay; ngày bắt đầu, ngày đến hạn và dự án đều chỉnh/xóa được cho cả hai loại item.
 - Tap item mở detail sheet ở trạng thái đọc. Tên/Nội dung chỉ chuyển sang input/textarea khi bấm edit icon kế text; metadata compact lưu từng thay đổi ngay mà không cần submit cả form.
-- Canvas liệt kê task/note ở desktop dùng `width: clamp(940px, 80vw, 1200px)` cùng `max-width: 100%` để co theo vùng content khi viewport hẹp; mobile override về `width: 100%`. Detail sheet desktop dùng `width: min(880px, calc(100vw - 48px))`. Nút Sửa Nội dung nằm trên hàng nhãn cố định, ngoài vùng cuộn ở cả chế độ đọc/sửa. Sheet là flex column giới hạn chiều cao; header, khối Tên và `.detail-metadata` không cuộn, còn read row/inline editor trong `.detail-description` là vùng cuộn độc lập.
-- Khung desktop đang sửa Nội dung cao `min(86dvh, 820px)`, bằng giới hạn khung đọc dài; flex phân bổ vùng nhập còn lại và chỉ editor cuộn. Quick-add giữ 160px; mobile đọc/sửa giãn phần còn lại của màn hình theo D-157. D-135: Nội dung quick-add/chi tiết trong suốt và không border; chỉ toolbar có border/nền field pha 5% đen. Quick-add Tên giữ control-hover; input sửa Tên chỉ có gạch dưới, không nền/outline/shadow. Tên không có nhãn; nút sửa cùng hàng với text, khi sửa trên desktop, input và ✓/× nằm trong `.detail-title-row`; mobile ẩn ✓/× của Tên và tự lưu hợp lệ khi blur. Nội dung giữ action ✓/× cạnh nhãn, editor dùng toàn chiều rộng bên dưới. Lưu/hủy Nội dung hiển thị `28px`/icon `16px` ở cả hai; mobile mở hit area `44px` bằng pseudo-element, gap 16px tránh chồng. Nút đóng sheet giữ 44px/tròn.
+- Canvas desktop dùng `width: clamp(940px, 80vw, 1200px)` cùng `max-width: 100%`; mobile dùng toàn chiều rộng. Chi tiết desktop là màn hình toàn phần, cột nội dung cùng chiều rộng canvas; chi tiết mobile cũng toàn phần. Nút Sửa Nội Dung đứng ngoài vùng cuộn. Metadata nằm sát mép dưới; chỉ vùng đọc/sửa Nội Dung cuộn khi cần. Khi chi tiết mở, danh sách bên dưới bị khóa cuộn.
+- Quick-add desktop nằm giữa màn hình, vùng nhập Nội Dung cao 300px. Quick-add mobile phủ toàn màn hình, giữ Tên và ba nút Ghi chú/Nội Dung/Phân Loại cố định; chỉ vùng xem trước Nội Dung dài cuộn. Phân Loại mở sheet dưới chứa hai ngày và dự án, phủ Hủy/Thêm; sửa Nội Dung mở editor tập trung. Vùng nhập trong suốt, không border/nền; toolbar giữ border và nền field pha 5% đen. Tên không có label trong chi tiết; edit Tên giữ cỡ chữ và không có gạch dưới. Mobile và desktop dùng tick/X để lưu/hủy Tên, Nội Dung; vùng chạm mobile đủ 44px. Khi edit trên iPhone, editor dùng `visualViewport` và khóa cuộn nền.
 - Vùng nội dung item kiểm tra `openSwipeItemId` chung: trên mobile, nếu bất kỳ khay nào mở thì `onClick` chỉ đóng khay; nếu không có khay mở thì một click mở chi tiết. Quy tắc áp dụng khi chạm cùng item hoặc item khác, kể cả khác nhóm. Pointer-down/up của tap thường không được xóa trạng thái khay trước `onClick`. Desktop vẫn mở bằng một click. Chỉ bật style kéo sau khi xác định gesture ngang, không đổi nền/transform ở pointer-down của tap thường. Click phát sinh từ vuốt/cuộn/cancel bị chặn đến pointer-down mới, không reset bằng timer; activation bàn phím/assistive technology (`detail === 0`) vẫn hoạt động. Checkbox/marker và action khay không mở chi tiết.
-- Hàng nhãn Nội dung cao 28px ở cả chế độ đọc/sửa: desktop cách field 4px, mobile cách 8px. Nút mobile vẫn có vùng chạm 44px, dùng margin dọc -8px để không làm hàng nhãn cao thêm; vùng chạm kết thúc trước field bên dưới. Khoảng cách trước đường phân cách là 16px, padding sau đường phân cách là 14.4px, giảm 20% từ 20px/18px.
+- Hàng nhãn Nội Dung và nút sửa/lưu/hủy giữ vị trí khi chuyển trạng thái đọc/sửa; toolbar mobile cách nhãn 6px. Nút mobile giữ vùng chạm tối thiểu 44px. Khoảng cách trước/sau đường phân cách của chi tiết giảm 20% so với bản đầu.
 - Metadata detail mobile dùng grid bốn cột: Quan Trọng, Ưu tiên, Ngày bắt đầu và Ngày đến hạn ở hàng đầu; Dự án và cụm Lưu trữ/Xóa icon-only 44px cùng hàng thứ hai trong `.detail-project-actions`. Ô Dự án co giãn theo phần còn lại; các nút không co. Wrapper dùng `display: contents` trên desktop để giữ bố cục metadata hiện có. Label vẫn tồn tại qua `aria-label`/tooltip; Xóa tiếp tục qua confirm dialog.
 - Project dot trong item row là control tùy chọn trên desktop: click một dot đổi chung `projectLabelsExpanded` cho mọi item trong view. Pill uppercase dùng regular weight, tham gia grid, không overlay hoặc dùng shadow. Grid track dùng chung `--project-chip-width` từ pill dài nhất đang render để title thẳng hàng; từng pill dùng `--project-pill-width` riêng để nền chỉ ôm tên của nó, còn dot được neo cố định khi animate `width`. Tên pill đã mở luôn ở một dòng và không dùng ellipsis. Trên mobile, button pill được ẩn và thay bằng dot tĩnh nên không có thao tác mở pill hoặc thay đổi grid. Trạng thái mở và toggle trong bảng Phím tắt & hiển thị lưu bằng `localStorage` theo browser và tiếp tục áp dụng khi đổi view desktop; khi tắt tính năng, dot desktop trở lại marker không tương tác và trạng thái mở được reset.
 - Editor Nội dung dùng Tiptap với paragraph/text/hardBreak và ba mark bold/italic/underline, undo/redo, ⌘/Ctrl+B/I/U; tắt các định dạng khác. Xuống dòng mềm giữ hardBreak; không lưu HTML. Metadata danh sách cũ bị bỏ qua, giữ nguyên text và B/I/U. Đếm 4.000 Unicode code points gồm xuống dòng, không tính metadata định dạng; từ chối nhập/dán vượt giới hạn và giữ draft. `description` giữ văn bản thuần, `description_format` giữ các text run; trim văn bản và định dạng cùng nhau. Cache cũ không có format đọc như plain text; format sai cấu trúc hoặc không khớp text bị bỏ qua.
@@ -156,7 +158,7 @@ tests/browser/                       # Kiểm tra giao diện responsive và lu�
 
 ### Header thu gọn — D-144
 
-- Header desktop/mobile thu gọn khi cuộn quá 28px; trạng thái compact chỉ giữ h1 ở 50% cỡ chữ thường và dải màu 4px/radius 5px theo D-200. Ẩn eyebrow, thống kê, nút mở sidebar mobile, nút sửa dự án và control trong header; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Padding desktop 20px; mobile 15px cả bốn phía cộng safe-area theo D-161; giữ blur 8px/WebKit và opacity dark 75% cho h1/dải màu.
+- Header desktop/mobile thu gọn khi cuộn quá 28px; trạng thái compact chỉ giữ h1 và dải màu 4px/radius 5px. Ẩn eyebrow, thống kê, nút mở sidebar mobile, nút sửa dự án và control trong header; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em; mobile 30px thường, 21px thu gọn. Padding desktop 20px, mobile 15px ngang; blur 8px/WebKit và opacity dark 75% cho h1/dải màu.
 - State `headerCompact` dùng chung desktop/mobile, cập nhật qua scroll listener passive và requestAnimationFrame. CSS dùng `--view-title-size` theo breakpoint và nhân 0.5 khi `.is-compact`, không giữ selector mobile compact riêng. Bù phần chiều cao header đã thu vào padding cuối canvas qua useLayoutEffect/ResizeObserver, không để khoảng trắng dưới header; document không ngắn lại khi thu gọn, kể cả danh sách chỉ vừa vượt viewport. Canvas tắt scroll anchoring để trình duyệt không tự bù vị trí rồi đảo trạng thái ở ngưỡng cuộn.
 
 ### Sidebar và keyboard shortcuts
@@ -164,7 +166,7 @@ tests/browser/                       # Kiểm tra giao diện responsive và lu�
 - Sidebar có hai trạng thái: `expanded` và `compact`; lưu lựa chọn cục bộ để giữ sau reload.
 - Sidebar toggle dùng icon panel-chevron theo trạng thái: chevron trái khi expanded để collapse, chevron phải khi compact để mở lại; mobile header dùng trạng thái mở sidebar.
 - Rail compact rộng khoảng `56px`; hai nhóm Cần lưu ý và Dự án có trạng thái mở/đóng riêng được lưu cục bộ.
-- Mobile sidebar giữ full negative logo và nút đóng, nhưng ẩn nhóm view Hôm nay/Sắp tới/Theo ngày/Tất cả đã chuyển xuống dock. Drawer mở bằng panel icon-only trong sticky header hoặc drag từ mép trái sang phải và dùng transition `transform` ngắn để có motion liên tục.
+- Mobile sidebar giữ full negative logo, không có nút đóng riêng; ẩn nhóm view Hôm nay/Sắp tới/Theo ngày/Tất cả đã chuyển xuống dock. Drawer mở bằng panel icon-only trong sticky header hoặc drag từ mép trái sang phải khi không có quick-add/chi tiết, và dùng transition `transform`.
 - Project có thể gắn sao; `is_starred` được đồng bộ cloud và project được hiển thị trong Cần lưu ý.
 - Project editor giữ sáu màu preset và dùng lựa chọn thứ bảy là native `input[type=color]` trong nút đa sắc cho màu tùy ý. Giá trị custom tiếp tục lưu vào `projects.color`; so sánh preset không phân biệt hoa/thường. Mobile render swatch strip cuộn ngang để giữ touch target 44px.
 - Tạo project mới trên mobile focus `nameInputRef` ngay sau user gesture, theo dõi `window.visualViewport` resize/scroll để fit backdrop và `scrollIntoView` field khi bàn phím iOS mở. Cleanup listener, timer, body overflow và inline viewport styles khi đóng; edit project giữ focus mặc định.
@@ -263,10 +265,10 @@ Nếu iOS vẫn giữ artwork cũ sau khi icon production đã đổi, xóa Spar
 - [Supabase: Auth with Next.js](https://supabase.com/docs/guides/auth/quickstarts/nextjs)
 - [Supabase: Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security)
 
-## 10. Quy tắc editor và header hiện hành (D-117–D-132)
+## 10. Lịch sử quy tắc editor và header (D-117–D-132)
 
 - Khi chuyển từ Tên sang Nội dung hoặc ngược lại, tự lưu trường đang sửa trước khi chuyển; chuyển sang metadata cũng lưu draft đang sửa. Tên rỗng chặn chuyển và báo lỗi. Hủy chỉ bỏ phần draft chưa lưu kể từ lần tự lưu gần nhất. Nút Sửa tên nằm cùng hàng với text của tên, không có nhãn Tên.
-- D-130/D-131: Header desktop nền canvas 80%, blur 8px với prefix WebKit; mobile blur 8px ở cả thường/compact. D-137: eyebrow chung dùng --muted, Tất cả thêm “Mọi ngày. Mọi việc.”; dải màu 5px/radius 5px nằm dưới header, padding desktop 20px; mobile 15px cả bốn phía cộng safe-area theo D-161, không min-height cố định; bỏ đường shadow 1px, dùng pseudo-element bóng nhẹ không bắt pointer và tan ở hai mép. Body nền canvas phẳng. Cột tiêu đề co được và h1 wrap từ dài để không tràn ngang khi bóng nằm ngoài header. Next.js/eslint-config-next khóa 16.3.5; kết quả npm audit 0 vulnerabilities là bằng chứng sau cập nhật dependency trong release trước, không phải xác nhận liên tục.
+- Header desktop nền canvas 80%, blur 8px với prefix WebKit; mobile blur 8px ở cả thường/compact. Eyebrow chung dùng --muted, Tất cả thêm “Mọi ngày. Mọi việc.”; dải màu hiện cao 4px/radius 5px dưới header, padding desktop 20px, mobile 15px ngang cộng safe-area top. Bóng nhẹ ở chân header tan ở hai mép. Body nền canvas phẳng. Cột tiêu đề co được và h1 wrap khi dài. Next.js/eslint-config-next khóa 16.3.5; kết quả npm audit 0 vulnerabilities là bằng chứng sau cập nhật dependency trong release trước, không phải xác nhận liên tục.
 
 - D-123 (thay D-122): Chỉ nền toolbar formatting pha 5% đen trên nền field; D-135 bỏ border/nền vùng nhập và chỉ giữ ở toolbar. Blur/vị trí dải màu hiện theo D-130/D-131: desktop/mobile 8px và dải màu dưới header.
 
