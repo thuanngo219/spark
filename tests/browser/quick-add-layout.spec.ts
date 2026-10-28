@@ -160,6 +160,42 @@ for (const width of [320, 390, 1280]) {
   }
 }
 
+test("mobile quick-add shows a long content draft without clipping or a filled preview", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
+  await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
+  await page.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
+  const editor = page.getByRole("textbox", { name: "Nội dung (nếu cần)", exact: true });
+  const content = Array.from({ length: 20 }, (_, index) => `Dòng nội dung ${index + 1} cần hiển thị đầy đủ trong quick-add.`).join("\n");
+  await editor.fill(content);
+  await page.getByRole("button", { name: "Xong", exact: true }).click();
+  const preview = page.locator(".quick-description-preview");
+  await expect(preview).toBeVisible();
+  expect(await preview.locator("span").textContent()).toBe(content);
+  await expect(preview).toHaveCSS("font-weight", "400");
+  await expect(preview).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+  await expect(preview).toHaveCSS("padding", "0px");
+  expect((await preview.boundingBox())!.height).toBeGreaterThan(112);
+  expect(await preview.evaluate(el => el.scrollHeight - el.clientHeight)).toBe(0);
+  await page.screenshot({ path: "/tmp/spark-quick-long-preview-390.png" });
+  const body = page.locator(".quick-add-body");
+  await body.evaluate(el => { el.scrollTop = el.scrollHeight; });
+  const lastLine = await preview.locator("span").evaluate(el => {
+    const text = el.firstChild!;
+    const range = document.createRange();
+    range.setStart(text, text.textContent!.length - 8);
+    range.setEnd(text, text.textContent!.length);
+    return range.getBoundingClientRect().toJSON();
+  });
+  const bodyBox = (await body.boundingBox())!;
+  expect(lastLine.top).toBeGreaterThanOrEqual(bodyBox.y);
+  expect(lastLine.bottom).toBeLessThanOrEqual(bodyBox.y + bodyBox.height);
+  await preview.click();
+  await expect(editor).toBeFocused();
+  await expect(editor).toContainText("Dòng nội dung 20 cần hiển thị đầy đủ trong quick-add.");
+});
+
 test("mobile quick-add blocks background gestures and restores the scrolled list", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   const fixture = seedData(getLocalDateKey());

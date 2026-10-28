@@ -482,3 +482,7 @@ Bỏ nút X ở góc trên quick-add mobile; Hủy là nút có viền và nền
 ## D-192 — Màu và chữ quick-add mobile (2026-10-28)
 
 Ba pill Ghi chú, Nội dung, Phân loại dùng cùng cỡ chữ 12px và weight 600. Nền dùng token surface: trắng trong giao diện sáng, surface tối trong giao diện tối để giữ tương phản chữ; khi hover/chạm vẫn giữ nền pill. Sheet Phân loại dùng token well để tách rõ với canvas bên dưới ở cả hai theme; bỏ bo góc, giữ viền trên và bóng nhẹ. Chỉ thay style mobile, giữ kích thước/vùng bấm và tương tác D-191.
+
+## D-193 — Xem trước Nội dung quick-add mobile (2026-10-28)
+
+Sau khi nhập Nội dung và bấm Xong, bản nháp hiển thị thành chữ thường trên nền trong suốt, không có padding hoặc giới hạn chiều cao 112px. Toàn bộ văn bản xuống dòng trong vùng form và cuộn cùng quick-add; icon sửa vẫn mở lại editor, giữ dữ liệu và định dạng khi lưu mục. Không thay đổi editor tập trung hoặc giao diện desktop.

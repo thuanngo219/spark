@@ -637,7 +637,8 @@ button:focus-visible { filter: brightness(.88); }
   .quick-title-field input { font-size: 16px; }
   .quick-add-project { grid-column: 1 / -1; }
   .quick-add-project > span:first-child { display: none; }
-  .quick-description-preview { display: flex; width: 100%; align-items: flex-start; justify-content: space-between; gap: 12px; border: 0; border-radius: 12px; background: var(--field); color: var(--text-secondary); padding: 12px; text-align: left; font: inherit; line-height: 1.6; white-space: pre-wrap; max-height: 112px; overflow: hidden; }
+  .quick-description-preview { display: grid; grid-template-columns: minmax(0, 1fr) auto; width: 100%; align-items: start; gap: 12px; border: 0; background: transparent; color: var(--text-secondary); padding: 0; text-align: left; font: inherit; font-size: .8125rem; font-weight: 400; line-height: 1.6; }
+  .quick-description-preview > span { min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
   .quick-description-preview svg { flex-shrink: 0; }
   .quick-description-field .content-editor { display: none; }
   .quick-add-dialog.focused-content .quick-mobile-header,

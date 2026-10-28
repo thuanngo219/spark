@@ -1,5 +1,11 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-193 — Xem trước Nội dung quick-add mobile (2026-10-28)
+
+Sau khi nhập Nội dung và bấm Xong, bản nháp hiển thị thành chữ thường trên nền trong suốt, không có padding hoặc giới hạn chiều cao 112px. Toàn bộ văn bản xuống dòng trong vùng form và cuộn cùng quick-add; icon sửa vẫn mở lại editor, giữ dữ liệu và định dạng khi lưu mục. Không thay đổi editor tập trung hoặc giao diện desktop.
+
+Kiểm tra D-193: lint, build/TypeScript, 175 unit test và 8 browser case local đạt. Case nội dung dài xác nhận toàn bộ văn bản có trong DOM, không bị cắt/giới hạn chiều cao, dòng cuối cuộn vào vùng nhìn thấy và mở lại editor giữ nội dung; đã xem ảnh ở 390px. Desktop 1280px và mobile 320/390px sáng/tối qua regression quick-add. Chưa thử iPhone vật lý. File: SparkApp.tsx, globals.css, quick-add-layout.spec.ts và sáu tài liệu dự án.
+
 ## D-192 — Màu và chữ quick-add mobile (2026-10-28)
 
 Ba pill Ghi chú, Nội dung, Phân loại dùng cùng cỡ chữ 12px và weight 600. Nền dùng token surface: trắng trong giao diện sáng, surface tối trong giao diện tối để giữ tương phản chữ; khi hover/chạm vẫn giữ nền pill. Sheet Phân loại dùng token well để tách rõ với canvas bên dưới ở cả hai theme; bỏ bo góc, giữ viền trên và bóng nhẹ. Chỉ thay style mobile, giữ kích thước/vùng bấm và tương tác D-191.

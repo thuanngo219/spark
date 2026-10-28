@@ -2368,7 +2368,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
           {descriptionOpen && (
             <div className="quick-description-field">
               <div className="quick-content-heading"><span>Nội dung (nếu cần)</span><button type="button" className="primary-button quick-content-done" onClick={finishContent}>Xong</button></div>
-              <button type="button" className="quick-description-preview" onClick={openContent} aria-label="Sửa Nội dung thêm nhanh">{description || "Chưa có nội dung"}<Icon name="edit" size={17} /></button>
+              <button type="button" className="quick-description-preview" onClick={openContent} aria-label="Sửa Nội dung thêm nhanh"><span>{description || "Chưa có nội dung"}</span><Icon name="edit" size={17} /></button>
               <ContentEditor focusHandle={contentEditorRef} onCancel={contentFocused ? finishContent : undefined} value={description} format={descriptionFormat} label="Nội dung (nếu cần)" onChange={(content) => { setDescription(content.description ?? ""); setDescriptionFormat(content.descriptionFormat); }} />
             </div>
           )}
