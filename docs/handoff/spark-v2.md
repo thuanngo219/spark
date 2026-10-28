@@ -4,6 +4,8 @@
 
 Tên và hàng Ghi chú/Nội dung/Phân loại đứng yên ở đầu quick-add khi xem trước Nội dung dài. Vùng Nội dung cuộn bên dưới, dòng cuối kéo lên được phía trên Hủy/Thêm. Hàng Hủy/Thêm neo đáy trên nền canvas bán trong suốt, blur 12px và viền trên nhẹ. Phân loại overlay và chế độ nhập Nội dung tập trung tiếp tục hoạt động như cũ. Desktop không đổi. Typecheck, ESLint file sửa, 175 unit test và 10 browser case local đạt ở 320/390px sáng/tối và 1280px; đã xem ảnh 390px. Chưa kiểm tra iPhone vật lý.
 
+Sửa lỗi khe giữa headline và Tên khi cuộn: chuyển khối Tên/ba nút ra ngoài vùng cuộn Nội dung, giữ nền canvas liền mạch. Đã xem ảnh 390px sau khi cuộn; typecheck, ESLint file sửa, 175 unit test và 10/10 browser case local đạt, gồm 320/390px sáng/tối và desktop 1280px. Chưa thử trên iPhone vật lý.
+
 ## D-194 — Đóng quick-add sau khi thêm; Phân loại mobile không bóng (2026-10-28)
 
 Sau khi lưu task/note thành công, quick-add đóng trên desktop và mobile, đưa người dùng về đúng view đã mở trước đó. Mobile sheet Phân loại giữ nền tương phản và viền trên 1px, bỏ shadow của D-192. Kiểm tra: typecheck, build, ESLint cho file sửa, 175 unit test và 10 browser case đạt; bao phủ 320/390px sáng/tối và desktop 1280px, lưu task/note, giữ view Tất cả, nội dung dài, nền cuộn và viền sheet. Commit `375d6d7`, Vercel production `dpl_HYVNoAeT7GsNuoa3NDxG6WuqzwKm` READY trên `spark.thuanngo.com`; 3 ca browser trực tiếp trên production đạt. Chưa thử trên iPhone vật lý.

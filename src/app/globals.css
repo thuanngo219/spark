@@ -633,7 +633,7 @@ button:focus-visible { filter: brightness(.88); }
   .quick-add-dialog { position: absolute; top: var(--quick-viewport-top, 0px); left: 0; width: 100%; height: var(--quick-viewport-height, 100dvh); max-height: none; margin: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none; background: var(--canvas); display: flex; flex-direction: column; overflow: hidden; animation: none; }
   .quick-mobile-header { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; padding: calc(12px + env(safe-area-inset-top)) 17px 12px; }
   .quick-mobile-header h2 { margin: 0; color: var(--heading); font-size: 21px; }
-  .quick-add-body { display: block; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 4px 17px calc(72px + var(--quick-bottom, calc(16px + env(safe-area-inset-bottom)))); }
+  .quick-add-body { display: block; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 17px calc(72px + var(--quick-bottom, calc(16px + env(safe-area-inset-bottom)))); }
   .quick-title-field input { font-size: 16px; }
   .quick-add-project { grid-column: 1 / -1; }
   .quick-add-project > span:first-child { display: none; }
@@ -653,7 +653,7 @@ button:focus-visible { filter: brightness(.88); }
   .quick-add-dialog.focused-content .content-editor { display: flex; flex: 1; min-height: 0; gap: 12px; }
   .quick-add-dialog.focused-content .content-editor-body { flex: 1; min-height: 0; overflow: hidden; }
   .quick-add-dialog.focused-content .content-editor-input { height: 100%; padding: 0; font-size: 16px; overscroll-behavior: none; }
-  .quick-add-entry { position: sticky; top: 4px; z-index: 1; grid-template-columns: 1fr; gap: 9px; margin-bottom: 0; padding-bottom: 14px; background: var(--canvas); }
+  .quick-add-entry { flex: 0 0 auto; grid-template-columns: 1fr; gap: 9px; margin-bottom: 0; padding: 4px 17px 14px; background: var(--canvas); }
   .quick-add-entry-actions { align-items: center; gap: 10px; }
   .quick-add-entry-actions > * { flex: 1; min-width: 0; justify-content: center; }
   .quick-description-desktop-label { display: none; }

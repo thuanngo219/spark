@@ -495,3 +495,5 @@ Sau khi lưu task/note thành công, quick-add đóng trên desktop và mobile, 
 ## D-195 — Quick-add mobile: nội dung cuộn riêng, hành động trên nền mờ (2026-10-28)
 
 Tên và hàng Ghi chú/Nội dung/Phân loại đứng yên ở đầu quick-add khi xem trước Nội dung dài. Chỉ vùng Nội dung cuộn; dòng cuối luôn kéo lên được phía trên Hủy/Thêm. Hàng Hủy/Thêm neo đáy trên nền canvas bán trong suốt, blur 12px và viền trên nhẹ. Khi mở Phân loại hoặc sửa Nội dung tập trung, giữ hành vi overlay và bàn phím hiện hành. Desktop không đổi.
+
+Khối Tên và ba nút phải là phần tử cùng cấp với vùng cuộn Nội dung trong quick-add mobile. Không đặt khối này dạng `sticky` bên trong vùng cuộn: văn bản có thể lọt qua khe giữa headline và label khi cuộn dài.

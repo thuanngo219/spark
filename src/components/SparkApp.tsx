@@ -2330,34 +2330,34 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
         <div className="quick-mobile-header">
           <h2>{type === "task" ? "Thêm task" : "Thêm ghi chú"}</h2>
         </div>
-        <div className="quick-add-body">
-          <div className="quick-add-entry">
-            <label className="quick-title-field">
-              <span id="quick-add-title">{type === "task" ? "Tên công việc" : "Tên ghi chú"}</span>
-              <input ref={inputRef} autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} placeholder={type === "task" ? "Bạn muốn hoàn thành điều gì?" : "Đặt tên ghi chú…"} aria-label="Tên mục" />
-            </label>
-            <div className="quick-add-entry-actions">
-              <label className="note-toggle"><input type="checkbox" checked={type === "note"} onChange={(event) => {
-                const nextType = event.target.checked ? "note" : "task";
-                setType(nextType);
-              }} />Ghi chú</label>
-              <button
-                ref={descriptionToggleRef}
-                className="quick-description-toggle"
-                type="button"
-                aria-expanded={descriptionOpen}
-                onClick={openContent}
-              >
-                <Icon name="description" size={16} />
-                <span className="quick-description-desktop-label">{descriptionOpen ? "Ẩn Nội dung" : "Thêm Nội dung"}</span><span className="quick-description-mobile-label"><span>{descriptionOpen ? "Sửa " : "Thêm "}</span>Nội dung</span>
-              </button>
-              <button ref={classificationToggleRef} type="button" className="quick-description-toggle quick-classification-toggle" aria-expanded={classificationOpen} aria-controls="quick-classification" onClick={(event) => {
-                if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
-                event.currentTarget.focus({ preventScroll: true });
-                setClassificationOpen(open => !open);
-              }}><Icon name="layers" size={16} />Phân loại</button>
-            </div>
+        <div className="quick-add-entry">
+          <label className="quick-title-field">
+            <span id="quick-add-title">{type === "task" ? "Tên công việc" : "Tên ghi chú"}</span>
+            <input ref={inputRef} autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} placeholder={type === "task" ? "Bạn muốn hoàn thành điều gì?" : "Đặt tên ghi chú…"} aria-label="Tên mục" />
+          </label>
+          <div className="quick-add-entry-actions">
+            <label className="note-toggle"><input type="checkbox" checked={type === "note"} onChange={(event) => {
+              const nextType = event.target.checked ? "note" : "task";
+              setType(nextType);
+            }} />Ghi chú</label>
+            <button
+              ref={descriptionToggleRef}
+              className="quick-description-toggle"
+              type="button"
+              aria-expanded={descriptionOpen}
+              onClick={openContent}
+            >
+              <Icon name="description" size={16} />
+              <span className="quick-description-desktop-label">{descriptionOpen ? "Ẩn Nội dung" : "Thêm Nội dung"}</span><span className="quick-description-mobile-label"><span>{descriptionOpen ? "Sửa " : "Thêm "}</span>Nội dung</span>
+            </button>
+            <button ref={classificationToggleRef} type="button" className="quick-description-toggle quick-classification-toggle" aria-expanded={classificationOpen} aria-controls="quick-classification" onClick={(event) => {
+              if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+              event.currentTarget.focus({ preventScroll: true });
+              setClassificationOpen(open => !open);
+            }}><Icon name="layers" size={16} />Phân loại</button>
           </div>
+        </div>
+        <div className="quick-add-body">
           {descriptionOpen && (
             <div className="quick-description-field">
               <div className="quick-content-heading"><span>Nội dung (nếu cần)</span><button type="button" className="primary-button quick-content-done" onClick={finishContent}>Xong</button></div>

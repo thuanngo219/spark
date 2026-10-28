@@ -211,6 +211,11 @@ test("mobile quick-add shows a long content draft without clipping or a filled p
   expect(await body.evaluate(el => el.scrollTop)).toBeGreaterThan(0);
   expect((await entry.boundingBox())!.y).toBeCloseTo(entryTop, 1);
   expect((await controls.boundingBox())!.y).toBeCloseTo(controlsTop, 1);
+  const headerBottom = (await page.locator(".quick-mobile-header").boundingBox())!.y + (await page.locator(".quick-mobile-header").boundingBox())!.height;
+  const titleLabelTop = (await entry.locator(".quick-title-field > span").boundingBox())!.y;
+  expect((await entry.boundingBox())!.y).toBeCloseTo(headerBottom, 1);
+  expect(await page.evaluate(([x, y]) => Boolean(document.elementFromPoint(x, y)?.closest(".quick-add-entry")), [24, (headerBottom + titleLabelTop) / 2])).toBe(true);
+  await page.screenshot({ path: "/tmp/spark-quick-scroll-top-390.png" });
   const lastLine = await preview.locator("span").evaluate(el => {
     const text = el.firstChild!;
     const range = document.createRange();
