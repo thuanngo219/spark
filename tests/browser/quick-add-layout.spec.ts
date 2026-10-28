@@ -34,6 +34,8 @@ for (const width of [320, 390, 1280]) {
         expect((cancel.x + add.x + add.width) / 2).toBeCloseTo(width / 2, 1);
         await expect(form.getByRole("button", { name: "Hủy", exact: true }).locator("svg")).toBeVisible();
         await expect(form.getByRole("button", { name: "Thêm", exact: true }).locator("svg")).toBeVisible();
+        await expect(form.locator(".quick-add-controls")).toHaveCSS("backdrop-filter", "blur(12px)");
+        await expect(form.locator(".quick-add-controls")).toHaveCSS("border-top-width", "1px");
         const toggles = await form.locator(".quick-add-entry-actions > *").all();
         const rows = await Promise.all(toggles.map(async el => (await el.boundingBox())!.y));
         expect(new Set(rows).size).toBe(1);
@@ -185,6 +187,7 @@ test("mobile quick-add shows a long content draft without clipping or a filled p
   await page.goto("/");
   await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
   await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
+  await page.getByRole("textbox", { name: "Tên mục", exact: true }).fill("Mục có nội dung dài");
   await page.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
   const editor = page.getByRole("textbox", { name: "Nội dung (nếu cần)", exact: true });
   const content = Array.from({ length: 20 }, (_, index) => `Dòng nội dung ${index + 1} cần hiển thị đầy đủ trong quick-add.`).join("\n");
@@ -200,7 +203,14 @@ test("mobile quick-add shows a long content draft without clipping or a filled p
   expect(await preview.evaluate(el => el.scrollHeight - el.clientHeight)).toBe(0);
   await page.screenshot({ path: "/tmp/spark-quick-long-preview-390.png" });
   const body = page.locator(".quick-add-body");
+  const entry = page.locator(".quick-add-entry");
+  const controls = page.locator(".quick-add-controls");
+  const entryTop = (await entry.boundingBox())!.y;
+  const controlsTop = (await controls.boundingBox())!.y;
   await body.evaluate(el => { el.scrollTop = el.scrollHeight; });
+  expect(await body.evaluate(el => el.scrollTop)).toBeGreaterThan(0);
+  expect((await entry.boundingBox())!.y).toBeCloseTo(entryTop, 1);
+  expect((await controls.boundingBox())!.y).toBeCloseTo(controlsTop, 1);
   const lastLine = await preview.locator("span").evaluate(el => {
     const text = el.firstChild!;
     const range = document.createRange();
@@ -210,7 +220,7 @@ test("mobile quick-add shows a long content draft without clipping or a filled p
   });
   const bodyBox = (await body.boundingBox())!;
   expect(lastLine.top).toBeGreaterThanOrEqual(bodyBox.y);
-  expect(lastLine.bottom).toBeLessThanOrEqual(bodyBox.y + bodyBox.height);
+  expect(lastLine.bottom).toBeLessThanOrEqual(controlsTop);
   await preview.click();
   await expect(editor).toBeFocused();
   await expect(editor).toContainText("Dòng nội dung 20 cần hiển thị đầy đủ trong quick-add.");

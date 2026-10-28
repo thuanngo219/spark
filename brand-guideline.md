@@ -537,3 +537,8 @@ Sau khi nhập Nội dung và bấm Xong, bản nháp hiển thị thành chữ 
 ## D-194 — Đóng quick-add sau khi thêm; Phân loại mobile không bóng (2026-10-28)
 
 Sau khi lưu task/note thành công, quick-add đóng trên desktop và mobile, đưa người dùng về đúng view đã mở trước đó; nút Hủy vẫn đóng mà không lưu. Trên mobile, sheet Phân loại giữ nền tương phản và viền trên 1px, bỏ shadow. Điều chỉnh phần bóng của D-192.
+
+
+## D-195 — Quick-add mobile: nội dung cuộn riêng, hành động trên nền mờ (2026-10-28)
+
+Tên và hàng Ghi chú/Nội dung/Phân loại đứng yên ở đầu quick-add khi xem trước Nội dung dài. Chỉ vùng Nội dung cuộn; dòng cuối luôn kéo lên được phía trên Hủy/Thêm. Hàng Hủy/Thêm neo đáy trên nền canvas bán trong suốt, blur 12px và viền trên nhẹ. Khi mở Phân loại hoặc sửa Nội dung tập trung, giữ hành vi overlay và bàn phím hiện hành. Desktop không đổi.
