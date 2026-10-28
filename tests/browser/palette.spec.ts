@@ -14,7 +14,7 @@ for (const theme of ["light", "dark"] as const) {
       await expect(page.locator(".detail-meta-button.important.selected")).toHaveCSS("color", "rgb(214, 168, 79)");
       await page.locator(".detail-meta-button.urgent").click();
       await expect(page.locator(".detail-meta-button.urgent.selected")).toHaveCSS("color", "rgb(217, 119, 106)");
-      await expect(page.locator(".editor-header > div > span")).toHaveCSS("color", theme === "dark" ? "rgb(160, 168, 188)" : "rgb(115, 120, 141)");
+      await expect(page.locator(".detail-label").first()).toHaveCSS("color", theme === "dark" ? "rgb(160, 168, 188)" : "rgb(133, 138, 155)");
     });
   }
 }

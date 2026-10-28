@@ -97,35 +97,35 @@ Tạo một module thuần, ví dụ `src/lib/task-filters.ts`, không rải log
 - Luôn truyền timezone vào hàm tạo `localToday` để test được.
 - Test đặc biệt: cuối tháng, cuối năm, năm nhuận và thời điểm quanh nửa đêm.
 
-## 4. Cấu trúc mã nguồn gợi ý
+## 4. Cấu trúc mã nguồn hiện hành
 
 ```text
 src/
 ├── app/
-│   ├── (auth)/
-│   ├── (app)/
-│   │   ├── today/
-│   │   ├── upcoming/
-│   │   ├── calendar/
-│   │   ├── all/
-│   │   ├── important/
-│   │   ├── urgent/
-│   │   └── projects/[projectId]/
-│   ├── manifest.ts
-│   └── layout.tsx
+│   ├── globals.css                  # Thứ tự import CSS
+│   └── styles/                      # Foundation, sidebar, canvas, item, quick-add,
+│                                    # detail, utility, shared states, responsive
 ├── components/
-│   ├── app-shell/
-│   ├── items/
-│   ├── projects/
+│   ├── SparkApp.tsx                 # Điều phối view, thao tác item/project
+│   ├── spark/
+│   │   ├── useSparkData.ts          # Khởi động, cache, xác thực, mutation, realtime
+│   │   ├── SparkSidebar.tsx
+│   │   ├── SparkItemList.tsx
+│   │   ├── SparkQuickAdd.tsx
+│   │   ├── SparkItemEditor.tsx
+│   │   ├── SparkDialogs.tsx
+│   │   └── shared.ts
+│   ├── ContentEditor.tsx
 │   └── ui/
 ├── lib/
-│   ├── task-filters.ts
-│   ├── dates.ts
-│   ├── supabase/
-│   └── validation.ts
-└── styles/
-    └── tokens.css
+│   ├── task-filters.ts              # Bộ lọc, nhóm, sắp xếp
+│   ├── dates.ts                     # Logic ngày thuần
+│   ├── cloud-sync.ts                # Mutation queue/reconcile thuần
+│   └── offline-storage.ts           # IndexedDB/local fallback
+tests/browser/                       # Kiểm tra giao diện responsive và luồng chính
 ```
+
+`SparkApp.tsx` giữ state trình bày và điều phối. `useSparkData.ts` sở hữu vòng đời dữ liệu; các module giao diện nhận props và callback rõ ràng, không nhập ngược từ `SparkApp.tsx`. `globals.css` chỉ khai báo thứ tự các phần CSS; thứ tự cascade được giữ khi tách file. CSS dùng token và rule gốc, không thêm `!important` để thắng style cũ.
 
 ## 5. Trạng thái và mutation
 
@@ -156,7 +156,7 @@ src/
 
 ### Header thu gọn — D-144
 
-- Header desktop/mobile thu gọn khi cuộn quá 28px; trạng thái compact chỉ giữ h1 ở 50% cỡ chữ thường và dải màu 5px/radius 5px. Ẩn eyebrow, thống kê, nút mở sidebar mobile, nút sửa dự án và control trong header; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Padding desktop 20px; mobile 15px cả bốn phía cộng safe-area theo D-161; giữ blur 8px/WebKit và opacity dark 75% cho h1/dải màu.
+- Header desktop/mobile thu gọn khi cuộn quá 28px; trạng thái compact chỉ giữ h1 ở 50% cỡ chữ thường và dải màu 4px/radius 5px theo D-200. Ẩn eyebrow, thống kê, nút mở sidebar mobile, nút sửa dự án và control trong header; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Padding desktop 20px; mobile 15px cả bốn phía cộng safe-area theo D-161; giữ blur 8px/WebKit và opacity dark 75% cho h1/dải màu.
 - State `headerCompact` dùng chung desktop/mobile, cập nhật qua scroll listener passive và requestAnimationFrame. CSS dùng `--view-title-size` theo breakpoint và nhân 0.5 khi `.is-compact`, không giữ selector mobile compact riêng. Bù phần chiều cao header đã thu vào padding cuối canvas qua useLayoutEffect/ResizeObserver, không để khoảng trắng dưới header; document không ngắn lại khi thu gọn, kể cả danh sách chỉ vừa vượt viewport. Canvas tắt scroll anchoring để trình duyệt không tự bù vị trí rồi đảo trạng thái ở ngưỡng cuộn.
 
 ### Sidebar và keyboard shortcuts

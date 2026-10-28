@@ -72,12 +72,12 @@ for (const theme of ["light", "dark"] as const) {
     await page.mouse.move(300, 300);
     await page.mouse.wheel(0, 120);
     await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(originalY);
-    // A breakpoint change must release the lock, then reacquire it on mobile.
+    // The full-screen detail keeps the list locked at both breakpoints.
     await page.locator(".item-main").filter({ hasText: "Cuộn nền 10" }).click();
     await expect(page.locator("body")).toHaveCSS("position", "fixed");
     await page.setViewportSize({ width: 1280, height: 844 });
-    await expect(page.locator("body")).not.toHaveCSS("position", "fixed");
-    await expect(page.locator(".content")).not.toHaveAttribute("inert");
+    await expect(page.locator("body")).toHaveCSS("position", "fixed");
+    await expect(page.locator(".content")).toHaveAttribute("inert", "");
     await page.setViewportSize({ width: 390, height: 844 });
     await expect(page.locator("body")).toHaveCSS("position", "fixed");
     await page.getByRole("button", { name: "Đóng", exact: true }).click();

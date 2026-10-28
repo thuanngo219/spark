@@ -533,3 +533,15 @@ Quick-add mobile: hàng Hủy/Thêm có chữ nhỏ, nền tương phản hơn; 
 ## D-199 — Nút quick-add, lớp phủ Đóng và cách viết nhãn (2026-10-28)
 
 Trong quick-add mobile, tick/X của Nội Dung chỉ tồn tại khi đang nhập; rời editor bằng lưu hoặc hủy thì hai nút biến mất. Nút Đóng trong chi tiết mobile nằm phủ trên vùng Nội Dung, cách metadata 10px, không có nền ở lớp phủ; văn bản cuộn được bên dưới nút, vẫn có khoảng đáy để đọc dòng cuối. Nút giữ nền Navy/chữ trắng theo D-198. Nhãn hiển thị dùng cách viết hoa từng từ: Tên Công Việc, Tên Ghi Chú, Nội Dung, Ngày Bắt Đầu, Ngày Đến Hạn, Phân Loại. Câu thông báo và nội dung người dùng nhập giữ cách viết tự nhiên.
+
+## D-200 — Dải màu header 4px và xác nhận bàn giao (2026-10-28)
+
+Dải màu dưới view-header cao 4px trên desktop và mobile, ở cả trạng thái thường và thu gọn. Một rule gốc điều khiển chiều cao; D-200 thay các số đo 1/2,5/3/5px trước đây. Chủ dự án xác nhận trải nghiệm iPhone và thiết kế đồng bộ của bản mới nhất đã ổn, và B-005 đã thực hiện; đây là xác nhận của chủ dự án, không phải kết quả tái kiểm độc lập trong phiên này. Repo Git riêng `masan-cos-showcase/` được giữ nguyên nhưng loại khỏi lint Spark. Chuyển động header và chỉ dấu focus bàn phím tiếp tục được đánh giá trước khi đổi hành vi.
+
+## D-201 — Focus bàn phím và đánh giá chuyển động header (2026-10-28)
+
+Control và liên kết có viền focus 2px theo token `--focus` khi điều hướng bằng bàn phím (`:focus-visible`); sidebar Navy dùng turquoise để thấy rõ viền, dock mobile giữ viền trong vùng màn hình và đặt viền quanh nút + tròn. Khi sửa Tên/Nội Dung, giữ bề mặt nhập không outline theo quyết định cũ. Bỏ hiệu ứng làm tối mọi button khi focus. Thử View Transitions API cho header trên Chrome ở 390px: thời gian layout giảm nhưng cả năm lượt đều có một frame khoảng 33ms, trong khi chuyển động hiện hành không có frame trên 20ms trong cùng phép đo. Vì vậy giữ animation header hiện hành; chưa suy kết quả Chrome thành hiệu năng iPhone vật lý.
+
+## D-202 — Tách cấu trúc mã nguồn và CSS (2026-10-28)
+
+Giữ một `SparkApp.tsx` điều phối view và thao tác; chuyển vòng đời dữ liệu/đồng bộ sang `useSparkData.ts`, các phần giao diện sang module trong `src/components/spark/`. Tách CSS theo foundation, sidebar, canvas, danh sách, quick-add, chi tiết, tiện ích, trạng thái chung và responsive; `globals.css` giữ thứ tự import để không đổi cascade. Bỏ token CSS không còn được dùng. Khi thêm/sửa dữ liệu local, ghi bản snapshot chờ vào localStorage ngay trước giao dịch IndexedDB để reload nhanh vẫn khôi phục được dữ liệu mới; xóa bản chờ sau khi IndexedDB hoàn tất. Chi tiết toàn màn hình tiếp tục khóa cuộn danh sách ở cả desktop và mobile. Không thay đổi data model hoặc UI; `masan-cos-showcase/` tiếp tục nằm ngoài phạm vi Spark và được giữ nguyên.

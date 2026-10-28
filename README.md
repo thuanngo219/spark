@@ -6,7 +6,7 @@ Web app quản lý task và note cá nhân hằng ngày, ưu tiên tốc độ, 
 
 Ứng dụng MVP được triển khai bằng Next.js App Router + TypeScript. Nội dung task/note hỗ trợ tối đa 4.000 ký tự và định dạng đậm, nghiêng, gạch chân (⌘/Ctrl+B/I/U). Task/note hỗ trợ ngày bắt đầu và ngày đến hạn độc lập, các khu thời gian có thể sắp xếp riêng và ghi nhớ theo browser. Website mở public; chế độ local bắt đầu rỗng và lưu cục bộ, còn dữ liệu cá nhân đồng bộ qua Supabase sau khi xác thực bằng mã OTP gửi qua email. Bản production hỗ trợ cold-start offline sau lần mở online đầu tiên; snapshot và mutation queue lưu trong IndexedDB rồi tự đồng bộ khi có mạng.
 
-Hướng UI đã chọn: **Option C — Compact Canvas**, dùng palette navy–turquoise–violet–Muted Coral–Deep Purple và sidebar đầy đủ có thể thu gọn thành compact rail.
+Hướng UI đã chọn: **Option C — Compact Canvas**, dùng Navy, Turquoise, Amber, Coral và Deep Purple; sidebar đầy đủ có thể thu gọn thành compact rail. Violet đã được bỏ khỏi màu dự án và giao diện.
 
 Logo chính thức và mọi icon app dùng biểu tượng tick/vòng tròn trắng trên badge gradient xanh–Navy do chủ dự án cung cấp. Wordmark `spark` giữ vector cũ: primary Deep Purple, negative trắng. D-134 áp dụng cho logo chính, sidebar desktop/mobile, compact rail, icon cài đặt và favicon; source/cách sinh asset ở [assets/logo/README.md](assets/logo/README.md).
 

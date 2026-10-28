@@ -6,12 +6,14 @@ import {
   type CloudMutation,
 } from "@/lib/cloud-sync";
 import type { SparkData } from "@/lib/data-ids";
+import { createUuid } from "@/lib/ids";
 
 const DATABASE_NAME = "spark-offline";
 const DATABASE_VERSION = 1;
 const SNAPSHOT_STORE = "snapshots";
 const MUTATION_STORE = "mutation-queues";
 const LEGACY_DEMO_DATA_KEY = "spark:data:v1";
+const PENDING_DEMO_DATA_KEY = "spark:data:pending:v1";
 
 export type OfflineScope = "demo" | string;
 
@@ -125,6 +127,20 @@ function readLegacySnapshot(scope: OfflineScope) {
   return null;
 }
 
+function readPendingDemoSnapshot() {
+  try {
+    const raw = localStorageOrNull()?.getItem(PENDING_DEMO_DATA_KEY);
+    if (!raw) return null;
+    const pending = JSON.parse(raw) as { id: string; data: Partial<SparkData> };
+    if (typeof pending.id === "string" && Array.isArray(pending.data?.items) && Array.isArray(pending.data?.projects)) {
+      return { id: pending.id, data: pending.data as SparkData };
+    }
+  } catch {
+    // Ignore an incomplete pending snapshot and use the normal stores.
+  }
+  return null;
+}
+
 function readLegacyMutations(userId: string) {
   const storage = localStorageOrNull();
   if (!storage) return [];
@@ -185,6 +201,13 @@ async function writeIndexedDbState(
 
 export async function readOfflineData(scope: OfflineScope) {
   await waitForWrites();
+  if (scope === "demo") {
+    const pending = readPendingDemoSnapshot();
+    if (pending) {
+      await persistOfflineData(scope, pending.data);
+      return pending.data;
+    }
+  }
   try {
     const database = await openDatabase();
     const transaction = database.transaction(SNAPSHOT_STORE, "readonly");
@@ -220,10 +243,21 @@ export async function readOfflineMutations(userId: string) {
 }
 
 export function persistOfflineData(scope: OfflineScope, data: SparkData) {
+  const pendingId = scope === "demo" ? createUuid() : null;
+  if (pendingId) {
+    try {
+      localStorageOrNull()?.setItem(PENDING_DEMO_DATA_KEY, JSON.stringify({ id: pendingId, data }));
+    } catch {
+      // IndexedDB remains the primary store when localStorage is unavailable.
+    }
+  }
   return queueWrite(async () => {
     try {
       await writeIndexedDbState(scope, data);
       removeLegacySnapshot(scope);
+      if (pendingId && readPendingDemoSnapshot()?.id === pendingId) {
+        try { localStorageOrNull()?.removeItem(PENDING_DEMO_DATA_KEY); } catch { /* The snapshot is already in IndexedDB. */ }
+      }
     } catch (error) {
       writeLegacySnapshot(scope, data);
       console.error("Spark IndexedDB snapshot write failed; using localStorage fallback", error);

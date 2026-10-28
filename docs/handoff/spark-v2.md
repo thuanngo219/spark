@@ -1,5 +1,21 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-202 — Dọn mã và tách cấu trúc (2026-10-28)
+
+`SparkApp.tsx` điều phối view và thao tác; `src/components/spark/useSparkData.ts` quản lý khởi động, cache, auth và cloud sync. Sidebar, danh sách, quick-add, chi tiết, màn tiện ích và helper chung có module riêng. CSS được tách thành chín phần trong `src/app/styles/`, import theo đúng thứ tự cascade từ `globals.css`; bỏ token `--accent-ink` không được sử dụng. Khi thêm mục và reload quá nhanh, snapshot IndexedDB có thể chưa ghi xong: dữ liệu local nay được lưu tạm đồng bộ trước giao dịch, rồi xóa bản tạm khi IndexedDB hoàn tất. Chi tiết toàn màn hình tiếp tục khóa cuộn danh sách ở cả desktop và mobile; test resize được cập nhật theo hành vi này. Kiểm tra: lint, typecheck, 176 unit test và build đạt; browser trên build production cục bộ đạt 125 ca, 2 ca bỏ qua theo cấu hình, gồm 320/390px và desktop sáng/tối. `masan-cos-showcase/`, `output/`, `outputs/` giữ nguyên và không vào commit Spark. Trạng thái production ghi khi phát hành.
+
+## D-201 — Focus bàn phím và kết quả thử animation (2026-10-28)
+
+Focus bàn phím hiện có outline 2px theo theme cho button/input/select/textarea/link; sidebar Navy dùng turquoise, dock mobile không để viền bị cắt ở mép, nút + có viền quanh hình tròn. Vùng nhập Tên/Nội Dung giữ không outline. Bản thử View Transitions API giảm layout ở Chrome 390px từ 5–13ms xuống 2–4ms/300ms nhưng tạo một frame ~33ms ở cả 5 lượt; đã bỏ bản thử, giữ chuyển động header hiện hành. Chưa đo trực tiếp trên iPhone vật lý trong phiên này.
+
+Kiểm tra D-201: lint, typecheck, 175 unit test và build đạt; 18/18 browser case trên bản build production cục bộ đạt, gồm focus bàn phím/chuột, header 320/390/1280px sáng/tối và edit Tên không outline ở 320/390px sáng/tối. Đã xem ảnh focus desktop/mobile ở hai theme. Chưa deploy production.
+
+## D-200 — Dải màu header và trạng thái xác nhận (2026-10-28)
+
+Dải màu dưới view-header cao 4px trên desktop/mobile, cả thường và thu gọn; CSS dùng một rule gốc, không có override mobile. Chủ dự án xác nhận trải nghiệm iPhone và thiết kế đồng bộ của bản mới nhất đã ổn, đồng thời xác nhận B-005 đã thực hiện. Chưa tái kiểm độc lập toàn bộ copy trong phiên này. `masan-cos-showcase/` là repo Git riêng có thay đổi chưa commit: giữ nguyên dữ liệu, loại khỏi lint Spark. Các ghi chú kiểm thử iPhone và backlog ở release note cũ là lịch sử.
+
+Kiểm tra D-200: lint toàn Spark sạch, typecheck và 175 unit test đạt; 8/8 browser test header đạt ở 320/390/1280px, sáng/tối, gồm thu gọn/khôi phục và dải màu 4px. Đo tham khảo trong Chrome headless ở 390px: 5 lần chuyển header ghi 28 lần layout/300ms, thời gian layout 5–13ms, không có frame trên 20ms; đây không phải số đo iPhone. Chưa đổi cơ chế animation hoặc focus bàn phím.
+
 ## D-199 — Nút sửa Nội Dung, overlay Đóng và nhãn (2026-10-28)
 
 Quick-add mobile chỉ render tick/X khi đang sửa Nội Dung; sau lưu/hủy, hàng nhãn không còn hai nút. Chi tiết mobile đặt nút Đóng trên vùng Nội Dung cuộn, lớp phủ không nền và không chiếm chiều cao, vẫn cách metadata 10px; vùng đọc có padding đáy để xem dòng cuối. Các nhãn Tên Công Việc, Tên Ghi Chú, Nội Dung, Ngày Bắt Đầu, Ngày Đến Hạn, Phân Loại viết hoa từng từ. Toolbar giữ vùng bấm 44px, sửa tên giữ chiều cao hàng 28px. Typecheck, lint file sửa, 175 unit test, build và 47 browser case trên dev đạt; 2 browser case offline được bỏ qua theo cấu hình. Cần kiểm tra iPhone thật sau phát hành.
@@ -472,11 +488,11 @@ Git integration của Vercel tự deploy khi push `main`. Dùng `git log -1` đ�
 
 ## Các kiểm tra còn ngoài phiên này
 
-- iPhone thật: Home Screen, bàn phím/safe area, cold-start offline và đồng bộ hai thiết bị.
+- Chủ dự án đã xác nhận trải nghiệm iPhone bản mới nhất ổn; cold-start offline và đồng bộ hai thiết bị chưa được tái kiểm độc lập trong phiên này.
 - RLS user A/user B và cách ly cache giữa tài khoản thật chưa chạy mới trong phiên này.
 - Full-row upsert vẫn có giới hạn last-write-wins khi hai thiết bị sửa offline cùng item.
 - Supabase advisors có cảnh báo sẵn ở hạ tầng dùng chung (`rls_auto_enable`, cấu hình mật khẩu, bảng nội bộ ideaPOD); không tự sửa trong phạm vi editor Spark.
-- Backlog B-005 audit toàn bộ copy vẫn chưa được duyệt triển khai.
+- B-005 được chủ dự án xác nhận đã thực hiện ngày 2026-10-28; chưa tái kiểm độc lập toàn bộ copy trong phiên này.
 
 ## D-133 — Icon app mới (2026-10-05)
 

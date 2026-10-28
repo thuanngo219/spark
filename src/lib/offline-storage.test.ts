@@ -57,6 +57,13 @@ describe("offline storage fallback and migration", () => {
     await expect(readOfflineData("demo")).resolves.toEqual(data);
   });
 
+  it("keeps a new local snapshot available before the async write finishes", async () => {
+    const write = persistOfflineData("demo", data);
+    expect(JSON.parse(storage.getItem("spark:data:pending:v1") ?? "null")?.data).toEqual(data);
+    await write;
+    await expect(readOfflineData("demo")).resolves.toEqual(data);
+  });
+
   it("persists the snapshot and queue together before cloud sync", async () => {
     const mutations: CloudMutation[] = [{
       id: "mutation-1",

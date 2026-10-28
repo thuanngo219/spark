@@ -50,7 +50,7 @@ for (const width of [1280, 390, 320]) {
         expect(titleBox.y + titleBox.height / 2).toBeCloseTo(controlsBox.y + controlsBox.height / 2, 1);
       }
       else await expect(page.locator(".mobile-sync-status")).toBeVisible();
-      await expect(header.locator(".view-project-band")).toHaveCSS("height", "3px");
+      await expect(header.locator(".view-project-band")).toHaveCSS("height", "4px");
       if (width < 700) await expect(header).toHaveCSS("background-color", theme === "light" ? "rgb(247, 248, 250)" : "rgb(18, 22, 34)");
       await page.mouse.wheel(0, 500);
       await expect.poll(async () => (await header.boundingBox())?.y).toBe(0);
@@ -67,7 +67,7 @@ for (const width of [1280, 390, 320]) {
         await expect(header.locator(".eyebrow")).toHaveCSS("font-weight", "400");
         await expect(header.locator(".eyebrow")).toHaveCSS("font-size", "12.48px");
         await expect(header.locator(".eyebrow")).toHaveCSS("letter-spacing", "normal");
-        await expect(header.locator(".view-project-band")).toHaveCSS("height", "3px");
+        await expect(header.locator(".view-project-band")).toHaveCSS("height", "4px");
         await expect(header).toHaveCSS("padding-left", "15px");
         await expect(header).toHaveCSS("padding-top", "12px");
         await expect(header.locator(".view-title-row")).toHaveCSS("gap", "4px");
@@ -117,7 +117,7 @@ test("short mobile list keeps its scroll range when the header collapses", async
   await expect(header).not.toHaveClass(/is-compact/);
 });
 
-test("Today mobile header keeps a solid compact surface and a 3px accent", async ({ page }) => {
+test("Today mobile header keeps a solid compact surface and a 4px accent", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   const today = getLocalDateKey();
   const fixture = seedData(today);
@@ -128,11 +128,11 @@ test("Today mobile header keeps a solid compact surface and a 3px accent", async
   await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
   const header = page.locator(".view-header");
   await expect(header.locator("h1")).toHaveText("Hôm nay");
-  await expect(header.locator(".view-project-band")).toHaveCSS("height", "3px");
+  await expect(header.locator(".view-project-band")).toHaveCSS("height", "4px");
   await page.mouse.move(350, 450);
   await page.mouse.wheel(0, 36);
   await expect(header).toHaveClass(/is-compact/);
   await expect(header).toHaveCSS("background-color", "rgb(247, 248, 250)");
-  await expect(header.locator(".view-project-band")).toHaveCSS("height", "3px");
+  await expect(header.locator(".view-project-band")).toHaveCSS("height", "4px");
   await page.screenshot({ path: "/tmp/spark-today-compact-header.png" });
 });

@@ -45,6 +45,7 @@ for (const width of [320, 390]) {
         await sheet.getByRole("button", { name: "Sửa tên", exact: true }).click();
         const titleInput = sheet.getByRole("textbox", { name: type === "task" ? "Tên task" : "Tên ghi chú", exact: true });
         await expect(titleInput).toHaveJSProperty("tagName", "TEXTAREA");
+        await expect(titleInput).toHaveCSS("outline-style", "none");
         await expect(titleInput).toHaveCSS("border-bottom-width", "0px");
         await expect(sheet.locator(".detail-title-row .detail-edit-actions button")).toHaveCount(2);
         expect(await titleInput.evaluate(el => getComputedStyle(el).fontSize)).toBe(readTitleSize);

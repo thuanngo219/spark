@@ -1,0 +1,36 @@
+.utility-screen { position: fixed; top: var(--utility-top, 0px); left: 0; width: 100%; height: var(--utility-height, 100dvh); z-index: 90; background: var(--canvas); color: var(--ink); animation: fade-in var(--motion-duration, 160ms) var(--ease); }
+.shortcut-dialog, .sync-dialog { width: 100%; height: 100%; overflow: hidden; }
+.utility-content { width: min(640px, 100%); height: 100%; display: flex; flex-direction: column; margin-inline: auto; padding-inline: max(20px, env(safe-area-inset-left)) max(20px, env(safe-area-inset-right)); }
+.utility-body { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow-y: auto; overscroll-behavior: contain; padding-block: 24px calc(24px + env(safe-area-inset-bottom)); }
+.utility-body-inner { flex: 0 0 auto; margin-block: auto; }
+.utility-content input { scroll-margin-block: 16px; }
+.utility-content > .editor-header { flex: 0 0 auto; gap: 16px; margin: 0; padding: calc(20px + env(safe-area-inset-top)) 0 16px; background: var(--canvas); border-bottom: 1px solid var(--line); }
+.shortcut-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.shortcut-group { min-width: 0; display: grid; align-content: start; }
+.shortcut-group h3 { margin: 0 0 8px; color: var(--heading); font-size: .6875rem; font-weight: 650; }
+.shortcut-group > div { min-height: 34px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); color: var(--text-secondary, #555b70); font-size: 0.75rem; }
+.shortcut-group > div > span { min-width: 0; line-height: 1.4; }
+kbd { font-family: inherit; }
+.shortcut-dialog kbd { min-width: 29px; padding: 4px 7px; border: 1px solid var(--field-border); border-bottom-width: 2px; background: var(--field); color: var(--heading); border-radius: 7px; text-align: center; white-space: nowrap; font-size: 0.625rem; font-weight: 650; }
+.shortcut-note { color: var(--muted); margin: 14px 0 0; font-size: .625rem; line-height: 1.5; }
+.display-preference { margin-top: 16px; padding: 13px 0 0; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.display-preference > span { min-width: 0; display: grid; gap: 3px; }
+.display-preference strong { color: var(--heading); font-size: 0.75rem; }
+.display-preference small { color: var(--muted); font-size: 0.625rem; line-height: 1.45; }
+.theme-preference { gap: 10px; }
+.theme-preference > span { flex-shrink: 0; }
+.theme-options { flex: 0 0 auto; display: grid; grid-template-columns: repeat(3, 36px); gap: 2px; }
+.theme-options label { position: relative; display: grid; place-items: center; height: 36px; cursor: pointer; }
+.theme-options input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.theme-options span { display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--field-border); border-radius: 50%; color: var(--muted); background: var(--field); }
+.theme-options input:checked + span { background: var(--selected); color: var(--selected-ink); }
+.theme-options input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 1px; }
+.theme-options label:hover span { box-shadow: inset 0 0 0 1px var(--border-hover); }
+.preference-switch { position: relative; flex: 0 0 auto; width: 42px; height: 24px; padding: 0; border: 0; border-radius: 999px; background: var(--switch-track); transition: background var(--motion-duration, 160ms) var(--ease); }
+.preference-switch > span { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: white; box-shadow: 0 2px 6px rgba(17,23,66,.18); transition: transform var(--motion-duration, 180ms) var(--ease); }
+.preference-switch[aria-checked="true"] { background: var(--switch-active); }
+.preference-switch[aria-checked="true"] > span { transform: translateX(18px); }
+.toast { position: fixed; right: 88px; bottom: 25px; z-index: 95; max-width: calc(100vw - 112px); background: var(--navy-950); color: white; border-radius: 13px; padding: 12px 13px 12px 15px; display: flex; align-items: center; gap: 18px; box-shadow: 0 15px 38px rgba(11,16,57,.25); font-size: 0.75rem; }
+.toast span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.toast button { border: 0; background: var(--turquoise); color: var(--navy-900); border-radius: 999px; padding: 7px 9px; font-size: 0.6875rem; font-weight: 700; }
+.toast button:hover { background: var(--navy-800); color: white; }
