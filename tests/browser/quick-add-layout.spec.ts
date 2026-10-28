@@ -22,6 +22,7 @@ for (const width of [320, 390, 1280]) {
       await centered(800);
       if (width < 700) {
         expect(await form.boundingBox()).toEqual({ x: 0, y: 0, width, height: 800 });
+        await expect(form.getByRole("button", { name: "Đóng thêm nhanh" })).toHaveCount(0);
         await expect(page.locator("body")).toHaveCSS("position", "fixed");
         await expect(page.locator(".quick-add-backdrop")).toHaveCSS("opacity", "1");
         await expect(page.locator(".quick-add-backdrop")).toHaveCSS("animation-name", "none");
@@ -35,6 +36,9 @@ for (const width of [320, 390, 1280]) {
         const toggles = await form.locator(".quick-add-entry-actions > *").all();
         const rows = await Promise.all(toggles.map(async el => (await el.boundingBox())!.y));
         expect(new Set(rows).size).toBe(1);
+        const boxes = await Promise.all(toggles.map(el => el.boundingBox()));
+        expect(boxes[1]!.x - boxes[0]!.x - boxes[0]!.width).toBeCloseTo(10, 1);
+        expect(boxes[2]!.x - boxes[1]!.x - boxes[1]!.width).toBeCloseTo(10, 1);
 
       }
       const title = form.getByRole("textbox", { name: "Tên mục", exact: true });
@@ -55,7 +59,9 @@ for (const width of [320, 390, 1280]) {
         const panel = (await form.locator(".quick-classification").boundingBox())!;
         const cancel = (await form.getByRole("button", { name: "Hủy", exact: true }).boundingBox())!;
         const add = (await form.getByRole("button", { name: "Thêm", exact: true }).boundingBox())!;
-        expect(cancel.y).toBeGreaterThanOrEqual(panel.y + panel.height);
+        expect(panel.y).toBeLessThan(cancel.y);
+        expect(panel.y + panel.height).toBeCloseTo(800, 1);
+        expect(await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest(".quick-classification") !== null, [cancel.x + cancel.width / 2, cancel.y + cancel.height / 2])).toBe(true);
         expect((cancel.x + add.x + add.width) / 2).toBeCloseTo(width / 2, 1);
         expect(add.y + add.height).toBeGreaterThan(750);
         await page.screenshot({ path: `/tmp/spark-classification-${width}-${theme}.png` });
@@ -63,7 +69,6 @@ for (const width of [320, 390, 1280]) {
           Object.defineProperty(window.visualViewport!, "height", { configurable: true, value: 360 });
           window.visualViewport!.dispatchEvent(new Event("resize"));
         });
-        await expect(form.getByRole("button", { name: "Thêm", exact: true })).toBeInViewport();
         await expect(form.getByRole("combobox", { name: "Dự án", exact: true })).toBeInViewport();
         await page.screenshot({ path: `/tmp/spark-classification-keyboard-${width}-${theme}.png`, clip: { x: 0, y: 0, width, height: 360 } });
         await page.evaluate(() => {

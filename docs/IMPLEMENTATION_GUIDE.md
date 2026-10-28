@@ -474,3 +474,7 @@ Quick-add: lớp nền canvas đặc luôn che toàn màn hình kể cả khi b�
 Mobile: hàng dưới tên gồm Ghi chú, Nội dung và Phân loại. Ngày bắt đầu, ngày đến hạn và dự án mặc định ẩn; Phân loại mở nhóm chọn ở đáy form, có nút X để ẩn. Ẩn/mở lại giữ nguyên các lựa chọn; Escape chỉ ẩn Phân loại trước khi đóng quick-add. Mở Nội dung chuyển sang chế độ nhập tập trung và ẩn Phân loại.
 
 Hủy (icon X) và Thêm (icon +) căn giữa theo chiều ngang ở đáy; khi mở Phân loại vẫn nằm bên dưới nhóm chọn. Giữ lớp phủ đặc, khóa cuộn nền, giới hạn theo bàn phím/visualViewport; phần Phân loại cuộn riêng khi thiếu chiều cao. Không đổi quy tắc ngày, project mặc định, dữ liệu/nháp hoặc giao diện desktop.
+
+## D-191 — Quick-add mobile: Hủy rõ hơn, Phân loại nổi (2026-10-28)
+
+Bỏ nút X ở góc trên quick-add mobile; Hủy là nút có viền và nền surface, cùng vùng bấm tối thiểu 44px như Thêm. Ba nút Ghi chú, Nội dung, Phân loại chia đều hàng, cách nhau 10px ở 320px trở lên. Khi mở Phân loại, phần chọn xuất hiện như một sheet neo mép dưới, phủ lên Hủy/Thêm; nút X trong sheet hoặc Escape chỉ ẩn Phân loại, giữ mọi lựa chọn. Đóng sheet đưa Hủy/Thêm trở lại. Desktop giữ bố cục hiện hành; không đổi dữ liệu và quy tắc ngày.

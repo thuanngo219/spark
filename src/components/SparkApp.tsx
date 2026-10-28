@@ -2336,7 +2336,6 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
       >
         <div className="quick-mobile-header">
           <h2>{type === "task" ? "Thêm task" : "Thêm ghi chú"}</h2>
-          <button type="button" className="icon-button" onClick={close} aria-label="Đóng thêm nhanh"><Icon name="close" /></button>
         </div>
         <div className="quick-add-body">
           <div className="quick-add-entry">

@@ -1,5 +1,11 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-191 — Quick-add mobile: Hủy rõ hơn, Phân loại nổi (2026-10-28)
+
+Bỏ nút X ở góc trên quick-add mobile; Hủy là nút có viền và nền surface, cùng vùng bấm tối thiểu 44px như Thêm. Ba nút Ghi chú, Nội dung, Phân loại chia đều hàng, cách nhau 10px ở 320px trở lên. Khi mở Phân loại, phần chọn xuất hiện như một sheet neo mép dưới, phủ lên Hủy/Thêm; nút X trong sheet hoặc Escape chỉ ẩn Phân loại, giữ mọi lựa chọn. Đóng sheet đưa Hủy/Thêm trở lại. Desktop giữ bố cục hiện hành; không đổi dữ liệu và quy tắc ngày.
+
+Kiểm tra D-191: lint, build/TypeScript, 175 unit test và 7 browser case local đạt. Bao phủ 320/390px sáng/tối, desktop 1280px, sheet thực sự che vùng Hủy/Thêm, trạng thái bàn phím giả lập 360px, ẩn/mở giữ ngày/dự án và lưu dữ liệu. Đã xem ảnh ở 320px sáng/tối và khi bàn phím thu màn hình. Chưa thử trên iPhone vật lý. File: SparkApp.tsx, globals.css, quick-add-layout.spec.ts và sáu tài liệu dự án.
+
 ## D-190 — Phân loại trong quick-add mobile (2026-10-28)
 
 Mobile: hàng dưới tên gồm Ghi chú, Nội dung và Phân loại. Ngày bắt đầu, ngày đến hạn và dự án mặc định ẩn; Phân loại mở nhóm chọn ở đáy form, có nút X để ẩn. Ẩn/mở lại giữ nguyên các lựa chọn; Escape chỉ ẩn Phân loại trước khi đóng quick-add. Mở Nội dung chuyển sang chế độ nhập tập trung và ẩn Phân loại.
