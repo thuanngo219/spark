@@ -1,5 +1,11 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-192 — Màu và chữ quick-add mobile (2026-10-28)
+
+Ba pill Ghi chú, Nội dung, Phân loại dùng cùng cỡ chữ 12px và weight 600. Nền dùng token surface: trắng trong giao diện sáng, surface tối trong giao diện tối để giữ tương phản chữ; khi hover/chạm vẫn giữ nền pill. Sheet Phân loại dùng token well để tách rõ với canvas bên dưới ở cả hai theme; bỏ bo góc, giữ viền trên và bóng nhẹ. Chỉ thay style mobile, giữ kích thước/vùng bấm và tương tác D-191.
+
+Kiểm tra D-192: lint, build/TypeScript, 175 unit test và 7 browser case local đạt. Đã đo cùng font-size 12px và màu nền pill/sheet ở 320/390px sáng/tối; desktop 1280px giữ bố cục cũ. Đã xem ảnh của form thường và sheet ở cả hai theme. Chưa thử trên iPhone vật lý. File: globals.css, quick-add-layout.spec.ts và sáu tài liệu dự án.
+
 ## D-191 — Quick-add mobile: Hủy rõ hơn, Phân loại nổi (2026-10-28)
 
 Bỏ nút X ở góc trên quick-add mobile; Hủy là nút có viền và nền surface, cùng vùng bấm tối thiểu 44px như Thêm. Ba nút Ghi chú, Nội dung, Phân loại chia đều hàng, cách nhau 10px ở 320px trở lên. Khi mở Phân loại, phần chọn xuất hiện như một sheet neo mép dưới, phủ lên Hủy/Thêm; nút X trong sheet hoặc Escape chỉ ẩn Phân loại, giữ mọi lựa chọn. Đóng sheet đưa Hủy/Thêm trở lại. Desktop giữ bố cục hiện hành; không đổi dữ liệu và quy tắc ngày.

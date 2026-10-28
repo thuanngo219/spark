@@ -39,6 +39,10 @@ for (const width of [320, 390, 1280]) {
         const boxes = await Promise.all(toggles.map(el => el.boundingBox()));
         expect(boxes[1]!.x - boxes[0]!.x - boxes[0]!.width).toBeCloseTo(10, 1);
         expect(boxes[2]!.x - boxes[1]!.x - boxes[1]!.width).toBeCloseTo(10, 1);
+        for (const toggle of toggles) {
+          await expect(toggle).toHaveCSS("font-size", "12px");
+          await expect(toggle).toHaveCSS("background-color", theme === "light" ? "rgb(255, 255, 255)" : "rgb(27, 32, 48)");
+        }
 
       }
       const title = form.getByRole("textbox", { name: "Tên mục", exact: true });
@@ -57,6 +61,8 @@ for (const width of [320, 390, 1280]) {
         await dates[1].fill("2026-11-02");
         await form.getByRole("combobox", { name: "Dự án", exact: true }).selectOption({ label: "Công việc" });
         const panel = (await form.locator(".quick-classification").boundingBox())!;
+        await expect(form.locator(".quick-classification")).toHaveCSS("border-radius", "0px");
+        await expect(form.locator(".quick-classification")).toHaveCSS("background-color", theme === "light" ? "rgb(233, 235, 239)" : "rgb(36, 43, 61)");
         const cancel = (await form.getByRole("button", { name: "Hủy", exact: true }).boundingBox())!;
         const add = (await form.getByRole("button", { name: "Thêm", exact: true }).boundingBox())!;
         expect(panel.y).toBeLessThan(cancel.y);
