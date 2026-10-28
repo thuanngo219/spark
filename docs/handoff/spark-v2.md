@@ -1,5 +1,13 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-190 — Phân loại trong quick-add mobile (2026-10-28)
+
+Mobile: hàng dưới tên gồm Ghi chú, Nội dung và Phân loại. Ngày bắt đầu, ngày đến hạn và dự án mặc định ẩn; Phân loại mở nhóm chọn ở đáy form, có nút X để ẩn. Ẩn/mở lại giữ nguyên các lựa chọn; Escape chỉ ẩn Phân loại trước khi đóng quick-add. Mở Nội dung chuyển sang chế độ nhập tập trung và ẩn Phân loại.
+
+Hủy (icon X) và Thêm (icon +) căn giữa theo chiều ngang ở đáy; khi mở Phân loại vẫn nằm bên dưới nhóm chọn. Giữ lớp phủ đặc, khóa cuộn nền, giới hạn theo bàn phím/visualViewport; phần Phân loại cuộn riêng khi thiếu chiều cao. Không đổi quy tắc ngày, project mặc định, dữ liệu/nháp hoặc giao diện desktop.
+
+Kiểm tra D-190: lint, build/TypeScript và 175 unit test đạt. Đã chạy 23 tình huống browser thuộc content/quick-add-layout; sau khi sửa Escape, chạy lại toàn bộ 7 case quick-add đạt. Bao phủ sáng/tối 320/390/1280px, ngày không hợp lệ, giữ lựa chọn khi ẩn/mở, lưu ngày/dự án cùng định dạng nội dung, keyboard giả lập 360px, khóa cuộn và khôi phục danh sách. Đã xem ảnh thường/Phân loại/keyboard. Chưa thử trên iPhone vật lý. File: SparkApp.tsx, globals.css, detail-scroll-lock.ts, quick-add-layout.spec.ts và tài liệu dự án.
+
 ## D-189 — Tinh gọn mobile và cách ly quick-add (2026-10-28)
 
 Chỉ đổi mobile (<700px); giữ giao diện desktop của D-188. Phím tắt và Đồng bộ: nội dung tiếp ngay sau headline, cách 16px, bỏ căn giữa dọc. Nút X cố định 44×44px, không co ngang khi headline dài.

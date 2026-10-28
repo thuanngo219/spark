@@ -515,3 +515,9 @@ Chỉ đổi mobile (<700px); giữ giao diện desktop của D-188. Phím tắt
 Sửa tên trong chi tiết dùng ô tự giãn nhiều dòng theo độ dài, không gạch dưới; giữ giới hạn 100 ký tự và dữ liệu tên một dòng, Enter hoặc đổi focus để lưu, Escape hủy. Không thêm nút lưu/hủy vào hàng tên mobile.
 
 Quick-add: lớp nền canvas đặc luôn che toàn màn hình kể cả khi bàn phím làm co/dịch vùng nhìn; chỉ form bên trong bám visualViewport. Khóa cuộn trang và các nhánh nền quanh quick-add, chặn kéo quá biên khi nội dung ngắn; khôi phục vị trí cuộn và tương tác khi đóng. Metadata giữ hai ngày cùng hàng; hàng dưới gồm selector dự án (ẩn label nhìn thấy, giữ nhãn truy cập), Hủy và Thêm. Giữ chế độ nhập Nội dung tập trung và bản nháp.
+
+## D-190 — Phân loại trong quick-add mobile (2026-10-28)
+
+Mobile: hàng dưới tên gồm Ghi chú, Nội dung và Phân loại. Ngày bắt đầu, ngày đến hạn và dự án mặc định ẩn; Phân loại mở nhóm chọn ở đáy form, có nút X để ẩn. Ẩn/mở lại giữ nguyên các lựa chọn; Escape chỉ ẩn Phân loại trước khi đóng quick-add. Mở Nội dung chuyển sang chế độ nhập tập trung và ẩn Phân loại.
+
+Hủy (icon X) và Thêm (icon +) căn giữa theo chiều ngang ở đáy; khi mở Phân loại vẫn nằm bên dưới nhóm chọn. Giữ lớp phủ đặc, khóa cuộn nền, giới hạn theo bàn phím/visualViewport; phần Phân loại cuộn riêng khi thiếu chiều cao. Không đổi quy tắc ngày, project mặc định, dữ liệu/nháp hoặc giao diện desktop.

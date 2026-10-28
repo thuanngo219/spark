@@ -2161,6 +2161,8 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
   const [descriptionFormat, setDescriptionFormat] = useState<ContentRun[] | null>(null);
   const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [contentFocused, setContentFocused] = useState(false);
+  const [classificationOpen, setClassificationOpen] = useState(false);
+  const classificationToggleRef = useRef<HTMLButtonElement>(null);
   const contentEditorRef = useRef<ContentEditorHandle>(null);
   const descriptionToggleRef = useRef<HTMLButtonElement>(null);
   const [startDateOverride, setStartDateOverride] = useState<string | null>(null);
@@ -2183,6 +2185,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
     setDescriptionFormat(null);
     setDescriptionOpen(false);
     setContentFocused(false);
+    setClassificationOpen(false);
     setType("task");
     setStartDateOverride(null);
     window.requestAnimationFrame(() => triggerRef.current?.focus());
@@ -2194,11 +2197,17 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
     window.requestAnimationFrame(() => descriptionToggleRef.current?.focus({ preventScroll: true }));
   }, []);
 
+  const hideClassification = useCallback(() => {
+    setClassificationOpen(false);
+    classificationToggleRef.current?.focus({ preventScroll: true });
+  }, []);
+
   const openContent = () => {
     const mobile = window.matchMedia("(max-width: 699px)").matches;
     flushSync(() => {
       setDescriptionOpen(mobile ? true : !descriptionOpen);
       setContentFocused(mobile);
+      if (mobile) setClassificationOpen(false);
     });
     if (mobile) contentEditorRef.current?.focusEnd();
   };
@@ -2288,6 +2297,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
     setDescriptionFormat(null);
     setDescriptionOpen(false);
     setContentFocused(false);
+    setClassificationOpen(false);
     setType("task");
     setStartDateOverride(null);
     inputRef.current?.focus();
@@ -2314,6 +2324,13 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
         role="dialog"
         aria-modal="true"
         aria-labelledby="quick-add-title"
+        onKeyDown={(event) => {
+          if (event.key === "Escape" && classificationOpen && window.matchMedia("(max-width: 699px)").matches) {
+            event.preventDefault();
+            event.stopPropagation();
+            hideClassification();
+          }
+        }}
         onClick={(event) => event.stopPropagation()}
         onSubmit={submit}
       >
@@ -2340,8 +2357,13 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
                 onClick={openContent}
               >
                 <Icon name="description" size={16} />
-                {descriptionOpen ? <><span className="quick-description-desktop-label">Ẩn Nội dung</span><span className="quick-description-mobile-label">Sửa Nội dung</span></> : "Thêm Nội dung"}
+                <span className="quick-description-desktop-label">{descriptionOpen ? "Ẩn Nội dung" : "Thêm Nội dung"}</span><span className="quick-description-mobile-label"><span>{descriptionOpen ? "Sửa " : "Thêm "}</span>Nội dung</span>
               </button>
+              <button ref={classificationToggleRef} type="button" className="quick-description-toggle quick-classification-toggle" aria-expanded={classificationOpen} aria-controls="quick-classification" onClick={(event) => {
+                if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+                event.currentTarget.focus({ preventScroll: true });
+                setClassificationOpen(open => !open);
+              }}><Icon name="layers" size={16} />Phân loại</button>
             </div>
           </div>
           {descriptionOpen && (
@@ -2354,11 +2376,16 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
           {startDate && dueDate && startDate > dueDate && <p className="form-error quick-date-error">Ngày đến hạn không thể trước ngày bắt đầu.</p>}
           {!hasUpcomingDate && <p className="form-error quick-date-error">Chọn ngày bắt đầu hoặc ngày đến hạn trong ba ngày sắp tới.</p>}
         </div>
-        <div className="quick-add-controls">
-          <label className="quick-add-field"><span>Ngày bắt đầu</span><span className="quick-add-control"><Icon name="play" size={16} /><input type="date" max={dueDate || undefined} value={startDate} onChange={(event) => setStartDateOverride(event.target.value)} /></span></label>
-          <label className="quick-add-field"><span>Ngày đến hạn</span><span className="quick-add-control"><Icon name="flag" size={16} /><input type="date" min={startDate || undefined} value={dueDate} onChange={(event) => setDueDate(event.target.value)} /></span></label>
-          <label className="quick-add-field quick-add-project"><span>Dự án</span><span className="quick-add-control"><span className="project-dot empty" /><select aria-label="Dự án" value={projectId} onChange={(event) => setProjectId(event.target.value)}><option value="">Không có dự án</option>{projects.map((project) => <option value={project.id} key={project.id}>{project.name}</option>)}</select></span></label>
-          <div className="quick-add-actions"><button type="button" className="text-button" onClick={close}>Hủy</button><button className="primary-button" disabled={!title.trim() || !hasUpcomingDate || Boolean(startDate && dueDate && startDate > dueDate)}>Thêm</button></div>
+        <div className={`quick-add-controls ${classificationOpen ? "classification-open" : ""}`}>
+          <div id="quick-classification" className={`quick-classification ${classificationOpen ? "is-open" : ""}`}>
+            <div className="quick-classification-heading"><span>Phân loại</span><button type="button" className="icon-button" aria-label="Ẩn Phân loại" onClick={hideClassification}><Icon name="close" size={18} /></button></div>
+            <div className="quick-classification-fields">
+              <label className="quick-add-field"><span>Ngày bắt đầu</span><span className="quick-add-control"><Icon name="play" size={16} /><input type="date" max={dueDate || undefined} value={startDate} onChange={(event) => setStartDateOverride(event.target.value)} /></span></label>
+              <label className="quick-add-field"><span>Ngày đến hạn</span><span className="quick-add-control"><Icon name="flag" size={16} /><input type="date" min={startDate || undefined} value={dueDate} onChange={(event) => setDueDate(event.target.value)} /></span></label>
+              <label className="quick-add-field quick-add-project"><span>Dự án</span><span className="quick-add-control"><span className="project-dot empty" /><select aria-label="Dự án" value={projectId} onChange={(event) => setProjectId(event.target.value)}><option value="">Không có dự án</option>{projects.map((project) => <option value={project.id} key={project.id}>{project.name}</option>)}</select></span></label>
+            </div>
+          </div>
+          <div className="quick-add-actions"><button type="button" className="text-button" onClick={close}><Icon name="close" size={18} />Hủy</button><button className="primary-button" disabled={!title.trim() || !hasUpcomingDate || Boolean(startDate && dueDate && startDate > dueDate)}><Icon name="plus" size={18} />Thêm</button></div>
         </div>
       </form>
     </div>
