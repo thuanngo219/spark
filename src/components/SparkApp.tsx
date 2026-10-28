@@ -2114,13 +2114,13 @@ const SwipeableItemRow = memo(function SwipeableItemRow({
           <span className="item-title-wrap"><span className="item-title">{item.title}</span></span>
           <span className="item-meta">
             {(item.startDate || showEmptyDates) && (
-              <span className={`item-date ${item.startDate ? "" : "empty"}`} title="Ngày bắt đầu">
+              <span className={`item-date ${item.startDate ? "" : "empty"}`} title="Ngày Bắt Đầu">
                 <Icon name="play" size={13} />
                 {item.startDate ? formatListDate(item.startDate, today) : "Chưa bắt đầu"}
               </span>
             )}
             {(item.dueDate || showEmptyDates) && (
-              <span className={`item-date ${overdue ? "due-overdue" : ""} ${item.dueDate ? "" : "empty"}`} title="Ngày đến hạn">
+              <span className={`item-date ${overdue ? "due-overdue" : ""} ${item.dueDate ? "" : "empty"}`} title="Ngày Đến Hạn">
                 <Icon name="flag" size={13} />
                 {item.dueDate ? formatListDate(item.dueDate, today) : "Chưa có hạn"}
               </span>
@@ -2342,7 +2342,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
         </div>
         <div className="quick-add-entry">
           <label className="quick-title-field">
-            <span id="quick-add-title">{type === "task" ? "Tên công việc" : "Tên ghi chú"}</span>
+            <span id="quick-add-title">{type === "task" ? "Tên Công Việc" : "Tên Ghi Chú"}</span>
             <input ref={inputRef} autoFocus maxLength={100} value={title} onChange={(event) => setTitle(event.target.value)} placeholder={type === "task" ? "Bạn muốn hoàn thành điều gì?" : "Đặt tên ghi chú…"} aria-label="Tên mục" />
           </label>
           <div className="quick-add-entry-actions">
@@ -2358,19 +2358,19 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
               onClick={openContent}
             >
               <Icon name="description" size={16} />
-              <span className="quick-description-desktop-label">{descriptionOpen ? "Ẩn Nội dung" : "Thêm Nội dung"}</span><span className="quick-description-mobile-label"><span>{descriptionOpen ? "Sửa " : "Thêm "}</span>Nội dung</span>
+              <span className="quick-description-desktop-label">{descriptionOpen ? "Ẩn Nội Dung" : "Thêm Nội Dung"}</span><span className="quick-description-mobile-label"><span>{descriptionOpen ? "Sửa " : "Thêm "}</span>Nội Dung</span>
             </button>
             <button ref={classificationToggleRef} type="button" className="quick-description-toggle quick-classification-toggle" aria-expanded={classificationOpen} aria-controls="quick-classification" onClick={(event) => {
               if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
               event.currentTarget.focus({ preventScroll: true });
               setClassificationOpen(open => !open);
-            }}><Icon name="layers" size={16} />Phân loại</button>
+            }}><Icon name="layers" size={16} />Phân Loại</button>
           </div>
         </div>
         <div className="quick-add-body">
           {descriptionOpen && (
             <div className="quick-description-field">
-              <div className="quick-content-heading"><span>Nội dung</span><div className="detail-edit-actions"><button type="button" className="detail-icon-action save quick-content-done" onClick={finishContent} aria-label="Lưu Nội dung" title="Lưu Nội dung"><Icon name="check" size={18} /></button><button type="button" className="detail-icon-action cancel quick-content-cancel" onClick={cancelContent} aria-label="Hủy Nội dung" title="Hủy Nội dung"><Icon name="close" size={18} /></button></div></div>
+              <div className="quick-content-heading"><span>Nội Dung</span>{contentFocused && <div className="detail-edit-actions"><button type="button" className="detail-icon-action save quick-content-done" onClick={finishContent} aria-label="Lưu Nội dung" title="Lưu Nội dung"><Icon name="check" size={18} /></button><button type="button" className="detail-icon-action cancel quick-content-cancel" onClick={cancelContent} aria-label="Hủy Nội dung" title="Hủy Nội dung"><Icon name="close" size={18} /></button></div>}</div>
               <button type="button" className="quick-description-preview" onClick={openContent} aria-label="Sửa Nội dung thêm nhanh"><span>{description || "Chưa có nội dung"}</span><Icon name="edit" size={17} /></button>
               <ContentEditor focusHandle={contentEditorRef} onCancel={contentFocused ? cancelContent : undefined} value={description} format={descriptionFormat} label="Nội dung" onChange={(content) => { setDescription(content.description ?? ""); setDescriptionFormat(content.descriptionFormat); }} />
             </div>
@@ -2380,10 +2380,10 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
         </div>
         <div className={`quick-add-controls ${classificationOpen ? "classification-open" : ""}`}>
           <div id="quick-classification" className={`quick-classification ${classificationOpen ? "is-open" : ""}`}>
-            <div className="quick-classification-heading"><button type="button" className="icon-button" aria-label="Ẩn Phân loại" onClick={hideClassification}><Icon name="close" size={18} /></button></div>
+            <div className="quick-classification-heading"><button type="button" className="icon-button" aria-label="Ẩn Phân Loại" onClick={hideClassification}><Icon name="close" size={18} /></button></div>
             <div className="quick-classification-fields">
-              <label className="quick-add-field"><span>Ngày bắt đầu</span><span className="quick-add-control"><Icon name="play" size={16} /><input type="date" max={dueDate || undefined} value={startDate} onChange={(event) => setStartDateOverride(event.target.value)} /></span></label>
-              <label className="quick-add-field"><span>Ngày đến hạn</span><span className="quick-add-control"><Icon name="flag" size={16} /><input type="date" min={startDate || undefined} value={dueDate} onChange={(event) => setDueDate(event.target.value)} /></span></label>
+              <label className="quick-add-field"><span>Ngày Bắt Đầu</span><span className="quick-add-control"><Icon name="play" size={16} /><input type="date" max={dueDate || undefined} value={startDate} onChange={(event) => setStartDateOverride(event.target.value)} /></span></label>
+              <label className="quick-add-field"><span>Ngày Đến Hạn</span><span className="quick-add-control"><Icon name="flag" size={16} /><input type="date" min={startDate || undefined} value={dueDate} onChange={(event) => setDueDate(event.target.value)} /></span></label>
               <label className="quick-add-field quick-add-project"><span>Dự án</span><span className="quick-add-control"><span className="project-dot empty" /><select aria-label="Dự án" value={projectId} onChange={(event) => setProjectId(event.target.value)}><option value="">Không có dự án</option>{projects.map((project) => <option value={project.id} key={project.id}>{project.name}</option>)}</select></span></label>
             </div>
           </div>
@@ -2490,12 +2490,22 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
       }
     };
     fitViewport();
+    const metadata = backdrop.querySelector<HTMLElement>(".detail-metadata");
+    const fitCloseOverlay = () => {
+      if (metadata) backdrop.style.setProperty("--detail-metadata-height", `${metadata.getBoundingClientRect().height}px`);
+    };
+    const metadataObserver = new ResizeObserver(fitCloseOverlay);
+    if (metadata) {
+      fitCloseOverlay();
+      metadataObserver.observe(metadata);
+    }
     mobile.addEventListener("change", fitViewport);
     window.addEventListener("resize", fitViewport);
     viewport?.addEventListener("resize", fitViewport);
     viewport?.addEventListener("scroll", fitViewport);
     return () => {
       motion.destroy();
+      metadataObserver.disconnect();
       detailMotionRef.current = null;
       mobile.removeEventListener("change", fitViewport);
       window.removeEventListener("resize", fitViewport);
@@ -2631,7 +2641,7 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
 
               <section className={`detail-text-block detail-description ${editingField === "content" ? "editing" : ""}`}>
                   <div className="detail-field-heading">
-                    <span className="detail-label" id="item-content-title">Nội dung</span>
+                    <span className="detail-label" id="item-content-title">Nội Dung</span>
                     {editingField === "content" ? (
                       <div className="detail-edit-actions">
                         <button type="button" className="detail-icon-action save" onClick={() => saveContent()} aria-label="Lưu Nội dung"><Icon name="check" size={18} /></button>
@@ -2663,11 +2673,11 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
         }}>
           <button type="button" className={`detail-meta-button icon-only important ${important ? "selected" : ""}`} title="Quan Trọng" aria-label="Quan Trọng" aria-pressed={important} onClick={() => { const value = !important; setImportant(value); onSave({ isImportant: value }); }}><Icon name="star" size={17} /></button>
           <button type="button" className={`detail-meta-button icon-only urgent ${urgent ? "selected" : ""}`} title="Ưu tiên" aria-label="Ưu tiên" aria-pressed={urgent} onClick={() => { const value = !urgent; setUrgent(value); onSave({ isUrgent: value }); }}><Icon name="zap" size={17} /></button>
-          <label className="detail-meta-control" title="Ngày bắt đầu">
+          <label className="detail-meta-control" title="Ngày Bắt Đầu">
             <Icon name="play" size={16} />
             <input type="date" max={dueDate || undefined} value={startDate} aria-label="Ngày bắt đầu" onChange={(event) => { const value = event.target.value; saveDates(value, dueDate); }} />
           </label>
-          <label className="detail-meta-control" title="Ngày đến hạn">
+          <label className="detail-meta-control" title="Ngày Đến Hạn">
             <Icon name="flag" size={16} />
             <input type="date" min={startDate || undefined} value={dueDate} aria-label="Ngày đến hạn" onChange={(event) => { const value = event.target.value; saveDates(startDate, value); }} />
           </label>

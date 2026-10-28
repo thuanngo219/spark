@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-199 — Nút sửa Nội Dung, overlay Đóng và nhãn (2026-10-28)
+
+Quick-add mobile chỉ render tick/X khi đang sửa Nội Dung; sau lưu/hủy, hàng nhãn không còn hai nút. Chi tiết mobile đặt nút Đóng trên vùng Nội Dung cuộn, lớp phủ không nền và không chiếm chiều cao, vẫn cách metadata 10px; vùng đọc có padding đáy để xem dòng cuối. Các nhãn Tên Công Việc, Tên Ghi Chú, Nội Dung, Ngày Bắt Đầu, Ngày Đến Hạn, Phân Loại viết hoa từng từ. Toolbar giữ vùng bấm 44px, sửa tên giữ chiều cao hàng 28px. Typecheck, lint file sửa, 175 unit test, build và 47 browser case trên dev đạt; 2 browser case offline được bỏ qua theo cấu hình. Cần kiểm tra iPhone thật sau phát hành.
+
 ## D-198 — Tinh chỉnh header và thao tác mobile (2026-10-28)
 
 Header bỏ phần đệm dư gây nhảy khi thu gọn; line 3px. Icon có Nội dung xuống hàng ngày, trước cờ. Chi tiết: Đóng Navy/chữ trắng có nhãn/hover; tên sửa cùng cỡ chữ đọc, tick/X sát phải; toolbar Nội dung mobile 44px, cách nhãn 6px. Quick-add mobile: nền hành động đậm hơn, Hủy/Thêm chữ nhỏ với icon quay lại/dấu +, Thêm Navy, X Phân loại Navy. Sửa Nội dung có tick lưu/X hủy và khôi phục bản nháp khi hủy. Typecheck, 175 unit test, bản build và 32/32 browser case trên bản build production cục bộ đạt ở 320/390px sáng/tối và desktop trước chỉnh icon cuối; đã xem ảnh 390px. Lint file sửa đạt; lint toàn repo có warning từ thư mục không thuộc Spark và chưa được theo dõi. Cần kiểm tra iPhone thật sau phát hành.

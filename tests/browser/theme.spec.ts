@@ -93,7 +93,7 @@ for (const width of [1280, 390]) {
     await page.screenshot({ path: `/tmp/spark-dark-today-${width}.png` });
     await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
     await page.getByRole("textbox", { name: "Tên mục" }).fill("Kiểm tra giao diện tối");
-    await page.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
+    await page.getByRole("button", { name: "Thêm Nội Dung", exact: true }).click();
     const content = page.getByRole("textbox", { name: "Nội dung", exact: true });
     await content.fill("Ghi lại ý tưởng cho ngày mai.\nNội dung dễ đọc, thao tác gọn gàng.");
     await content.press("Meta+a");
@@ -103,7 +103,7 @@ for (const width of [1280, 390]) {
     await expect(page.locator(".content-toolbar")).toHaveCSS("background-color", "rgb(36, 43, 61)");
     await expect(content).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
     await page.screenshot({ path: `/tmp/spark-dark-quick-${width}.png` });
-    if (width < 700) await page.getByRole("button", { name: "Xong", exact: true }).click();
+    if (width < 700) await page.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
     await page.getByRole("button", { name: "Thêm", exact: true }).click();
     await expect(page.locator(".quick-add-dialog")).toBeHidden();
     await page.locator(".item-main").filter({ hasText: "Kiểm tra giao diện tối" }).click();
@@ -204,7 +204,7 @@ test("theme shortcuts select, persist and follow system without intercepting typ
   await title.pressSequentially("<M>");
   await expect(title).toHaveValue("<M>");
   await expect(page.locator("html")).toHaveAttribute("data-theme-preference", "system");
-  await page.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
+  await page.getByRole("button", { name: "Thêm Nội Dung", exact: true }).click();
   const editor = page.getByRole("textbox", { name: "Nội dung", exact: true });
   await editor.pressSequentially("<M>");
   await expect(editor).toHaveText("<M>");

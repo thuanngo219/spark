@@ -347,3 +347,7 @@ Quick-add Nội dung dùng tick nhỏ và toolbar 46px sát nhãn. Phân loại 
 ## D-198 — Màu và bố cục thao tác mobile (2026-10-28)
 
 Line header 3px; icon có Nội dung chuyển xuống hàng ngày. Nút Đóng chi tiết và X Phân loại Navy/chữ trắng, có hover. Cỡ chữ tên lúc sửa bằng lúc đọc; nút lưu/hủy liền nhau ở mép phải. Toolbar Nội dung mobile 44px, cách nhãn 6px. Quick-add dùng Hủy với mũi tên quay lại, Thêm với dấu + và nhãn chữ nhỏ; hàng nút có nền tương phản gần sheet Phân loại. Thêm nền Navy/chữ trắng. Nội dung quick-add có tick lưu và X hủy, cùng style với chi tiết.
+
+## D-199 — Trạng thái nút và nhãn (2026-10-28)
+
+Quick-add chỉ hiện tick/X ở hàng Nội Dung khi đang nhập. View chi tiết mobile dùng nút Đóng nổi trên vùng văn bản cuộn, không có nền phía sau nút; giữ 10px trên metadata. Nhãn dùng Tên Công Việc, Tên Ghi Chú, Nội Dung, Ngày Bắt Đầu, Ngày Đến Hạn, Phân Loại.

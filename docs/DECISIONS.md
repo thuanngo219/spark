@@ -529,3 +529,7 @@ Chi tiết mobile: nút Đóng nằm giữa, cách hàng metadata 10px; desktop 
 Thu gọn header không cộng thêm một chiều cao header vào khoảng đệm trong lúc chuyển trạng thái; dải màu dưới header cao 3px trên desktop và mobile. Dấu có Nội dung nằm ở hàng ngày, trước Quan Trọng/Ưu tiên. Nút Đóng chi tiết có nền Navy, chữ trắng, nhãn nhỏ và hover; vị trí giữ như D-197. Chữ tên lúc sửa có cùng cỡ với lúc đọc; tick/X sát nhau và bên phải. Toolbar Nội dung mobile cao 44px, cách hàng nhãn 6px; tick/X của phần này và phần tên dùng cùng kích thước/khoảng cách.
 
 Quick-add mobile: hàng Hủy/Thêm có chữ nhỏ, nền tương phản hơn; Thêm nền Navy, chữ trắng, hover sáng hơn. Hủy dùng mũi tên quay lại, Thêm dùng dấu +; giữ nhãn chữ. Phân loại có nút X nền Navy/chữ trắng. Sửa Nội dung dùng tick lưu và X hủy bên phải; hủy trả lại đúng nội dung/định dạng trước lần sửa, Escape cũng hủy. Desktop giữ hành vi và bố cục quick-add.
+
+## D-199 — Nút quick-add, lớp phủ Đóng và cách viết nhãn (2026-10-28)
+
+Trong quick-add mobile, tick/X của Nội Dung chỉ tồn tại khi đang nhập; rời editor bằng lưu hoặc hủy thì hai nút biến mất. Nút Đóng trong chi tiết mobile nằm phủ trên vùng Nội Dung, cách metadata 10px, không có nền ở lớp phủ; văn bản cuộn được bên dưới nút, vẫn có khoảng đáy để đọc dòng cuối. Nút giữ nền Navy/chữ trắng theo D-198. Nhãn hiển thị dùng cách viết hoa từng từ: Tên Công Việc, Tên Ghi Chú, Nội Dung, Ngày Bắt Đầu, Ngày Đến Hạn, Phân Loại. Câu thông báo và nội dung người dùng nhập giữ cách viết tự nhiên.

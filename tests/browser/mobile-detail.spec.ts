@@ -34,6 +34,9 @@ for (const width of [320, 390]) {
         expect(editBox.x + editBox.width).toBeLessThanOrEqual(width);
         expect(closeBox.x + closeBox.width / 2).toBeCloseTo(width / 2, 1);
         expect(metadataBox.y - (closeBox.y + closeBox.height)).toBeCloseTo(10, 1);
+        await expect(sheet.locator(".editor-header")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+        expect((await sheet.locator(".detail-description .detail-read-row").boundingBox())!.y).toBeLessThan(closeBox.y);
+        expect((await sheet.locator(".detail-description .detail-read-row").boundingBox())!.y + (await sheet.locator(".detail-description .detail-read-row").boundingBox())!.height).toBeGreaterThanOrEqual(closeBox.y + closeBox.height);
         await expect(sheet.getByRole("button", { name: "Đóng", exact: true })).toHaveText("Đóng");
         await expect(sheet.getByRole("button", { name: "Đóng", exact: true })).toHaveCSS("background-color", "rgb(17, 23, 66)");
         await sheet.getByRole("button", { name: "Đóng", exact: true }).hover();

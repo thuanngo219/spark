@@ -51,24 +51,29 @@ for (const width of [320, 390, 1280]) {
 
       }
       const title = form.getByRole("textbox", { name: "Tên mục", exact: true });
+      await expect(form.locator(".quick-title-field > span")).toHaveText("Tên Công Việc");
       await expect(title).toBeFocused();
       await title.fill("Mục thử toàn màn hình");
       if (width < 700) {
         await form.getByRole("button", { name: "Thêm", exact: true }).hover();
         await expect(form.getByRole("button", { name: "Thêm", exact: true })).toHaveCSS("background-color", "rgb(25, 34, 95)");
       }
-      if (theme === "dark") await form.getByRole("checkbox", { name: "Ghi chú", exact: true }).check();
+      if (theme === "dark") {
+        await form.getByRole("checkbox", { name: "Ghi chú", exact: true }).check();
+        await expect(form.locator(".quick-title-field > span")).toHaveText("Tên Ghi Chú");
+      }
       if (width < 700) {
-        const classification = form.getByRole("button", { name: "Phân loại", exact: true });
+        const classification = form.getByRole("button", { name: "Phân Loại", exact: true });
         await classification.click();
+        await expect(form.locator(".quick-classification-fields .quick-add-field > span:first-child")).toHaveText(["Ngày Bắt Đầu", "Ngày Đến Hạn", "Dự án"]);
         await expect(classification).toHaveAttribute("aria-expanded", "true");
         await expect(classification).toHaveCSS("background-color", theme === "light" ? "rgb(17, 23, 66)" : "rgb(61, 75, 107)");
         await expect(form.locator(".quick-classification")).toHaveCSS("animation-name", "classification-enter");
         await form.locator(".quick-classification").evaluate(el => Promise.all(el.getAnimations().map(a => a.finished)));
-        await expect(form.locator(".quick-classification-heading")).not.toContainText("Phân loại");
+        await expect(form.locator(".quick-classification-heading")).not.toContainText("Phân Loại");
         const sheetTop = (await form.locator(".quick-classification").boundingBox())!.y;
-        const sheetClose = (await form.getByRole("button", { name: "Ẩn Phân loại", exact: true }).boundingBox())!;
-        await expect(form.getByRole("button", { name: "Ẩn Phân loại", exact: true })).toHaveCSS("background-color", "rgb(17, 23, 66)");
+        const sheetClose = (await form.getByRole("button", { name: "Ẩn Phân Loại", exact: true }).boundingBox())!;
+        await expect(form.getByRole("button", { name: "Ẩn Phân Loại", exact: true })).toHaveCSS("background-color", "rgb(17, 23, 66)");
         expect(sheetClose.x + sheetClose.width / 2).toBeCloseTo(width / 2, 1);
         expect(sheetClose.y + sheetClose.height / 2).toBeCloseTo(sheetTop, 1);
         const dates = await form.locator('.quick-add-controls input[type="date"]').all();
@@ -101,7 +106,7 @@ for (const width of [320, 390, 1280]) {
           Reflect.deleteProperty(window.visualViewport!, "height");
           window.visualViewport!.dispatchEvent(new Event("resize"));
         });
-        await form.getByRole("button", { name: "Ẩn Phân loại", exact: true }).click();
+        await form.getByRole("button", { name: "Ẩn Phân Loại", exact: true }).click();
         await expect(classification).toBeFocused();
         await classification.click();
         await expect(dates[0]).toHaveValue("2026-11-01");
@@ -110,12 +115,12 @@ for (const width of [320, 390, 1280]) {
         await expect(form).toBeVisible();
         await expect(classification).toHaveAttribute("aria-expanded", "false");
       } else {
-        await expect(form.getByRole("button", { name: "Phân loại", exact: true })).toBeHidden();
+        await expect(form.getByRole("button", { name: "Phân Loại", exact: true })).toBeHidden();
         await expect(form.getByRole("button", { name: "Thêm", exact: true }).locator("svg")).toBeHidden();
       }
       await page.screenshot({ path: `/tmp/spark-quick-main-${width}-${theme}.png` });
-      await form.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
-      await expect(form.locator(".quick-content-heading > span")).toHaveText("Nội dung");
+      await form.getByRole("button", { name: "Thêm Nội Dung", exact: true }).click();
+      await expect(form.locator(".quick-content-heading > span")).toHaveText("Nội Dung");
       const editor = form.getByRole("textbox", { name: "Nội dung", exact: true });
       await editor.fill("Nội dung nháp cần giữ");
       await editor.press("Meta+a");
@@ -155,7 +160,8 @@ for (const width of [320, 390, 1280]) {
         await form.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
         await expect(title).toHaveValue("Mục thử toàn màn hình");
         await expect(form.locator(".quick-description-preview")).toContainText("Nội dung nháp cần giữ");
-        await form.getByRole("button", { name: "Sửa Nội dung", exact: true }).click();
+        await expect(form.locator(".quick-content-heading .detail-edit-actions")).toHaveCount(0);
+        await form.getByRole("button", { name: "Sửa Nội Dung", exact: true }).click();
         await expect(editor).toBeFocused();
         await expect(editor.locator("strong")).toHaveText("Nội dung nháp cần giữ");
         await editor.fill("Bản nháp cần hủy");
@@ -214,7 +220,7 @@ test("mobile quick-add shows a long content draft without clipping or a filled p
   await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
   await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
   await page.getByRole("textbox", { name: "Tên mục", exact: true }).fill("Mục có nội dung dài");
-  await page.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
+  await page.getByRole("button", { name: "Thêm Nội Dung", exact: true }).click();
   const editor = page.getByRole("textbox", { name: "Nội dung", exact: true });
   const content = Array.from({ length: 20 }, (_, index) => `Dòng nội dung ${index + 1} cần hiển thị đầy đủ trong quick-add.`).join("\n");
   await editor.fill(content);
@@ -291,7 +297,7 @@ test("mobile quick-add blocks background gestures and restores the scrolled list
   expect(await background.boundingBox()).toEqual(before);
   await edgeSwipe();
   await expect(page.locator(".mobile-nav-backdrop")).toHaveCount(0);
-  await form.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
+  await form.getByRole("button", { name: "Thêm Nội Dung", exact: true }).click();
   await page.evaluate(() => {
     Object.defineProperty(window.visualViewport!, "height", { configurable: true, value: 360 });
     window.visualViewport!.dispatchEvent(new Event("resize"));

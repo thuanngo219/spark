@@ -499,3 +499,7 @@ Quick-add: sửa Nội dung có tick nhỏ, toolbar 46px cách nhãn 4px; Phân 
 ## D-198 — Tinh chỉnh header và thao tác mobile (2026-10-28)
 
 Dải màu header 3px trên desktop/mobile. Thu gọn header không làm nhảy nội dung hoặc vị trí cuộn; dấu có Nội dung ở hàng ngày, trước cờ Quan Trọng/Ưu tiên. Đóng chi tiết là nút Navy/chữ trắng có nhãn và hover, giữ vị trí desktop/mobile đã duyệt. Sửa tên không đổi cỡ chữ so với lúc đọc; tick/X gọn bên phải. Toolbar sửa Nội dung mobile cao 44px, cách nhãn 6px; tick/X đồng dạng với tên. Quick-add mobile có Hủy/Thêm chữ nhỏ, icon quay lại/dấu +, Thêm Navy/chữ trắng, hàng hành động nền đậm hơn; X Phân loại Navy/chữ trắng. Sửa Nội dung quick-add có tick lưu và X hủy; hủy khôi phục bản nháp trước khi vào editor. Desktop quick-add giữ bố cục.
+
+## D-199 — Nhãn và lớp phủ nút Đóng (2026-10-28)
+
+Quick-add mobile sau khi lưu hoặc hủy sửa Nội Dung không còn tick/X trên hàng nhãn. Chi tiết mobile đặt nút Đóng phủ trên vùng Nội Dung, không tạo dải nền hoặc chiếm chiều cao riêng; nội dung cuộn được phía dưới, dòng cuối vẫn kéo lên đọc được. Khoảng cách đến metadata giữ 10px. Các nhãn Tên Công Việc, Tên Ghi Chú, Nội Dung, Ngày Bắt Đầu, Ngày Đến Hạn và Phân Loại viết hoa từng từ. Các câu thông báo không đổi kiểu viết.

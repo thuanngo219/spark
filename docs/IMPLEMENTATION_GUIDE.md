@@ -510,3 +510,7 @@ Chặn nav edge gesture khi `quickAddOpen`. Sheet Phân loại dùng `classifica
 ## D-198 — Tinh chỉnh header và trình sửa mobile (2026-10-28)
 
 Giữ `--header-collapse-space` bằng chênh lệch chiều cao thực của header và chiều cao mở; bỏ phần cộng thêm chiều cao header khi `headerMotionUntil` còn hiệu lực. Dải màu dùng 3px. Chuyển `item-description-indicator` vào `item-meta` sau hai ngày, trước `item-state-icons`. Sửa tên mobile dùng cùng `font-size` 0.9375rem như text đọc; nút tick/X ở mép phải, cỡ 36px, khoảng cách 8px và vùng bấm 44px. Toolbar Nội dung mobile cao 44px, gap 6px dưới nhãn. Quick-add lưu snapshot nội dung/định dạng trước khi focus để X hoặc Escape khôi phục; tick chấp nhận bản nháp. Hàng Hủy/Thêm dùng nền `well` bán trong suốt, nút Thêm Navy; popup Phân loại X Navy. CSS chỉnh tại selector hiện có, không thêm override chồng lớp.
+
+## D-199 — Quick-add action state và detail overlay (2026-10-28)
+
+Render `.quick-content-heading .detail-edit-actions` khi `contentFocused` là true để tránh style `.detail-icon-action` chung làm nút hiện sau khi lưu. Trong chi tiết mobile, quan sát kích thước `.detail-metadata` bằng `ResizeObserver` và đặt `--detail-metadata-height`; `.editor-header` dùng `position:absolute`, bottom bằng chiều cao metadata cộng 10px, nền trong suốt và `pointer-events:none`, chỉ nút Đóng nhận click. Vùng đọc Nội Dung kéo đến metadata, có padding đáy 64px để dòng cuối không bị nút che. Giữ vùng bấm toolbar 44px và chiều cao hàng tên 28px khi đang sửa. Cập nhật copy visible label theo D-199.

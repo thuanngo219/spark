@@ -3,7 +3,7 @@ import type { Page } from "@playwright/test";
 
 async function openQuickAdd(page: Page) {
   await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
-  await page.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
+  await page.getByRole("button", { name: "Thêm Nội Dung", exact: true }).click();
   return page.getByRole("textbox", { name: "Nội dung", exact: true });
 }
 
@@ -329,9 +329,9 @@ for (const width of [1280, 390]) {
     await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
     await page.getByRole("textbox", { name: "Tên mục" }).fill(title);
     await page.getByRole("checkbox", { name: "Ghi chú" }).check();
-    await page.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
+    await page.getByRole("button", { name: "Thêm Nội Dung", exact: true }).click();
     await page.getByRole("textbox", { name: "Nội dung", exact: true }).fill("Nội dung ngắn");
-    if (width < 700) await page.getByRole("button", { name: "Xong", exact: true }).click();
+    if (width < 700) await page.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
     await page.getByRole("button", { name: "Thêm", exact: true }).click();
     await expect(page.locator(".quick-add-dialog")).toBeHidden();
     await page.getByRole("button", { name: "Tất cả", exact: true }).click();
@@ -441,7 +441,7 @@ for (const width of [1280, 390]) {
     expect(await page.locator(".content-toolbar").evaluate(e => getComputedStyle(e).backgroundColor)).not.toBe("rgba(0, 0, 0, 0)");
     const cancel = page.locator(".detail-field-heading").getByRole("button", { name: "Hủy", exact: true });
     const box = (await cancel.boundingBox())!;
-    expect(box.width).toBe(28); expect(box.height).toBe(28);
+    expect(box.width).toBe(width < 700 ? 36 : 28); expect(box.height).toBe(width < 700 ? 36 : 28);
     expect(await cancel.evaluate(e => getComputedStyle(e).borderRadius)).toBe("999px");
     await cancel.click();
     await expect(page.getByRole("button", { name: "Sửa Nội dung", exact: true })).toBeVisible();
