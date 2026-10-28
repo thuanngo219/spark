@@ -4,7 +4,7 @@ import type { Page } from "@playwright/test";
 async function openQuickAdd(page: Page) {
   await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
   await page.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
-  return page.getByRole("textbox", { name: "Nội dung (nếu cần)", exact: true });
+  return page.getByRole("textbox", { name: "Nội dung", exact: true });
 }
 
 async function paste(page: Page, html: string) {
@@ -40,7 +40,7 @@ test("Command B/I/U, undo, save, reload and cancel preserve formatting", async (
   await editor.press("Meta+Shift+z");
   await expect(editor.locator("u")).toHaveCount(1);
   await page.getByRole("button", { name: "Thêm", exact: true }).click();
-  await page.getByRole("button", { name: "Hủy", exact: true }).click();
+  await expect(page.locator(".quick-add-dialog")).toBeHidden();
   await page.reload();
   await openTestItem(page, "Browser format test");
   await expect(page.locator(".detail-description strong")).toHaveText("Đậm nghiêng gạch chân");
@@ -64,7 +64,7 @@ test("4000 characters including newlines; rejects 4001; fixed edit header", asyn
   await expect(page.locator(".content-counter")).toHaveText("4.000 / 4.000");
   await expect(page.getByRole("status")).toContainText("tối đa 4.000");
   await page.getByRole("button", { name: "Thêm", exact: true }).click();
-  await page.getByRole("button", { name: "Hủy", exact: true }).click();
+  await expect(page.locator(".quick-add-dialog")).toBeHidden();
   await openTestItem(page, "Browser long test");
   const sheet = await page.locator(".item-detail-sheet").boundingBox();
   expect(sheet?.width).toBe(page.viewportSize()!.width);
@@ -125,7 +125,7 @@ test("field switching saves drafts, dates reject invalid ranges, editor fills av
   await page.getByRole("textbox", { name: "Tên mục" }).fill("Draft switching test");
   await editor.fill("Mục một\nMục hai");
   await page.getByRole("button", { name: "Thêm", exact: true }).click();
-  await page.getByRole("button", { name: "Hủy", exact: true }).click();
+  await expect(page.locator(".quick-add-dialog")).toBeHidden();
   await page.reload(); await openTestItem(page, "Draft switching test");
   await expect(page.locator(".detail-description .formatted-content")).toHaveText("Mục một\nMục hai");
   await expect(page.locator(".detail-title-row").getByRole("button", { name: "Sửa tên" })).toBeVisible();
@@ -187,7 +187,8 @@ test("mobile detail and quick-add focus styles remain light on narrow screens", 
   await expect(editor.locator("ul, ol, li")).toHaveCount(0);
   expect(await editor.evaluate(e => getComputedStyle(e).backgroundColor)).toBe("rgba(0, 0, 0, 0)");
   await page.getByRole("button", { name: "Thêm", exact: true }).click();
-  await page.getByRole("button", { name: "Hủy", exact: true }).click();
+  await expect(page.locator(".quick-add-dialog")).toBeHidden();
+  await expect(page.locator(".item-main").filter({ hasText: "Mobile list test" })).toBeVisible();
   await page.reload();
   expect(await page.locator(".view-header").evaluate(e => getComputedStyle(e).backdropFilter)).toBe("blur(8px)");
   await page.setViewportSize({ width: 390, height: 844 });
@@ -222,7 +223,7 @@ test("offline cold start can open the editor before its first use", async ({ pag
   await editor.press("Meta+b");
   await page.getByRole("textbox", { name: "Tên mục" }).fill("Browser offline test");
   await page.getByRole("button", { name: "Thêm", exact: true }).click();
-  await page.getByRole("button", { name: "Hủy", exact: true }).click();
+  await expect(page.locator(".quick-add-dialog")).toBeHidden();
   await page.reload();
   await openTestItem(page, "Browser offline test");
   await expect(page.locator(".detail-description strong")).toHaveText("Offline có định dạng");
@@ -234,7 +235,7 @@ test("detail task checkbox saves drafts and completion without striking the titl
   await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
   await page.getByRole("textbox", { name: "Tên mục" }).fill("Detail status test");
   await page.getByRole("button", { name: "Thêm", exact: true }).click();
-  await page.getByRole("button", { name: "Hủy", exact: true }).click();
+  await expect(page.locator(".quick-add-dialog")).toBeHidden();
   await openTestItem(page, "Detail status test");
   const checkbox = page.locator(".detail-title-row").getByRole("checkbox");
   await expect(checkbox).not.toBeChecked();
@@ -265,7 +266,7 @@ test("detail task checkbox saves drafts and completion without striking the titl
   await page.getByRole("textbox", { name: "Tên mục" }).fill("Detail note marker");
   await page.getByRole("checkbox", { name: "Ghi chú" }).check();
   await page.getByRole("button", { name: "Thêm", exact: true }).click();
-  await page.getByRole("button", { name: "Hủy", exact: true }).click();
+  await expect(page.locator(".quick-add-dialog")).toBeHidden();
   await page.getByRole("button", { name: "Tất cả", exact: true }).click();
   await openTestItem(page, "Detail note marker");
   await expect(page.locator(".detail-title-row").getByRole("img", { name: "Ghi chú" })).toBeVisible();
@@ -278,7 +279,7 @@ test("mobile title wraps without underline, saves on blur and leaves the next ac
   await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
   await page.getByRole("textbox", { name: "Tên mục" }).fill("Compact title");
   await page.getByRole("button", { name: "Thêm", exact: true }).click();
-  await page.getByRole("button", { name: "Hủy", exact: true }).click();
+  await expect(page.locator(".quick-add-dialog")).toBeHidden();
   await openTestItem(page, "Compact title");
   const row = page.locator(".detail-title-row");
   await page.locator(".item-detail-sheet").evaluate(e => Promise.all(e.getAnimations().map(a => a.finished)));
@@ -325,10 +326,10 @@ for (const width of [1280, 390]) {
     await page.getByRole("textbox", { name: "Tên mục" }).fill(title);
     await page.getByRole("checkbox", { name: "Ghi chú" }).check();
     await page.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
-    await page.getByRole("textbox", { name: "Nội dung (nếu cần)", exact: true }).fill("Nội dung ngắn");
+    await page.getByRole("textbox", { name: "Nội dung", exact: true }).fill("Nội dung ngắn");
     if (width < 700) await page.getByRole("button", { name: "Xong", exact: true }).click();
     await page.getByRole("button", { name: "Thêm", exact: true }).click();
-    await page.getByRole("button", { name: "Hủy", exact: true }).click();
+    await expect(page.locator(".quick-add-dialog")).toBeHidden();
     await page.getByRole("button", { name: "Tất cả", exact: true }).click();
     await openTestItem(page, title);
     const sheet = page.locator(".item-detail-sheet");
@@ -413,7 +414,7 @@ for (const width of [1280, 390]) {
     await quickAdd.click();
     await page.getByRole("textbox", { name: "Tên mục" }).fill("Minimal editor");
     await page.getByRole("button", { name: "Thêm", exact: true }).click();
-    await page.getByRole("button", { name: "Hủy", exact: true }).click();
+    await expect(page.locator(".quick-add-dialog")).toBeHidden();
     await openTestItem(page, "Minimal editor");
     await page.locator(".detail-title-row").getByRole("checkbox").click();
     await expect(page.locator(".detail-status-box")).toHaveCSS("background-color", "rgb(139, 143, 158)");

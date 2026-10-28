@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-196 — Nhãn Nội dung quick-add và header mobile (2026-10-28)
+
+Quick-add hiển thị nhãn “Nội dung” trên desktop và mobile, bỏ “(nếu cần)”. Theo ảnh iPhone, dải màu dưới header mobile cao 1px ở cả trạng thái thường và thu gọn; header thu gọn dùng nền canvas đặc để không lộ nội dung phía sau. Thanh cuộn quick-add giữ nguyên, desktop header không đổi. ESLint, typecheck, 175 unit test, build production và 43 browser case đạt sau khi cập nhật các kỳ vọng cũ về quick-add, title và màu nền; đã xem ảnh chụp header “Hôm nay” 390px. Cần kiểm tra lại trên iPhone thật sau phát hành.
+
 ## D-195 — Quick-add mobile: nội dung cuộn riêng, hành động trên nền mờ (2026-10-28)
 
 Tên và hàng Ghi chú/Nội dung/Phân loại đứng yên ở đầu quick-add khi xem trước Nội dung dài. Vùng Nội dung cuộn bên dưới, dòng cuối kéo lên được phía trên Hủy/Thêm. Hàng Hủy/Thêm neo đáy trên nền canvas bán trong suốt, blur 12px và viền trên nhẹ. Phân loại overlay và chế độ nhập Nội dung tập trung tiếp tục hoạt động như cũ. Desktop không đổi. Typecheck, ESLint file sửa, 175 unit test và 10 browser case local đạt ở 320/390px sáng/tối và 1280px; đã xem ảnh 390px. Chưa kiểm tra iPhone vật lý.

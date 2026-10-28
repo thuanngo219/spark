@@ -575,8 +575,8 @@ button:focus-visible { filter: brightness(.88); }
   .app-shell > .sidebar { display: none; }
   .content { padding: 0; }
   .canvas { width: 100%; padding: 0 0 var(--header-collapse-space, 0px); }
-  .view-header { --view-title-size: 30px; --view-compact-title-size: 21px; justify-content: flex-start; gap: 7px; padding: max(12px, calc(8px + env(safe-area-inset-top))) calc(15px + env(safe-area-inset-right)) 15px calc(15px + env(safe-area-inset-left)); background: color-mix(in srgb, var(--canvas) 96%, transparent); }
-  .view-header.is-compact { --view-band-height: 2.5px; }
+  .view-header { --view-title-size: 30px; --view-compact-title-size: 21px; --view-band-height: 1px; justify-content: flex-start; gap: 7px; padding: max(12px, calc(8px + env(safe-area-inset-top))) calc(15px + env(safe-area-inset-right)) 15px calc(15px + env(safe-area-inset-left)); background: color-mix(in srgb, var(--canvas) 96%, transparent); }
+  .view-header.is-compact { background: var(--canvas); }
   .view-header .eyebrow { min-height: 18px; font-size: .65rem; font-weight: 400; letter-spacing: 0; }
   .view-title-row { gap: 4px; }
   .view-header h1 { margin: 2px 0 4px; }

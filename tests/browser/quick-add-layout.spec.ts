@@ -100,7 +100,8 @@ for (const width of [320, 390, 1280]) {
       }
       await page.screenshot({ path: `/tmp/spark-quick-main-${width}-${theme}.png` });
       await form.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
-      const editor = form.getByRole("textbox", { name: "Nội dung (nếu cần)", exact: true });
+      await expect(form.locator(".quick-content-heading > span")).toHaveText("Nội dung");
+      const editor = form.getByRole("textbox", { name: "Nội dung", exact: true });
       await editor.fill("Nội dung nháp cần giữ");
       await editor.press("Meta+a");
       await form.getByRole("button", { name: "In đậm", exact: true }).click();
@@ -189,7 +190,7 @@ test("mobile quick-add shows a long content draft without clipping or a filled p
   await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
   await page.getByRole("textbox", { name: "Tên mục", exact: true }).fill("Mục có nội dung dài");
   await page.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
-  const editor = page.getByRole("textbox", { name: "Nội dung (nếu cần)", exact: true });
+  const editor = page.getByRole("textbox", { name: "Nội dung", exact: true });
   const content = Array.from({ length: 20 }, (_, index) => `Dòng nội dung ${index + 1} cần hiển thị đầy đủ trong quick-add.`).join("\n");
   await editor.fill(content);
   await page.getByRole("button", { name: "Xong", exact: true }).click();

@@ -2360,9 +2360,9 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
         <div className="quick-add-body">
           {descriptionOpen && (
             <div className="quick-description-field">
-              <div className="quick-content-heading"><span>Nội dung (nếu cần)</span><button type="button" className="primary-button quick-content-done" onClick={finishContent}>Xong</button></div>
+              <div className="quick-content-heading"><span>Nội dung</span><button type="button" className="primary-button quick-content-done" onClick={finishContent}>Xong</button></div>
               <button type="button" className="quick-description-preview" onClick={openContent} aria-label="Sửa Nội dung thêm nhanh"><span>{description || "Chưa có nội dung"}</span><Icon name="edit" size={17} /></button>
-              <ContentEditor focusHandle={contentEditorRef} onCancel={contentFocused ? finishContent : undefined} value={description} format={descriptionFormat} label="Nội dung (nếu cần)" onChange={(content) => { setDescription(content.description ?? ""); setDescriptionFormat(content.descriptionFormat); }} />
+              <ContentEditor focusHandle={contentEditorRef} onCancel={contentFocused ? finishContent : undefined} value={description} format={descriptionFormat} label="Nội dung" onChange={(content) => { setDescription(content.description ?? ""); setDescriptionFormat(content.descriptionFormat); }} />
             </div>
           )}
           {startDate && dueDate && startDate > dueDate && <p className="form-error quick-date-error">Ngày đến hạn không thể trước ngày bắt đầu.</p>}
