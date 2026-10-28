@@ -2387,7 +2387,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
               <label className="quick-add-field quick-add-project"><span>Dự án</span><span className="quick-add-control"><span className="project-dot empty" /><select aria-label="Dự án" value={projectId} onChange={(event) => setProjectId(event.target.value)}><option value="">Không có dự án</option>{projects.map((project) => <option value={project.id} key={project.id}>{project.name}</option>)}</select></span></label>
             </div>
           </div>
-          <div className="quick-add-actions"><button type="button" className="text-button" onClick={close}><Icon name="arrow-left" size={18} />Hủy</button><button className="primary-button" disabled={!title.trim() || !hasUpcomingDate || Boolean(startDate && dueDate && startDate > dueDate)}><Icon name="check" size={18} />Thêm</button></div>
+          <div className="quick-add-actions"><button type="button" className="text-button" onClick={close}><Icon name="arrow-left" size={18} />Hủy</button><button className="primary-button" disabled={!title.trim() || !hasUpcomingDate || Boolean(startDate && dueDate && startDate > dueDate)}><Icon name="plus" size={18} />Thêm</button></div>
         </div>
       </form>
     </div>
