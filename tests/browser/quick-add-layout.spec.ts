@@ -56,6 +56,14 @@ for (const width of [320, 390, 1280]) {
         const classification = form.getByRole("button", { name: "Phân loại", exact: true });
         await classification.click();
         await expect(classification).toHaveAttribute("aria-expanded", "true");
+        await expect(classification).toHaveCSS("background-color", theme === "light" ? "rgb(17, 23, 66)" : "rgb(61, 75, 107)");
+        await expect(form.locator(".quick-classification")).toHaveCSS("animation-name", "classification-enter");
+        await form.locator(".quick-classification").evaluate(el => Promise.all(el.getAnimations().map(a => a.finished)));
+        await expect(form.locator(".quick-classification-heading")).not.toContainText("Phân loại");
+        const sheetTop = (await form.locator(".quick-classification").boundingBox())!.y;
+        const sheetClose = (await form.getByRole("button", { name: "Ẩn Phân loại", exact: true }).boundingBox())!;
+        expect(sheetClose.x + sheetClose.width / 2).toBeCloseTo(width / 2, 1);
+        expect(sheetClose.y + sheetClose.height / 2).toBeCloseTo(sheetTop, 1);
         const dates = await form.locator('.quick-add-controls input[type="date"]').all();
         expect((await dates[0].boundingBox())!.y).toBe((await dates[1].boundingBox())!.y);
         await dates[0].fill("2026-11-01");
@@ -109,6 +117,11 @@ for (const width of [320, 390, 1280]) {
       if (width < 700) {
         await expect(form.locator(".quick-add-entry")).toBeHidden();
         await expect(form.locator(".quick-add-controls")).toBeHidden();
+        const toolbar = form.locator(".content-toolbar");
+        await expect(toolbar).toHaveCSS("height", "46px");
+        const headingBottom = (await form.locator(".quick-content-heading").boundingBox())!.y + (await form.locator(".quick-content-heading").boundingBox())!.height;
+        expect((await toolbar.boundingBox())!.y - headingBottom).toBeLessThanOrEqual(5);
+        await expect(form.getByRole("button", { name: "Xong", exact: true }).locator("svg")).toBeVisible();
         expect((await editor.boundingBox())!.height).toBeGreaterThan(600);
         await page.evaluate(() => {
           Object.defineProperty(window.visualViewport!, "height", { configurable: true, value: 360 });
@@ -250,6 +263,11 @@ test("mobile quick-add blocks background gestures and restores the scrolled list
   const before = await background.boundingBox();
   const form = page.locator(".quick-add-dialog");
   const cdp = await page.context().newCDPSession(page);
+  const edgeSwipe = async () => {
+    await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: 2, y: 300 }] });
+    for (const x of [30, 75, 125]) await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x, y: 300 }] });
+    await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+  };
   const swipe = async () => {
     await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: 190, y: 240 }] });
     for (const y of [220, 195, 170, 145]) {
@@ -259,6 +277,8 @@ test("mobile quick-add blocks background gestures and restores the scrolled list
   };
   await swipe();
   expect(await background.boundingBox()).toEqual(before);
+  await edgeSwipe();
+  await expect(page.locator(".mobile-nav-backdrop")).toHaveCount(0);
   await form.getByRole("button", { name: "Thêm Nội dung", exact: true }).click();
   await page.evaluate(() => {
     Object.defineProperty(window.visualViewport!, "height", { configurable: true, value: 360 });
@@ -266,6 +286,8 @@ test("mobile quick-add blocks background gestures and restores the scrolled list
   });
   await swipe();
   expect(await background.boundingBox()).toEqual(before);
+  await edgeSwipe();
+  await expect(page.locator(".mobile-nav-backdrop")).toHaveCount(0);
   await expect(form.getByRole("button", { name: "Xong", exact: true })).toBeInViewport();
   await form.getByRole("button", { name: "Xong", exact: true }).click();
   await form.getByRole("button", { name: "Hủy", exact: true }).click();

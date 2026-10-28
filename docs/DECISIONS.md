@@ -517,3 +517,9 @@ Tên và hàng Ghi chú/Nội dung/Phân loại đứng yên ở đầu quick-ad
 ## D-196 — Nhãn Nội dung quick-add và header mobile (2026-10-28)
 
 Quick-add hiển thị nhãn “Nội dung” trên desktop và mobile, bỏ phần “(nếu cần)”; tính tùy chọn vẫn được thể hiện qua nút Thêm Nội dung. Trên mobile, dải màu dưới header cao 1px ở cả trạng thái thường và thu gọn. Header thu gọn dùng nền canvas đặc để nội dung phía sau không loang qua vùng tiêu đề. Thanh cuộn của quick-add giữ nguyên; desktop header không đổi.
+
+## D-197 — Quick-add và chi tiết mobile (2026-10-28)
+
+Quick-add mobile: chế độ sửa Nội dung dùng nút tick nhỏ thay Xong; toolbar cao 46px, cách hàng nhãn Nội dung 4px. Phân loại dùng màu selected khi mở, sheet trượt lên 240ms easeOutQuint, bỏ chữ Phân loại trong sheet; nút X nằm giữa và nhô một nửa qua viền trên. Khi quick-add mở, vuốt từ mép trái không mở sidebar. Desktop giữ nguyên.
+
+Chi tiết mobile: nút Đóng nằm giữa, cách hàng metadata 10px; desktop giữ X góc phải trên. Sửa tên có nút tick và X nhỏ ở bên phải, thay quy tắc tự lưu khi blur của D-189; Enter, tick và chuyển trường vẫn lưu tên hợp lệ, X hủy bản nháp. Input tên dùng 16px để tránh iOS tự phóng trang. Khi bàn phím mở lúc sửa tên, sheet giữ chiều cao layout và metadata ở dưới bàn phím; khi sửa Nội dung, chỉ editor theo visual viewport và bỏ padding đáy lúc bàn phím mở. Không thể điều khiển thanh công cụ bàn phím do iOS cung cấp.

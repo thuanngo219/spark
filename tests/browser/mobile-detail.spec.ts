@@ -27,17 +27,38 @@ for (const width of [320, 390]) {
         const marker = (await sheet.locator(".detail-title-marker").boundingBox())!;
         const closeBox = (await sheet.getByRole("button", { name: "Đóng", exact: true }).boundingBox())!;
         const editBox = (await sheet.getByRole("button", { name: "Sửa tên", exact: true }).boundingBox())!;
+        const metadataBox = (await sheet.locator(".detail-metadata").boundingBox())!;
         expect(titleBox.y).toBe(16);
         expect(marker.y).toBe(titleBox.y);
-        expect(editBox.x + editBox.width).toBeLessThanOrEqual(closeBox.x);
+        expect(editBox.x + editBox.width).toBeLessThanOrEqual(width);
+        expect(closeBox.x + closeBox.width / 2).toBeCloseTo(width / 2, 1);
+        expect(metadataBox.y - (closeBox.y + closeBox.height)).toBeCloseTo(10, 1);
         await page.screenshot({ path: `/tmp/spark-detail-top-${width}-${theme}-${type}.png` });
         await sheet.getByRole("button", { name: "Sửa tên", exact: true }).click();
         const titleInput = sheet.getByRole("textbox", { name: type === "task" ? "Tên task" : "Tên ghi chú", exact: true });
         await expect(titleInput).toHaveJSProperty("tagName", "TEXTAREA");
         await expect(titleInput).toHaveCSS("border-bottom-width", "0px");
+        await expect(sheet.locator(".detail-title-row .detail-edit-actions button")).toHaveCount(2);
         await titleInput.fill("Một tên dài để kiểm tra tự xuống dòng và hiển thị đầy đủ trên màn hình điện thoại");
         expect((await titleInput.boundingBox())!.height).toBeGreaterThan(48);
         await page.screenshot({ path: `/tmp/spark-title-wrap-${width}-${theme}-${type}.png` });
+        if (width === 390 && type === "task" && theme === "light") {
+          await page.evaluate(() => {
+            const viewport = window.visualViewport!;
+            Object.defineProperty(viewport, "height", { configurable: true, get: () => 420 });
+            Object.defineProperty(viewport, "offsetTop", { configurable: true, get: () => 20 });
+            viewport.dispatchEvent(new Event("resize"));
+          });
+          expect((await sheet.boundingBox())!.height).toBe(844);
+          expect((await sheet.boundingBox())!.y).toBe(20);
+          expect((await sheet.locator(".detail-metadata").boundingBox())!.y).toBeGreaterThan(440);
+          expect((await titleInput.boundingBox())!.y).toBeGreaterThanOrEqual(20);
+          await page.evaluate(() => {
+            Reflect.deleteProperty(window.visualViewport!, "height");
+            Reflect.deleteProperty(window.visualViewport!, "offsetTop");
+            window.visualViewport!.dispatchEvent(new Event("resize"));
+          });
+        }
         await titleInput.press("Escape");
         const read = sheet.locator(".detail-description .detail-read-row");
         expect((await read.boundingBox())!.height).toBeGreaterThan(844 * .4);
@@ -71,6 +92,7 @@ for (const width of [320, 390]) {
           const inputBox = (await editor.boundingBox())!;
           expect(inputBox.height).toBeGreaterThan(240);
           expect(inputBox.y + inputBox.height).toBeLessThanOrEqual(440);
+          expect(440 - (inputBox.y + inputBox.height)).toBeLessThanOrEqual(2);
           await expect(page.getByRole("button", { name: "Lưu Nội dung", exact: true })).toBeInViewport();
           await expect(page.getByRole("button", { name: "Hủy", exact: true })).toBeInViewport();
           await page.screenshot({ path: `/tmp/spark-focused-${theme}-${type}.png`, clip: { x: 0, y: 20, width, height: 420 } });

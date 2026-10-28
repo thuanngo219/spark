@@ -274,7 +274,7 @@ test("detail task checkbox saves drafts and completion without striking the titl
   await expect(page.locator(".detail-title-row .note-mark")).toBeVisible();
 });
 
-test("mobile title wraps without underline, saves on blur and leaves the next action clickable", async ({ page }) => {
+test("mobile title wraps without underline and has explicit save and cancel actions", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
   await page.getByRole("textbox", { name: "Tên mục" }).fill("Compact title");
@@ -288,25 +288,29 @@ test("mobile title wraps without underline, saves on blur and leaves the next ac
   const input = page.getByRole("textbox", { name: "Tên task", exact: true });
   expect((await row.boundingBox())!.height).toBe(readHeight);
   expect((await input.boundingBox())!.height).toBe(28);
-  expect((await input.boundingBox())!.width).toBeGreaterThan(250);
-  const closeBox = (await page.getByRole("button", { name: "Đóng", exact: true }).boundingBox())!;
-  expect((await input.boundingBox())!.x + (await input.boundingBox())!.width).toBeLessThanOrEqual(closeBox.x);
-  await expect(row.getByRole("button", { name: "Lưu", exact: true })).toBeHidden();
-  await expect(row.getByRole("button", { name: "Hủy", exact: true })).toBeHidden();
+  expect((await input.boundingBox())!.width).toBeGreaterThan(200);
+  await expect(row.getByRole("button", { name: "Lưu", exact: true })).toBeVisible();
+  await expect(row.getByRole("button", { name: "Hủy", exact: true })).toBeVisible();
   await expect(input).toHaveJSProperty("tagName", "TEXTAREA");
   await expect(input).toHaveCSS("border-bottom-width", "0px");
   await input.fill("Tên đủ dài để kiểm tra không gian nhập trên mobile");
   expect((await input.boundingBox())!.height).toBeGreaterThan(45);
   await page.locator(".detail-description .detail-label").click();
   await expect(input).not.toBeFocused();
+  await expect(row.getByRole("button", { name: "Lưu", exact: true })).toBeVisible();
+  await row.getByRole("button", { name: "Lưu", exact: true }).click();
   await page.getByRole("button", { name: "Đóng", exact: true }).click();
   await page.reload();
   await openTestItem(page, "Tên đủ dài để kiểm tra không gian nhập trên mobile");
   await page.getByRole("button", { name: "Sửa tên", exact: true }).click();
   await input.fill("");
-  await page.locator(".detail-description .detail-label").click();
+  await row.getByRole("button", { name: "Lưu", exact: true }).click();
   await expect(page.getByRole("status")).toHaveText("Tên không được để trống.");
   await expect(input).toBeVisible();
+  await input.fill("Bản nháp sẽ hủy");
+  await row.getByRole("button", { name: "Hủy", exact: true }).click();
+  await expect(row.locator("p")).toHaveText("Tên đủ dài để kiểm tra không gian nhập trên mobile");
+  await page.getByRole("button", { name: "Sửa tên", exact: true }).click();
   await input.fill("Tên lưu khi bấm checkbox");
   await row.getByRole("checkbox").click();
   await expect(row.getByRole("checkbox")).toBeChecked();

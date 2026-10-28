@@ -496,9 +496,13 @@ Sau khi lưu task/note thành công, quick-add đóng trên desktop và mobile, 
 
 Tên và hàng Ghi chú/Nội dung/Phân loại đứng yên ở đầu quick-add khi xem trước Nội dung dài. Chỉ vùng Nội dung cuộn; dòng cuối luôn kéo lên được phía trên Hủy/Thêm. Hàng Hủy/Thêm neo đáy trên nền canvas bán trong suốt, blur 12px và viền trên nhẹ. Khi mở Phân loại hoặc sửa Nội dung tập trung, giữ hành vi overlay và bàn phím hiện hành. Desktop không đổi.
 
+Khối Tên và ba nút phải là phần tử cùng cấp với vùng cuộn Nội dung trong quick-add mobile. Không đặt khối này dạng `sticky` bên trong vùng cuộn: văn bản có thể lọt qua khe giữa headline và label khi cuộn dài.
+
 
 ## D-196 — Nhãn Nội dung quick-add và header mobile (2026-10-28)
 
 Quick-add hiển thị nhãn “Nội dung” trên desktop và mobile, bỏ phần “(nếu cần)”; tính tùy chọn vẫn được thể hiện qua nút Thêm Nội dung. Trên mobile, dải màu dưới header cao 1px ở cả trạng thái thường và thu gọn. Header thu gọn dùng nền canvas đặc để nội dung phía sau không loang qua vùng tiêu đề. Thanh cuộn của quick-add giữ nguyên; desktop header không đổi.
 
-Khối Tên và ba nút phải là phần tử cùng cấp với vùng cuộn Nội dung trong quick-add mobile. Không đặt khối này dạng `sticky` bên trong vùng cuộn: văn bản có thể lọt qua khe giữa headline và label khi cuộn dài.
+## D-197 — Quick-add, title editor và bàn phím mobile (2026-10-28)
+
+Chặn nav edge gesture khi `quickAddOpen`. Sheet Phân loại dùng `classification-enter` (transform từ dưới lên, 240ms easeOutQuint), màu selected theo `aria-expanded`, nội dung field cuộn riêng để nút X nhô ngoài viền vẫn chạm được. Quick-add focus mode dùng tick nhỏ, toolbar 46px và gap 4px dưới nhãn. Chi tiết mobile chuyển editor-header ra sau detail-content để nút Đóng ở giữa, trước metadata 10px. Sửa tên dùng tick/X, không tự lưu onBlur; input 16px. `editing-title` giữ chiều cao layout viewport khi visual viewport co do bàn phím; `editing-content` vẫn theo visual viewport và bỏ padding đáy. Desktop giữ vị trí close góc trên phải.

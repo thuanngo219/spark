@@ -491,3 +491,7 @@ Tên và hàng Ghi chú/Nội dung/Phân loại đứng yên ở đầu quick-ad
 ## D-196 — Nhãn Nội dung quick-add và header mobile (2026-10-28)
 
 Quick-add hiển thị nhãn “Nội dung” trên desktop và mobile, bỏ phần “(nếu cần)”; tính tùy chọn vẫn được thể hiện qua nút Thêm Nội dung. Trên mobile, dải màu dưới header cao 1px ở cả trạng thái thường và thu gọn. Header thu gọn dùng nền canvas đặc để nội dung phía sau không loang qua vùng tiêu đề. Thanh cuộn của quick-add giữ nguyên; desktop header không đổi.
+
+## D-197 — Nghiệm thu quick-add và chi tiết mobile (2026-10-28)
+
+Quick-add: sửa Nội dung có tick nhỏ, toolbar 46px cách nhãn 4px; Phân loại đổi màu khi mở, sheet trượt từ đáy 240ms easeOutQuint, nút X giữa nhô nửa ra ngoài và không có chữ Phân loại trong sheet. Vuốt mép trái khi quick-add mở không mở sidebar. Chi tiết task/note: Đóng nằm giữa, cách metadata 10px; sửa tên nhiều dòng có tick/X bên phải và không tự lưu khi blur. Bàn phím mở lúc sửa tên không kéo metadata lên; sửa Nội dung dùng hết chiều cao visual viewport, không thêm khoảng đáy khi bàn phím mở. Desktop giữ nguyên.

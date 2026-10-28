@@ -1142,6 +1142,7 @@ export function SparkApp() {
   const startNavEdgeGesture = (event: ReactPointerEvent<HTMLElement>) => {
     if (
       mobileNav ||
+      quickAddOpen ||
       !event.isPrimary ||
       event.button !== 0 ||
       event.clientX > 24 ||
@@ -2360,7 +2361,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
         <div className="quick-add-body">
           {descriptionOpen && (
             <div className="quick-description-field">
-              <div className="quick-content-heading"><span>Nội dung</span><button type="button" className="primary-button quick-content-done" onClick={finishContent}>Xong</button></div>
+              <div className="quick-content-heading"><span>Nội dung</span><button type="button" className="detail-icon-action save quick-content-done" onClick={finishContent} aria-label="Xong" title="Xong"><Icon name="check" size={18} /></button></div>
               <button type="button" className="quick-description-preview" onClick={openContent} aria-label="Sửa Nội dung thêm nhanh"><span>{description || "Chưa có nội dung"}</span><Icon name="edit" size={17} /></button>
               <ContentEditor focusHandle={contentEditorRef} onCancel={contentFocused ? finishContent : undefined} value={description} format={descriptionFormat} label="Nội dung" onChange={(content) => { setDescription(content.description ?? ""); setDescriptionFormat(content.descriptionFormat); }} />
             </div>
@@ -2370,7 +2371,7 @@ function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedChange }: 
         </div>
         <div className={`quick-add-controls ${classificationOpen ? "classification-open" : ""}`}>
           <div id="quick-classification" className={`quick-classification ${classificationOpen ? "is-open" : ""}`}>
-            <div className="quick-classification-heading"><span>Phân loại</span><button type="button" className="icon-button" aria-label="Ẩn Phân loại" onClick={hideClassification}><Icon name="close" size={18} /></button></div>
+            <div className="quick-classification-heading"><button type="button" className="icon-button" aria-label="Ẩn Phân loại" onClick={hideClassification}><Icon name="close" size={18} /></button></div>
             <div className="quick-classification-fields">
               <label className="quick-add-field"><span>Ngày bắt đầu</span><span className="quick-add-control"><Icon name="play" size={16} /><input type="date" max={dueDate || undefined} value={startDate} onChange={(event) => setStartDateOverride(event.target.value)} /></span></label>
               <label className="quick-add-field"><span>Ngày đến hạn</span><span className="quick-add-control"><Icon name="flag" size={16} /><input type="date" min={startDate || undefined} value={dueDate} onChange={(event) => setDueDate(event.target.value)} /></span></label>
@@ -2399,12 +2400,11 @@ function DateStrip({ selected, today, onSelect }: { selected: string; today: str
   );
 }
 
-function DetailTitleField({ value, label, onChange, onSave, onBlur, onCancel }: {
+function DetailTitleField({ value, label, onChange, onSave, onCancel }: {
   value: string;
   label: string;
   onChange: (value: string) => void;
   onSave: () => void;
-  onBlur: () => void;
   onCancel: () => void;
 }) {
   // This field mounts only when the user opens inline editing.
@@ -2432,7 +2432,6 @@ function DetailTitleField({ value, label, onChange, onSave, onBlur, onCancel }: 
     maxLength: 100,
     value,
     "aria-label": label,
-    onBlur,
     onChange: (event: { target: { value: string } }) => onChange(event.target.value.replace(/[\r\n]+/g, " ")),
     onKeyDown: (event: { key: string; preventDefault: () => void }) => {
       if (event.key === "Enter") { event.preventDefault(); onSave(); }
@@ -2454,10 +2453,18 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
     if (!backdrop) return;
     const mobile = window.matchMedia("(max-width: 699px)");
     const viewport = window.visualViewport;
+    let layoutWidth = window.innerWidth;
+    let layoutHeight = window.innerHeight;
+    backdrop.style.setProperty("--detail-layout-height", `${layoutHeight}px`);
     const motion = installDetailMotion(backdrop, () => closeRef.current());
     detailMotionRef.current = motion;
     const unlockScroll = lockDetailScroll(backdrop);
     const fitViewport = () => {
+      if (window.innerWidth !== layoutWidth) {
+        layoutWidth = window.innerWidth;
+        layoutHeight = window.innerHeight;
+        backdrop.style.setProperty("--detail-layout-height", `${layoutHeight}px`);
+      }
       if (mobile.matches && viewport) {
         backdrop.style.setProperty("--detail-viewport-height", `${viewport.height}px`);
         backdrop.style.setProperty("--detail-viewport-top", `${viewport.offsetTop}px`);
@@ -2475,12 +2482,14 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
     };
     fitViewport();
     mobile.addEventListener("change", fitViewport);
+    window.addEventListener("resize", fitViewport);
     viewport?.addEventListener("resize", fitViewport);
     viewport?.addEventListener("scroll", fitViewport);
     return () => {
       motion.destroy();
       detailMotionRef.current = null;
       mobile.removeEventListener("change", fitViewport);
+      window.removeEventListener("resize", fitViewport);
       viewport?.removeEventListener("resize", fitViewport);
       viewport?.removeEventListener("scroll", fitViewport);
       const focused = document.activeElement;
@@ -2585,20 +2594,16 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
         if (dismiss && !window.matchMedia("(max-width: 699px)").matches) closeDetail();
       }}
     >
-      <section className={`editor-sheet item-detail-sheet ${editingField === "content" ? "editing-content" : ""}`} role="dialog" aria-modal="true" aria-label={editingField === "content" ? "Nội dung" : title} onClick={(event) => event.stopPropagation()}>
+      <section className={`editor-sheet item-detail-sheet ${editingField === "content" ? "editing-content" : editingField === "title" ? "editing-title" : ""}`} role="dialog" aria-modal="true" aria-label={editingField === "content" ? "Nội dung" : title} onClick={(event) => event.stopPropagation()}>
         <div className="detail-main">
           <div className="detail-main-inner">
-            <div className="editor-header"><button type="button" className="icon-button" onClick={closeDetail} aria-label="Đóng"><Icon name="close" /></button></div>
-
             <div className="detail-content">
               <section className={`detail-text-block ${editingField === "title" ? "editing" : ""}`}>
                 {editingField === "title" ? (
                   <>
                     <div className="detail-inline-editor detail-title-row">
                       {titleMarker}
-                      <DetailTitleField value={title} label={item.type === "task" ? "Tên task" : "Tên ghi chú"} onChange={setTitle} onSave={() => saveTitle()} onBlur={() => {
-                        if (window.matchMedia("(max-width: 699px)").matches) saveTitle(false);
-                      }} onCancel={() => { setTitle(item.title); setTitleError(false); setEditingField(null); }} />
+                      <DetailTitleField value={title} label={item.type === "task" ? "Tên task" : "Tên ghi chú"} onChange={setTitle} onSave={() => saveTitle()} onCancel={() => { setTitle(item.title); setTitleError(false); setEditingField(null); }} />
                       <div className="detail-edit-actions">
                         <button type="button" className="detail-icon-action save" onClick={() => saveTitle()} aria-label="Lưu"><Icon name="check" size={18} /></button>
                         <button type="button" className="detail-icon-action cancel" onClick={() => { setTitle(item.title); setTitleError(false); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
@@ -2640,8 +2645,8 @@ function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { 
             </div>
           </div>
         </div>
-
         {dateError && <p className="form-error detail-date-error" role="status">Ngày đến hạn không thể trước ngày bắt đầu. Thay đổi ngày chưa được lưu.</p>}
+        <div className="editor-header"><button type="button" className="icon-button" onClick={closeDetail} aria-label="Đóng"><Icon name="close" /></button></div>
         <div className="detail-metadata" aria-label="Thông tin mục" onFocusCapture={() => {
           // Save without moving the focused control between pointerdown and click.
           if (editingField === "title") saveTitle(false);

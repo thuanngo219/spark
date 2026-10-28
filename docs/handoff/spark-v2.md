@@ -1,5 +1,9 @@
 # Spark v2 — bàn giao hiện hành
 
+## D-197 — Quick-add và chi tiết mobile (2026-10-28)
+
+Quick-add sửa Nội dung dùng tick nhỏ, toolbar 46px sát nhãn; Phân loại đổi màu khi mở, sheet trượt lên 240ms easeOutQuint, bỏ chữ và đặt nút X giữa nhô nửa ra ngoài. Vuốt mép trái trong quick-add không mở sidebar. Chi tiết mobile đặt nút Đóng giữa và cách metadata 10px; sửa tên có tick/X bên phải thay tự lưu khi blur. Khi bàn phím mở, metadata sửa tên ở dưới bàn phím; editor Nội dung bám visual viewport và bỏ padding đáy. Desktop giữ nguyên. Lint, typecheck, 175 unit test, build production, 39/39 browser case trên dev và 6/6 case trên production local đạt; xem ảnh 390px sáng/tối. Cần kiểm tra trên iPhone thật sau phát hành.
+
 ## D-196 — Nhãn Nội dung quick-add và header mobile (2026-10-28)
 
 Quick-add hiển thị nhãn “Nội dung” trên desktop và mobile, bỏ “(nếu cần)”. Theo ảnh iPhone, dải màu dưới header mobile cao 1px ở cả trạng thái thường và thu gọn; header thu gọn dùng nền canvas đặc để không lộ nội dung phía sau. Thanh cuộn quick-add giữ nguyên, desktop header không đổi. ESLint, typecheck, 175 unit test, build production và 43 browser case đạt sau khi cập nhật các kỳ vọng cũ về quick-add, title và màu nền; đã xem ảnh chụp header “Hôm nay” 390px. Cần kiểm tra lại trên iPhone thật sau phát hành.
