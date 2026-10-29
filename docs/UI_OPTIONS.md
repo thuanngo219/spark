@@ -8,7 +8,7 @@ Ba phương án cùng dùng một information architecture và data model. Khác
 
 Áp dụng dưới 700px; các mục D-xxx phía dưới giữ vai trò lịch sử khi có thông số khác.
 
-- Label 10px thực; heading, tên/nội dung task/note và giá trị ô nhập giữ cỡ chữ hiện hành. Desktop không đổi.
+- Label 10px thực; riêng mục menu/sidebar giữ 0.8125rem (15.6px mobile) theo D-208; heading, tên/nội dung task/note và giá trị ô nhập giữ cỡ chữ hiện hành. Desktop không đổi.
 - Nhãn–nội dung 8px; khi sửa Nội Dung, mép dưới hàng nhãn cách toolbar 2px ở cả quick-add và chi tiết. Toolbar cao 44px.
 - Nút chữ/pill giảm bề mặt khoảng 4px, các pill quick-add, HỦY/THÊM và QUAY LẠI cao 40px; vùng chạm vẫn tối thiểu 44px. Sort giữ ngoại lệ 30px.
 - Chi tiết dùng “← QUAY LẠI”. Quick-add viết hoa các nhãn và HỦY/THÊM; nhãn note là GHI CHÚ. Hai nút X hủy sửa Nội Dung có nền xám nhẹ theo theme.

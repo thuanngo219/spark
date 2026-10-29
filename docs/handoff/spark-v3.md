@@ -29,7 +29,8 @@ Cập nhật: 2026-10-29. Đây là điểm bắt đầu cho phiên phát triể
 - Mobile quick-add giữ Tên và hàng GHI CHÚ/NỘI DUNG/PHÂN LOẠI đứng yên; chỉ phần xem trước Nội Dung dài cuộn. Phân Loại mở sheet từ dưới, chứa ngày bắt đầu, ngày đến hạn và dự án, phủ Hủy/Thêm. Sửa Nội Dung mở editor tập trung, khóa cuộn nền và xử lý bàn phím bằng `visualViewport`. Sau khi Thêm thành công, đóng quick-add và trở về view trước đó.
 - Chi tiết mobile cho vuốt từ mép trái để đóng. Nút Navy “← QUAY LẠI” nằm trên vùng Nội Dung, cách metadata 10px; Nội Dung vẫn cuộn bên dưới. Sửa Tên/Nội Dung có tick lưu và X hủy. Metadata neo dưới màn hình; khi sửa và bàn phím hiện, phần dưới có thể nằm sau bàn phím để dành diện tích nhập.
 - Header sticky thu gọn khi cuộn, giữ h1 và dải màu 4px ở cả desktop/mobile; mobile h1 thường 30px, thu gọn 21px. Letter spacing −0.025em. Header blur 8px; nền app phẳng. Nút/link giữ viền focus bàn phím 2px theo theme; mobile input/select/textarea không có outline ngoài, form đổi viền 1px đậm hơn khi focus và không đổi nền. Bề mặt sửa Tên/Nội Dung inline không có outline. Header dùng animation CSS hiện hành. Chưa có phép đo hiệu năng trên iPhone vật lý.
-- Mobile dưới 700px dùng label **10px** thực, không nhân root scale 120%: nhãn trường/nút, điều hướng, nhóm danh sách/sort, metadata danh sách, trạng thái và nhãn tiện ích. Heading, tên/nội dung task/note và giá trị ô nhập giữ cỡ chữ hiện hành; desktop giữ fallback cũ.
+- Mobile dưới 700px dùng label **10px** thực, không nhân root scale 120%: nhãn trường/nút, nhãn nhóm điều hướng, nhóm danh sách/sort, metadata danh sách, trạng thái và nhãn tiện ích. Heading, tên/nội dung task/note và giá trị ô nhập giữ cỡ chữ hiện hành; desktop giữ fallback cũ.
+- Chữ mục menu/sidebar (`.nav-text`) giữ cỡ cũ 0.8125rem: **15.6px mobile**, 14.625px desktop (D-208). Nhãn nhóm và số đếm vẫn 10px; dock không đổi.
 - Khoảng cách nhãn–nội dung **8px**. Khi sửa Nội Dung, khoảng cách từ **mép dưới hàng nhãn** đến thanh formatting là **2px** trong cả quick-add và chi tiết; toolbar vẫn cao 44px. Không đo từ đáy nét chữ của label.
 - Nút chữ/pill giảm phần hiển thị khoảng 4px: các pill quick-add, HỦY/THÊM, QUAY LẠI và trạng thái đồng bộ cao 40px; vùng chạm vẫn tối thiểu 44px qua pseudo-element. Giữ dock, nút icon và ngoại lệ sort 30px. Nút X hủy sửa Nội Dung ở hai editor dùng nền xám nhẹ theo theme.
 - Mobile quick-add viết hoa TÊN CÔNG VIỆC/TÊN GHI CHÚ, GHI CHÚ, NỘI DUNG, PHÂN LOẠI, NGÀY BẮT ĐẦU, NGÀY ĐẾN HẠN, HỦY và THÊM. GHI CHÚ là nhãn chính xác.
@@ -73,3 +74,7 @@ Cập nhật: 2026-10-29. Đây là điểm bắt đầu cho phiên phát triể
 - `docs/UI_OPTIONS.md`: hướng Compact Canvas và lịch sử tinh chỉnh UI.
 - `docs/DECISIONS.md`: quyết định có thứ tự; mục sau thay phần tương ứng của mục trước.
 - `docs/IMPLEMENTATION_GUIDE.md` và `docs/OFFLINE_SYNC.md`: kiến trúc, dữ liệu, offline, kiểm tra và deploy.
+
+## D-208 — chuẩn bị phát hành
+
+Khôi phục cỡ chữ mục menu/sidebar, tách `.nav-text` khỏi token label. Giữ mọi thay đổi D-203–D-207 khác.

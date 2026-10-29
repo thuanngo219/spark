@@ -8,7 +8,7 @@ Token trong media query `max-width: 699px` của `src/app/styles/responsive.css`
 
 | Token | Giá trị | Phạm vi |
 |---|---|---|
-| `--ui-label-size` | `10px` | Nhãn UI, fallback desktop tại selector gốc |
+| `--ui-label-size` | `10px` | Nhãn UI, fallback desktop tại selector gốc; `.nav-text` dùng riêng 0.8125rem theo D-208 |
 | `--label-button-trim` | `4px` | Giảm chiều cao bề mặt nút chữ |
 | `--label-content-gap`, `--label-section-gap`, `--label-hint-gap` | `8px` | Nhãn và nội dung tiếp theo |
 | `--editor-toolbar-gap` | `2px` | Mép dưới hàng nhãn tới toolbar ở hai editor mobile |

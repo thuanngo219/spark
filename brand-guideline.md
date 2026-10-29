@@ -254,7 +254,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 
 ### Quy tắc mobile hiện hành
 
-Dưới 700px: nhãn 10px thực, khoảng cách nhãn–nội dung 8px; hàng nhãn–toolbar khi sửa Nội Dung 2px ở cả quick-add và chi tiết. Nút chữ/pill giảm bề mặt khoảng 4px nhưng giữ vùng chạm tối thiểu 44px; sort vẫn 30px. Nút quay lại ghi “← QUAY LẠI”; quick-add dùng nhãn GHI CHÚ và viết hoa các nhãn/hành động. Hai nút X hủy sửa Nội Dung có nền `--control-hover`. D-203–D-207 thay các thông số tương ứng trong phần lịch sử.
+Dưới 700px: nhãn 10px thực; riêng chữ mục menu/sidebar dùng 0.8125rem (15.6px), khoảng cách nhãn–nội dung 8px; hàng nhãn–toolbar khi sửa Nội Dung 2px ở cả quick-add và chi tiết. Nút chữ/pill giảm bề mặt khoảng 4px nhưng giữ vùng chạm tối thiểu 44px; sort vẫn 30px. Nút quay lại ghi “← QUAY LẠI”; quick-add dùng nhãn GHI CHÚ và viết hoa các nhãn/hành động. Hai nút X hủy sửa Nội Dung có nền `--control-hover`. D-203–D-207 thay các thông số tương ứng trong phần lịch sử.
 
 ### Web app type scale
 
@@ -577,3 +577,8 @@ Mobile: thống nhất khoảng cách nhãn đến nội dung tiếp theo là 8p
 ## D-207 — Thanh formatting cách hàng nhãn 2px (2026-10-29)
 
 Mobile: đổi `--editor-toolbar-gap` từ 10px thành 2px cho cả editor Nội Dung trong quick-add và chi tiết. Thay phần khoảng cách toolbar của D-206; khoảng cách nhãn–nội dung thông thường vẫn 8px, desktop giữ nguyên.
+
+
+## D-208 — Khôi phục cỡ chữ mục menu (2026-10-29)
+
+Chữ các mục menu/sidebar (`.nav-text`), gồm điều hướng, smart filter, tên dự án, Đã lưu trữ và Phím tắt, dùng lại `0.8125rem`: 15.6px trên mobile với root 120%, 14.625px trên desktop với root 112.5%. Tách khỏi token label 10px của D-204. Nhãn nhóm, số đếm, dock và các label khác giữ hiện hành; không đổi vùng chạm hoặc hành vi.

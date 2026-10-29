@@ -6,7 +6,7 @@ Chủ dự án xác nhận giao diện production “Ổn rồi” ngày 2026-10
 
 Áp dụng dưới 700px; các mục D-xxx phía dưới giữ vai trò lịch sử khi có thông số khác.
 
-- Label 10px thực; heading, tên/nội dung task/note và giá trị ô nhập giữ cỡ chữ hiện hành. Desktop không đổi.
+- Label 10px thực; mục menu/sidebar giữ 0.8125rem (15.6px mobile) theo D-208; heading, tên/nội dung task/note và giá trị ô nhập giữ cỡ chữ hiện hành. Desktop không đổi.
 - Nhãn–nội dung 8px; khi sửa Nội Dung, mép dưới hàng nhãn cách toolbar 2px ở cả quick-add và chi tiết. Toolbar cao 44px.
 - Nút chữ/pill giảm bề mặt khoảng 4px, các pill quick-add, HỦY/THÊM và QUAY LẠI cao 40px; vùng chạm vẫn tối thiểu 44px. Sort giữ ngoại lệ 30px.
 - Chi tiết dùng “← QUAY LẠI”. Quick-add viết hoa các nhãn và HỦY/THÊM; nhãn note là GHI CHÚ. Hai nút X hủy sửa Nội Dung có nền xám nhẹ theo theme.
@@ -540,3 +540,8 @@ Mobile: thống nhất khoảng cách nhãn đến nội dung tiếp theo là 8p
 ## D-207 — Thanh formatting cách hàng nhãn 2px (2026-10-29)
 
 Mobile: đổi `--editor-toolbar-gap` từ 10px thành 2px cho cả editor Nội Dung trong quick-add và chi tiết. Thay phần khoảng cách toolbar của D-206; khoảng cách nhãn–nội dung thông thường vẫn 8px, desktop giữ nguyên.
+
+
+## D-208 — Khôi phục cỡ chữ mục menu (2026-10-29)
+
+Chữ các mục menu/sidebar (`.nav-text`), gồm điều hướng, smart filter, tên dự án, Đã lưu trữ và Phím tắt, dùng lại `0.8125rem`: 15.6px trên mobile với root 120%, 14.625px trên desktop với root 112.5%. Tách khỏi token label 10px của D-204. Nhãn nhóm, số đếm, dock và các label khác giữ hiện hành; không đổi vùng chạm hoặc hành vi.

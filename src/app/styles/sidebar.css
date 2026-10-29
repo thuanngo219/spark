@@ -16,7 +16,7 @@
 .nav-item.important.active { color: var(--important-ink); background: rgba(214,168,79,.14); }
 .nav-item.urgent.active { color: var(--urgent-ink); background: rgba(217,119,106,.14); }
 .nav-item svg { flex: 0 0 auto; width: 18px; height: 18px; stroke-width: 1.7; }
-.nav-text { font-size: var(--ui-label-size, 0.8125rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav-text { font-size: 0.8125rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .nav-count { margin-left: auto; color: rgba(255,255,255,.42); font-size: var(--ui-label-size, 0.625rem); font-weight: 600; min-width: 21px; height: 19px; border-radius: 10px; display: grid; place-items: center; background: rgba(255,255,255,.06); }
 .nav-heading { display: flex; align-items: center; justify-content: space-between; min-height: 25px; }
 .section-toggle { min-height: 25px; padding: 0 8px; border: 0; background: transparent; color: rgba(255,255,255,.43); display: flex; align-items: center; gap: 6px; border-radius: 999px; }

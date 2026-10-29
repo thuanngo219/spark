@@ -572,3 +572,8 @@ Mobile: thống nhất khoảng cách nhãn đến nội dung tiếp theo là 8p
 ## D-207 — Thanh formatting cách hàng nhãn 2px (2026-10-29)
 
 Mobile: đổi `--editor-toolbar-gap` từ 10px thành 2px cho cả editor Nội Dung trong quick-add và chi tiết. Thay phần khoảng cách toolbar của D-206; khoảng cách nhãn–nội dung thông thường vẫn 8px, desktop giữ nguyên.
+
+
+## D-208 — Khôi phục cỡ chữ mục menu (2026-10-29)
+
+Chữ các mục menu/sidebar (`.nav-text`), gồm điều hướng, smart filter, tên dự án, Đã lưu trữ và Phím tắt, dùng lại `0.8125rem`: 15.6px trên mobile với root 120%, 14.625px trên desktop với root 112.5%. Tách khỏi token label 10px của D-204. Nhãn nhóm, số đếm, dock và các label khác giữ hiện hành; không đổi vùng chạm hoặc hành vi.
