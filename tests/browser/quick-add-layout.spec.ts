@@ -132,7 +132,7 @@ for (const width of [320, 390, 1280]) {
         const toolbar = form.locator(".content-toolbar");
         await expect(toolbar).toHaveCSS("height", "44px");
         const headingBottom = (await form.locator(".quick-content-heading").boundingBox())!.y + (await form.locator(".quick-content-heading").boundingBox())!.height;
-        expect((await toolbar.boundingBox())!.y - headingBottom).toBe(10);
+        expect((await toolbar.boundingBox())!.y - headingBottom).toBe(2);
         await expect(form.getByRole("button", { name: "Lưu Nội dung", exact: true }).locator("svg")).toBeVisible();
         await expect(form.getByRole("button", { name: "Hủy Nội dung", exact: true }).locator("svg")).toBeVisible();
         expect((await editor.boundingBox())!.height).toBeGreaterThan(600);

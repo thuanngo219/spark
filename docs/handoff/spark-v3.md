@@ -91,3 +91,7 @@ Chủ dự án yêu cầu deploy D-205 để kiểm tra trên điện thoại. C
 Khoảng cách nhãn–nội dung mobile 8px; thanh formatting cách hàng nhãn 10px trong cả hai editor.
 
 D-206: lint, typecheck, 176 unit test và build đạt. Kiểm thử mobile xác minh khoảng cách toolbar 10px ở cả hai editor.
+
+## D-207 — chuẩn bị phát hành
+
+Editor Nội Dung mobile trong quick-add và chi tiết dùng khoảng cách hàng nhãn–toolbar 2px. Khoảng cách nhãn–nội dung thông thường giữ 8px.

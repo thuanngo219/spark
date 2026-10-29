@@ -568,3 +568,8 @@ Mobile: giảm bề mặt nút chữ/pill khoảng 4px, gồm quick-add, Quay L�
 ## D-206 — Khoảng cách nhãn mobile 8px (2026-10-29)
 
 Mobile: thống nhất khoảng cách nhãn đến nội dung tiếp theo là 8px, gồm form, nội dung đọc, nhóm phím tắt và gợi ý tùy chọn. Riêng khi sửa Nội Dung trong quick-add hoặc chi tiết, khoảng cách từ hàng nhãn đến thanh formatting là 10px bằng token `--editor-toolbar-gap`, theo phạm vi 8–12px được yêu cầu. Thay giá trị khoảng cách D-205; giữ desktop, cỡ chữ, nút và focus hiện hành.
+
+
+## D-207 — Thanh formatting cách hàng nhãn 2px (2026-10-29)
+
+Mobile: đổi `--editor-toolbar-gap` từ 10px thành 2px cho cả editor Nội Dung trong quick-add và chi tiết. Thay phần khoảng cách toolbar của D-206; khoảng cách nhãn–nội dung thông thường vẫn 8px, desktop giữ nguyên.

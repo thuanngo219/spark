@@ -94,7 +94,7 @@ for (const width of [320, 390]) {
         await expect(page.getByRole("button", { name: "Hủy", exact: true })).toBeInViewport();
         await expect(sheet.locator(".content-toolbar")).toHaveCSS("height", "44px");
         const headingBottom = (await heading.boundingBox())!.y + (await heading.boundingBox())!.height;
-        expect((await sheet.locator(".content-toolbar").boundingBox())!.y - headingBottom).toBe(10);
+        expect((await sheet.locator(".content-toolbar").boundingBox())!.y - headingBottom).toBe(2);
         expect((await editor.boundingBox())!.height).toBeGreaterThan(844 * .4);
         const draftBeforeViewportChange = await editor.innerText();
         if (width === 390) {
