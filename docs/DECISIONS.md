@@ -560,3 +560,8 @@ Dưới 700px, nhãn trường, nút chữ, điều hướng/sidebar/dock, tên 
 ## D-205 — Nút chữ gọn và focus form mobile (2026-10-29)
 
 Mobile: giảm bề mặt nút chữ/pill khoảng 4px, gồm quick-add, Quay Lại, trạng thái đồng bộ và các nút hành động form; vùng chạm mở rộng bằng pseudo-element để giữ tối thiểu 44px. Giữ dock, nút icon và sort 30px hiện hành. Khoảng cách nhãn–nội dung 7→10px, heading nhóm 8→12px; editor Nội Dung tập trung 6→10px. Bỏ outline ngoài của input/select/textarea trên mobile; form dùng viền 1px đổi sang màu đậm hơn theo theme khi focus, không đổi nền. Sửa Tên/Nội Dung dạng inline giữ nền trong suốt, không outline. Giữ focus bàn phím của nút/link, desktop và dữ liệu.
+
+
+## D-206 — Khoảng cách nhãn mobile 8px (2026-10-29)
+
+Mobile: thống nhất khoảng cách nhãn đến nội dung tiếp theo là 8px, gồm form, nội dung đọc, nhóm phím tắt và gợi ý tùy chọn. Riêng khi sửa Nội Dung trong quick-add hoặc chi tiết, khoảng cách từ hàng nhãn đến thanh formatting là 10px bằng token `--editor-toolbar-gap`, theo phạm vi 8–12px được yêu cầu. Thay giá trị khoảng cách D-205; giữ desktop, cỡ chữ, nút và focus hiện hành.

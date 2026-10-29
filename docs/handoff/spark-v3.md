@@ -85,3 +85,9 @@ Nút chữ mobile giảm bề mặt 4px, giữ vùng chạm 44px; tăng khoảng
 D-205: lint, typecheck, 176 unit test, build và 7 browser case mobile 390px đều đạt. Kiểm tra bổ sung 390/1280px light/dark: nút quick-add cao 40px, vùng chạm 44px nhận click ngoài bề mặt; checkbox vẫn nhận click trực tiếp; focus input không outline ngoài, viền đậm hơn và nền không đổi. Chưa kiểm tra iPhone vật lý hoặc deploy D-205.
 
 Chủ dự án yêu cầu deploy D-205 để kiểm tra trên điện thoại. Cần xác minh deployment READY, commit, alias và smoke test production sau push.
+
+## D-206 — kiểm tra trước phát hành
+
+Khoảng cách nhãn–nội dung mobile 8px; thanh formatting cách hàng nhãn 10px trong cả hai editor.
+
+D-206: lint, typecheck, 176 unit test và build đạt. Kiểm thử mobile xác minh khoảng cách toolbar 10px ở cả hai editor.
