@@ -93,6 +93,7 @@
   .quick-mobile-header { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; padding: calc(12px + env(safe-area-inset-top)) 17px 12px; }
   .quick-mobile-header h2 { margin: 0; color: var(--heading); font-size: 21px; }
   .quick-add-body { display: block; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 17px calc(72px + var(--quick-bottom, calc(16px + env(safe-area-inset-bottom)))); }
+  .quick-title-field > span, .quick-add-entry-actions > *, .quick-content-heading > span, .quick-add-field > span:first-child, .quick-add-actions button { text-transform: uppercase; }
   .quick-title-field input { font-size: 16px; }
   .quick-add-project { grid-column: 1 / -1; }
   .quick-add-project > span:first-child { display: none; }
@@ -181,6 +182,8 @@
   .item-detail-sheet .editor-header { position: absolute; z-index: 2; right: 0; bottom: calc(var(--detail-metadata-height, 0px) + 10px); left: 0; min-height: 44px; height: 44px; margin: 0; padding: 0; justify-content: center; background: transparent; pointer-events: none; }
   .item-detail-sheet .editor-header > .icon-button { position: static; pointer-events: auto; }
   .item-detail-sheet .detail-close-button { height: 44px; }
+  .detail-close-desktop { display: none; }
+  .detail-close-mobile { display: contents; }
   .item-detail-sheet .detail-description .detail-read-row { padding-bottom: 64px; }
   .item-detail-sheet .detail-title-row { align-items: flex-start; padding-right: 0; }
   .detail-content { padding: calc(16px + env(safe-area-inset-top)) 17px 0; }
@@ -190,6 +193,7 @@
   .detail-icon-action { width: 44px; height: 44px; min-height: 44px; margin-block: -5px; }
   .detail-field-heading { margin-bottom: 8px; }
   .detail-field-heading > .detail-icon-action, .detail-title-row > .detail-icon-action { width: 44px; height: 44px; min-height: 44px; margin-block: -8px; }
+  .detail-description .detail-icon-action.cancel, .quick-content-cancel { background: var(--control-hover); }
   .detail-edit-actions { gap: 8px; }
   .detail-edit-actions .detail-icon-action { position: relative; width: 36px; height: 36px; min-height: 36px; margin: 0; }
   .detail-edit-actions .detail-icon-action::after { content: ""; position: absolute; inset: -4px; }

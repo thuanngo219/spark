@@ -545,3 +545,8 @@ Control và liên kết có viền focus 2px theo token `--focus` khi điều h�
 ## D-202 — Tách cấu trúc mã nguồn và CSS (2026-10-28)
 
 Giữ một `SparkApp.tsx` điều phối view và thao tác; chuyển vòng đời dữ liệu/đồng bộ sang `useSparkData.ts`, các phần giao diện sang module trong `src/components/spark/`. Tách CSS theo foundation, sidebar, canvas, danh sách, quick-add, chi tiết, tiện ích, trạng thái chung và responsive; `globals.css` giữ thứ tự import để không đổi cascade. Bỏ token CSS không còn được dùng. Khi thêm/sửa dữ liệu local, ghi bản snapshot chờ vào localStorage ngay trước giao dịch IndexedDB để reload nhanh vẫn khôi phục được dữ liệu mới; xóa bản chờ sau khi IndexedDB hoàn tất. Chi tiết toàn màn hình tiếp tục khóa cuộn danh sách ở cả desktop và mobile. Không thay đổi data model hoặc UI; `masan-cos-showcase/` tiếp tục nằm ngoài phạm vi Spark và được giữ nguyên.
+
+
+## D-203 — Nhãn và nút điều hướng mobile (2026-10-29)
+
+Chỉ mobile dưới 700px: nút Đóng trong chi tiết đổi thành mũi tên trái và “QUAY LẠI”. Nút X hủy sửa Nội Dung trong chi tiết và quick-add có nền xám nhẹ theo token `--control-hover` của theme. Quick-add viết hoa nhãn TÊN CÔNG VIỆC/TÊN GHI CHÚ, GHI CHÚ, NỘI DUNG, PHÂN LOẠI, NGÀY BẮT ĐẦU, NGÀY ĐẾN HẠN và HỦY/THÊM; nhãn NỘI DUNG trong editor tập trung cũng viết hoa. Giữ hành vi, dữ liệu, vùng chạm và giao diện desktop.

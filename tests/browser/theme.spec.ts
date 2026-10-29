@@ -135,7 +135,7 @@ for (const width of [1280, 390]) {
     if (width < 700) await page.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
     await page.getByRole("dialog").getByRole("button", { name: "Quan Trọng", exact: true }).click();
     await expect(page.getByRole("dialog").getByRole("button", { name: "Quan Trọng", exact: true })).toHaveClass(/selected/);
-    await page.getByRole("button", { name: "Đóng", exact: true }).click();
+    await page.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
     await page.reload();
     await page.locator(".item-main").filter({ hasText: "Kiểm tra giao diện tối" }).click();
     await expect(page.locator(".formatted-content")).toHaveText("Nội dung đã sửa trong giao diện tối.");

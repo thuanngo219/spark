@@ -61,3 +61,9 @@ Cập nhật: 2026-10-28. Đây là điểm bắt đầu cho phiên phát triể
 - `docs/UI_OPTIONS.md`: hướng Compact Canvas và lịch sử tinh chỉnh UI.
 - `docs/DECISIONS.md`: quyết định có thứ tự; mục sau thay phần tương ứng của mục trước.
 - `docs/IMPLEMENTATION_GUIDE.md` và `docs/OFFLINE_SYNC.md`: kiến trúc, dữ liệu, offline, kiểm tra và deploy.
+
+## Cập nhật D-203 — chuẩn bị phát hành
+
+- D-203 (2026-10-29): mobile đổi nút Đóng thành ← QUAY LẠI; nền xám nhẹ cho X hủy sửa Nội Dung; viết hoa các nhãn/nút quick-add bao gồm GHI CHÚ. Desktop và hành vi giữ nguyên.
+- Kiểm tra local D-203: lint, typecheck, 176 unit test, production build đạt; 10 browser case chi tiết/khóa cuộn đạt. Kiểm tra trực quan mobile 390px và desktop 1280px ở cả hai theme; chưa phát hành hoặc kiểm tra iPhone vật lý.
+- Bản chuẩn bị phát hành đã sửa nhãn thành GHI CHÚ theo xác nhận của chủ dự án; lint, typecheck, 176 unit test và build chạy lại đều đạt.

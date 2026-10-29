@@ -64,7 +64,7 @@ for (const theme of ["light", "dark"] as const) {
       visualViewport!.dispatchEvent(new Event("resize"));
     });
     await page.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
-    await page.getByRole("button", { name: "Đóng", exact: true }).click();
+    await page.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
     await expect(sheet).toBeHidden();
     await expect.poll(() => page.evaluate(() => scrollY)).toBe(originalY);
     await expect(page.locator("body")).not.toHaveCSS("position", "fixed");
@@ -80,7 +80,7 @@ for (const theme of ["light", "dark"] as const) {
     await expect(page.locator(".content")).toHaveAttribute("inert", "");
     await page.setViewportSize({ width: 390, height: 844 });
     await expect(page.locator("body")).toHaveCSS("position", "fixed");
-    await page.getByRole("button", { name: "Đóng", exact: true }).click();
+    await page.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
     await expect(page.locator("body")).not.toHaveCSS("position", "fixed");
     await expect(page.locator(".mobile-dock")).not.toHaveAttribute("inert");
     await cdp.detach();

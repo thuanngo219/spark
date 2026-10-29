@@ -87,13 +87,13 @@ test("quick-add defaults follow view and type, preserve explicit choices", async
   const dates = page.locator(".quick-add input[type=date]");
   const today = await dates.first().inputValue();
   expect(today).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-  await page.getByRole("checkbox", { name: "Ghi chú" }).check();
+  await page.getByRole("checkbox", { name: /^(Ghi chú|GHI CHÚ)$/ }).check();
   await expect(dates.first()).toHaveValue("");
-  await page.getByRole("checkbox", { name: "Ghi chú" }).uncheck();
+  await page.getByRole("checkbox", { name: /^(Ghi chú|GHI CHÚ)$/ }).uncheck();
   await expect(dates.first()).toHaveValue(today);
   await dates.first().fill("");
-  await page.getByRole("checkbox", { name: "Ghi chú" }).check();
-  await page.getByRole("checkbox", { name: "Ghi chú" }).uncheck();
+  await page.getByRole("checkbox", { name: /^(Ghi chú|GHI CHÚ)$/ }).check();
+  await page.getByRole("checkbox", { name: /^(Ghi chú|GHI CHÚ)$/ }).uncheck();
   await expect(dates.first()).toHaveValue("");
   await page.getByRole("button", { name: "Hủy", exact: true }).click();
   await page.keyboard.press("a");
@@ -150,14 +150,14 @@ test("field switching saves drafts, dates reject invalid ranges, editor fills av
   const originalDue = await dates.nth(1).inputValue();
   await dates.first().fill("2099-10-20");
   await expect(page.getByRole("status")).toContainText("chưa được lưu");
-  await page.getByRole("button", { name: "Đóng", exact: true }).click();
+  await page.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
   await page.reload(); await openTestItem(page, "Saved switched title");
   await expect(page.locator(".detail-description .formatted-content")).toContainText("đã sửa");
   await expect(dates.first()).toHaveValue(originalStart);
   await expect(dates.nth(1)).toHaveValue(originalDue);
   await dates.first().fill("2099-10-20"); await dates.nth(1).fill("2099-10-21");
   await expect(page.getByRole("status")).toHaveCount(0);
-  await page.getByRole("button", { name: "Đóng", exact: true }).click();
+  await page.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
   await page.reload();
   await page.getByRole("button", { name: "Tất cả", exact: true }).click();
   await openTestItem(page, "Saved switched title");
@@ -249,7 +249,7 @@ test("detail task checkbox saves drafts and completion without striking the titl
   await expect(checkbox).toBeChecked();
   await expect(page.locator(".detail-title-row > p")).toHaveText("Detail status saved");
   expect(await page.locator(".detail-title-row > p").evaluate(e => getComputedStyle(e).textDecorationLine)).toBe("none");
-  await page.getByRole("button", { name: "Đóng", exact: true }).click();
+  await page.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
   await page.reload();
   await page.getByRole("button", { name: /^Đã hoàn thành/ }).click();
   const completed = page.locator(".item-row").filter({ hasText: "Detail status saved" });
@@ -257,14 +257,14 @@ test("detail task checkbox saves drafts and completion without striking the titl
   await expect(checkbox).toBeChecked();
   await checkbox.click();
   await expect(checkbox).not.toBeChecked();
-  await page.getByRole("button", { name: "Đóng", exact: true }).click();
+  await page.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
   await page.reload();
   await openTestItem(page, "Detail status saved");
   await expect(checkbox).not.toBeChecked();
-  await page.getByRole("button", { name: "Đóng", exact: true }).click();
+  await page.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
   await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
   await page.getByRole("textbox", { name: "Tên mục" }).fill("Detail note marker");
-  await page.getByRole("checkbox", { name: "Ghi chú" }).check();
+  await page.getByRole("checkbox", { name: /^(Ghi chú|GHI CHÚ)$/ }).check();
   await page.getByRole("button", { name: "Thêm", exact: true }).click();
   await expect(page.locator(".quick-add-dialog")).toBeHidden();
   await page.getByRole("button", { name: "Tất cả", exact: true }).click();
@@ -299,7 +299,7 @@ test("mobile title wraps without underline and has explicit save and cancel acti
   await expect(input).not.toBeFocused();
   await expect(row.getByRole("button", { name: "Lưu", exact: true })).toBeVisible();
   await row.getByRole("button", { name: "Lưu", exact: true }).click();
-  await page.getByRole("button", { name: "Đóng", exact: true }).click();
+  await page.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
   await page.reload();
   await openTestItem(page, "Tên đủ dài để kiểm tra không gian nhập trên mobile");
   await page.getByRole("button", { name: "Sửa tên", exact: true }).click();
@@ -328,7 +328,7 @@ for (const width of [1280, 390]) {
     const title = `Metadata click ${width}`;
     await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
     await page.getByRole("textbox", { name: "Tên mục" }).fill(title);
-    await page.getByRole("checkbox", { name: "Ghi chú" }).check();
+    await page.getByRole("checkbox", { name: /^(Ghi chú|GHI CHÚ)$/ }).check();
     await page.getByRole("button", { name: "Thêm Nội Dung", exact: true }).click();
     await page.getByRole("textbox", { name: "Nội dung", exact: true }).fill("Nội dung ngắn");
     if (width < 700) await page.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
@@ -354,7 +354,7 @@ for (const width of [1280, 390]) {
       }
     };
     const reopen = async (text: string) => {
-      await sheet.getByRole("button", { name: "Đóng", exact: true }).click();
+      await sheet.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
       await page.reload();
       await openTestItem(page, title);
       await expect(sheet.locator(".formatted-content strong")).toHaveText(text);
@@ -493,14 +493,14 @@ for (const width of [1280]) {
       // Fullscreen has no dismissible outer backdrop; only Close exits.
       await page.mouse.click(outside.x, outside.y);
       await expect(sheet).toBeVisible();
-      await sheet.getByRole("button", { name: "Đóng", exact: true }).click();
+      await sheet.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
       await expect(sheet).toBeHidden();
       await page.reload();
       await page.getByRole("region", { name: "Khởi động Spark" }).waitFor({ state: "hidden" });
       await page.keyboard.press("a");
       await openTestItem(page, title);
       await expect(page.locator(".detail-description .formatted-content")).toHaveText(draft);
-      await page.getByRole("button", { name: "Đóng", exact: true }).click();
+      await page.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
       await expect(sheet).toBeHidden();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     });

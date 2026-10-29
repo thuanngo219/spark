@@ -59,7 +59,7 @@ for (const width of [320, 390, 1280]) {
         await expect(form.getByRole("button", { name: "Thêm", exact: true })).toHaveCSS("background-color", "rgb(25, 34, 95)");
       }
       if (theme === "dark") {
-        await form.getByRole("checkbox", { name: "Ghi chú", exact: true }).check();
+        await form.getByRole("checkbox", { name: width < 700 ? "GHI CHÚ" : "Ghi chú", exact: true }).check();
         await expect(form.locator(".quick-title-field > span")).toHaveText("Tên Ghi Chú");
       }
       if (width < 700) {

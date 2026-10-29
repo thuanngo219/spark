@@ -505,3 +505,8 @@ Dải màu header 3px trên desktop/mobile. Thu gọn header không làm nhảy 
 ## D-199 — Nhãn và lớp phủ nút Đóng (2026-10-28)
 
 Quick-add mobile sau khi lưu hoặc hủy sửa Nội Dung không còn tick/X trên hàng nhãn. Chi tiết mobile đặt nút Đóng phủ trên vùng Nội Dung, không tạo dải nền hoặc chiếm chiều cao riêng; nội dung cuộn được phía dưới, dòng cuối vẫn kéo lên đọc được. Khoảng cách đến metadata giữ 10px. Các nhãn Tên Công Việc, Tên Ghi Chú, Nội Dung, Ngày Bắt Đầu, Ngày Đến Hạn và Phân Loại viết hoa từng từ. Các câu thông báo không đổi kiểu viết.
+
+
+## D-203 — Nhãn và nút điều hướng mobile (2026-10-29)
+
+Chỉ mobile dưới 700px: nút Đóng trong chi tiết đổi thành mũi tên trái và “QUAY LẠI”. Nút X hủy sửa Nội Dung trong chi tiết và quick-add có nền xám nhẹ theo token `--control-hover` của theme. Quick-add viết hoa nhãn TÊN CÔNG VIỆC/TÊN GHI CHÚ, GHI CHÚ, NỘI DUNG, PHÂN LOẠI, NGÀY BẮT ĐẦU, NGÀY ĐẾN HẠN và HỦY/THÊM; nhãn NỘI DUNG trong editor tập trung cũng viết hoa. Giữ hành vi, dữ liệu, vùng chạm và giao diện desktop.

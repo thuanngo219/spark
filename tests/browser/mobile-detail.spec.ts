@@ -22,11 +22,11 @@ for (const width of [320, 390]) {
         await expect(sheet).toHaveCSS("box-shadow", "none");
         await expect(sheet.locator(".editor-header h2, .editor-header > div")).toHaveCount(0);
         await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
-        await expect(page.getByRole("button", { name: "Đóng", exact: true })).toBeInViewport();
+        await expect(page.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true })).toBeInViewport();
         const titleBox = (await sheet.locator(".detail-title-row").boundingBox())!;
         const readTitleSize = await sheet.locator(".detail-title-row > p").evaluate(el => getComputedStyle(el).fontSize);
         const marker = (await sheet.locator(".detail-title-marker").boundingBox())!;
-        const closeBox = (await sheet.getByRole("button", { name: "Đóng", exact: true }).boundingBox())!;
+        const closeBox = (await sheet.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).boundingBox())!;
         const editBox = (await sheet.getByRole("button", { name: "Sửa tên", exact: true }).boundingBox())!;
         const metadataBox = (await sheet.locator(".detail-metadata").boundingBox())!;
         expect(titleBox.y).toBe(16);
@@ -37,10 +37,10 @@ for (const width of [320, 390]) {
         await expect(sheet.locator(".editor-header")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
         expect((await sheet.locator(".detail-description .detail-read-row").boundingBox())!.y).toBeLessThan(closeBox.y);
         expect((await sheet.locator(".detail-description .detail-read-row").boundingBox())!.y + (await sheet.locator(".detail-description .detail-read-row").boundingBox())!.height).toBeGreaterThanOrEqual(closeBox.y + closeBox.height);
-        await expect(sheet.getByRole("button", { name: "Đóng", exact: true })).toHaveText("Đóng");
-        await expect(sheet.getByRole("button", { name: "Đóng", exact: true })).toHaveCSS("background-color", "rgb(17, 23, 66)");
-        await sheet.getByRole("button", { name: "Đóng", exact: true }).hover();
-        await expect(sheet.getByRole("button", { name: "Đóng", exact: true })).toHaveCSS("background-color", "rgb(25, 34, 95)");
+        await expect(sheet.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true })).toHaveAccessibleName("QUAY LẠI");
+        await expect(sheet.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true })).toHaveCSS("background-color", "rgb(17, 23, 66)");
+        await sheet.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).hover();
+        await expect(sheet.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true })).toHaveCSS("background-color", "rgb(25, 34, 95)");
         await page.screenshot({ path: `/tmp/spark-detail-top-${width}-${theme}-${type}.png` });
         await sheet.getByRole("button", { name: "Sửa tên", exact: true }).click();
         const titleInput = sheet.getByRole("textbox", { name: type === "task" ? "Tên task" : "Tên ghi chú", exact: true });
@@ -147,7 +147,7 @@ for (const width of [320, 390]) {
           await page.setViewportSize({ width, height: 844 });
         }
         await page.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
-        await expect(sheet.getByRole("button", { name: "Đóng", exact: true })).toBeVisible();
+        await expect(sheet.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true })).toBeVisible();
         await expect(sheet.locator(".detail-title-row")).toBeVisible();
         await expect(sheet.locator(".detail-metadata")).toBeVisible();
         await page.getByRole("button", { name: "Sửa Nội dung", exact: true }).click();
@@ -157,7 +157,7 @@ for (const width of [320, 390]) {
         await read.evaluate(el => { el.scrollTop = el.scrollHeight; });
         await expect(page.getByRole("button", { name: "Sửa Nội dung", exact: true })).toBeInViewport();
         await page.screenshot({ path: `/tmp/spark-detail-${width}-${theme}-${type}.png` });
-        await page.getByRole("button", { name: "Đóng", exact: true }).click();
+        await page.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
         await expect(sheet).toBeHidden();
         await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
         await page.reload();

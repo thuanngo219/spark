@@ -219,7 +219,7 @@ export function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedCha
             <label className="note-toggle"><input type="checkbox" checked={type === "note"} onChange={(event) => {
               const nextType = event.target.checked ? "note" : "task";
               setType(nextType);
-            }} />Ghi chú</label>
+            }} /><span className="quick-description-desktop-label">Ghi chú</span><span className="quick-description-mobile-label">GHI CHÚ</span></label>
             <button
               ref={descriptionToggleRef}
               className="quick-description-toggle"

@@ -65,7 +65,7 @@ for (const type of ["task", "note"] as const) {
       await expect(editor).toHaveText(original);
       await page.getByRole("button", { name: "Hủy", exact: true }).click();
       // × uses the same animated exit, with the list inert until it finishes.
-      await page.getByRole("button", { name: "Đóng", exact: true }).click();
+      await page.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
       const exit = await backdrop(page).evaluate(el => {
         const a = el.getAnimations()[0];
         a.pause(); a.currentTime = 100;
@@ -109,6 +109,6 @@ test("desktop fullscreen detail ignores mobile edge swipes", async ({ page }) =>
   await expect(backdrop(page)).toHaveCSS("animation-name", "fade-in");
   expect(await swipe(page, 8, 150)).toBe(0);
   await expect(backdrop(page)).toBeVisible();
-  await page.getByRole("button", { name: "Đóng", exact: true }).click();
+  await page.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
   await expect(backdrop(page)).toBeHidden();
 });

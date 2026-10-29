@@ -267,7 +267,7 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
           </div>
         </div>
         {dateError && <p className="form-error detail-date-error" role="status">Ngày đến hạn không thể trước ngày bắt đầu. Thay đổi ngày chưa được lưu.</p>}
-        <div className="editor-header"><button type="button" className="icon-button detail-close-button" onClick={closeDetail} aria-label="Đóng"><Icon name="close" size={16} /><span>Đóng</span></button></div>
+        <div className="editor-header"><button type="button" className="icon-button detail-close-button" onClick={closeDetail}><span className="detail-close-desktop"><Icon name="close" size={16} /><span>Đóng</span></span><span className="detail-close-mobile"><Icon name="arrow-left" size={16} /><span>QUAY LẠI</span></span></button></div>
         <div className="detail-metadata" aria-label="Thông tin mục" onFocusCapture={() => {
           // Save without moving the focused control between pointerdown and click.
           if (editingField === "title") saveTitle(false);

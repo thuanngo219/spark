@@ -53,7 +53,7 @@ for (const event of ["visibilitychange", "pageshow", "focus"] as const) {
     await expectChrome(page, "dark");
     await expect(editor).toHaveText("Bản nháp khi mở lại app");
     await page.getByRole("button", { name: "Lưu Nội dung", exact: true }).click();
-    await page.getByRole("button", { name: "Đóng", exact: true }).click();
+    await page.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).click();
     await page.getByRole("button", { name: "Mở sidebar", exact: true }).click();
     await setSystemThemeSilently(page, false);
     await resume();
