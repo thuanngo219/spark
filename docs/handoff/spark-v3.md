@@ -70,10 +70,18 @@ Cập nhật: 2026-10-28. Đây là điểm bắt đầu cho phiên phát triể
 
 D-203 đã phát hành commit `0646ecb`, deployment `dpl_2VYqXpxZ7FuteoDrDzuwKRoj8dtJ` READY, alias `spark.thuanngo.com`; bốn smoke case production 390/1280px light/dark đạt.
 
-## D-204 — đã kiểm tra local, được duyệt phát hành
+## D-204 — đã phát hành
 
 Nhãn mobile thống nhất 10px bằng token `--ui-label-size`; xem D-204 trong decision log để biết phạm vi. Giữ nguyên desktop, nội dung và vùng chạm.
 
 Kiểm tra D-204: lint, typecheck, 176 unit test và build đạt. Năm browser case header/quick-add ở 390px đạt. Đã đo computed font-size 10px cho các nhãn hiển thị qua quick-add, phân loại, chi tiết, sidebar, phím tắt và đồng bộ ở 320/390px, light/dark; đối chiếu desktop 1280px giữ cỡ chữ cũ. Chưa kiểm tra iPhone vật lý hoặc phát hành D-204.
 
-Chủ dự án đã yêu cầu phát hành D-204. Sau push cần xác minh deployment READY, commit và alias production, rồi kiểm tra font-size trên domain chính.
+D-204 đã phát hành commit `4aced5a`, deployment `dpl_H1yLpr3WtAVQz1sumnMxZBpxw5pu` READY, alias `spark.thuanngo.com`. Kiểm tra production 390/1280px light/dark đạt, nhãn mobile 10px và desktop giữ nguyên.
+
+## D-205 — đã kiểm tra local, được duyệt phát hành
+
+Nút chữ mobile giảm bề mặt 4px, giữ vùng chạm 44px; tăng khoảng cách nhãn/nội dung; focus form chỉ đổi viền nhẹ. Chi tiết tại D-205.
+
+D-205: lint, typecheck, 176 unit test, build và 7 browser case mobile 390px đều đạt. Kiểm tra bổ sung 390/1280px light/dark: nút quick-add cao 40px, vùng chạm 44px nhận click ngoài bề mặt; checkbox vẫn nhận click trực tiếp; focus input không outline ngoài, viền đậm hơn và nền không đổi. Chưa kiểm tra iPhone vật lý hoặc deploy D-205.
+
+Chủ dự án yêu cầu deploy D-205 để kiểm tra trên điện thoại. Cần xác minh deployment READY, commit, alias và smoke test production sau push.

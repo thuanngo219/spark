@@ -1,9 +1,12 @@
 .field input:focus-visible, .field select:focus-visible, .field textarea:focus-visible {
-  background: color-mix(in srgb, var(--field) 88%, var(--heading) 12%);
+  background: var(--form-focus-background, color-mix(in srgb, var(--field) 88%, var(--heading) 12%));
+  border-color: var(--form-focus-border, var(--field-border));
 }
-.quick-title-field input:hover, .quick-title-field input:focus-visible { background: var(--control-hover); }
+.quick-title-field input:hover, .quick-title-field input:focus-visible { background: var(--form-focus-background, var(--control-hover)); }
+.quick-title-field input:focus { border-color: var(--form-focus-border, var(--field-border)); }
 .note-toggle:focus-within { background: var(--control-hover); }
 .quick-add-control:hover, .quick-add-control:focus-within { background: var(--field); }
+.quick-add-control:focus-within, .detail-meta-control:focus-within { border-color: var(--form-focus-border, var(--field-border)); }
 .quick-add-controls input:focus-visible, .quick-add-controls select:focus-visible { background: transparent; }
 .mobile-nav-backdrop, .mobile-dock, .mobile-floating-controls { display: none; }
 .startup-screen { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; isolation: isolate; color: #fff; }
@@ -31,7 +34,7 @@
 .sync-hero > span { width: 60px; height: 60px; margin: 0 auto 14px; display: grid; place-items: center; color: white; background: var(--navy-900); border-radius: 50%; }
 .sync-hero h3 { margin: 0 0 7px; color: var(--heading); font-size: 1.125rem; }
 .sync-hero p { margin: 0 auto 12px; max-width: 350px; color: var(--text-subtle, #818697); font-size: 0.75rem; line-height: 1.6; }
-.disconnect-button { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; flex-shrink: 0; padding: 0 14px; border: 1px solid color-mix(in srgb, var(--urgent-ink) 30%, transparent); border-radius: 999px; background: color-mix(in srgb, var(--coral) 12%, var(--canvas)); color: var(--urgent-ink); font-size: var(--ui-label-size, .75rem); font-weight: 650; }
+.disconnect-button { min-height: calc(44px - var(--label-button-trim, 0px)); display: inline-flex; align-items: center; justify-content: center; gap: 7px; flex-shrink: 0; padding: 0 14px; border: 1px solid color-mix(in srgb, var(--urgent-ink) 30%, transparent); border-radius: 999px; background: color-mix(in srgb, var(--coral) 12%, var(--canvas)); color: var(--urgent-ink); font-size: var(--ui-label-size, .75rem); font-weight: 650; }
 .disconnect-button:hover { background: color-mix(in srgb, var(--coral) 22%, var(--canvas)); }
 .signed-in-row { flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 15px; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
 .signed-in-row > div { display: grid; min-width: 0; }

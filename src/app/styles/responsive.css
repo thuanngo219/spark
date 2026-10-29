@@ -29,7 +29,7 @@
      the splash/blur layers, with a box taller than its 10px border exclusion.
      No hit target or layout height; existing safe-area padding protects content. */
   .browser-top-surface { display: block; position: fixed; inset: 0 0 auto; height: var(--browser-top-height); z-index: 1001; background: var(--browser-background, var(--canvas)); pointer-events: none; }
-  html { --ui-label-size: 10px; font-size: 120%; }
+  html { --ui-label-size: 10px; --label-button-trim: 4px; --label-content-gap: 10px; --label-section-gap: 12px; --label-hint-gap: 7px; --input-focus-width: 0px; --form-focus-background: var(--field); --form-focus-border: color-mix(in srgb, var(--heading) 40%, var(--field-border)); font-size: 120%; }
   .app-shell, .app-shell.sidebar-compact { display: block; }
   .app-shell > .sidebar { display: none; }
   .content { padding: 0; }
@@ -94,6 +94,10 @@
   .quick-mobile-header h2 { margin: 0; color: var(--heading); font-size: 21px; }
   .quick-add-body { display: block; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 17px calc(72px + var(--quick-bottom, calc(16px + env(safe-area-inset-bottom)))); }
   .quick-title-field > span, .quick-add-entry-actions > *, .quick-content-heading > span, .quick-add-field > span:first-child, .quick-add-actions button { text-transform: uppercase; }
+  /* Compact visual buttons retain a 44px touch area, centred on their surface. */
+  :is(.note-toggle, .quick-description-toggle, .text-button, .primary-button, .delete-button, .archive-button, .today-button, .detail-close-button, .mobile-sync-status, .disconnect-button) { position: relative; isolation: isolate; }
+  :is(.note-toggle, .quick-description-toggle, .text-button, .primary-button, .delete-button, .archive-button, .today-button, .detail-close-button, .mobile-sync-status, .disconnect-button)::after { content: ""; position: absolute; z-index: -1; inset-inline: 0; top: 50%; height: max(100%, 44px); transform: translateY(-50%); }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--form-focus-border); }
   .quick-title-field input { font-size: 16px; }
   .quick-add-project { grid-column: 1 / -1; }
   .quick-add-project > span:first-child { display: none; }
@@ -107,7 +111,7 @@
   .quick-add-dialog.focused-content .quick-date-error,
   .quick-add-dialog.focused-content .quick-description-preview { display: none; }
   .quick-add-dialog.focused-content .quick-add-body { display: flex; flex-direction: column; padding: calc(12px + env(safe-area-inset-top)) 17px var(--quick-bottom, calc(16px + env(safe-area-inset-bottom))); overflow: hidden; }
-  .quick-add-dialog.focused-content .quick-description-field { display: flex; flex-direction: column; flex: 1; min-height: 0; gap: 6px; margin: 0; }
+  .quick-add-dialog.focused-content .quick-description-field { display: flex; flex-direction: column; flex: 1; min-height: 0; gap: var(--label-content-gap); margin: 0; }
   .quick-add-dialog.focused-content .quick-content-heading { flex: 0 0 auto; min-height: 44px; }
   .quick-add-dialog.focused-content .quick-content-done, .quick-add-dialog.focused-content .quick-content-cancel { display: grid; }
   .quick-add-dialog.focused-content .content-editor { display: flex; flex: 1; min-height: 0; gap: 8px; }
@@ -120,7 +124,7 @@
   .quick-description-mobile-label { display: inline; }
   .quick-description-mobile-label > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .note-toggle { width: fit-content; }
-  .note-toggle, .quick-description-toggle { min-height: 44px; padding-inline: 6px; gap: 5px; font-size: var(--ui-label-size, 12px); font-weight: 600; background: var(--surface); }
+  .note-toggle, .quick-description-toggle { min-height: calc(44px - var(--label-button-trim)); padding-inline: 6px; gap: 5px; font-size: var(--ui-label-size, 12px); font-weight: 600; background: var(--surface); }
   .quick-description-toggle:not(:disabled):hover { background: var(--surface); }
   .quick-classification-toggle { display: flex; }
   .quick-classification-toggle[aria-expanded="true"], .quick-classification-toggle[aria-expanded="true"]:hover { border-color: var(--selected); background: var(--selected); color: var(--selected-ink); }
@@ -161,7 +165,7 @@
   .mobile-floating-controls { position: fixed; left: 14px; right: 14px; bottom: calc(78px + env(safe-area-inset-bottom)); z-index: 71; display: flex; align-items: center; justify-content: space-between; gap: 10px; pointer-events: none; }
   .mobile-floating-controls > * { pointer-events: auto; }
   .item-display-switcher.mobile { --switcher-size: 44px; --switcher-padding: 2px; min-height: 48px; background: color-mix(in srgb, var(--well) 94%, transparent); box-shadow: 0 7px 22px rgba(17,23,66,.13); backdrop-filter: blur(16px); }
-  .mobile-sync-status { min-height: 44px; display: flex; align-items: center; gap: 7px; padding: 0 12px; border: 1px solid var(--floating-border); border-radius: 999px; background: color-mix(in srgb, var(--surface) 94%, transparent); color: var(--muted); box-shadow: 0 7px 22px rgba(17,23,66,.13); backdrop-filter: blur(16px); font-size: var(--ui-label-size, 0.625rem); }
+  .mobile-sync-status { min-height: calc(44px - var(--label-button-trim)); display: flex; align-items: center; gap: 7px; padding: 0 12px; border: 1px solid var(--floating-border); border-radius: 999px; background: color-mix(in srgb, var(--surface) 94%, transparent); color: var(--muted); box-shadow: 0 7px 22px rgba(17,23,66,.13); backdrop-filter: blur(16px); font-size: var(--ui-label-size, 0.625rem); }
   .dialog-backdrop { padding: 10px 8px calc(8px + env(safe-area-inset-bottom)); }
   .item-detail-backdrop {
     padding: 0; background: var(--canvas); color: var(--ink); animation: detail-enter var(--motion-duration, 240ms) var(--ease); overflow: hidden; overscroll-behavior: none;
@@ -176,12 +180,12 @@
   .item-detail-sheet.editing-content > .detail-date-error { display: none; }
   .item-detail-sheet.editing-content .detail-content { padding: calc(12px + env(safe-area-inset-top)) 17px var(--detail-content-bottom, calc(12px + env(safe-area-inset-bottom))); overflow: hidden; }
   .item-detail-sheet.editing-content .detail-description { min-height: 0; margin-top: 0; padding-top: 0; border-top: 0; }
-  .item-detail-sheet.editing-content .detail-field-heading { min-height: 44px; margin-bottom: 6px; }
+  .item-detail-sheet.editing-content .detail-field-heading { min-height: 44px; margin-bottom: var(--label-content-gap); }
   .item-detail-sheet .content-editor-input { font-size: 16px; overscroll-behavior: none; }
 
-  .item-detail-sheet .editor-header { position: absolute; z-index: 2; right: 0; bottom: calc(var(--detail-metadata-height, 0px) + 10px); left: 0; min-height: 44px; height: 44px; margin: 0; padding: 0; justify-content: center; background: transparent; pointer-events: none; }
-  .item-detail-sheet .editor-header > .icon-button { position: static; pointer-events: auto; }
-  .item-detail-sheet .detail-close-button { height: 44px; }
+  .item-detail-sheet .editor-header { position: absolute; z-index: 2; right: 0; bottom: calc(var(--detail-metadata-height, 0px) + 10px); left: 0; min-height: 44px; height: 44px; margin: 0; padding: 0; justify-content: center; align-items: flex-end; background: transparent; pointer-events: none; }
+  .item-detail-sheet .editor-header > .icon-button { position: relative; pointer-events: auto; }
+  .item-detail-sheet .detail-close-button { height: calc(44px - var(--label-button-trim)); }
   .detail-close-desktop { display: none; }
   .detail-close-mobile { display: contents; }
   .item-detail-sheet .detail-description .detail-read-row { padding-bottom: 64px; }
@@ -191,7 +195,7 @@
   .detail-inline-editor textarea { flex: 1; width: 100%; min-width: 0; min-height: 0; padding: 0; border: 0; border-radius: 0; outline: none; box-shadow: none; background: transparent; color: var(--heading); font: inherit; font-size: 0.9375rem; font-weight: 650; line-height: 1.5; overflow: hidden; resize: none; overflow-wrap: anywhere; }
   .detail-title-row .detail-edit-actions { height: 28px; align-self: flex-start; margin-left: auto; }
   .detail-icon-action { width: 44px; height: 44px; min-height: 44px; margin-block: -5px; }
-  .detail-field-heading { margin-bottom: 8px; }
+  .detail-field-heading { margin-bottom: var(--label-section-gap); }
   .detail-field-heading > .detail-icon-action, .detail-title-row > .detail-icon-action { width: 44px; height: 44px; min-height: 44px; margin-block: -8px; }
   .detail-description .detail-icon-action.cancel, .quick-content-cancel { background: var(--control-hover); }
   .detail-edit-actions { gap: 8px; }

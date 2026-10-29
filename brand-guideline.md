@@ -558,3 +558,8 @@ Nút đang mở Phân loại dùng token selected, không thêm màu thương hi
 ## D-204 — Nhãn mobile thống nhất 10px (2026-10-29)
 
 Dưới 700px, nhãn trường, nút chữ, điều hướng/sidebar/dock, tên nhóm danh sách, sort, metadata danh sách, trạng thái, nhãn phím tắt và tùy chọn hiển thị dùng chung `--ui-label-size: 10px`. Kích thước tính bằng CSS px, không nhân root scale 120%. Giữ nguyên heading trang/dialog, tên và nội dung task/note, văn bản giải thích, giá trị trong ô nhập/ngày/dự án, icon và vùng chạm. Desktop giữ cỡ chữ hiện hành qua fallback tại selector gốc; không thêm override chồng lớp.
+
+
+## D-205 — Nút chữ gọn và focus form mobile (2026-10-29)
+
+Mobile: giảm bề mặt nút chữ/pill khoảng 4px, gồm quick-add, Quay Lại, trạng thái đồng bộ và các nút hành động form; vùng chạm mở rộng bằng pseudo-element để giữ tối thiểu 44px. Giữ dock, nút icon và sort 30px hiện hành. Khoảng cách nhãn–nội dung 7→10px, heading nhóm 8→12px; editor Nội Dung tập trung 6→10px. Bỏ outline ngoài của input/select/textarea trên mobile; form dùng viền 1px đổi sang màu đậm hơn theo theme khi focus, không đổi nền. Sửa Tên/Nội Dung dạng inline giữ nền trong suốt, không outline. Giữ focus bàn phím của nút/link, desktop và dữ liệu.
