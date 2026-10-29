@@ -29,14 +29,14 @@
      the splash/blur layers, with a box taller than its 10px border exclusion.
      No hit target or layout height; existing safe-area padding protects content. */
   .browser-top-surface { display: block; position: fixed; inset: 0 0 auto; height: var(--browser-top-height); z-index: 1001; background: var(--browser-background, var(--canvas)); pointer-events: none; }
-  html { font-size: 120%; }
+  html { --ui-label-size: 10px; font-size: 120%; }
   .app-shell, .app-shell.sidebar-compact { display: block; }
   .app-shell > .sidebar { display: none; }
   .content { padding: 0; }
   .canvas { width: 100%; padding: 0 0 var(--header-collapse-space, 0px); }
   .view-header { --view-title-size: 30px; --view-compact-title-size: 21px; justify-content: flex-start; gap: 7px; padding: max(12px, calc(8px + env(safe-area-inset-top))) calc(15px + env(safe-area-inset-right)) 15px calc(15px + env(safe-area-inset-left)); background: color-mix(in srgb, var(--canvas) 96%, transparent); }
   .view-header.is-compact { background: var(--canvas); }
-  .view-header .eyebrow { min-height: 18px; font-size: .65rem; font-weight: 400; letter-spacing: 0; }
+  .view-header .eyebrow { min-height: 18px; font-size: var(--ui-label-size, .65rem); font-weight: 400; letter-spacing: 0; }
   .view-title-row { gap: 4px; }
   .view-header h1 { margin: 2px 0 4px; }
   .mobile-header-drawer { flex: 0 0 auto; width: 44px; height: 44px; margin-left: -10px; padding: 0; border: 0; border-radius: 999px; background: transparent; color: var(--heading); display: grid; place-items: center; }
@@ -48,7 +48,7 @@
   .item-group-header { padding-inline: 12px; gap: 5px; }
   .item-group h2 { min-width: 0; padding-inline: 0; }
   .item-sort-controls { gap: 3px; }
-  .item-sort-controls select { font-size: 0.5625rem; }
+  .item-sort-controls select { font-size: var(--ui-label-size, 0.5625rem); }
   .item-list { gap: 2px; }
   .swipe-row { position: relative; min-height: 52px; overflow: hidden; touch-action: pan-y; }
   .swipe-actions { position: absolute; inset: 0 0 0 auto; width: 144px; display: grid; grid-template-columns: repeat(3, 48px); opacity: 0; visibility: hidden; pointer-events: none; }
@@ -120,7 +120,7 @@
   .quick-description-mobile-label { display: inline; }
   .quick-description-mobile-label > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .note-toggle { width: fit-content; }
-  .note-toggle, .quick-description-toggle { min-height: 44px; padding-inline: 6px; gap: 5px; font-size: 12px; font-weight: 600; background: var(--surface); }
+  .note-toggle, .quick-description-toggle { min-height: 44px; padding-inline: 6px; gap: 5px; font-size: var(--ui-label-size, 12px); font-weight: 600; background: var(--surface); }
   .quick-description-toggle:not(:disabled):hover { background: var(--surface); }
   .quick-classification-toggle { display: flex; }
   .quick-classification-toggle[aria-expanded="true"], .quick-classification-toggle[aria-expanded="true"]:hover { border-color: var(--selected); background: var(--selected); color: var(--selected-ink); }
@@ -132,7 +132,7 @@
   .quick-classification-heading .icon-button:hover { background: var(--navy-800); color: #fff; transform: none; }
   .quick-classification-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
   .quick-add-actions { flex: 0 0 auto; justify-content: center; gap: 12px; }
-  .quick-add-actions .text-button, .quick-add-actions .primary-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding-inline: 18px; font-size: .625rem; }
+  .quick-add-actions .text-button, .quick-add-actions .primary-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding-inline: 18px; font-size: var(--ui-label-size, .625rem); }
   .quick-add-actions .text-button { border: 1px solid var(--field-border); background: var(--surface); }
   .quick-add-actions .primary-button, .quick-add-actions .primary-button:disabled { background: var(--navy-900); color: #fff; }
   .quick-add-actions .primary-button:not(:disabled):hover { background: var(--navy-800); color: #fff; }
@@ -155,13 +155,13 @@
   .mobile-dock > button[aria-current="page"] { color: var(--heading); font-weight: 700; }
   .mobile-dock-icon { width: 32px; height: 32px; display: grid; place-items: center; }
   .mobile-dock-icon > svg { stroke-width: 1.8; }
-  .mobile-dock-label { max-width: 100%; font-size: 11px; line-height: 14px; white-space: nowrap; }
+  .mobile-dock-label { max-width: 100%; font-size: var(--ui-label-size, 11px); line-height: 14px; white-space: nowrap; }
   .mobile-dock .mobile-dock-add > span { flex: 0 0 64px; width: 64px; height: 64px; margin-top: -8px; display: grid; place-items: center; border-radius: 999px; background: var(--turquoise); color: var(--navy-900); }
   .mobile-dock .mobile-dock-add:active > span { transform: scale(.98); }
   .mobile-floating-controls { position: fixed; left: 14px; right: 14px; bottom: calc(78px + env(safe-area-inset-bottom)); z-index: 71; display: flex; align-items: center; justify-content: space-between; gap: 10px; pointer-events: none; }
   .mobile-floating-controls > * { pointer-events: auto; }
   .item-display-switcher.mobile { --switcher-size: 44px; --switcher-padding: 2px; min-height: 48px; background: color-mix(in srgb, var(--well) 94%, transparent); box-shadow: 0 7px 22px rgba(17,23,66,.13); backdrop-filter: blur(16px); }
-  .mobile-sync-status { min-height: 44px; display: flex; align-items: center; gap: 7px; padding: 0 12px; border: 1px solid var(--floating-border); border-radius: 999px; background: color-mix(in srgb, var(--surface) 94%, transparent); color: var(--muted); box-shadow: 0 7px 22px rgba(17,23,66,.13); backdrop-filter: blur(16px); font-size: 0.625rem; }
+  .mobile-sync-status { min-height: 44px; display: flex; align-items: center; gap: 7px; padding: 0 12px; border: 1px solid var(--floating-border); border-radius: 999px; background: color-mix(in srgb, var(--surface) 94%, transparent); color: var(--muted); box-shadow: 0 7px 22px rgba(17,23,66,.13); backdrop-filter: blur(16px); font-size: var(--ui-label-size, 0.625rem); }
   .dialog-backdrop { padding: 10px 8px calc(8px + env(safe-area-inset-bottom)); }
   .item-detail-backdrop {
     padding: 0; background: var(--canvas); color: var(--ink); animation: detail-enter var(--motion-duration, 240ms) var(--ease); overflow: hidden; overscroll-behavior: none;
@@ -214,8 +214,8 @@
   .utility-body-inner { margin-block: 0; }
   .utility-content > .editor-header > .icon-button { flex: 0 0 44px; width: 44px; min-width: 44px; height: 44px; min-height: 44px; }
   .shortcut-columns { gap: 14px; }
-  .shortcut-group > div { min-height: 34px; gap: 6px; font-size: .625rem; }
-  .shortcut-dialog kbd { min-width: 22px; padding: 3px 4px; font-size: 10px; }
+  .shortcut-group > div { min-height: 34px; gap: 6px; font-size: var(--ui-label-size, .625rem); }
+  .shortcut-dialog kbd { min-width: 22px; padding: 3px 4px; font-size: var(--ui-label-size, 10px); }
   .theme-options { grid-template-columns: repeat(3, 44px); }
   .theme-options label { height: 44px; }
   .shortcut-group > div > span { white-space: normal; }

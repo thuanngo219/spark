@@ -259,9 +259,9 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 | `display-page` | Inter; Raleway chỉ cho brand moment | Base `34–49px`, render khoảng `38–55px` desktop và `41–59px` mobile / `1.05` | `700` |
 | `title-sheet` | Inter | Base `21–24px`, render khoảng `24–27px` desktop và `25–29px` mobile / `1.15` | `700` |
 | `body` | Inter | Base `13–14px`, render khoảng `15–16px` desktop và `16–17px` mobile / `1.4–1.6` | `400–500` |
-| `control` | Inter | Base `12px`, render `13.5px` desktop và `14.4px` mobile / theo chiều cao control | `600–650` |
-| `label` | Inter | Base `11px`, render khoảng `12.4px` desktop và `13.2px` mobile / `1.3` | `600–650` |
-| `metadata` | Inter | Base `9–10px`, render khoảng `10–11px` desktop và `11–12px` mobile / `1.3` | `400–600` |
+| `control` | Inter | Base `12px`, render `13.5px` desktop; nhãn nút mobile `10px`, giá trị ô nhập giữ hiện hành / theo chiều cao control | `600–650` |
+| `label` | Inter | Base `11px`, render khoảng `12.4px` desktop và `10px` mobile / `1.3` | `600–650` |
+| `metadata` | Inter | Base `9–10px`, render khoảng `10–11px` desktop; metadata danh sách mobile `10px` / `1.3` | `400–600` |
 
 - CSS lưu type size bằng `rem` trên base 16px. Web app đặt root scale `112.5%` trên desktop và `120%` dưới 700px; nhờ vậy typography tăng đồng bộ mà không phóng to icon, rail hoặc control geometry.
 - Item title mặc định dùng Inter base `13px`, render khoảng `14.6px` desktop và `15.6px` mobile, weight `400`; không tự động bold task/note.
@@ -553,3 +553,8 @@ Quick-add hiển thị nhãn “Nội dung” trên desktop và mobile, bỏ ph�
 ## D-197 — Điều khiển nhanh trên mobile (2026-10-28)
 
 Nút đang mở Phân loại dùng token selected, không thêm màu thương hiệu. Sheet Phân loại trượt từ đáy bằng easeOutQuint; nút X tròn căn giữa và nhô một nửa qua viền trên. Trong quick-add, nút Xong của editor Nội dung đổi thành tick tròn nhỏ, toolbar cao 46px và sát nhãn Nội dung. Chi tiết mobile đặt nút Đóng giữa phía trên metadata 10px; sửa tên dùng tick/X nhỏ bên phải. Desktop giữ bố cục hiện hành.
+
+
+## D-204 — Nhãn mobile thống nhất 10px (2026-10-29)
+
+Dưới 700px, nhãn trường, nút chữ, điều hướng/sidebar/dock, tên nhóm danh sách, sort, metadata danh sách, trạng thái, nhãn phím tắt và tùy chọn hiển thị dùng chung `--ui-label-size: 10px`. Kích thước tính bằng CSS px, không nhân root scale 120%. Giữ nguyên heading trang/dialog, tên và nội dung task/note, văn bản giải thích, giá trị trong ô nhập/ngày/dự án, icon và vùng chạm. Desktop giữ cỡ chữ hiện hành qua fallback tại selector gốc; không thêm override chồng lớp.

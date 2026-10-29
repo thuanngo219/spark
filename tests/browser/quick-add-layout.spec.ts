@@ -45,7 +45,7 @@ for (const width of [320, 390, 1280]) {
         expect(boxes[1]!.x - boxes[0]!.x - boxes[0]!.width).toBeCloseTo(10, 1);
         expect(boxes[2]!.x - boxes[1]!.x - boxes[1]!.width).toBeCloseTo(10, 1);
         for (const toggle of toggles) {
-          await expect(toggle).toHaveCSS("font-size", "12px");
+          await expect(toggle).toHaveCSS("font-size", "10px");
           await expect(toggle).toHaveCSS("background-color", theme === "light" ? "rgb(255, 255, 255)" : "rgb(27, 32, 48)");
         }
 

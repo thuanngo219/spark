@@ -65,7 +65,7 @@ for (const width of [1280, 390, 320]) {
       await expect(title).toHaveText(projectName);
       if (width < 700) {
         await expect(header.locator(".eyebrow")).toHaveCSS("font-weight", "400");
-        await expect(header.locator(".eyebrow")).toHaveCSS("font-size", "12.48px");
+        await expect(header.locator(".eyebrow")).toHaveCSS("font-size", "10px");
         await expect(header.locator(".eyebrow")).toHaveCSS("letter-spacing", "normal");
         await expect(header.locator(".view-project-band")).toHaveCSS("height", "4px");
         await expect(header).toHaveCSS("padding-left", "15px");

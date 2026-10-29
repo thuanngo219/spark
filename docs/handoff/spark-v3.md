@@ -62,8 +62,18 @@ Cập nhật: 2026-10-28. Đây là điểm bắt đầu cho phiên phát triể
 - `docs/DECISIONS.md`: quyết định có thứ tự; mục sau thay phần tương ứng của mục trước.
 - `docs/IMPLEMENTATION_GUIDE.md` và `docs/OFFLINE_SYNC.md`: kiến trúc, dữ liệu, offline, kiểm tra và deploy.
 
-## Cập nhật D-203 — chuẩn bị phát hành
+## Cập nhật D-203 — đã phát hành
 
 - D-203 (2026-10-29): mobile đổi nút Đóng thành ← QUAY LẠI; nền xám nhẹ cho X hủy sửa Nội Dung; viết hoa các nhãn/nút quick-add bao gồm GHI CHÚ. Desktop và hành vi giữ nguyên.
-- Kiểm tra local D-203: lint, typecheck, 176 unit test, production build đạt; 10 browser case chi tiết/khóa cuộn đạt. Kiểm tra trực quan mobile 390px và desktop 1280px ở cả hai theme; chưa phát hành hoặc kiểm tra iPhone vật lý.
+- Kiểm tra local D-203: lint, typecheck, 176 unit test, production build đạt; 10 browser case chi tiết/khóa cuộn đạt. Kiểm tra trực quan mobile 390px và desktop 1280px ở cả hai theme; chưa kiểm tra iPhone vật lý.
 - Bản chuẩn bị phát hành đã sửa nhãn thành GHI CHÚ theo xác nhận của chủ dự án; lint, typecheck, 176 unit test và build chạy lại đều đạt.
+
+D-203 đã phát hành commit `0646ecb`, deployment `dpl_2VYqXpxZ7FuteoDrDzuwKRoj8dtJ` READY, alias `spark.thuanngo.com`; bốn smoke case production 390/1280px light/dark đạt.
+
+## D-204 — đã kiểm tra local, được duyệt phát hành
+
+Nhãn mobile thống nhất 10px bằng token `--ui-label-size`; xem D-204 trong decision log để biết phạm vi. Giữ nguyên desktop, nội dung và vùng chạm.
+
+Kiểm tra D-204: lint, typecheck, 176 unit test và build đạt. Năm browser case header/quick-add ở 390px đạt. Đã đo computed font-size 10px cho các nhãn hiển thị qua quick-add, phân loại, chi tiết, sidebar, phím tắt và đồng bộ ở 320/390px, light/dark; đối chiếu desktop 1280px giữ cỡ chữ cũ. Chưa kiểm tra iPhone vật lý hoặc phát hành D-204.
+
+Chủ dự án đã yêu cầu phát hành D-204. Sau push cần xác minh deployment READY, commit và alias production, rồi kiểm tra font-size trên domain chính.

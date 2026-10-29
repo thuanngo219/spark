@@ -550,3 +550,8 @@ Giữ một `SparkApp.tsx` điều phối view và thao tác; chuyển vòng đ�
 ## D-203 — Nhãn và nút điều hướng mobile (2026-10-29)
 
 Chỉ mobile dưới 700px: nút Đóng trong chi tiết đổi thành mũi tên trái và “QUAY LẠI”. Nút X hủy sửa Nội Dung trong chi tiết và quick-add có nền xám nhẹ theo token `--control-hover` của theme. Quick-add viết hoa nhãn TÊN CÔNG VIỆC/TÊN GHI CHÚ, GHI CHÚ, NỘI DUNG, PHÂN LOẠI, NGÀY BẮT ĐẦU, NGÀY ĐẾN HẠN và HỦY/THÊM; nhãn NỘI DUNG trong editor tập trung cũng viết hoa. Giữ hành vi, dữ liệu, vùng chạm và giao diện desktop.
+
+
+## D-204 — Nhãn mobile thống nhất 10px (2026-10-29)
+
+Dưới 700px, nhãn trường, nút chữ, điều hướng/sidebar/dock, tên nhóm danh sách, sort, metadata danh sách, trạng thái, nhãn phím tắt và tùy chọn hiển thị dùng chung `--ui-label-size: 10px`. Kích thước tính bằng CSS px, không nhân root scale 120%. Giữ nguyên heading trang/dialog, tên và nội dung task/note, văn bản giải thích, giá trị trong ô nhập/ngày/dự án, icon và vùng chạm. Desktop giữ cỡ chữ hiện hành qua fallback tại selector gốc; không thêm override chồng lớp.
