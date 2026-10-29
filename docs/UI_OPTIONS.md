@@ -4,6 +4,16 @@ Option C — Compact Canvas là hướng đang chạy. Bố cục và thông s�
 
 Ba phương án cùng dùng một information architecture và data model. Khác biệt chủ yếu nằm ở mật độ, màu sắc và cách điều hướng. Đây là hướng tham khảo nguyên bản, không phải bản sao của Superlist hoặc Things.
 
+## Giao diện mobile hiện hành — D-203–D-207
+
+Áp dụng dưới 700px; các mục D-xxx phía dưới giữ vai trò lịch sử khi có thông số khác.
+
+- Label 10px thực; heading, tên/nội dung task/note và giá trị ô nhập giữ cỡ chữ hiện hành. Desktop không đổi.
+- Nhãn–nội dung 8px; khi sửa Nội Dung, mép dưới hàng nhãn cách toolbar 2px ở cả quick-add và chi tiết. Toolbar cao 44px.
+- Nút chữ/pill giảm bề mặt khoảng 4px, các pill quick-add, HỦY/THÊM và QUAY LẠI cao 40px; vùng chạm vẫn tối thiểu 44px. Sort giữ ngoại lệ 30px.
+- Chi tiết dùng “← QUAY LẠI”. Quick-add viết hoa các nhãn và HỦY/THÊM; nhãn note là GHI CHÚ. Hai nút X hủy sửa Nội Dung có nền xám nhẹ theo theme.
+- Input/select/textarea không có outline ngoài trên mobile; form dùng viền 1px đậm hơn khi focus, không đổi nền. Vùng sửa inline Tên/Nội Dung giữ nền sạch; nút/link vẫn có focus bàn phím.
+
 ## Option A — Warm Paper
 
 **Mood:** trang giấy ấm, nhẹ và tĩnh; gần tinh thần “clean piece of paper” của Things.

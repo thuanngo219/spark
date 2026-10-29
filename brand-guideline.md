@@ -2,7 +2,7 @@
 
 Tài liệu này là nguồn tham chiếu chính cho cách Spark xuất hiện và giao tiếp trên website, web app và presentation. Khi một thiết kế hoặc nội dung mới mâu thuẫn với tài liệu này, ưu tiên guideline này và ghi quyết định mới vào `docs/DECISIONS.md`.
 
-Trạng thái giao diện production và chỉ các quy tắc còn hiệu lực được tóm tắt trong [handoff v3](docs/handoff/spark-v3.md). Các mục D-xxx ở cuối guideline ghi lại lịch sử tinh chỉnh; giá trị mới thay giá trị cũ. Chủ dự án xác nhận bản mới nhất hoạt động tốt trên iPhone ngày 2026-10-28.
+Trạng thái giao diện production và chỉ các quy tắc còn hiệu lực được tóm tắt trong [handoff v3](docs/handoff/spark-v3.md). Các mục D-xxx ở cuối guideline ghi lại lịch sử tinh chỉnh; giá trị mới thay giá trị cũ. Chủ dự án xác nhận giao diện production “Ổn rồi” ngày 2026-10-29 sau D-207.
 
 ## 1. Brand foundation
 
@@ -212,7 +212,7 @@ Phần này là source of truth cho web app. Khi CSS/component mới khác bản
 |---|---|
 | Default | Field nền `#FAFBFC`, border `#DDE0E8`, radius `12px`, cao `44–46px`. |
 | Hover | Không đổi màu field Ngày/Dự án; tránh tạo cảm giác đây là CTA. |
-| Focus | Không glow/shadow. Quick-add Tên dùng `ui-control-hover`; Nội dung trong suốt ở mọi trạng thái, chỉ toolbar có border/nền. Sửa Tên trong chi tiết chỉ có gạch dưới, nền trong suốt. |
+| Focus | Không glow/shadow. Mobile form không đổi nền hoặc có outline ngoài; viền 1px đậm hơn khi focus. Sửa Tên/Nội Dung inline không outline/gạch dưới, nền trong suốt. Nút/link giữ focus bàn phím 2px; desktop giữ hành vi hiện hành. |
 | Selected | Dùng nền/tint đậm hơn khoảng `10–15%` hoặc tín hiệu semantic; không dùng outline glow. |
 | Disabled | Giữ hình học và nền variant; giảm tương phản label/icon thay vì làm nhạt toàn control. |
 | Error | Dùng Muted Coral kèm text/icon giải thích; không chỉ đổi border màu. |
@@ -252,6 +252,10 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 | Body | Inter | 400–500 |
 | Caption/metadata | Inter | 400–500 |
 
+### Quy tắc mobile hiện hành
+
+Dưới 700px: nhãn 10px thực, khoảng cách nhãn–nội dung 8px; hàng nhãn–toolbar khi sửa Nội Dung 2px ở cả quick-add và chi tiết. Nút chữ/pill giảm bề mặt khoảng 4px nhưng giữ vùng chạm tối thiểu 44px; sort vẫn 30px. Nút quay lại ghi “← QUAY LẠI”; quick-add dùng nhãn GHI CHÚ và viết hoa các nhãn/hành động. Hai nút X hủy sửa Nội Dung có nền `--control-hover`. D-203–D-207 thay các thông số tương ứng trong phần lịch sử.
+
 ### Web app type scale
 
 | Token/ngữ cảnh | Font | Size / line-height | Weight |
@@ -263,7 +267,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 | `label` | Inter | Base `11px`, render khoảng `12.4px` desktop và `10px` mobile / `1.3` | `600–650` |
 | `metadata` | Inter | Base `9–10px`, render khoảng `10–11px` desktop; metadata danh sách mobile `10px` / `1.3` | `400–600` |
 
-- CSS lưu type size bằng `rem` trên base 16px. Web app đặt root scale `112.5%` trên desktop và `120%` dưới 700px; nhờ vậy typography tăng đồng bộ mà không phóng to icon, rail hoặc control geometry.
+- CSS lưu type size bằng `rem` trên base 16px. Web app đặt root scale `112.5%` trên desktop và `120%` dưới 700px; heading/body tiếp tục theo root scale; nhãn mobile dùng `--ui-label-size: 10px` nên không nhân root scale. Icon, rail và control geometry không phụ thuộc root scale.
 - Item title mặc định dùng Inter base `13px`, render khoảng `14.6px` desktop và `15.6px` mobile, weight `400`; không tự động bold task/note.
 - List density: desktop row khoảng `35px` với gap `6px`; mobile row tối thiểu `52px` với gap `2px`, canvas tràn viền và title một dòng, ellipsis khi thiếu chỗ. Marker/action mobile vẫn giữ vùng chạm tối thiểu `44px`.
 - D-144/D-145: Header desktop/mobile thu gọn khi cuộn quá 28px, chuyển động 220ms; compact giữ h1 ở 50% cỡ chữ thường và dải màu 4px/radius 5px theo D-200. H1 compact căn giữa chiều dọc với cụm trạng thái. Desktop giữ cụm sync/bộ lọc trong header, mobile giữ cụm nổi trên dock. Ẩn eyebrow, thống kê, nút mở sidebar mobile và nút sửa dự án; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Padding desktop 20px; mobile 15px cả bốn phía cộng safe-area theo D-161; giữ blur 8px/WebKit và opacity dark 75% cho h1/dải màu. Mobile bottom dock cao 58px cộng safe-area, sát ba mép màn hình, icon trên/nhãn dưới; riêng + không có nhãn (D-160).

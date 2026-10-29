@@ -1,6 +1,25 @@
 # Implementation Guide
 
-Trạng thái triển khai hiện hành và đường dẫn mã nguồn ở [handoff v3](handoff/spark-v3.md). Các mục D-117–D-199 ở cuối file ghi lại quá trình triển khai và có thể chứa thông số đã được quyết định sau thay thế; dùng handoff v3 và code để lấy giá trị đang chạy. Chủ dự án xác nhận bản production mới nhất hoạt động tốt trên iPhone ngày 2026-10-28.
+Trạng thái triển khai hiện hành và đường dẫn mã nguồn ở [handoff v3](handoff/spark-v3.md). Các mục D-117–D-199 ở cuối file ghi lại quá trình triển khai và có thể chứa thông số đã được quyết định sau thay thế; dùng handoff v3 và code để lấy giá trị đang chạy. Chủ dự án xác nhận giao diện production “Ổn rồi” ngày 2026-10-29 sau D-207.
+
+## Token và kiểm chứng mobile hiện hành — D-203–D-207
+
+Token trong media query `max-width: 699px` của `src/app/styles/responsive.css`:
+
+| Token | Giá trị | Phạm vi |
+|---|---|---|
+| `--ui-label-size` | `10px` | Nhãn UI, fallback desktop tại selector gốc |
+| `--label-button-trim` | `4px` | Giảm chiều cao bề mặt nút chữ |
+| `--label-content-gap`, `--label-section-gap`, `--label-hint-gap` | `8px` | Nhãn và nội dung tiếp theo |
+| `--editor-toolbar-gap` | `2px` | Mép dưới hàng nhãn tới toolbar ở hai editor mobile |
+| `--input-focus-width` | `0px` | Bỏ outline ngoài của input/select/textarea mobile |
+| `--form-focus-background` | `var(--field)` | Giữ nền form khi focus |
+| `--form-focus-border` | `color-mix(in srgb, var(--heading) 40%, var(--field-border))` | Viền focus theo theme |
+
+- Toolbar và control icon vẫn giữ vùng chạm 44px. Nút chữ 40px hoặc nhỏ hơn dùng pseudo-element `height: max(100%, 44px)` để mở vùng chạm. Giữ `isolation: isolate` ở nút/pill và `z-index: -1` ở pseudo-element; lớp này không được che input checkbox bên trong.
+- `SparkItemEditor.tsx` dùng nội dung nút Đóng desktop và “← QUAY LẠI” mobile riêng theo CSS. `SparkQuickAdd.tsx` giữ nhãn Ghi chú desktop/GHI CHÚ mobile; casing các nhãn khác theo CSS mobile.
+- Kiểm tra bằng `tests/browser/mobile-detail.spec.ts` và `quick-add-layout.spec.ts`: khoảng cách toolbar phải 2px, giữ bản nháp và hành vi bàn phím. Khi sửa vùng chạm, kiểm tra cả click ngoài bề mặt nút lẫn click trực tiếp checkbox.
+- Trạng thái phát hành và giới hạn kiểm chứng ghi tại handoff; browser viewport 390px không thay cho kiểm tra iPhone vật lý.
 
 ## 1. Kiến trúc đã triển khai
 

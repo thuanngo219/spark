@@ -10,7 +10,7 @@ Hướng UI đã chọn: **Option C — Compact Canvas**, dùng Navy, Turquoise,
 
 Logo chính thức và mọi icon app dùng biểu tượng tick/vòng tròn trắng trên badge gradient xanh–Navy do chủ dự án cung cấp. Wordmark `spark` giữ vector cũ: primary Deep Purple, negative trắng. D-134 áp dụng cho logo chính, sidebar desktop/mobile, compact rail, icon cài đặt và favicon; source/cách sinh asset ở [assets/logo/README.md](assets/logo/README.md).
 
-Production: **https://spark.thuanngo.com**. Chủ dự án xác nhận ngày 2026-10-28 rằng bản mới nhất hoạt động tốt trên iPhone. Trạng thái phát hành, giới hạn kiểm chứng và điểm bắt đầu cho v3 ở [handoff hiện hành](docs/handoff/spark-v3.md).
+Production: **https://spark.thuanngo.com**. Chủ dự án xác nhận giao diện mới “Ổn rồi” ngày 2026-10-29. Bản mã production đã kiểm chứng là `b91643c` (D-207): label mobile 10px, nhãn–nội dung 8px, nhãn–toolbar 2px; nút chữ gọn hơn và focus form bằng viền nhẹ. Trạng thái phát hành, giới hạn kiểm chứng và điểm bắt đầu cho v3 ở [handoff hiện hành](docs/handoff/spark-v3.md).
 
 Vercel owner: team **Thuan Ngo** tại [vercel.com/thuanngo](https://vercel.com/thuanngo). Liên kết local trong `.vercel/repo.json` dùng team ID ổn định nên không phụ thuộc vào việc đổi tên hoặc URL slug của team.
 
@@ -44,7 +44,8 @@ npm run dev
 - [Logo concepts](assets/logo-concepts/README.md): năm hướng nhận diện ban đầu cho Spark.
 - [Official logo](assets/logo/README.md): logo chính thức, palette và quy tắc sử dụng hiện tại.
 
-## Việc cần cân nhắc cho v3
+## Phạm vi tiếp tục v3
 
+- Tìm kiếm đang tạm hoãn; chưa có code tìm kiếm. Kiểm tra độ tin cậy dữ liệu để lần tới, chưa chốt triển khai cơ chế xử lý xung đột hoặc sao lưu.
 - Kiểm tra riêng cold-start offline trên iPhone, sync hai thiết bị và cách ly hai tài khoản thật trước khi sửa sâu luồng dữ liệu. Handoff v3 phân biệt rõ những phép kiểm này với xác nhận dùng iPhone của chủ dự án.
 - Nếu mở rộng phạm vi người dùng hoặc dùng offline đồng thời trên nhiều thiết bị, thiết kế version/conflict detection cho full-row upsert hiện tại trước khi triển khai.
