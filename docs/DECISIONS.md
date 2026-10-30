@@ -577,3 +577,15 @@ Mobile: đổi `--editor-toolbar-gap` từ 10px thành 2px cho cả editor Nội
 ## D-208 — Khôi phục cỡ chữ mục menu (2026-10-29)
 
 Chữ các mục menu/sidebar (`.nav-text`), gồm điều hướng, smart filter, tên dự án, Đã lưu trữ và Phím tắt, dùng lại `0.8125rem`: 15.6px trên mobile với root 120%, 14.625px trên desktop với root 112.5%. Tách khỏi token label 10px của D-204. Nhãn nhóm, số đếm, dock và các label khác giữ hiện hành; không đổi vùng chạm hoặc hành vi.
+
+## D-209 — Nhúng Inter dùng chung mọi thiết bị (2026-10-30)
+
+Theo yêu cầu chủ dự án, nhúng Inter 4.1 variable thường và nghiêng từ release v4.1 của rsms/inter, kèm SIL Open Font License. Root layout dùng next/font/local, preload và display swap; body dùng biến --font-inter với fallback do Next tạo. Font được phục vụ cùng origin, không gọi dịch vụ font bên ngoài lúc mở app. Giữ nguyên root scale, size, weight, line-height và màu/state nút; việc chuẩn hóa các thông số này đang trao đổi, chưa chốt. File nguồn và provenance ở src/app/fonts/.
+
+## D-210 — Typography chung, một Navy và hai biến thể action (2026-10-30)
+
+Chủ dự án duyệt chuẩn hóa và deploy production. Root 100% cả desktop/mobile; menu/list/nội dung 16px, tên chi tiết 18px, heading dialog 24px, support/giá trị metadata control 14px; label desktop 12px, mobile giữ 10px. Heading view desktop clamp(38px, 5vw, 56px), mobile 30px/compact21px. Weight chỉ 400/600/700; line-height 1.2 heading, 1.4 UI, 1.6 đoạn dài. Token tập trung foundation.css, mobile chỉ đổi label; thay root scale D-044, các fallback size cũ và menu rem của D-208. Nhúng Inter D-209 đi cùng bản phát hành này.
+
+Gộp Navy 950/800 về Navy 900 #111742, cả link/tooltip/toast/swipe archive; giữ dark neutral, semantic, project và artwork logo. Action Turquoise/chữ Navy hover Navy/chữ trắng; action Navy/chữ trắng hover Turquoise/chữ Navy ở cả theme, gồm THÊM mobile/QUAY LẠI/đóng Phân Loại/tick Lưu. Disabled không đổi màu khi hover; selected B/I/U/ngày/theme/filter giữ riêng, không đảo trạng thái. Giữ khoảng cách 8px/2px, hình học control/vùng chạm và phạm vi dữ liệu hiện hành.
+
+D-210 kiểm tra ảnh ở 390px phát hiện native date bị cắt khi dùng Inter. Metadata chi tiết mobile giữ hai hàng: cờ và dự án/hành động ở hàng đầu, hai ngày chia đều hàng thứ hai. Giữ font giá trị14px, touch target44px, không thêm chiều cao hàng hay đổi logic ngày; desktop giữ thứ tự bố cục cũ.

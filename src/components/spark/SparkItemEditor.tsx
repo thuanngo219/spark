@@ -275,14 +275,16 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
         }}>
           <button type="button" className={`detail-meta-button icon-only important ${important ? "selected" : ""}`} title="Quan Trọng" aria-label="Quan Trọng" aria-pressed={important} onClick={() => { const value = !important; setImportant(value); onSave({ isImportant: value }); }}><Icon name="star" size={17} /></button>
           <button type="button" className={`detail-meta-button icon-only urgent ${urgent ? "selected" : ""}`} title="Ưu tiên" aria-label="Ưu tiên" aria-pressed={urgent} onClick={() => { const value = !urgent; setUrgent(value); onSave({ isUrgent: value }); }}><Icon name="zap" size={17} /></button>
-          <label className="detail-meta-control" title="Ngày Bắt Đầu">
-            <Icon name="play" size={16} />
-            <input type="date" max={dueDate || undefined} value={startDate} aria-label="Ngày bắt đầu" onChange={(event) => { const value = event.target.value; saveDates(value, dueDate); }} />
-          </label>
-          <label className="detail-meta-control" title="Ngày Đến Hạn">
-            <Icon name="flag" size={16} />
-            <input type="date" min={startDate || undefined} value={dueDate} aria-label="Ngày đến hạn" onChange={(event) => { const value = event.target.value; saveDates(startDate, value); }} />
-          </label>
+          <div className="detail-date-controls">
+            <label className="detail-meta-control" title="Ngày Bắt Đầu">
+              <Icon name="play" size={16} />
+              <input type="date" max={dueDate || undefined} value={startDate} aria-label="Ngày bắt đầu" onChange={(event) => { const value = event.target.value; saveDates(value, dueDate); }} />
+            </label>
+            <label className="detail-meta-control" title="Ngày Đến Hạn">
+              <Icon name="flag" size={16} />
+              <input type="date" min={startDate || undefined} value={dueDate} aria-label="Ngày đến hạn" onChange={(event) => { const value = event.target.value; saveDates(startDate, value); }} />
+            </label>
+          </div>
           <div className="detail-project-actions">
             <label className="detail-meta-control project" title="Dự án">
               <span className={`project-dot ${project ? "" : "empty"}`} style={project ? { background: project.color } : undefined} />

@@ -1,7 +1,13 @@
 :root {
-  --navy-950: #0b1039;
+  --text-body: 1rem;
+  --text-support: .875rem;
+  --text-title: 1.125rem;
+  --text-dialog: 1.5rem;
+  --ui-label-size: .75rem;
+  --leading-heading: 1.2;
+  --leading-ui: 1.4;
+  --leading-body: 1.6;
   --navy-900: #111742;
-  --navy-800: #19225f;
   --turquoise: #44d4cd;
   --turquoise-soft: #dff8f6;
   --label-accent: var(--muted);
@@ -26,7 +32,7 @@
   --app-color-scheme: light;
   --heading: var(--navy-900);
   --view-accent-opacity: 1;
-  --link: var(--navy-800);
+  --link: var(--navy-900);
   --link-hover: #287a79;
   --well: #e9ebef;
   --toolbar: color-mix(in srgb, var(--field) 95%, black 5%);
@@ -38,7 +44,7 @@
   --switch-track: #d9dce4;
   --switch-active: var(--navy-900);
   --floating-border: rgba(17,23,66,.08);
-  --overlay: rgba(11,16,57,.58);
+  --overlay: rgba(17,23,66,.58);
   --header-shadow: rgba(17,23,66,.1);
   --dot-outline: rgba(0,0,0,.05);
 }
@@ -85,14 +91,19 @@
 }
 
 * { box-sizing: border-box; }
-html { min-width: 320px; background: var(--canvas); font-size: 112.5%; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html { min-width: 320px; background: var(--canvas); font-size: 100%; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body {
   margin: 0;
   color: var(--ink);
   background: var(--browser-background, var(--canvas));
-  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-inter), ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: var(--text-body);
+  font-weight: 400;
+  line-height: var(--leading-ui);
   -webkit-font-smoothing: antialiased;
 }
+h1, h2, h3 { font-weight: 700; line-height: var(--leading-heading); }
+strong, b { font-weight: 700; }
 button, input, select, textarea { font: inherit; }
 .browser-top-surface { display: none; }
 button { color: inherit; }

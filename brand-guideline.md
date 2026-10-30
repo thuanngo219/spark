@@ -112,6 +112,8 @@ Brand palette của Spark có bốn màu chromatic. Trắng, đen và các sắc
 | `brand-coral` | `#D9776A` | Accent ấm, warning và điểm nhấn cần chú ý. |
 | `brand-deep-purple` | `#65458A` | Màu neo nhận diện, logo, heading hoặc chi tiết chủ đạo. |
 
+D-210: UI chỉ dùng một Navy `#111742`; bỏ `--navy-950`/`--navy-800`. Giữ neutral dark mode và gradient trong artwork logo.
+
 ### Cách phối màu
 
 - Mỗi bố cục thường chỉ dùng 2–3 màu chromatic; không cần đưa cả bốn màu vào một màn hình.
@@ -200,9 +202,11 @@ Phần này là source of truth cho web app. Khi CSS/component mới khác bản
 - Nút trong cùng một action row dùng cùng chiều cao và radius; Primary và Hủy vẫn giữ phân cấp màu khác nhau.
 - Navigation button, color swatch, date tile và project dot không bị ép vào màu Primary vì chúng là selection/navigation control.
 
+Hai biến thể action D-210 dùng cùng cặp màu ở cả theme: Turquoise/chữ Navy → hover Navy/chữ trắng; Navy/chữ trắng → hover Turquoise/chữ Navy. THÊM mobile, QUAY LẠI, đóng Phân Loại và tick Lưu thuộc biến thể Navy. Nút disabled không đổi màu khi hover. Selected (B/I/U, ngày, theme, filter) giữ token và tín hiệu chọn riêng; semantic/destructive giữ Amber/Coral.
+
 #### Link trong nội dung
 
-- URL trong Nội dung task/note giữ màu Navy `#19225F`, có underline Turquoise tiết chế để vẫn nhận ra khi không hover.
+- URL trong Nội dung task/note giữ màu Navy `#111742`, có underline Turquoise tiết chế để vẫn nhận ra khi không hover.
 - Hover chuyển chữ và underline sang teal đậm `#287A79`; keyboard focus dùng nền `turquoise-soft`, không dùng glow.
 - Link ngoài mở tab mới; underline là tín hiệu bắt buộc, không chỉ dùng màu để biểu đạt khả năng click.
 
@@ -237,50 +241,34 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 
 ### Font families
 
-- **Inter:** font chính cho web app, body text, label, form, bảng và nội dung cần đọc nhanh.
+- **Inter:** font chính cho web app, body text, label, form, bảng và nội dung cần đọc nhanh. D-209/D-210 nhúng Inter 4.1 variable WOFF2 thường/nghiêng trong `src/app/fonts/`, nạp qua `next/font/local` ở root layout; không phụ thuộc font đã cài trên thiết bị. Font hỗ trợ weight 100–900; UI chỉ dùng 400/600/700 theo D-210.
 - **Raleway:** font display cho heading lớn, website marketing, title slide và con số/statement cần cá tính.
 - Cả hai font phải dùng phiên bản có hỗ trợ đầy đủ dấu tiếng Việt.
 - Logo luôn dùng artwork chính thức, không dựng lại bằng Raleway hoặc Inter.
 
-### Weight và tương phản
+### Typography hiện hành — D-210
 
-| Ngữ cảnh | Font | Weight gợi ý |
-|---|---|---|
-| Display/hero | Raleway | 700–800 |
-| Page/section heading | Raleway hoặc Inter | 600–700 |
-| UI label/control | Inter | 500–600 |
-| Body | Inter | 400–500 |
-| Caption/metadata | Inter | 400–500 |
+Root 100% ở cả desktop/mobile; cỡ rem dưới đây quy đổi với mặc định trình duyệt 16px. Chữ vẫn tôn trọng cấu hình font mặc định/zoom của người dùng; riêng label mobile giữ đúng 10px đã duyệt. Mỗi vai trò có một token, không nhân scale theo thiết bị.
 
-### Quy tắc mobile hiện hành
+| Vai trò / token | Desktop | Mobile | Weight | Line-height |
+|---|---|---|---|---|
+| Heading view | clamp(38px, 5vw, 56px) | 30px | 700 | 1.2 |
+| Heading view thu gọn | 50% heading thường | 21px | 700 | 1.2 |
+| Heading dialog / `--text-dialog` | 24px | 24px | 700 | 1.2 |
+| Tên trong chi tiết / `--text-title` | 18px | 18px | 600 | 1.4 |
+| Menu, tên trong list / `--text-body` | 16px | 16px | 400; menu đang chọn 600 | 1.4 |
+| Nội dung đọc/sửa / `--text-body` | 16px | 16px | 400; đậm 700 | 1.6 |
+| Ô nhập tên quick-add / `--text-body` | 16px | 16px | 400 | 1.4 |
+| Chữ giải thích, giá trị control metadata / `--text-support` | 14px | 14px | 400 hoặc 600 theo vai trò | 1.4; đoạn dài 1.6 |
+| Label, nút chữ, metadata list / `--ui-label-size` | 12px | 10px | 400/600/700 theo phân cấp | 1.4 |
 
-Dưới 700px: nhãn 10px thực; riêng chữ mục menu/sidebar dùng 0.8125rem (15.6px), khoảng cách nhãn–nội dung 8px; hàng nhãn–toolbar khi sửa Nội Dung 2px ở cả quick-add và chi tiết. Nút chữ/pill giảm bề mặt khoảng 4px nhưng giữ vùng chạm tối thiểu 44px; sort vẫn 30px. Nút quay lại ghi “← QUAY LẠI”; quick-add dùng nhãn GHI CHÚ và viết hoa các nhãn/hành động. Hai nút X hủy sửa Nội Dung có nền `--control-hover`. D-203–D-207 thay các thông số tương ứng trong phần lịch sử.
+Chỉ dùng ba weight: 400 nội dung thường; 600 nhãn/control/tên chi tiết; 700 heading/chữ đậm và nhãn nhóm cần nhấn mạnh. Ba line-height dùng chung: `--leading-heading: 1.2`, `--leading-ui: 1.4`, `--leading-body: 1.6`. Không dùng 450/650/750 hoặc root scale khác nhau nữa.
 
-### Web app type scale
+Menu có token nội dung riêng, không giảm theo label. Heading view có tracking −0.025em; nhãn nhóm ngắn giữ uppercase/tracking hiện hành. Logo luôn dùng artwork, Raleway chỉ dành cho brand moment ngoài giao diện app.
 
-| Token/ngữ cảnh | Font | Size / line-height | Weight |
-|---|---|---|---|
-| `display-page` | Inter; Raleway chỉ cho brand moment | Base `34–49px`, render khoảng `38–55px` desktop và `41–59px` mobile / `1.05` | `700` |
-| `title-sheet` | Inter | Base `21–24px`, render khoảng `24–27px` desktop và `25–29px` mobile / `1.15` | `700` |
-| `body` | Inter | Base `13–14px`, render khoảng `15–16px` desktop và `16–17px` mobile / `1.4–1.6` | `400–500` |
-| `control` | Inter | Base `12px`, render `13.5px` desktop; nhãn nút mobile `10px`, giá trị ô nhập giữ hiện hành / theo chiều cao control | `600–650` |
-| `label` | Inter | Base `11px`, render khoảng `12.4px` desktop và `10px` mobile / `1.3` | `600–650` |
-| `metadata` | Inter | Base `9–10px`, render khoảng `10–11px` desktop; metadata danh sách mobile `10px` / `1.3` | `400–600` |
+Khoảng cách mobile: nhãn–nội dung 8px; hàng nhãn–toolbar 2px ở cả quick-add và chi tiết. Nút chữ/pill gọn hơn khoảng 4px nhưng giữ vùng chạm 44px; sort giữ ngoại lệ 30px. Chi tiết dùng “← QUAY LẠI”; quick-add viết hoa các nhãn và dùng đúng “GHI CHÚ”. Hai nút X hủy Nội Dung dùng `--control-hover`.
 
-- CSS lưu type size bằng `rem` trên base 16px. Web app đặt root scale `112.5%` trên desktop và `120%` dưới 700px; heading/body tiếp tục theo root scale; nhãn mobile dùng `--ui-label-size: 10px` nên không nhân root scale. Icon, rail và control geometry không phụ thuộc root scale.
-- Item title mặc định dùng Inter base `13px`, render khoảng `14.6px` desktop và `15.6px` mobile, weight `400`; không tự động bold task/note.
-- List density: desktop row khoảng `35px` với gap `6px`; mobile row tối thiểu `52px` với gap `2px`, canvas tràn viền và title một dòng, ellipsis khi thiếu chỗ. Marker/action mobile vẫn giữ vùng chạm tối thiểu `44px`.
-- D-144/D-145: Header desktop/mobile thu gọn khi cuộn quá 28px, chuyển động 220ms; compact giữ h1 ở 50% cỡ chữ thường và dải màu 4px/radius 5px theo D-200. H1 compact căn giữa chiều dọc với cụm trạng thái. Desktop giữ cụm sync/bộ lọc trong header, mobile giữ cụm nổi trên dock. Ẩn eyebrow, thống kê, nút mở sidebar mobile và nút sửa dự án; cuộn về đầu khôi phục đầy đủ. H1 dùng letter-spacing -0.025em ở cả hai trạng thái. Padding desktop 20px; mobile 15px cả bốn phía cộng safe-area theo D-161; giữ blur 8px/WebKit và opacity dark 75% cho h1/dải màu. Mobile bottom dock cao 58px cộng safe-area, sát ba mép màn hình, icon trên/nhãn dưới; riêng + không có nhãn (D-160).
-- Marker task/note và project dot luôn căn theo dòng chữ đầu tiên; không căn giữa toàn bộ row khi title hoặc metadata làm row cao hơn.
-- Trên desktop, due-date metadata và tâm artwork star/điện xẹt phải cùng trục giữa với dòng title; không căn theo mép trên của hit target icon.
-- Danh sách hỗn hợp luôn đặt task trước note; trong từng loại giữ thứ tự thời gian. Đây là phân cấp nội dung, không dùng divider hoặc card riêng để tách hai loại.
-- Heading trang dùng Navy, tracking âm nhẹ; label ngắn có thể uppercase với letter-spacing `0.10–0.13em`.
-- Label nhóm/disclosure như `Cần lưu ý`, `Dự án`, `Đã hoàn thành` dùng uppercase, weight `700` và letter-spacing khoảng `0.13em`.
-- Không thêm font family mới trong component. Mọi thay đổi font phải cập nhật bảng này và cách load font trước khi triển khai.
-
-- Tạo tương phản bằng size, weight và khoảng trắng trước khi dùng thêm màu.
-- Tránh dùng quá ba weight trong cùng một màn hình hoặc slide.
-- Không dùng all caps cho đoạn dài; chỉ dùng cho nhãn rất ngắn khi spacing và khả năng đọc đã được kiểm tra.
+Giữ cấu trúc Compact Canvas, row mobile tối thiểu 52px/gap 2px, title một dòng/ellipsis, marker và project dot căn dòng đầu. Thang chữ này thay thế các thông số typography trước D-210.
 
 ## 6. Iconography
 

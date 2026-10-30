@@ -40,7 +40,7 @@ for (const width of [320, 390]) {
         await expect(sheet.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true })).toHaveAccessibleName("QUAY LẠI");
         await expect(sheet.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true })).toHaveCSS("background-color", "rgb(17, 23, 66)");
         await sheet.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true }).hover();
-        await expect(sheet.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true })).toHaveCSS("background-color", "rgb(25, 34, 95)");
+        await expect(sheet.getByRole("button", { name: /^(Đóng|QUAY LẠI)$/, exact: true })).toHaveCSS("background-color", "rgb(68, 212, 205)");
         await page.screenshot({ path: `/tmp/spark-detail-top-${width}-${theme}-${type}.png` });
         await sheet.getByRole("button", { name: "Sửa tên", exact: true }).click();
         const titleInput = sheet.getByRole("textbox", { name: type === "task" ? "Tên task" : "Tên ghi chú", exact: true });

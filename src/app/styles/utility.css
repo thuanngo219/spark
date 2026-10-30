@@ -7,16 +7,16 @@
 .utility-content > .editor-header { flex: 0 0 auto; gap: 16px; margin: 0; padding: calc(20px + env(safe-area-inset-top)) 0 16px; background: var(--canvas); border-bottom: 1px solid var(--line); }
 .shortcut-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 .shortcut-group { min-width: 0; display: grid; align-content: start; }
-.shortcut-group h3 { margin: 0 0 var(--label-section-gap, 8px); color: var(--heading); font-size: var(--ui-label-size, .6875rem); font-weight: 650; }
-.shortcut-group > div { min-height: 34px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); color: var(--text-secondary, #555b70); font-size: var(--ui-label-size, 0.75rem); }
-.shortcut-group > div > span { min-width: 0; line-height: 1.4; }
+.shortcut-group h3 { line-height: var(--leading-ui); margin: 0 0 var(--label-section-gap, 8px); color: var(--heading); font-size: var(--ui-label-size); font-weight: 600; }
+.shortcut-group > div { min-height: 34px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); color: var(--text-secondary, #555b70); font-size: var(--ui-label-size); }
+.shortcut-group > div > span { min-width: 0; line-height: var(--leading-ui); }
 kbd { font-family: inherit; }
-.shortcut-dialog kbd { min-width: 29px; padding: 4px 7px; border: 1px solid var(--field-border); border-bottom-width: 2px; background: var(--field); color: var(--heading); border-radius: 7px; text-align: center; white-space: nowrap; font-size: var(--ui-label-size, 0.625rem); font-weight: 650; }
-.shortcut-note { color: var(--muted); margin: 14px 0 0; font-size: .625rem; line-height: 1.5; }
+.shortcut-dialog kbd { min-width: 29px; padding: 4px 7px; border: 1px solid var(--field-border); border-bottom-width: 2px; background: var(--field); color: var(--heading); border-radius: 7px; text-align: center; white-space: nowrap; font-size: var(--ui-label-size); font-weight: 600; }
+.shortcut-note { color: var(--muted); margin: 14px 0 0; font-size: var(--text-support); line-height: var(--leading-ui); }
 .display-preference { margin-top: 16px; padding: 13px 0 0; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 18px; }
 .display-preference > span { min-width: 0; display: grid; gap: var(--label-hint-gap, 3px); }
-.display-preference strong { color: var(--heading); font-size: var(--ui-label-size, 0.75rem); }
-.display-preference small { color: var(--muted); font-size: 0.625rem; line-height: 1.45; }
+.display-preference strong { color: var(--heading); font-size: var(--ui-label-size); }
+.display-preference small { color: var(--muted); font-size: var(--text-support); line-height: var(--leading-ui); }
 .theme-preference { gap: 10px; }
 .theme-preference > span { flex-shrink: 0; }
 .theme-options { flex: 0 0 auto; display: grid; grid-template-columns: repeat(3, 36px); gap: 2px; }
@@ -30,7 +30,7 @@ kbd { font-family: inherit; }
 .preference-switch > span { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: white; box-shadow: 0 2px 6px rgba(17,23,66,.18); transition: transform var(--motion-duration, 180ms) var(--ease); }
 .preference-switch[aria-checked="true"] { background: var(--switch-active); }
 .preference-switch[aria-checked="true"] > span { transform: translateX(18px); }
-.toast { position: fixed; right: 88px; bottom: 25px; z-index: 95; max-width: calc(100vw - 112px); background: var(--navy-950); color: white; border-radius: 13px; padding: 12px 13px 12px 15px; display: flex; align-items: center; gap: 18px; box-shadow: 0 15px 38px rgba(11,16,57,.25); font-size: 0.75rem; }
+.toast { position: fixed; right: 88px; bottom: 25px; z-index: 95; max-width: calc(100vw - 112px); background: var(--navy-900); color: white; border-radius: 13px; padding: 12px 13px 12px 15px; display: flex; align-items: center; gap: 18px; box-shadow: 0 15px 38px rgba(17,23,66,.25); font-size: var(--text-support); }
 .toast span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.toast button { border: 0; background: var(--turquoise); color: var(--navy-900); border-radius: 999px; padding: 7px 9px; font-size: var(--ui-label-size, 0.6875rem); font-weight: 700; }
-.toast button:hover { background: var(--navy-800); color: white; }
+.toast button { border: 0; background: var(--turquoise); color: var(--navy-900); border-radius: 999px; padding: 7px 9px; font-size: var(--ui-label-size); font-weight: 700; }
+.toast button:hover { background: var(--navy-900); color: white; }

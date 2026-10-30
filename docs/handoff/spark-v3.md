@@ -1,14 +1,19 @@
 # Spark v3 — bàn giao hiện hành
 
-Cập nhật: 2026-10-29. Đây là điểm bắt đầu cho phiên phát triển v3. Handoff chỉ ghi trạng thái và quy tắc còn hiệu lực; lịch sử quyết định nằm trong Git và `docs/DECISIONS.md`. Hành vi sản phẩm chi tiết nằm trong `docs/PROJECT_BRIEF.md`, quy tắc thương hiệu trong `brand-guideline.md` và dữ liệu offline trong `docs/OFFLINE_SYNC.md`.
+Cập nhật: 2026-10-30. Đây là điểm bắt đầu cho phiên phát triển v3. Handoff chỉ ghi trạng thái và quy tắc còn hiệu lực; lịch sử quyết định nằm trong Git và `docs/DECISIONS.md`. Hành vi sản phẩm chi tiết nằm trong `docs/PROJECT_BRIEF.md`, quy tắc thương hiệu trong `brand-guideline.md` và dữ liệu offline trong `docs/OFFLINE_SYNC.md`.
 
 ## Trạng thái bàn giao
 
-- Production: `https://spark.thuanngo.com`, Vercel project `spark` của team Thuan Ngo. Trước commit tài liệu của lượt bàn giao này, đã xác minh trực tiếp alias trỏ tới deployment **READY** `dpl_AQhdPdsQ4VPXutwgjAYKehMS4Xu1`, commit mã `b91643c96fb001c8422115300e47900b5f78b437`. Đây là bản đã phát hành toàn bộ D-203–D-207. Push tài liệu có thể tạo deployment mới với cùng mã ứng dụng; luôn kiểm tra SHA và alias khi tiếp tục.
-- Chủ dự án xác nhận “Ổn rồi” ngày 2026-10-29 sau lượt chỉnh toolbar 2px và yêu cầu cập nhật handoff. Chủ dự án dùng Spark trên cả điện thoại và máy tính, cần kiểm tra UI qua production trên điện thoại. Xác nhận này không thay cho kiểm thử độc lập offline, đồng bộ hoặc iPhone vật lý.
-- Kiểm tra trước phát hành `b91643c`: lint, typecheck, **176 unit test**, production build và **7 browser case ở 390px** đều đạt; các case bao gồm task/note, light/dark, quick-add và editor chi tiết, đo toolbar cách hàng nhãn **2px**.
-- Sau phát hành: **4 smoke scenario production** ở 390px/1280px × light/dark đạt. Đã kiểm tra nhãn mobile 10px, khoảng cách form 8px, toolbar 2px ở hai editor, các nút quick-add 40px với vùng chạm 44px, checkbox nhận click, focus form không outline ngoài/không đổi nền và desktop giữ nguyên. Đây là kiểm tra trình duyệt mô phỏng viewport; chưa phải phép kiểm trên iPhone vật lý.
-- B-005 (rà toàn bộ copy) đã hoàn tất theo xác nhận của chủ dự án. Các thay đổi mobile đã được chấp thuận; không còn hạng mục code đã duyệt đang chờ trong lượt bàn giao này.
+- Production: `https://spark.thuanngo.com`, Vercel project `spark`, team Thuan Ngo. Trước phát hành D-209/D-210, bản được xác minh là `a3e55a1`, deployment READY `dpl_8YLCT4qT3KEfHYPbB46ekkNkx5yV`. Gói dưới đây đã được duyệt deploy; cần cập nhật bằng chứng alias/SHA sau push.
+- Kiểm tra D-209/D-210: lint, typecheck, 176 unit test, production build đều đạt. 76 browser case UI/content/font ở 320/390/600/699/700/1280/1440px và sáng/tối đạt; case offline được bật riêng và đạt, tổng 77 case. Đã kiểm tra font thường/nghiêng thực tế và glyph tiếng Việt; mở trang mới offline tải được cả hai face từ cache. Ảnh mobile xác nhận ngày không bị cắt.
+- Đây là kiểm tra Chrome mô phỏng viewport và offline local; chưa thay cho kiểm tra iPhone vật lý, sync hai thiết bị hoặc cách ly tài khoản thật.
+- B-005 rà copy đã hoàn tất. Search và việc kiểm tra độ tin cậy dữ liệu vẫn tạm hoãn như phạm vi bên dưới.
+
+## Gói phát hành D-209/D-210 (2026-10-30)
+
+Chủ dự án duyệt nhúng Inter, chuẩn hóa typography, gộp Navy và hover action, yêu cầu deploy production. Inter 4.1 variable thường/nghiêng nằm trong `src/app/fonts/` kèm giấy phép, tải cùng origin bằng `next/font/local`.
+
+Root 100% cả hai thiết bị. Menu/list/nội dung 16px, tên chi tiết 18px, heading dialog 24px, support/metadata control 14px. Label desktop12px/mobile10px. Weight 400/600/700; line-height 1.2/1.4/1.6 theo vai trò. Heading view desktop38–56px, mobile30px/compact21px. Một Navy #111742; giữ dark neutral/artwork logo. Hover action Turquoise/Navy ↔ Navy/trắng; selected và disabled giữ riêng. Thông số này thay các size/weight/root scale trước D-210. Trạng thái release cần xác minh sau push.
 
 ## Phạm vi tiếp tục đã thống nhất
 
@@ -27,10 +32,10 @@ Cập nhật: 2026-10-29. Đây là điểm bắt đầu cho phiên phát triể
 
 - Desktop có sidebar mở rộng/compact rail; mobile có drawer và dock năm vị trí. Mobile quick-add và chi tiết là màn hình toàn phần. Desktop chi tiết cũng toàn màn hình, cột nội dung cùng chiều rộng canvas danh sách; quick-add ở giữa màn hình. Các màn Phím tắt và Đồng bộ toàn màn hình.
 - Mobile quick-add giữ Tên và hàng GHI CHÚ/NỘI DUNG/PHÂN LOẠI đứng yên; chỉ phần xem trước Nội Dung dài cuộn. Phân Loại mở sheet từ dưới, chứa ngày bắt đầu, ngày đến hạn và dự án, phủ Hủy/Thêm. Sửa Nội Dung mở editor tập trung, khóa cuộn nền và xử lý bàn phím bằng `visualViewport`. Sau khi Thêm thành công, đóng quick-add và trở về view trước đó.
-- Chi tiết mobile cho vuốt từ mép trái để đóng. Nút Navy “← QUAY LẠI” nằm trên vùng Nội Dung, cách metadata 10px; Nội Dung vẫn cuộn bên dưới. Sửa Tên/Nội Dung có tick lưu và X hủy. Metadata neo dưới màn hình; khi sửa và bàn phím hiện, phần dưới có thể nằm sau bàn phím để dành diện tích nhập.
+- Chi tiết mobile cho vuốt từ mép trái để đóng. Nút Navy “← QUAY LẠI” nằm trên vùng Nội Dung, cách metadata 10px; Nội Dung vẫn cuộn bên dưới. Sửa Tên/Nội Dung có tick lưu và X hủy. Metadata neo dưới màn hình, cờ/dự án/hành động ở hàng đầu và hai ngày chia đều hàng thứ hai để ngày không bị cắt với Inter; khi sửa và bàn phím hiện, phần dưới có thể nằm sau bàn phím để dành diện tích nhập.
 - Header sticky thu gọn khi cuộn, giữ h1 và dải màu 4px ở cả desktop/mobile; mobile h1 thường 30px, thu gọn 21px. Letter spacing −0.025em. Header blur 8px; nền app phẳng. Nút/link giữ viền focus bàn phím 2px theo theme; mobile input/select/textarea không có outline ngoài, form đổi viền 1px đậm hơn khi focus và không đổi nền. Bề mặt sửa Tên/Nội Dung inline không có outline. Header dùng animation CSS hiện hành. Chưa có phép đo hiệu năng trên iPhone vật lý.
-- Mobile dưới 700px dùng label **10px** thực, không nhân root scale 120%: nhãn trường/nút, nhãn nhóm điều hướng, nhóm danh sách/sort, metadata danh sách, trạng thái và nhãn tiện ích. Heading, tên/nội dung task/note và giá trị ô nhập giữ cỡ chữ hiện hành; desktop giữ fallback cũ.
-- Chữ mục menu/sidebar (`.nav-text`) giữ cỡ cũ 0.8125rem: **15.6px mobile**, 14.625px desktop (D-208). Nhãn nhóm và số đếm vẫn 10px; dock không đổi.
+- Mobile dưới 700px dùng label **10px** thực, root 100%: nhãn trường/nút, nhãn nhóm điều hướng, nhóm danh sách/sort, metadata danh sách, trạng thái và nhãn tiện ích. Các vai trò còn lại dùng token D-210 ở trên; desktop label 12px.
+- Chữ mục menu/sidebar (`.nav-text`) dùng **16px cả mobile và desktop** (D-210). Nhãn nhóm và số đếm vẫn 10px; dock không đổi.
 - Khoảng cách nhãn–nội dung **8px**. Khi sửa Nội Dung, khoảng cách từ **mép dưới hàng nhãn** đến thanh formatting là **2px** trong cả quick-add và chi tiết; toolbar vẫn cao 44px. Không đo từ đáy nét chữ của label.
 - Nút chữ/pill giảm phần hiển thị khoảng 4px: các pill quick-add, HỦY/THÊM, QUAY LẠI và trạng thái đồng bộ cao 40px; vùng chạm vẫn tối thiểu 44px qua pseudo-element. Giữ dock, nút icon và ngoại lệ sort 30px. Nút X hủy sửa Nội Dung ở hai editor dùng nền xám nhẹ theo theme.
 - Mobile quick-add viết hoa TÊN CÔNG VIỆC/TÊN GHI CHÚ, GHI CHÚ, NỘI DUNG, PHÂN LOẠI, NGÀY BẮT ĐẦU, NGÀY ĐẾN HẠN, HỦY và THÊM. GHI CHÚ là nhãn chính xác.
@@ -74,7 +79,3 @@ Cập nhật: 2026-10-29. Đây là điểm bắt đầu cho phiên phát triể
 - `docs/UI_OPTIONS.md`: hướng Compact Canvas và lịch sử tinh chỉnh UI.
 - `docs/DECISIONS.md`: quyết định có thứ tự; mục sau thay phần tương ứng của mục trước.
 - `docs/IMPLEMENTATION_GUIDE.md` và `docs/OFFLINE_SYNC.md`: kiến trúc, dữ liệu, offline, kiểm tra và deploy.
-
-## D-208 — chuẩn bị phát hành
-
-Khôi phục cỡ chữ mục menu/sidebar, tách `.nav-text` khỏi token label. Giữ mọi thay đổi D-203–D-207 khác.

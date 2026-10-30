@@ -2,11 +2,11 @@
 
 Chủ dự án xác nhận giao diện production “Ổn rồi” ngày 2026-10-29 sau D-207. [Handoff v3](handoff/spark-v3.md) chỉ ghi quy tắc còn hiệu lực và phạm vi đã kiểm chứng; các mục D-xxx phía dưới là lịch sử phát triển, nên đọc cùng quyết định mới nhất khi một thông số thay đổi.
 
-## Giao diện mobile hiện hành — D-203–D-207
+## Giao diện hiện hành — D-210
 
-Áp dụng dưới 700px; các mục D-xxx phía dưới giữ vai trò lịch sử khi có thông số khác.
+Typography và màu áp dụng cả desktop/mobile; các quy tắc mobile bên dưới áp dụng dưới 700px. Các mục D-xxx phía dưới giữ vai trò lịch sử khi có thông số khác.
 
-- Label 10px thực; mục menu/sidebar giữ 0.8125rem (15.6px mobile) theo D-208; heading, tên/nội dung task/note và giá trị ô nhập giữ cỡ chữ hiện hành. Desktop không đổi.
+- D-210: root 100% cả desktop/mobile; label mobile 10px, desktop 12px. Menu/list/nội dung 16px, tên chi tiết 18px, heading dialog 24px; support/metadata control 14px. Weight 400/600/700; line-height 1.2/1.4/1.6 theo vai trò. Một Navy #111742, action hover đảo Navy/trắng ↔ Turquoise/Navy; selected và disabled giữ riêng.
 - Nhãn–nội dung 8px; khi sửa Nội Dung, mép dưới hàng nhãn cách toolbar 2px ở cả quick-add và chi tiết. Toolbar cao 44px.
 - Nút chữ/pill giảm bề mặt khoảng 4px, các pill quick-add, HỦY/THÊM và QUAY LẠI cao 40px; vùng chạm vẫn tối thiểu 44px. Sort giữ ngoại lệ 30px.
 - Chi tiết dùng “← QUAY LẠI”. Quick-add viết hoa các nhãn và HỦY/THÊM; nhãn note là GHI CHÚ. Hai nút X hủy sửa Nội Dung có nền xám nhẹ theo theme.
