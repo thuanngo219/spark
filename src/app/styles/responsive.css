@@ -28,7 +28,8 @@
      the splash/blur layers, with a box taller than its 10px border exclusion.
      No hit target or layout height; existing safe-area padding protects content. */
   .browser-top-surface { display: block; position: fixed; inset: 0 0 auto; height: var(--browser-top-height); z-index: 1001; background: var(--browser-background, var(--canvas)); pointer-events: none; }
-  :root { --label-button-trim: 4px; --label-content-gap: 8px; --label-section-gap: 8px; --label-hint-gap: 8px; --editor-toolbar-gap: 2px; }
+  :root { --text-body: 15px; --text-support: 15px; --text-metadata: 13px; --label-button-trim: 4px; --label-content-gap: 8px; --label-section-gap: 8px; --label-hint-gap: 8px; --editor-toolbar-gap: 2px; }
+  html { touch-action: pan-x pan-y; }
   .app-shell, .app-shell.sidebar-compact { display: block; }
   .app-shell > .sidebar { display: none; }
   .content { padding: 0; }

@@ -1,6 +1,7 @@
 "use client";
 
 import { flushSync } from "react-dom";
+import { installDetailMotion } from "@/lib/detail-motion";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEvent } from "react";
 import ContentEditor, { type ContentEditorHandle } from "@/components/ContentEditor";
 import { Icon } from "@/components/ui/Icon";
@@ -56,6 +57,13 @@ export function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedCha
     setStartDateOverride(null);
     window.requestAnimationFrame(() => triggerRef.current?.focus());
   }, [onExpandedChange]);
+  useEffect(() => {
+    const backdrop = backdropRef.current;
+    if (!expanded || !backdrop) return;
+    const motion = installDetailMotion(backdrop, close);
+    return () => motion.destroy();
+  }, [expanded, close]);
+
 
   const finishContent = useCallback(() => {
     if (document.activeElement instanceof HTMLElement) document.activeElement.blur();

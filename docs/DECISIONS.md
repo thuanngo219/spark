@@ -623,3 +623,11 @@ Gap item 2px cả desktop/mobile. Toolbar Nội dung chi tiết desktop cách ph
 ## D-217 — Khoảng đệm menu dự án chi tiết desktop (2026-10-30)
 
 Thay native menu dự án trong chi tiết desktop bằng listbox của app: dòng tối thiểu 44px, padding 10px 14px, gap 4px, khung padding 8px; tên dài xuống dòng. Hỗ trợ chọn bằng chuột/Enter/Space, phím mũi tên/Home/End, Escape và đóng khi click ngoài. Mobile giữ native select. Tự deploy production sau kiểm tra.
+
+
+## D-218 — Typography desktop/mobile (2026-10-30)
+
+Desktop: list/Nội dung 14px; menu và support 14px; metadata ngày/dự án 12px. Mobile: list/Nội dung/menu/support 15px; metadata ngày/dự án 13px (gồm native project select). Giữ title chi tiết18, input quick-add16, dialog24, heading view desktop38–56/mobile30, compact desktop19–28/mobile21. Label10px/700/uppercase, dock10px. Weight và line-height hiện hành giữ nguyên. Cỡ chữ px; tự deploy production sau kiểm tra.
+
+
+D-219 (2026-10-30): yêu cầu chặn pinch zoom bằng viewport maximumScale1/userScalablefalse và touch-action pan-x pan-y mobile. Quick-add dùng chung nhận diện vuốt mép trái với chi tiết: vuốt đủ ngưỡng hủy toàn bộ nháp như HỦY, vuốt ngắn/đứng/nội vùng không hủy. Trình duyệt/hệ điều hành có thể ưu tiên thiết lập accessibility zoom; cần xác nhận iPhone thật.

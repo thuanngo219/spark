@@ -588,3 +588,8 @@ Chữ các mục menu/sidebar (`.nav-text`), gồm điều hướng, smart filte
 ## D-216 — Cỡ chữ px và khoảng cách (2026-10-30)
 
 Gap item 2px cả desktop/mobile. Toolbar Nội dung chi tiết desktop cách phần text bên dưới 15px. Giá trị ngày/dự án trong chi tiết và quick-add 12px/700, line-height 1.4. Token font chuyển từ rem sang px: body15, input16, support14, metadata12, title18, dialog24; heading desktop clamp(38px, 5vw, 56px) giữ responsive hiện hành. Không còn cỡ chữ rem trong CSS app; line-height vẫn theo hệ số. Chưa phát hành.
+
+
+## D-218 — Typography desktop/mobile (2026-10-30)
+
+Desktop: list/Nội dung 14px; menu và support 14px; metadata ngày/dự án 12px. Mobile: list/Nội dung/menu/support 15px; metadata ngày/dự án 13px (gồm native project select). Giữ title chi tiết18, input quick-add16, dialog24, heading view desktop38–56/mobile30, compact desktop19–28/mobile21. Label10px/700/uppercase, dock10px. Weight và line-height hiện hành giữ nguyên. Cỡ chữ px; tự deploy production sau kiểm tra.

@@ -105,3 +105,11 @@ D-216 đã đạt lint, typecheck, 176 unit test, build và 17 case trình duy�
 Chủ dự án yêu cầu tự kiểm tra và deploy production sau mỗi yêu cầu chỉnh sửa app, không chờ lệnh deploy riêng (2026-10-30).
 
 D-217: menu dự án chi tiết desktop có dòng 44px, padding 10px 14px, gap 4px, hỗ trợ keyboard; mobile giữ native select.
+
+
+## D-218 — Typography desktop/mobile (2026-10-30)
+
+Desktop: list/Nội dung 14px; menu và support 14px; metadata ngày/dự án 12px. Mobile: list/Nội dung/menu/support 15px; metadata ngày/dự án 13px (gồm native project select). Giữ title chi tiết18, input quick-add16, dialog24, heading view desktop38–56/mobile30, compact desktop19–28/mobile21. Label10px/700/uppercase, dock10px. Weight và line-height hiện hành giữ nguyên. Cỡ chữ px; tự deploy production sau kiểm tra.
+
+
+D-219 (2026-10-30): yêu cầu chặn pinch zoom bằng viewport maximumScale1/userScalablefalse và touch-action pan-x pan-y mobile. Quick-add dùng chung nhận diện vuốt mép trái với chi tiết: vuốt đủ ngưỡng hủy toàn bộ nháp như HỦY, vuốt ngắn/đứng/nội vùng không hủy. Trình duyệt/hệ điều hành có thể ưu tiên thiết lập accessibility zoom; cần xác nhận iPhone thật.

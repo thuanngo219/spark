@@ -9,9 +9,9 @@ for (const width of [320, 390, 1280]) {
       await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
       await page.evaluate(() => document.fonts.ready);
       await expect(page.locator("html")).toHaveCSS("font-size", "16px");
-      await expect(page.locator(".item-title").first()).toHaveCSS("font-size", "15px");
+      await expect(page.locator(".item-title").first()).toHaveCSS("font-size", width < 700 ? "15px" : "14px");
       await expect(page.locator(".item-title").first()).toHaveCSS("font-weight", "400");
-      await expect(page.locator(".item-title").first()).toHaveCSS("line-height", "21px");
+      await expect(page.locator(".item-title").first()).toHaveCSS("line-height", width < 700 ? "21px" : "19.6px");
       for (const selector of [".completed-toggle", ".item-sort-controls select", ".item-meta"]) {
         const label = page.locator(selector).first();
         await expect(label).toHaveCSS("font-size", "10px");
@@ -26,7 +26,7 @@ for (const width of [320, 390, 1280]) {
         await page.getByRole("button", { name: "Mở sidebar", exact: true }).click();
       }
       for (const selector of [".nav-item.active .nav-text", ".nav-item:not(.active) .nav-text"]) {
-        await expect(sidebar.locator(selector).first()).toHaveCSS("font-size", "14px");
+        await expect(sidebar.locator(selector).first()).toHaveCSS("font-size", width < 700 ? "15px" : "14px");
         await expect(sidebar.locator(selector).first()).toHaveCSS("font-weight", "400");
       }
       if (width < 700) {
@@ -70,9 +70,9 @@ for (const width of [320, 390, 1280]) {
       await page.getByRole("button", { name: "Sửa Nội dung", exact: true }).click();
       const editor = page.locator(".content-editor-input");
       await editor.fill("Nội dung tiếng Việt có dấu: Ắ Ằ Ẳ Ẵ Ặ Ấ Ầ Ẩ Ẫ Ậ Ế Ề Ể Ễ Ệ Ố Ồ Ổ Ỗ Ộ Ớ Ờ Ở Ỡ Ợ Ứ Ừ Ử Ữ Ự đ");
-      await expect(editor).toHaveCSS("font-size", "15px");
+      await expect(editor).toHaveCSS("font-size", width < 700 ? "15px" : "14px");
       await expect(editor).toHaveCSS("text-transform", "none");
-      await expect(editor).toHaveCSS("line-height", "24px");
+      await expect(editor).toHaveCSS("line-height", width < 700 ? "24px" : "22.4px");
       const client = await page.context().newCDPSession(page);
       await client.send("DOM.enable");
       await client.send("CSS.enable");
