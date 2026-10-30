@@ -4,10 +4,10 @@ Cập nhật: 2026-10-30. Đây là điểm bắt đầu cho phiên phát triể
 
 ## Trạng thái bàn giao
 
-- Production: `https://spark.thuanngo.com`, Vercel project `spark`, team Thuan Ngo. D-212 đã phát hành ngày 2026-10-30: commit mã `8d9a600070accd41a283c6ac3ed655b98d870339`, deployment READY `dpl_AqyVqBzbVyc3wecYwGAqrobVKcRt`, alias production đã trỏ đúng. Push tài liệu có thể tạo deployment mới cùng mã ứng dụng; kiểm tra SHA/alias khi tiếp tục.
-- Kiểm tra D-212: lint, typecheck, 176 unit test và production build đạt. 6 case trình duyệt ở 320/390/1280px × sáng/tối đạt, kiểm tra typography, menu thường/đang chọn, dock, quick-add, chi tiết và trạng thái nút.
-- Sau phát hành: 6 case trực tiếp production ở 320/390/1280px × sáng/tối đạt; xác minh menu 14px/400, list/Nội dung 15px, label 10px/700/uppercase, ô tên quick-add 16px, font Inter tiếng Việt thường/nghiêng và trạng thái nút.
-- Kiểm tra offline font thường/nghiêng và editor bằng Chrome local đã đạt ở D-210; D-212 không sửa font file hoặc cơ chế offline. Chưa kiểm tra iPhone vật lý, sync hai thiết bị hoặc cách ly tài khoản thật trong lượt này.
+- Production: `https://spark.thuanngo.com`, Vercel project `spark`, team Thuan Ngo. D-213 đã phát hành ngày 2026-10-30: commit mã `d85a9ab0ba4db431c6aaf05bfd8499b17c4743ce`, deployment READY `dpl_DYeUGdsJ8kBfiZNZ6K72dJ9Tquyc`, alias production đã trỏ đúng. Push tài liệu có thể tạo deployment mới cùng mã ứng dụng; kiểm tra SHA/alias khi tiếp tục.
+- Kiểm tra D-213: lint, typecheck, 176 unit test, build và 30 case trình duyệt local đạt. Bao gồm hover nội suy màu/đảo chiều, reduced motion, touch, header, vuốt chi tiết và utility trên desktop/mobile sáng/tối.
+- Sau phát hành: 9 case trực tiếp production đạt: hover 220ms sáng/tối, reduced motion, touch 390px và typography/action ở 320/390/1280px × sáng/tối.
+- Kiểm tra offline font thường/nghiêng và editor bằng Chrome local đã đạt ở D-210; D-213 không sửa font file hoặc cơ chế offline. Chưa kiểm tra iPhone vật lý, sync hai thiết bị hoặc cách ly tài khoản thật trong lượt này.
 - B-005 rà copy đã hoàn tất. Search và việc kiểm tra độ tin cậy dữ liệu vẫn tạm hoãn như phạm vi bên dưới.
 
 ## Typography hiện hành — D-212 (2026-10-30)
@@ -16,9 +16,9 @@ Chủ dự án duyệt nhúng Inter, chuẩn hóa typography, gộp Navy và hov
 
 Root 100% cả hai thiết bị. Menu 14px/400, list/nội dung 15px, tên chi tiết 18px, heading dialog 24px, support/metadata control 14px. Label 10px/700/uppercase cả desktop/mobile. Weight 400/700; line-height 1.2/1.4/1.6 theo vai trò. Heading view desktop38–56px, mobile30px/compact21px. Một Navy #111742; giữ dark neutral/artwork logo. Hover action Turquoise/Navy ↔ Navy/trắng; selected và disabled giữ riêng. D-211 thay các thông số typography của D-210; D-212 chỉnh menu/sidebar về 14px/400 cả thường và đang chọn. Ô nhập tên quick-add dùng token riêng 16px; nhãn viết hoa không tác động chữ do người dùng nhập.
 
-## D-213 — đã kiểm tra local, chưa phát hành
+## Hover desktop hiện hành — D-213
 
-Hover nút desktop (từ 700px, hover/fine pointer) chuyển màu nền/chữ/viền 220ms Quint, bao gồm các nút trước đây đổi màu tức thời. Giữ animation màn hình/gesture, màu selected/disabled, mobile/touch và reduced motion. Lint, typecheck, 176 unit test, build và 30 case trình duyệt đạt: hover có nội suy màu và đảo chiều, disabled, reduced motion, touch 390px, typography, header, vuốt đóng chi tiết và utility ở 320/390/1280px, sáng/tối. Chưa kiểm tra iPhone vật lý và chưa phát hành D-213.
+Hover nút desktop (từ 700px, hover/fine pointer) chuyển màu nền/chữ/viền 220ms Quint, bao gồm các nút trước đây đổi màu tức thời. Giữ animation màn hình/gesture, màu selected/disabled, mobile/touch và reduced motion.
 
 ## Phạm vi tiếp tục đã thống nhất
 
