@@ -261,7 +261,7 @@ Inter nhúng thường/nghiêng, root 100% ở cả desktop/mobile. Cỡ rem quy
 | Nội dung đọc/sửa | 15px | 15px | 400; đậm 700 | 1.6 |
 | Ô nhập tên quick-add | 16px | 16px | 400 | 1.4 |
 | Chữ giải thích/thông báo lỗi | 14px | 14px | 400 | 1.4 hoặc 1.6 cho đoạn dài |
-| Giá trị ngày/dự án trong chi tiết | 14px | 14px | 700 | 1.4 |
+| Giá trị ngày/dự án trong chi tiết | 12px | 12px | 700 | 1.4 |
 | Label trường/nút/nhóm/số đếm/metadata list/sort | 10px | 10px | 700, uppercase | 1.4 |
 | Nhãn dock | — | 10px | 700, uppercase | 1.4 |
 
@@ -277,7 +277,7 @@ Input/select/textarea desktop dùng focus như mobile: không outline ngoài, kh
 
 ### Khoảng cách danh sách và loading — D-214
 
-Gap giữa item 3px trên desktop/mobile. Caption loading cách thanh progress 17px. Pill tên dự án mở rộng có padding cân hai bên, chữ căn giữa và xuống dòng khi dài; cột tối đa 35%, chừa 6px sau chip trước nội dung task/note.
+Gap giữa item 2px trên desktop/mobile. Caption loading cách thanh progress 17px. Pill tên dự án mở rộng có padding cân hai bên, chữ căn giữa và xuống dòng khi dài; cột tối đa 35%, chừa 6px sau chip trước nội dung task/note.
 
 ### Hover desktop — D-213
 
@@ -583,3 +583,8 @@ Mobile: đổi `--editor-toolbar-gap` từ 10px thành 2px cho cả editor Nội
 ## D-208 — Khôi phục cỡ chữ mục menu (2026-10-29)
 
 Chữ các mục menu/sidebar (`.nav-text`), gồm điều hướng, smart filter, tên dự án, Đã lưu trữ và Phím tắt, dùng lại `0.8125rem`: 15.6px trên mobile với root 120%, 14.625px trên desktop với root 112.5%. Tách khỏi token label 10px của D-204. Nhãn nhóm, số đếm, dock và các label khác giữ hiện hành; không đổi vùng chạm hoặc hành vi.
+
+
+## D-216 — Cỡ chữ px và khoảng cách (2026-10-30)
+
+Gap item 2px cả desktop/mobile. Toolbar Nội dung chi tiết desktop cách phần text bên dưới 15px. Giá trị ngày/dự án trong chi tiết và quick-add 12px/700, line-height 1.4. Token font chuyển từ rem sang px: body15, input16, support14, metadata12, title18, dialog24; heading desktop clamp(38px, 5vw, 56px) giữ responsive hiện hành. Không còn cỡ chữ rem trong CSS app; line-height vẫn theo hệ số. Chưa phát hành.

@@ -35,7 +35,7 @@
 
 .quick-add-controls { display: grid; grid-template-columns: minmax(150px, 1fr) minmax(150px, 1fr) minmax(180px, 1fr) auto; gap: 10px; align-items: end; }
 .quick-add-control { min-width: 0; min-height: 44px; display: flex; align-items: center; gap: 8px; border: 1px solid var(--field-border); border-radius: 12px; background: var(--field); padding: 0 11px; color: var(--text-subtle, #858a9b); }
-.quick-add-controls input, .quick-add-controls select { width: 100%; min-width: 0; border: 0; color: var(--text-subtle, #73788b); background: transparent; font-size: var(--text-support); }
+.quick-add-controls input, .quick-add-controls select { width: 100%; min-width: 0; border: 0; color: var(--text-subtle, #73788b); background: transparent; font-size: var(--text-metadata); font-weight: 700; line-height: var(--leading-ui); }
 .project-dot.empty { border: 1.5px dashed var(--checkbox-border); background: transparent; box-shadow: none; }
 .quick-add-actions { display: flex; gap: 8px; align-items: center; }
 .quick-add-actions .text-button, .quick-add-actions .primary-button { min-height: calc(44px - var(--label-button-trim, 0px)); }

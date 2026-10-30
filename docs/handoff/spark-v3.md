@@ -94,3 +94,10 @@ Gap item 3px cả desktop/mobile; caption loading cách thanh progress 17px. Nh�
 Desktop focus form giống mobile: chỉ đậm viền, không outline ngoài hoặc đổi nền; giữ focus bàn phím cho nút/link. Toolbar sửa Nội dung trong chi tiết nằm dưới hàng nhãn 8px, toàn chiều rộng nội dung, cao 44px, nút 32px. Mobile/quick-add giữ layout. Lint, typecheck, 176 unit test, build và 16 case desktop/mobile chi tiết đạt; đã xem ảnh toolbar desktop. Đã phát hành cùng commit ở trạng thái bàn giao.
 
 Kiểm tra trực tiếp production D-214/D-215: 11 case đạt, gồm spacing/loading/tên dự án dài ở 390/700/1280px, toolbar và focus desktop sáng/tối ở 700/1280/1440px.
+
+
+## D-216 — Cỡ chữ px và khoảng cách (2026-10-30)
+
+Gap item 2px cả desktop/mobile. Toolbar Nội dung chi tiết desktop cách phần text bên dưới 15px. Giá trị ngày/dự án trong chi tiết và quick-add 12px/700, line-height 1.4. Token font chuyển từ rem sang px: body15, input16, support14, metadata12, title18, dialog24; heading desktop clamp(38px, 5vw, 56px) giữ responsive hiện hành. Không còn cỡ chữ rem trong CSS app; line-height vẫn theo hệ số. Chưa phát hành.
+
+D-216 đã đạt lint, typecheck, 176 unit test, build và 17 case trình duyệt desktop/mobile sáng/tối. Chưa deploy production.

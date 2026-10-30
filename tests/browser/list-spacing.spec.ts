@@ -12,7 +12,7 @@ for (const width of [390, 700, 1280]) {
     await expect(page.locator(".startup-caption")).toHaveCSS("margin-top", "17px");
     await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
     await page.evaluate(() => document.fonts.ready);
-    await expect(page.locator(".item-list").first()).toHaveCSS("row-gap", "3px");
+    await expect(page.locator(".item-list").first()).toHaveCSS("row-gap", "2px");
     if (width >= 700) {
       const chip = page.locator(".item-project-chip").first();
       await chip.click();

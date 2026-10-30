@@ -53,7 +53,7 @@ for (const { width, theme, type, expanded } of cases) {
     expect(await sheet.locator(".detail-title-row").boundingBox()).toEqual(titleRow);
     expect(await sheet.locator(".detail-field-heading").boundingBox()).toEqual(heading);
     const editStart = (await input.boundingBox())!;
-    expect(editStart.y).toBeCloseTo(readStart.y + 44, 1);
+    expect(editStart.y).toBeCloseTo(readStart.y + 59, 1);
     expect(editStart.x).toBeCloseTo(readStart.x, 1);
     const toolbar = (await sheet.locator(".content-toolbar").boundingBox())!;
     expect(toolbar.height).toBe(44);

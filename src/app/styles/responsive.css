@@ -11,7 +11,7 @@
   .item-detail-sheet .detail-content { padding-top: 0; }
   .item-detail-sheet .detail-description { position: relative; }
   .item-detail-sheet .detail-field-heading { min-height: 30px; margin-bottom: 8px; }
-  .item-detail-sheet .content-toolbar { height: 44px; flex-wrap: nowrap; }
+  .item-detail-sheet .content-toolbar { margin-bottom: 15px; height: 44px; flex-wrap: nowrap; }
   .item-detail-sheet .content-counter { font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; white-space: nowrap; }
   .item-detail-sheet .content-editor-input { padding: 0; color: var(--text-secondary, #4e5569); font-weight: 400; }
   .detail-inline-editor input { border-bottom: 0; color: var(--heading); }

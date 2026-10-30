@@ -614,3 +614,8 @@ D-214 cũng giới hạn tooltip sidebar compact theo viewport, cho tên dài xu
 ## D-215 — Focus form và toolbar chi tiết desktop (2026-10-30)
 
 Desktop dùng focus form như mobile: bỏ outline ngoài input/select/textarea, giữ nền field và đổi viền đậm hơn (heading 40% + field-border). Giữ khả năng focus/nhập và focus-visible cho button/link; editor inline giữ không outline. Toolbar Nội dung trong chi tiết desktop nằm trong luồng dưới hàng nhãn, cách hàng nhãn 8px, rộng toàn vùng nội dung, cao 44px, nút B/I/U 32px; bộ đếm căn phải. Mẫu ảnh được hiểu theo tỷ lệ ảnh 2x (toolbar khoảng 88px ảnh tương ứng 44px CSS). Giữ palette và trạng thái selected hiện hành; mobile và quick-add không đổi layout.
+
+
+## D-216 — Cỡ chữ px và khoảng cách (2026-10-30)
+
+Gap item 2px cả desktop/mobile. Toolbar Nội dung chi tiết desktop cách phần text bên dưới 15px. Giá trị ngày/dự án trong chi tiết và quick-add 12px/700, line-height 1.4. Token font chuyển từ rem sang px: body15, input16, support14, metadata12, title18, dialog24; heading desktop clamp(38px, 5vw, 56px) giữ responsive hiện hành. Không còn cỡ chữ rem trong CSS app; line-height vẫn theo hệ số. Chưa phát hành.
