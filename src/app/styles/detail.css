@@ -112,3 +112,16 @@
 .custom-color-option.selected { border-color: var(--heading); outline: none; }
 .custom-color-option.selected > span::after { content: ""; position: absolute; inset: 7px; border: 2px solid var(--surface); border-radius: 50%; background: var(--custom-project-color); box-shadow: 0 0 0 1px rgba(17,23,66,.18); }
 .custom-color-option:focus-within { filter: brightness(.88); }
+
+.project-select { position: relative; min-width: 0; }
+.project-select-trigger, .project-select-menu { display: none; }
+@media (min-width: 700px) {
+  .project-select-native { display: none; }
+  .project-select-trigger { display: flex; align-items: center; gap: 12px; min-height: 34px; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; }
+  .project-select-menu { position: absolute; z-index: 100; bottom: calc(100% + 12px); right: -10px; display: grid; gap: 4px; width: max-content; min-width: 240px; max-width: min(360px, calc(100vw - 40px)); max-height: min(360px, 60vh); overflow-y: auto; padding: 8px; border: 1px solid var(--field-border); border-radius: 16px; background: var(--surface); box-shadow: 0 12px 36px rgba(17,23,66,.16); color: var(--ink); }
+  .project-select-menu button { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 14px; border: 0; border-radius: 10px; background: transparent; text-align: left; color: inherit; font: inherit; overflow-wrap: anywhere; }
+  .project-select-menu button > span { flex: 0 0 14px; }
+  .project-select-menu button:hover, .project-select-menu button:focus-visible { background: var(--control-hover); }
+  .project-select-menu button[aria-selected="true"] { background: var(--turquoise-soft); color: var(--heading); }
+  .project-select-menu button:disabled { color: var(--muted); cursor: not-allowed; }
+}

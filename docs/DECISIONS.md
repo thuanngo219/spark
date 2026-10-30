@@ -619,3 +619,7 @@ Desktop dùng focus form như mobile: bỏ outline ngoài input/select/textarea,
 ## D-216 — Cỡ chữ px và khoảng cách (2026-10-30)
 
 Gap item 2px cả desktop/mobile. Toolbar Nội dung chi tiết desktop cách phần text bên dưới 15px. Giá trị ngày/dự án trong chi tiết và quick-add 12px/700, line-height 1.4. Token font chuyển từ rem sang px: body15, input16, support14, metadata12, title18, dialog24; heading desktop clamp(38px, 5vw, 56px) giữ responsive hiện hành. Không còn cỡ chữ rem trong CSS app; line-height vẫn theo hệ số. Chưa phát hành.
+
+## D-217 — Khoảng đệm menu dự án chi tiết desktop (2026-10-30)
+
+Thay native menu dự án trong chi tiết desktop bằng listbox của app: dòng tối thiểu 44px, padding 10px 14px, gap 4px, khung padding 8px; tên dài xuống dòng. Hỗ trợ chọn bằng chuột/Enter/Space, phím mũi tên/Home/End, Escape và đóng khi click ngoài. Mobile giữ native select. Tự deploy production sau kiểm tra.

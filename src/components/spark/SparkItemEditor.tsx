@@ -1,5 +1,6 @@
 "use client";
 
+import { ProjectSelect } from "@/components/ProjectSelect";
 import { flushSync } from "react-dom";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import ContentEditor, { type ContentEditorHandle } from "@/components/ContentEditor";
@@ -288,7 +289,7 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
           <div className="detail-project-actions">
             <label className="detail-meta-control project" title="Dự án">
               <span className={`project-dot ${project ? "" : "empty"}`} style={project ? { background: project.color } : undefined} />
-              <select value={project?.id ?? ""} aria-label="Dự án" onChange={(event) => { const value = event.target.value; setProjectId(value); onSave({ projectId: value || null }); }}><option value="">Không có dự án</option>{projects.filter((entry) => !entry.archivedAt || entry.id === projectId).map((entry) => <option key={entry.id} value={entry.id} disabled={Boolean(entry.archivedAt)}>{entry.name}{entry.archivedAt ? " (đã lưu trữ)" : ""}</option>)}</select>
+              <ProjectSelect value={project?.id ?? ""} projects={projects.filter(entry => !entry.archivedAt || entry.id === projectId)} onChange={value => { setProjectId(value); onSave({ projectId: value || null }); }} />
             </label>
             <div className="detail-item-actions">
               {item.type === "note" && <button type="button" className="detail-meta-button archive" onClick={onArchive} aria-label={item.archivedAt ? "Khôi phục ghi chú" : "Lưu trữ ghi chú"} title={item.archivedAt ? "Khôi phục" : "Lưu trữ"}><Icon name="archive" size={18} /><span className="detail-meta-label">{item.archivedAt ? "Khôi phục" : "Lưu trữ"}</span></button>}

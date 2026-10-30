@@ -103,3 +103,5 @@ Gap item 2px cả desktop/mobile. Toolbar Nội dung chi tiết desktop cách ph
 D-216 đã đạt lint, typecheck, 176 unit test, build và 17 case trình duyệt desktop/mobile sáng/tối. Đã deploy production; 11 case kiểm tra trực tiếp đạt.
 
 Chủ dự án yêu cầu tự kiểm tra và deploy production sau mỗi yêu cầu chỉnh sửa app, không chờ lệnh deploy riêng (2026-10-30).
+
+D-217: menu dự án chi tiết desktop có dòng 44px, padding 10px 14px, gap 4px, hỗ trợ keyboard; mobile giữ native select.
