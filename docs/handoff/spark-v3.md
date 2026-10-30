@@ -4,7 +4,7 @@ Cập nhật: 2026-10-30. Đây là điểm bắt đầu cho phiên phát triể
 
 ## Trạng thái bàn giao
 
-- Production: `https://spark.thuanngo.com`, Vercel project `spark`, team Thuan Ngo. D-213 đã phát hành ngày 2026-10-30: commit mã `d85a9ab0ba4db431c6aaf05bfd8499b17c4743ce`, deployment READY `dpl_DYeUGdsJ8kBfiZNZ6K72dJ9Tquyc`, alias production đã trỏ đúng. Push tài liệu có thể tạo deployment mới cùng mã ứng dụng; kiểm tra SHA/alias khi tiếp tục.
+- Production: `https://spark.thuanngo.com`, Vercel project `spark`, team Thuan Ngo. D-214/D-215 đã phát hành ngày 2026-10-30: commit mã `29c8a6e44581042d86ca84464016bb17711362db`, deployment READY `dpl_E1JcBb1myBjegeWPD6ecFvHhwT1t`, alias production đã trỏ đúng. Push tài liệu có thể tạo deployment mới cùng mã ứng dụng; kiểm tra SHA/alias khi tiếp tục.
 - Kiểm tra D-213: lint, typecheck, 176 unit test, build và 30 case trình duyệt local đạt. Bao gồm hover nội suy màu/đảo chiều, reduced motion, touch, header, vuốt chi tiết và utility trên desktop/mobile sáng/tối.
 - Sau phát hành: 9 case trực tiếp production đạt: hover 220ms sáng/tối, reduced motion, touch 390px và typography/action ở 320/390/1280px × sáng/tối.
 - Kiểm tra offline font thường/nghiêng và editor bằng Chrome local đã đạt ở D-210; D-213 không sửa font file hoặc cơ chế offline. Chưa kiểm tra iPhone vật lý, sync hai thiết bị hoặc cách ly tài khoản thật trong lượt này.
@@ -85,10 +85,12 @@ Hover nút desktop (từ 700px, hover/fine pointer) chuyển màu nền/chữ/vi
 - `docs/DECISIONS.md`: quyết định có thứ tự; mục sau thay phần tương ứng của mục trước.
 - `docs/IMPLEMENTATION_GUIDE.md` và `docs/OFFLINE_SYNC.md`: kiến trúc, dữ liệu, offline, kiểm tra và deploy.
 
-## D-214 — đã kiểm tra local, chưa phát hành
+## D-214 — đã phát hành
 
-Gap item 3px cả desktop/mobile; caption loading cách thanh progress 17px. Nhãn dự án mở rộng căn giữa, cho phép xuống dòng để hiện đủ tên, cột tối đa 35% và chừa 6px sau chip. Tooltip sidebar thu gọn cũng giới hạn theo viewport để tên dài không gây tràn ngang. Lint, typecheck, 176 unit test, build, 8 case header và 3 case spacing/tên dài ở 390/700/1280px đạt; đã xem ảnh nhãn dài. Chưa phát hành.
+Gap item 3px cả desktop/mobile; caption loading cách thanh progress 17px. Nhãn dự án mở rộng căn giữa, cho phép xuống dòng để hiện đủ tên, cột tối đa 35% và chừa 6px sau chip. Tooltip sidebar thu gọn cũng giới hạn theo viewport để tên dài không gây tràn ngang. Lint, typecheck, 176 unit test, build, 8 case header và 3 case spacing/tên dài ở 390/700/1280px đạt; đã xem ảnh nhãn dài. Đã phát hành cùng commit ở trạng thái bàn giao.
 
-## D-215 — đã kiểm tra local, chưa phát hành
+## D-215 — đã phát hành
 
-Desktop focus form giống mobile: chỉ đậm viền, không outline ngoài hoặc đổi nền; giữ focus bàn phím cho nút/link. Toolbar sửa Nội dung trong chi tiết nằm dưới hàng nhãn 8px, toàn chiều rộng nội dung, cao 44px, nút 32px. Mobile/quick-add giữ layout. Lint, typecheck, 176 unit test, build và 16 case desktop/mobile chi tiết đạt; đã xem ảnh toolbar desktop. Chưa phát hành.
+Desktop focus form giống mobile: chỉ đậm viền, không outline ngoài hoặc đổi nền; giữ focus bàn phím cho nút/link. Toolbar sửa Nội dung trong chi tiết nằm dưới hàng nhãn 8px, toàn chiều rộng nội dung, cao 44px, nút 32px. Mobile/quick-add giữ layout. Lint, typecheck, 176 unit test, build và 16 case desktop/mobile chi tiết đạt; đã xem ảnh toolbar desktop. Đã phát hành cùng commit ở trạng thái bàn giao.
+
+Kiểm tra trực tiếp production D-214/D-215: 11 case đạt, gồm spacing/loading/tên dự án dài ở 390/700/1280px, toolbar và focus desktop sáng/tối ở 700/1280/1440px.
