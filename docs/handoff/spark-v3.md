@@ -4,7 +4,7 @@ Cập nhật: 2026-10-30. Đây là điểm bắt đầu cho phiên phát triể
 
 ## Trạng thái bàn giao
 
-- Production: `https://spark.thuanngo.com`, Vercel project `spark`, team Thuan Ngo. D-214/D-215 đã phát hành ngày 2026-10-30: commit mã `29c8a6e44581042d86ca84464016bb17711362db`, deployment READY `dpl_E1JcBb1myBjegeWPD6ecFvHhwT1t`, alias production đã trỏ đúng. Push tài liệu có thể tạo deployment mới cùng mã ứng dụng; kiểm tra SHA/alias khi tiếp tục.
+- Production: `https://spark.thuanngo.com`, Vercel project `spark`, team Thuan Ngo. D-216 đã phát hành ngày 2026-10-30: commit mã `ed1a8e47c4d76119eb7c1d3027651bebda2e31b0`, deployment READY `dpl_5sRgHn7Vxxk6JmYo3QuNsGf4PUuc`, alias production đã trỏ đúng. Push tài liệu có thể tạo deployment mới cùng mã ứng dụng; kiểm tra SHA/alias khi tiếp tục.
 - Kiểm tra D-213: lint, typecheck, 176 unit test, build và 30 case trình duyệt local đạt. Bao gồm hover nội suy màu/đảo chiều, reduced motion, touch, header, vuốt chi tiết và utility trên desktop/mobile sáng/tối.
 - Sau phát hành: 9 case trực tiếp production đạt: hover 220ms sáng/tối, reduced motion, touch 390px và typography/action ở 320/390/1280px × sáng/tối.
 - Kiểm tra offline font thường/nghiêng và editor bằng Chrome local đã đạt ở D-210; D-213 không sửa font file hoặc cơ chế offline. Chưa kiểm tra iPhone vật lý, sync hai thiết bị hoặc cách ly tài khoản thật trong lượt này.
@@ -100,4 +100,6 @@ Kiểm tra trực tiếp production D-214/D-215: 11 case đạt, gồm spacing/l
 
 Gap item 2px cả desktop/mobile. Toolbar Nội dung chi tiết desktop cách phần text bên dưới 15px. Giá trị ngày/dự án trong chi tiết và quick-add 12px/700, line-height 1.4. Token font chuyển từ rem sang px: body15, input16, support14, metadata12, title18, dialog24; heading desktop clamp(38px, 5vw, 56px) giữ responsive hiện hành. Không còn cỡ chữ rem trong CSS app; line-height vẫn theo hệ số. Chưa phát hành.
 
-D-216 đã đạt lint, typecheck, 176 unit test, build và 17 case trình duyệt desktop/mobile sáng/tối. Chưa deploy production.
+D-216 đã đạt lint, typecheck, 176 unit test, build và 17 case trình duyệt desktop/mobile sáng/tối. Đã deploy production; 11 case kiểm tra trực tiếp đạt.
+
+Chủ dự án yêu cầu tự kiểm tra và deploy production sau mỗi yêu cầu chỉnh sửa app, không chờ lệnh deploy riêng (2026-10-30).

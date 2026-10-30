@@ -31,6 +31,7 @@
 - Trước khi code, đối chiếu acceptance criteria trong product brief.
 - Khi đưa ra quyết định ảnh hưởng đến scope, data model hoặc UX, cập nhật `docs/DECISIONS.md`.
 - Khi thay đổi hành vi đã mô tả, cập nhật tài liệu cùng commit/thay đổi mã nguồn.
+- Chủ dự án yêu cầu từ 2026-10-30: sau mỗi yêu cầu chỉnh sửa app, hoàn tất kiểm tra rồi deploy production và xác minh READY, commit/alias cùng kiểm tra trực tiếp; không chờ yêu cầu deploy riêng.
 - Bảo toàn thay đổi đang có; không ghi đè phần chưa rõ nguồn gốc.
 - Chỉ dùng Impeccable khi chủ dự án yêu cầu rõ ràng; không tự chạy hoặc bật lại hook tự động.
 - Kiểm tra ít nhất: lint, typecheck, test logic ngày và responsive ở 390px trước khi bàn giao.
