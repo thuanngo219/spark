@@ -6,7 +6,6 @@ import { formatListDate } from "@/lib/dates";
 import { createItemClickGuard, resolveItemContentTap, resolveItemSwipe } from "@/lib/mobile-gestures";
 import { sortItemsForDisplay, type ItemSortField, type ItemSortPreference } from "@/lib/task-filters";
 import type { Project, SparkItem, View } from "@/lib/types";
-import { projectPillWidth } from "./shared";
 
 const sortFieldLabels: Record<ItemSortField, string> = {
   attention: "MỨC CHÚ Ý",
@@ -342,7 +341,6 @@ const SwipeableItemRow = memo(function SwipeableItemRow({
               type="button"
               style={{
                 "--project-color": project.color,
-                "--project-pill-width": `${projectPillWidth(project.name)}px`,
               } as CSSProperties}
               aria-expanded={projectLabelExpanded}
               aria-label={`${projectLabelExpanded ? "Thu gọn" : "Mở rộng"} tên tất cả dự án`}

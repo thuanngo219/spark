@@ -271,6 +271,14 @@ Menu dùng token `--text-support` 14px và weight 400; trạng thái chọn ch�
 
 Khoảng cách mobile: nhãn–nội dung 8px, hàng nhãn–toolbar 2px; vùng chạm tối thiểu44px, sort ngoại lệ30px. Metadata chi tiết mobile giữ hai hàng: cờ/dự án/hành động trên, hai ô ngày chia đều dưới. Nút X hủy Nội Dung dùng `--control-hover`. D-211 thay thang chữ D-210, không đổi palette/hover hay dữ liệu.
 
+### Form và toolbar desktop — D-215
+
+Input/select/textarea desktop dùng focus như mobile: không outline ngoài, không đổi nền; viền form đậm hơn. Nút/link giữ focus bàn phím. Toolbar sửa Nội dung trong chi tiết desktop nằm dưới hàng nhãn 8px, cao 44px, rộng toàn cột, nút B/I/U 32px.
+
+### Khoảng cách danh sách và loading — D-214
+
+Gap giữa item 3px trên desktop/mobile. Caption loading cách thanh progress 17px. Pill tên dự án mở rộng có padding cân hai bên, chữ căn giữa và xuống dòng khi dài; cột tối đa 35%, chừa 6px sau chip trước nội dung task/note.
+
 ### Hover desktop — D-213
 
 Từ 700px với hover/fine pointer, nút chuyển nền/chữ/viền trong 220ms bằng easing Quint hiện hành. Thời lượng màu tách khỏi transform; giữ palette, selected và disabled. Mobile/touch giữ thời lượng cũ. Reduced motion dùng .01ms.

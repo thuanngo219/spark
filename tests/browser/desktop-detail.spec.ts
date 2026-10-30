@@ -53,14 +53,14 @@ for (const { width, theme, type, expanded } of cases) {
     expect(await sheet.locator(".detail-title-row").boundingBox()).toEqual(titleRow);
     expect(await sheet.locator(".detail-field-heading").boundingBox()).toEqual(heading);
     const editStart = (await input.boundingBox())!;
-    expect(editStart.y).toBeCloseTo(readStart.y, 1);
+    expect(editStart.y).toBeCloseTo(readStart.y + 44, 1);
     expect(editStart.x).toBeCloseTo(readStart.x, 1);
     const toolbar = (await sheet.locator(".content-toolbar").boundingBox())!;
-    expect(toolbar.height).toBe(30);
+    expect(toolbar.height).toBe(44);
     expect(toolbar.x + toolbar.width / 2).toBeCloseTo(heading.x + heading.width / 2, 1);
-    expect(toolbar.width).toBeCloseTo(Math.max(180, heading.width - 338), 1);
-    expect(toolbar.y + toolbar.height / 2).toBeCloseTo(heading.y + heading.height / 2, 1);
-    expect(readStart.y - toolbar.y - toolbar.height).toBeGreaterThanOrEqual(13);
+    expect(toolbar.width).toBeCloseTo(heading.width, 1);
+    expect(toolbar.y - heading.y - heading.height).toBe(8);
+    await page.screenshot({ path: `/tmp/spark-desktop-toolbar-${width}-${theme}-${type}.png` });
     await expect(sheet.getByRole("button", { name: "In đậm", exact: true })).toBeInViewport();
     const text = "Một dòng nội dung dài để kiểm tra vùng cuộn.\n".repeat(80);
     await input.fill(text);
@@ -82,5 +82,24 @@ for (const { width, theme, type, expanded } of cases) {
     await expect(sheet).toBeHidden();
     await expect(page.locator("body")).not.toHaveCSS("position", "fixed");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  });
+}
+
+for (const theme of ["light", "dark"] as const) {
+  test(`desktop input focus uses border only ${theme}`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: theme });
+    await page.goto("/");
+    await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
+    await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
+    const input = page.getByRole("textbox", { name: "Tên mục", exact: true });
+    await input.evaluate(el => el.blur());
+    const before = await input.evaluate(el => ({ border: getComputedStyle(el).borderColor, background: getComputedStyle(el).backgroundColor }));
+    await input.focus();
+    await expect(input).toBeFocused();
+    await expect(input).toHaveCSS("outline-width", "0px");
+    await expect(input).toHaveCSS("background-color", before.background);
+    await expect(input).not.toHaveCSS("border-color", before.border);
+    await input.fill("Nhập liệu vẫn hoạt động");
+    await expect(input).toHaveValue("Nhập liệu vẫn hoạt động");
   });
 }

@@ -84,3 +84,11 @@ Hover nút desktop (từ 700px, hover/fine pointer) chuyển màu nền/chữ/vi
 - `docs/UI_OPTIONS.md`: hướng Compact Canvas và lịch sử tinh chỉnh UI.
 - `docs/DECISIONS.md`: quyết định có thứ tự; mục sau thay phần tương ứng của mục trước.
 - `docs/IMPLEMENTATION_GUIDE.md` và `docs/OFFLINE_SYNC.md`: kiến trúc, dữ liệu, offline, kiểm tra và deploy.
+
+## D-214 — đã kiểm tra local, chưa phát hành
+
+Gap item 3px cả desktop/mobile; caption loading cách thanh progress 17px. Nhãn dự án mở rộng căn giữa, cho phép xuống dòng để hiện đủ tên, cột tối đa 35% và chừa 6px sau chip. Tooltip sidebar thu gọn cũng giới hạn theo viewport để tên dài không gây tràn ngang. Lint, typecheck, 176 unit test, build, 8 case header và 3 case spacing/tên dài ở 390/700/1280px đạt; đã xem ảnh nhãn dài. Chưa phát hành.
+
+## D-215 — đã kiểm tra local, chưa phát hành
+
+Desktop focus form giống mobile: chỉ đậm viền, không outline ngoài hoặc đổi nền; giữ focus bàn phím cho nút/link. Toolbar sửa Nội dung trong chi tiết nằm dưới hàng nhãn 8px, toàn chiều rộng nội dung, cao 44px, nút 32px. Mobile/quick-add giữ layout. Lint, typecheck, 176 unit test, build và 16 case desktop/mobile chi tiết đạt; đã xem ảnh toolbar desktop. Chưa phát hành.

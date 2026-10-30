@@ -10,9 +10,8 @@
   .detail-main-inner { display: flex; flex-direction: column; flex: 0 0 auto; width: var(--detail-column-width); min-height: 0; height: 100%; }
   .item-detail-sheet .detail-content { padding-top: 0; }
   .item-detail-sheet .detail-description { position: relative; }
-  .item-detail-sheet .detail-field-heading { min-height: 30px; margin-bottom: 14px; }
-  .item-detail-sheet .content-toolbar { position: absolute; top: 14.4px; left: 50%; transform: translateX(-50%); width: max(180px, calc(100% - 338px)); height: 30px; padding: 0 6px; flex-wrap: nowrap; }
-  .item-detail-sheet .content-toolbar button { width: 26px; height: 26px; }
+  .item-detail-sheet .detail-field-heading { min-height: 30px; margin-bottom: 8px; }
+  .item-detail-sheet .content-toolbar { height: 44px; flex-wrap: nowrap; }
   .item-detail-sheet .content-counter { font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; white-space: nowrap; }
   .item-detail-sheet .content-editor-input { padding: 0; color: var(--text-secondary, #4e5569); font-weight: 400; }
   .detail-inline-editor input { border-bottom: 0; color: var(--heading); }
@@ -29,7 +28,7 @@
      the splash/blur layers, with a box taller than its 10px border exclusion.
      No hit target or layout height; existing safe-area padding protects content. */
   .browser-top-surface { display: block; position: fixed; inset: 0 0 auto; height: var(--browser-top-height); z-index: 1001; background: var(--browser-background, var(--canvas)); pointer-events: none; }
-  :root { --label-button-trim: 4px; --label-content-gap: 8px; --label-section-gap: 8px; --label-hint-gap: 8px; --editor-toolbar-gap: 2px; --input-focus-width: 0px; --form-focus-background: var(--field); --form-focus-border: color-mix(in srgb, var(--heading) 40%, var(--field-border)); }
+  :root { --label-button-trim: 4px; --label-content-gap: 8px; --label-section-gap: 8px; --label-hint-gap: 8px; --editor-toolbar-gap: 2px; }
   .app-shell, .app-shell.sidebar-compact { display: block; }
   .app-shell > .sidebar { display: none; }
   .content { padding: 0; }
@@ -49,7 +48,6 @@
   .item-group h2 { min-width: 0; padding-inline: 0; }
   .item-sort-controls { gap: 3px; }
   .item-sort-controls select { font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; }
-  .item-list { gap: 2px; }
   .swipe-row { position: relative; min-height: 52px; overflow: hidden; touch-action: pan-y; }
   .swipe-actions { position: absolute; inset: 0 0 0 auto; width: 144px; display: grid; grid-template-columns: repeat(3, 48px); opacity: 0; visibility: hidden; pointer-events: none; }
   .swipe-row.is-open .swipe-actions, .swipe-row.is-dragging .swipe-actions { opacity: 1; visibility: visible; pointer-events: auto; }
@@ -96,7 +94,6 @@
   /* Compact visual buttons retain a 44px touch area, centred on their surface. */
   :is(.note-toggle, .quick-description-toggle, .text-button, .primary-button, .delete-button, .archive-button, .today-button, .detail-close-button, .mobile-sync-status, .disconnect-button) { position: relative; isolation: isolate; }
   :is(.note-toggle, .quick-description-toggle, .text-button, .primary-button, .delete-button, .archive-button, .today-button, .detail-close-button, .mobile-sync-status, .disconnect-button)::after { content: ""; position: absolute; z-index: -1; inset-inline: 0; top: 50%; height: max(100%, 44px); transform: translateY(-50%); }
-  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--form-focus-border); }
   .quick-add-project { grid-column: 1 / -1; }
   .quick-add-project > span:first-child { display: none; }
   .quick-description-preview { display: grid; grid-template-columns: minmax(0, 1fr) auto; width: 100%; align-items: start; gap: 12px; border: 0; background: transparent; color: var(--text-secondary); padding: 0; text-align: left; font: inherit; font-size: var(--text-body); font-weight: 400; line-height: var(--leading-body); }

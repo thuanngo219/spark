@@ -604,3 +604,13 @@ Chủ dự án cập nhật menu/sidebar về14px, weight400 ở cả desktop/mo
 Nút trên desktop từ 700px, thiết bị có hover và con trỏ fine: chuyển background-color, color và border-color trong 220ms với easing Quint hiện hành. Bổ sung transition nền tảng cho các nút trước đây đổi màu tức thời; các nút có transition riêng dùng chung token thời lượng màu. Không dùng transition: all. Transform giữ thời lượng riêng 160ms; selected/disabled và palette giữ nguyên. Mobile/touch giữ thời lượng cũ, không thêm transition nút toàn cục. Reduced motion vẫn hạ thời lượng xuống .01ms.
 
 Rà soát: header 220ms, sidebar layout 240ms, dialog desktop 200ms, fade overlay/utility 160ms; drawer/chi tiết/Phân loại mobile 240ms, swipe hồi vị 190ms và không transition khi đang kéo. Switch 180ms, filter indicator 280ms; startup fade 500ms rồi reveal 600ms, pulse đồng bộ 1.2s. Không thay các animation này trong D-213.
+
+## D-214 — Khoảng cách danh sách/loading và nhãn dự án (2026-10-30)
+
+Gap giữa item là 3px trên desktop/mobile. Caption loading cách thanh progress 17px (tăng 5px). Pill tên dự án desktop lấy chiều rộng theo nội dung, padding cân hai bên, căn giữa chữ; tên dài xuống dòng trong cột tối đa 35% thay vì bị cắt. Chừa 6px sau chip trước vùng nội dung task/note. Giữ marker dự án mobile hiện hành và thao tác bật/tắt nhãn đồng loạt.
+
+D-214 cũng giới hạn tooltip sidebar compact theo viewport, cho tên dài xuống dòng để tránh tràn ngang.
+
+## D-215 — Focus form và toolbar chi tiết desktop (2026-10-30)
+
+Desktop dùng focus form như mobile: bỏ outline ngoài input/select/textarea, giữ nền field và đổi viền đậm hơn (heading 40% + field-border). Giữ khả năng focus/nhập và focus-visible cho button/link; editor inline giữ không outline. Toolbar Nội dung trong chi tiết desktop nằm trong luồng dưới hàng nhãn, cách hàng nhãn 8px, rộng toàn vùng nội dung, cao 44px, nút B/I/U 32px; bộ đếm căn phải. Mẫu ảnh được hiểu theo tỷ lệ ảnh 2x (toolbar khoảng 88px ảnh tương ứng 44px CSS). Giữ palette và trạng thái selected hiện hành; mobile và quick-add không đổi layout.
