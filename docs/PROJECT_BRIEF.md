@@ -217,7 +217,7 @@ Quy tắc:
 - **Calm by default:** khoảng trắng rộng, một màu nhấn chính, ít đường viền.
 - **Fast capture:** ô nhập luôn gần ngón tay/con trỏ.
 - **Progressive disclosure:** chỉ hiện project/date controls khi cần.
-- **Purposeful motion:** animation 150–220ms, dùng để xác nhận trạng thái chứ không trang trí.
+- **Purposeful motion:** animation 150–220ms, dùng để xác nhận trạng thái chứ không trang trí. D-213: hover nút trên desktop từ 700px với hover/fine pointer chuyển nền/chữ/viền trong 220ms Quint; mobile/touch giữ thời lượng hiện hành, reduced motion được tôn trọng.
 - **Accessible:** WCAG AA cho tương phản, focus rõ, hỗ trợ keyboard và reduced motion.
 - **Không tạo cảm giác tội lỗi:** quá hạn được thông báo rõ nhưng không dùng màu đỏ dày đặc.
 

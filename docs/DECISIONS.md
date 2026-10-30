@@ -597,3 +597,10 @@ Chủ dự án chốt bảng mới: menu/sidebar, tên task/note trong list, N�
 ## D-212 — Menu 14px/400 trên mọi thiết bị (2026-10-30)
 
 Chủ dự án cập nhật menu/sidebar về14px, weight400 ở cả desktop/mobile; mục đang chọn cũng400, giữ tín hiệu màu/nền. Dùng token --text-support hiện có và sửa selector gốc. Tên task/note trong danh sách15px/400, Nội dung15px/400 (đậm700), dock10px/700/uppercase giữ đúng D-211. Không đổi các thành phần khác.
+
+
+## D-213 — Hover chuyển màu trên desktop (2026-10-30)
+
+Nút trên desktop từ 700px, thiết bị có hover và con trỏ fine: chuyển background-color, color và border-color trong 220ms với easing Quint hiện hành. Bổ sung transition nền tảng cho các nút trước đây đổi màu tức thời; các nút có transition riêng dùng chung token thời lượng màu. Không dùng transition: all. Transform giữ thời lượng riêng 160ms; selected/disabled và palette giữ nguyên. Mobile/touch giữ thời lượng cũ, không thêm transition nút toàn cục. Reduced motion vẫn hạ thời lượng xuống .01ms.
+
+Rà soát: header 220ms, sidebar layout 240ms, dialog desktop 200ms, fade overlay/utility 160ms; drawer/chi tiết/Phân loại mobile 240ms, swipe hồi vị 190ms và không transition khi đang kéo. Switch 180ms, filter indicator 280ms; startup fade 500ms rồi reveal 600ms, pulse đồng bộ 1.2s. Không thay các animation này trong D-213.

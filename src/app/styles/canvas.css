@@ -11,13 +11,13 @@
 .view-header.is-compact .eyebrow, .view-header.is-compact p { max-height: 0; min-height: 0; opacity: 0; }
 .view-header.is-compact .view-title-row button { display: none; }
 .view-header.is-compact h1 { margin: 0; font-size: var(--view-compact-title-size, calc(var(--view-title-size) * .5)); }
-.project-edit-button { width: 36px; height: 36px; margin-top: -1px; border: 0; border-radius: 999px; background: transparent; color: var(--control-muted); display: grid; place-items: center; transition: background-color var(--motion-duration, 160ms) var(--ease), color var(--motion-duration, 160ms) var(--ease); }
+.project-edit-button { width: 36px; height: 36px; margin-top: -1px; border: 0; border-radius: 999px; background: transparent; color: var(--control-muted); display: grid; place-items: center; transition: background-color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease), color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease); }
 .project-edit-button:hover { background: var(--control-hover); color: var(--ink); }
 .view-header .eyebrow { max-height: 48px; overflow: hidden; transition: max-height var(--motion-duration, 220ms) var(--ease), min-height var(--motion-duration, 220ms) var(--ease), opacity var(--motion-duration, 160ms) var(--ease); }
 .view-header p { max-height: 64px; overflow: hidden; opacity: 1; transition: max-height var(--motion-duration, 220ms) var(--ease), opacity var(--motion-duration, 160ms) var(--ease); margin: 0; color: var(--muted); font-size: var(--text-support); }
 .view-header p span { color: var(--text-faint, #b0b4c0); padding: 0 3px; }
 .view-actions { display: flex; align-items: center; gap: 8px; }
-.icon-button { border: 0; background: var(--turquoise); width: 44px; height: 44px; border-radius: 999px; display: grid; place-items: center; color: var(--navy-900); transition: background-color var(--motion-duration, 160ms) var(--ease), color var(--motion-duration, 160ms) var(--ease), transform var(--motion-duration, 160ms) var(--ease); }
+.icon-button { border: 0; background: var(--turquoise); width: 44px; height: 44px; border-radius: 999px; display: grid; place-items: center; color: var(--navy-900); transition: background-color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease), color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease), transform var(--motion-duration, 160ms) var(--ease); }
 .icon-button:not(:disabled):hover { background: var(--navy-900); color: #fff; transform: translateY(-1px); }
 .view-actions .icon-button { width: 40px; height: 40px; background: transparent; color: var(--control-muted); }
 .view-actions .icon-button:not(:disabled):hover { background: var(--control-hover); color: var(--ink); transform: none; }
@@ -25,7 +25,7 @@
 .item-display-switcher[data-mode="note"] { --switcher-index: 1; }
 .item-display-switcher[data-mode="task"] { --switcher-index: 2; }
 .item-display-switcher::before { content: ""; position: absolute; left: var(--switcher-padding); top: 50%; width: var(--switcher-size); height: var(--switcher-size); border-radius: 50%; background: var(--surface); box-shadow: 0 5px 13px rgba(17,23,66,.15); pointer-events: none; transform: translate(calc(var(--switcher-index) * (var(--switcher-size) + 2px)), -50%); transition: transform var(--motion-duration, 280ms) var(--ease); }
-.item-display-switcher button { position: relative; width: var(--switcher-size); height: var(--switcher-size); padding: 0; border: 0; border-radius: 999px; background: transparent; color: inherit; display: grid; place-items: center; transition: color var(--motion-duration, 160ms) var(--ease); }
+.item-display-switcher button { position: relative; width: var(--switcher-size); height: var(--switcher-size); padding: 0; border: 0; border-radius: 999px; background: transparent; color: inherit; display: grid; place-items: center; transition: color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease); }
 .item-display-switcher button:hover, .item-display-switcher button.selected { color: var(--heading); }
 .mobile-header-drawer { display: none; }
 .sync-header-status { border-radius: 999px; min-height: 36px; display: flex; align-items: center; gap: 7px; padding: 0 8px; border: 0; background: transparent; color: var(--muted); font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; }

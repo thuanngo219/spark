@@ -9,7 +9,7 @@
 .brand-full { display: block; width: 153.6px; max-width: none; height: 57.6px; margin-left: -9.975px; }
 .nav-section { margin-bottom: 18px; }
 .nav-label { display: block; color: rgba(255,255,255,.43); font-size: var(--ui-label-size); font-weight: 700; letter-spacing: .13em; text-transform: uppercase; padding: 0; }
-.nav-item { border: 0; background: transparent; color: rgba(255,255,255,.68); min-height: 34px; width: 100%; padding: 0 9px; border-radius: 999px; display: flex; align-items: center; gap: 10px; text-align: left; transition: background var(--motion-duration, 160ms) var(--ease), color var(--motion-duration, 160ms) var(--ease), transform var(--motion-duration, 160ms) var(--ease); }
+.nav-item { border: 0; background: transparent; color: rgba(255,255,255,.68); min-height: 34px; width: 100%; padding: 0 9px; border-radius: 999px; display: flex; align-items: center; gap: 10px; text-align: left; transition: background-color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease), color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease), transform var(--motion-duration, 160ms) var(--ease); }
 .nav-item:hover { background: rgba(255,255,255,.07); color: white; }
 .nav-item:active { transform: scale(.985); }
 .nav-item.active { background: rgba(68,212,205,.13); color: #66e2dd; }
@@ -49,7 +49,7 @@
 .local-mode-card small { color: rgba(255,255,255,.38); font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; margin-top: 2px; white-space: nowrap; }
 .local-mode-icon { width: 28px; height: 28px; border-radius: 999px; background: rgba(68,212,205,.15); color: var(--turquoise); display: grid; place-items: center; flex: 0 0 auto; }
 .local-mode-icon.error, .local-mode-icon.offline { color: var(--urgent-ink); background: rgba(217,119,106,.14); }
-.sidebar-toggle { --focus: var(--heading); justify-self: end; width: 42px; height: 42px; margin: 0 -31px 12px 0; display: grid; place-items: center; color: var(--heading); background: var(--canvas); border: 0; border-radius: 999px; box-shadow: none; z-index: 22; transition: background-color var(--motion-duration, 160ms) var(--ease), color var(--motion-duration, 160ms) var(--ease); }
+.sidebar-toggle { --focus: var(--heading); justify-self: end; width: 42px; height: 42px; margin: 0 -31px 12px 0; display: grid; place-items: center; color: var(--heading); background: var(--canvas); border: 0; border-radius: 999px; box-shadow: none; z-index: 22; transition: background-color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease), color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease); }
 .sidebar-toggle:hover, .sidebar-toggle:focus-visible { color: var(--link-hover); }
 .app-shell.sidebar-compact > .sidebar .brand-full-wrap { width: 36px; }
 .app-shell.sidebar-compact > .sidebar .nav-text,

@@ -4,7 +4,7 @@
 .item-group h2 { line-height: var(--leading-ui); display: flex; align-items: center; gap: 7px; color: var(--text-subtle, #858a9b); margin: 0; padding: 9px 4px 7px; font-size: var(--ui-label-size); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .item-group h2 span { color: var(--text-subtle, #9a9dac); min-width: 17px; height: 16px; display: grid; place-items: center; font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; }
 .item-sort-controls { display: flex; align-items: center; gap: 4px; }
-.item-sort-controls select, .item-sort-direction { height: 30px; min-height: 30px; border: 1px solid var(--field-border); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; transition: border-color var(--motion-duration, 160ms) var(--ease), color var(--motion-duration, 160ms) var(--ease); }
+.item-sort-controls select, .item-sort-direction { height: 30px; min-height: 30px; border: 1px solid var(--field-border); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; transition: border-color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease), color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease); }
 .item-sort-select { position: relative; display: block; }
 .item-sort-controls select { width: calc(16ch + 36px); padding: 0 26px 0 10px; appearance: none; }
 .item-sort-select-icon { position: absolute; top: 50%; right: 9px; pointer-events: none; transform: translateY(-50%); stroke-width: 2; }
@@ -16,7 +16,7 @@
 .item-row { min-height: 35px; display: grid; grid-template-columns: 24px 15px minmax(0, 1fr) auto; align-items: start; padding: 4px 1px 4px 10px; border-radius: 7px; transition: background var(--motion-duration, 160ms) var(--ease), grid-template-columns var(--motion-duration, 200ms) var(--ease); }
 .item-row.project-labels-expanded { grid-template-columns: 24px calc(var(--project-chip-width, 80px) + 2.5px) minmax(0, 1fr) auto; }
 .item-row:hover { background: color-mix(in srgb, var(--surface) 66%, transparent); }
-.checkbox, .detail-status-box { width: 19px; height: 19px; border: 1.5px solid var(--checkbox-border); border-radius: 999px; background: transparent; display: grid; place-items: center; color: white; padding: 0; transition: background-color var(--motion-duration, 180ms) var(--ease), border-color var(--motion-duration, 180ms) var(--ease), color var(--motion-duration, 180ms) var(--ease); }
+.checkbox, .detail-status-box { width: 19px; height: 19px; border: 1.5px solid var(--checkbox-border); border-radius: 999px; background: transparent; display: grid; place-items: center; color: white; padding: 0; transition: background-color var(--motion-duration, var(--control-color-duration, 180ms)) var(--ease), border-color var(--motion-duration, var(--control-color-duration, 180ms)) var(--ease), color var(--motion-duration, var(--control-color-duration, 180ms)) var(--ease); }
 .checkbox { margin-top: 3px; }
 .checkbox:hover, .detail-status-toggle:hover .detail-status-box { border-color: var(--task-checked); }
 .checkbox.checked, .detail-status-box.checked { background: var(--task-checked); border-color: var(--task-checked); }
@@ -42,7 +42,7 @@
 .item-date.empty { color: var(--text-faint, #a6a9b5); }
 .due-overdue { color: var(--urgent-ink); }
 .item-flags { display: flex; align-items: center; }
-.flag-button { width: 31px; height: 31px; border: 0; border-radius: 999px; color: var(--text-faint, #aeb3bf); background: transparent; display: grid; place-items: center; opacity: 1; transition: color var(--motion-duration, 160ms) var(--ease), background-color var(--motion-duration, 160ms) var(--ease), opacity var(--motion-duration, 160ms) var(--ease); }
+.flag-button { width: 31px; height: 31px; border: 0; border-radius: 999px; color: var(--text-faint, #aeb3bf); background: transparent; display: grid; place-items: center; opacity: 1; transition: color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease), background-color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease), opacity var(--motion-duration, 160ms) var(--ease); }
 .flag-button.important:hover, .flag-button.important.selected { color: var(--important-ink); }
 .flag-button.important.selected svg { fill: currentColor; }
 .flag-button.urgent:hover, .flag-button.urgent.selected { color: var(--urgent-ink); }

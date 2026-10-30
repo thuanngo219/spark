@@ -16,6 +16,10 @@ Chủ dự án duyệt nhúng Inter, chuẩn hóa typography, gộp Navy và hov
 
 Root 100% cả hai thiết bị. Menu 14px/400, list/nội dung 15px, tên chi tiết 18px, heading dialog 24px, support/metadata control 14px. Label 10px/700/uppercase cả desktop/mobile. Weight 400/700; line-height 1.2/1.4/1.6 theo vai trò. Heading view desktop38–56px, mobile30px/compact21px. Một Navy #111742; giữ dark neutral/artwork logo. Hover action Turquoise/Navy ↔ Navy/trắng; selected và disabled giữ riêng. D-211 thay các thông số typography của D-210; D-212 chỉnh menu/sidebar về 14px/400 cả thường và đang chọn. Ô nhập tên quick-add dùng token riêng 16px; nhãn viết hoa không tác động chữ do người dùng nhập.
 
+## D-213 — đã kiểm tra local, chưa phát hành
+
+Hover nút desktop (từ 700px, hover/fine pointer) chuyển màu nền/chữ/viền 220ms Quint, bao gồm các nút trước đây đổi màu tức thời. Giữ animation màn hình/gesture, màu selected/disabled, mobile/touch và reduced motion. Lint, typecheck, 176 unit test, build và 30 case trình duyệt đạt: hover có nội suy màu và đảo chiều, disabled, reduced motion, touch 390px, typography, header, vuốt đóng chi tiết và utility ở 320/390/1280px, sáng/tối. Chưa kiểm tra iPhone vật lý và chưa phát hành D-213.
+
 ## Phạm vi tiếp tục đã thống nhất
 
 - Tạm hoãn tìm kiếm; chưa triển khai và không tự đưa lại vào scope.

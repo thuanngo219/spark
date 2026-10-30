@@ -271,6 +271,10 @@ Menu dùng token `--text-support` 14px và weight 400; trạng thái chọn ch�
 
 Khoảng cách mobile: nhãn–nội dung 8px, hàng nhãn–toolbar 2px; vùng chạm tối thiểu44px, sort ngoại lệ30px. Metadata chi tiết mobile giữ hai hàng: cờ/dự án/hành động trên, hai ô ngày chia đều dưới. Nút X hủy Nội Dung dùng `--control-hover`. D-211 thay thang chữ D-210, không đổi palette/hover hay dữ liệu.
 
+### Hover desktop — D-213
+
+Từ 700px với hover/fine pointer, nút chuyển nền/chữ/viền trong 220ms bằng easing Quint hiện hành. Thời lượng màu tách khỏi transform; giữ palette, selected và disabled. Mobile/touch giữ thời lượng cũ. Reduced motion dùng .01ms.
+
 ## 6. Iconography
 
 Ảnh do chủ dự án cung cấp ngày 2026-08-19 là tham chiếu về tinh thần: icon outline đơn sắc, nét bo tròn, hình học đơn giản, khoảng thở rộng và active state tiết chế. Spark không sao chép nguyên bộ icon hoặc hình dạng độc quyền từ ảnh tham chiếu.

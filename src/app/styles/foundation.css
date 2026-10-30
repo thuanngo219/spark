@@ -29,6 +29,7 @@
   --canvas: #f7f8fa;
   --sidebar-width: 248px;
   --ease: cubic-bezier(.22, 1, .36, 1);
+  --control-color-transition: background-color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease), color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease), border-color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease);
   color-scheme: light;
   --app-color-scheme: light;
   --heading: var(--navy-900);
@@ -113,3 +114,9 @@ select option, select optgroup { background: var(--surface); color: var(--ink); 
 :where(button, a[href]):focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
 :where(input, select, textarea):focus-visible { outline: var(--input-focus-width, 2px) solid var(--focus); outline-offset: 2px; }
+
+/* Pointer hover smoothing does not add transition latency to touch controls. */
+@media (min-width: 700px) and (hover: hover) and (pointer: fine) {
+  :root { --control-color-duration: 220ms; }
+  button { transition: var(--control-color-transition), transform var(--motion-duration, 160ms) var(--ease); }
+}
