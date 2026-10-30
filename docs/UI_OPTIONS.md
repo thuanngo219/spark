@@ -4,11 +4,11 @@ Option C — Compact Canvas là hướng đang chạy. Bố cục và thông s�
 
 Ba phương án cùng dùng một information architecture và data model. Khác biệt chủ yếu nằm ở mật độ, màu sắc và cách điều hướng. Đây là hướng tham khảo nguyên bản, không phải bản sao của Superlist hoặc Things.
 
-## Giao diện hiện hành — D-210
+## Giao diện hiện hành — D-211
 
 Typography và màu áp dụng cả desktop/mobile; các quy tắc mobile bên dưới áp dụng dưới 700px. Các mục D-xxx phía dưới giữ vai trò lịch sử khi có thông số khác.
 
-- D-210: label mobile 10px/desktop12px; menu và nội dung 16px; root 100% cả hai thiết bị. Weight400/600/700, line-height1.2/1.4/1.6 theo vai trò; một Navy #111742, hover action đảo Navy/trắng và Turquoise/Navy.
+- D-211: label mobile 10px/desktop12px; menu và nội dung 15px; root 100% cả hai thiết bị. Weight400/700, line-height1.2/1.4/1.6 theo vai trò; một Navy #111742, hover action đảo Navy/trắng và Turquoise/Navy.
 - Nhãn–nội dung 8px; khi sửa Nội Dung, mép dưới hàng nhãn cách toolbar 2px ở cả quick-add và chi tiết. Toolbar cao 44px.
 - Nút chữ/pill giảm bề mặt khoảng 4px, các pill quick-add, HỦY/THÊM và QUAY LẠI cao 40px; vùng chạm vẫn tối thiểu 44px. Sort giữ ngoại lệ 30px.
 - Chi tiết dùng “← QUAY LẠI”. Quick-add viết hoa các nhãn và HỦY/THÊM; nhãn note là GHI CHÚ. Hai nút X hủy sửa Nội Dung có nền xám nhẹ theo theme.

@@ -589,3 +589,7 @@ Chủ dự án duyệt chuẩn hóa và deploy production. Root 100% cả deskto
 Gộp Navy 950/800 về Navy 900 #111742, cả link/tooltip/toast/swipe archive; giữ dark neutral, semantic, project và artwork logo. Action Turquoise/chữ Navy hover Navy/chữ trắng; action Navy/chữ trắng hover Turquoise/chữ Navy ở cả theme, gồm THÊM mobile/QUAY LẠI/đóng Phân Loại/tick Lưu. Disabled không đổi màu khi hover; selected B/I/U/ngày/theme/filter giữ riêng, không đảo trạng thái. Giữ khoảng cách 8px/2px, hình học control/vùng chạm và phạm vi dữ liệu hiện hành.
 
 D-210 kiểm tra ảnh ở 390px phát hiện native date bị cắt khi dùng Inter. Metadata chi tiết mobile giữ hai hàng: cờ và dự án/hành động ở hàng đầu, hai ngày chia đều hàng thứ hai. Giữ font giá trị14px, touch target44px, không thêm chiều cao hàng hay đổi logic ngày; desktop giữ thứ tự bố cục cũ.
+
+## D-211 — Thang chữ 15px và label 10px/700/uppercase (2026-10-30)
+
+Chủ dự án chốt bảng mới: menu/sidebar, tên task/note trong list, Nội dung đọc/sửa dùng15px ở cả desktop/mobile; quick-add tên giữ16px. Heading view38–56px desktop/30px mobile, compact19–28px/21px, dialog24px, tên chi tiết18px, support và metadata control14px giữ nguyên. Label trường/nút/nhóm/số đếm/metadata list/sort/dock10px, uppercase và700 ở cả hai thiết bị. Chuyển mọi600 sang700; UI chỉ400/700. Tách --text-input khỏi --text-body để ô tên không bị giảm theo nội dung. Casing chỉ là CSS hiển thị cho nhãn, không tác động text người dùng nhập. Root100%, line-height1.2/1.4/1.6 và màu/hover D-210 giữ nguyên.

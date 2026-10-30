@@ -4,7 +4,7 @@
 .view-header > div:not(.view-actions) { min-width: 0; flex: 1; align-self: center; }
 .view-header::after { content: ""; position: absolute; inset: 100% 0 auto; height: 12px; background: radial-gradient(ellipse at 50% 0, var(--header-shadow), transparent 70%); pointer-events: none; }
 .view-project-band { position: absolute; inset: auto 0 0; height: 4px; border-radius: 5px; opacity: var(--view-accent-opacity); }
-.eyebrow { min-height: 20px; color: var(--muted); font-size: var(--ui-label-size); font-weight: 600; letter-spacing: .1em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+.eyebrow { min-height: 20px; color: var(--muted); font-size: var(--ui-label-size); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
 .view-title-row { display: flex; align-items: center; gap: 8px; }
 .view-header h1 { min-width: 0; overflow-wrap: anywhere; margin: 3px 0 6px; font-size: var(--view-title-size); line-height: var(--leading-heading); letter-spacing: -.025em; color: var(--heading); opacity: var(--view-accent-opacity); transition: font-size var(--motion-duration, 220ms) var(--ease), margin var(--motion-duration, 220ms) var(--ease); }
 .view-header.is-compact { background: color-mix(in srgb, var(--canvas) 60%, transparent); }
@@ -28,7 +28,7 @@
 .item-display-switcher button { position: relative; width: var(--switcher-size); height: var(--switcher-size); padding: 0; border: 0; border-radius: 999px; background: transparent; color: inherit; display: grid; place-items: center; transition: color var(--motion-duration, 160ms) var(--ease); }
 .item-display-switcher button:hover, .item-display-switcher button.selected { color: var(--heading); }
 .mobile-header-drawer { display: none; }
-.sync-header-status { border-radius: 999px; min-height: 36px; display: flex; align-items: center; gap: 7px; padding: 0 8px; border: 0; background: transparent; color: var(--muted); font-size: var(--ui-label-size); }
+.sync-header-status { border-radius: 999px; min-height: 36px; display: flex; align-items: center; gap: 7px; padding: 0 8px; border: 0; background: transparent; color: var(--muted); font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; }
 .sync-header-status > span, .mobile-sync-status > span { width: 9px; height: 9px; border-radius: 999px; background: #8b8f9e; box-shadow: 0 0 0 3px rgba(139,143,158,.13); }
 .sync-header-status.synced > span, .mobile-sync-status.synced > span { background: #3aa878; box-shadow: 0 0 0 3px rgba(58,168,120,.13); }
 .sync-header-status.loading > span, .sync-header-status.syncing > span, .mobile-sync-status.loading > span, .mobile-sync-status.syncing > span { background: #5c78d6; box-shadow: 0 0 0 3px rgba(92,120,214,.13); animation: sync-pulse var(--motion-duration, 1.2s) var(--ease) var(--motion-iterations, infinite); }

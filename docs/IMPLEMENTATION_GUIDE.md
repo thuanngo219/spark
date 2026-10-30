@@ -2,15 +2,15 @@
 
 Trạng thái triển khai hiện hành và đường dẫn mã nguồn ở [handoff v3](handoff/spark-v3.md). Các mục D-117–D-199 ở cuối file ghi lại quá trình triển khai và có thể chứa thông số đã được quyết định sau thay thế; dùng handoff v3 và code để lấy giá trị đang chạy. Chủ dự án xác nhận giao diện production “Ổn rồi” ngày 2026-10-29 sau D-207.
 
-Font UI: Inter 4.1 variable thường/nghiêng được nhúng bằng `next/font/local` trong `src/app/layout.tsx`; source WOFF2 và giấy phép ở `src/app/fonts/`. Body dùng `--font-inter`; không tải font từ dịch vụ bên ngoài khi chạy/build. D-210 chuẩn hóa root 100%, token size/line-height trong foundation.css, weight 400/600/700; label mobile10px/desktop12px, menu16px; chỉ giữ Navy #111742. Hover action tách khỏi token selected.
+Font UI: Inter 4.1 variable thường/nghiêng được nhúng bằng `next/font/local` trong `src/app/layout.tsx`; source WOFF2 và giấy phép ở `src/app/fonts/`. Body dùng `--font-inter`; không tải font từ dịch vụ bên ngoài khi chạy/build. D-211 chuẩn hóa root 100%, token size/line-height trong foundation.css, weight 400/700; label 10px/700/uppercase cả desktop/mobile, menu15px; chỉ giữ Navy #111742. Hover action tách khỏi token selected.
 
-## Token và kiểm chứng mobile hiện hành — D-210
+## Token và kiểm chứng mobile hiện hành — D-211
 
 Token trong media query `max-width: 699px` của `src/app/styles/responsive.css`:
 
 | Token | Giá trị | Phạm vi |
 |---|---|---|
-| `--ui-label-size` | `10px` | Nhãn mobile; desktop 12px tại foundation; `.nav-text` dùng token body 16px |
+| `--ui-label-size` | `10px` | Nhãn mobile; desktop 10px tại foundation; `.nav-text` dùng token body 15px |
 | `--label-button-trim` | `4px` | Giảm chiều cao bề mặt nút chữ |
 | `--label-content-gap`, `--label-section-gap`, `--label-hint-gap` | `8px` | Nhãn và nội dung tiếp theo |
 | `--editor-toolbar-gap` | `2px` | Mép dưới hàng nhãn tới toolbar ở hai editor mobile |

@@ -85,7 +85,7 @@ for (const width of [320, 390]) {
         await expect(sheet.locator(".editor-header")).toBeHidden();
         await expect(sheet.locator(".detail-title-row")).toBeHidden();
         await expect(sheet.locator(".detail-metadata")).toBeHidden();
-        await expect(editor).toHaveCSS("font-size", "16px");
+        await expect(editor).toHaveCSS("font-size", "15px");
         const heading = sheet.locator(".detail-field-heading");
         const headerBefore = await heading.boundingBox();
         await editor.evaluate(el => { el.scrollTop = el.scrollHeight; });

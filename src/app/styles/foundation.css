@@ -1,9 +1,10 @@
 :root {
-  --text-body: 1rem;
+  --text-body: .9375rem;
+  --text-input: 1rem;
   --text-support: .875rem;
   --text-title: 1.125rem;
   --text-dialog: 1.5rem;
-  --ui-label-size: .75rem;
+  --ui-label-size: 10px;
   --leading-heading: 1.2;
   --leading-ui: 1.4;
   --leading-body: 1.6;
