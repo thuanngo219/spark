@@ -97,7 +97,7 @@
   :is(.note-toggle, .quick-description-toggle, .text-button, .primary-button, .delete-button, .archive-button, .today-button, .detail-close-button, .mobile-sync-status, .disconnect-button)::after { content: ""; position: absolute; z-index: -1; inset-inline: 0; top: 50%; height: max(100%, 44px); transform: translateY(-50%); }
   .quick-add-project { grid-column: 1 / -1; }
   .quick-add-project > span:first-child { display: none; }
-  .quick-description-preview { display: grid; grid-template-columns: minmax(0, 1fr) auto; width: 100%; align-items: start; gap: 12px; border: 0; background: transparent; color: var(--text-secondary); padding: 0; text-align: left; font: inherit; font-size: var(--text-body); font-weight: 400; line-height: var(--leading-body); }
+  .quick-description-preview { display: grid; grid-template-columns: minmax(0, 1fr) auto; width: 100%; align-items: start; gap: 12px; border: 0; background: transparent; color: var(--text-secondary); padding: 0; text-align: left; font: inherit; font-size: var(--text-content); font-weight: 400; line-height: var(--leading-body); }
   .quick-description-preview > span { min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
   .quick-description-preview svg { flex-shrink: 0; }
   .quick-description-field .content-editor { display: none; }
@@ -112,7 +112,7 @@
   .quick-add-dialog.focused-content .quick-content-done, .quick-add-dialog.focused-content .quick-content-cancel { display: grid; }
   .quick-add-dialog.focused-content .content-editor { display: flex; flex: 1; min-height: 0; gap: 8px; }
   .quick-add-dialog.focused-content .content-editor-body { flex: 1; min-height: 0; overflow: hidden; }
-  .quick-add-dialog.focused-content .content-editor-input { height: 100%; padding: 0; font-size: var(--text-body); overscroll-behavior: none; }
+  .quick-add-dialog.focused-content .content-editor-input { height: 100%; padding: 0; font-size: var(--text-content); overscroll-behavior: none; }
   .quick-add-entry { flex: 0 0 auto; grid-template-columns: 1fr; gap: 9px; margin-bottom: 0; padding: 4px 17px 14px; background: var(--canvas); }
   .quick-add-entry-actions { align-items: center; gap: 10px; }
   .quick-add-entry-actions > * { flex: 1; min-width: 0; justify-content: center; }
@@ -178,7 +178,7 @@
   .item-detail-sheet.editing-content .detail-content { padding: calc(12px + env(safe-area-inset-top)) 17px var(--detail-content-bottom, calc(12px + env(safe-area-inset-bottom))); overflow: hidden; }
   .item-detail-sheet.editing-content .detail-description { min-height: 0; margin-top: 0; padding-top: 0; border-top: 0; }
   .item-detail-sheet.editing-content .detail-field-heading { min-height: 44px; margin-bottom: var(--editor-toolbar-gap); }
-  .item-detail-sheet .content-editor-input { font-size: var(--text-body); overscroll-behavior: none; }
+  .item-detail-sheet .content-editor-input { font-size: var(--text-content); overscroll-behavior: none; }
 
   .item-detail-sheet .editor-header { position: absolute; z-index: 2; right: 0; bottom: calc(var(--detail-metadata-height, 0px) + 10px); left: 0; min-height: 44px; height: 44px; margin: 0; padding: 0; justify-content: center; align-items: flex-end; background: transparent; pointer-events: none; }
   .item-detail-sheet .editor-header > .icon-button { position: relative; pointer-events: auto; }

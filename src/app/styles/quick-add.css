@@ -28,7 +28,7 @@
 .content-toolbar button:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 .content-counter { margin-left: auto; color: var(--muted); font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; white-space: nowrap; }
 .content-editor-body { min-height: 0; }
-.content-editor-input { height: 300px; overflow-y: auto; overscroll-behavior: contain; padding: 11px 13px; outline: none; color: var(--ink); font-size: var(--text-body); font-weight: 400; line-height: var(--leading-body); overflow-wrap: anywhere; white-space: pre-wrap; }
+.content-editor-input { height: 300px; overflow-y: auto; overscroll-behavior: contain; padding: 11px 13px; outline: none; color: var(--ink); font-size: var(--text-content); font-weight: 400; line-height: var(--leading-body); overflow-wrap: anywhere; white-space: pre-wrap; }
 .content-editor-input p, .formatted-content p { margin: 0; }
 .content-editor-input strong, .detail-description strong { font-weight: 700; }
 .content-editor .form-error { flex: 0 0 auto; margin: 0; padding: 5px 12px; }

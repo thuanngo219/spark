@@ -70,9 +70,9 @@ for (const width of [320, 390, 1280]) {
       await page.getByRole("button", { name: "Sửa Nội dung", exact: true }).click();
       const editor = page.locator(".content-editor-input");
       await editor.fill("Nội dung tiếng Việt có dấu: Ắ Ằ Ẳ Ẵ Ặ Ấ Ầ Ẩ Ẫ Ậ Ế Ề Ể Ễ Ệ Ố Ồ Ổ Ỗ Ộ Ớ Ờ Ở Ỡ Ợ Ứ Ừ Ử Ữ Ự đ");
-      await expect(editor).toHaveCSS("font-size", width < 700 ? "15px" : "14px");
+      await expect(editor).toHaveCSS("font-size", "15px");
       await expect(editor).toHaveCSS("text-transform", "none");
-      await expect(editor).toHaveCSS("line-height", width < 700 ? "24px" : "22.4px");
+      await expect(editor).toHaveCSS("line-height", "24px");
       const client = await page.context().newCDPSession(page);
       await client.send("DOM.enable");
       await client.send("CSS.enable");

@@ -49,7 +49,7 @@
 .detail-read-row { width: 100%; display: flex; align-items: center; gap: 10px; }
 .detail-read-row.align-start { align-items: flex-start; }
 .detail-read-row > p { flex: 1 1 auto; min-width: 0; margin: 0; color: var(--heading); font-size: var(--text-title); font-weight: 700; line-height: var(--leading-ui); overflow-wrap: anywhere; white-space: pre-wrap; }
-.detail-description .formatted-content { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; white-space: pre-wrap; color: var(--text-secondary, #4e5569); font-size: var(--text-body); font-weight: 400; line-height: var(--leading-body); }
+.detail-description .formatted-content { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; white-space: pre-wrap; color: var(--text-secondary, #4e5569); font-size: var(--text-content); font-weight: 400; line-height: var(--leading-body); }
 .detail-read-row .empty { color: var(--text-faint, #a2a6b3); font-style: italic; }
 .detail-read-row a { color: var(--link); text-decoration-color: rgba(68,212,205,.72); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
 .detail-read-row a:hover { color: var(--link-hover); text-decoration-color: currentColor; }
