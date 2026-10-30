@@ -1,4 +1,4 @@
-import { test, expect } from "./fixtures";
+import { test, expect, closeMobileSidebar } from "./fixtures";
 
 for (const width of [320, 390, 1280]) {
   for (const theme of ["light", "dark"] as const) {
@@ -19,7 +19,24 @@ for (const width of [320, 390, 1280]) {
         await expect(label).toHaveCSS("text-transform", "uppercase");
       }
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-      if (width >= 700) await expect(page.locator(".nav-text").first()).toHaveCSS("font-size", "15px");
+      if (width < 700) await page.getByRole("button", { name: "Mở sidebar", exact: true }).click();
+      const sidebar = page.locator(width < 700 ? ".sidebar-mobile" : ".app-shell > .sidebar");
+      if (width < 700) {
+        await sidebar.getByRole("button", { name: "Công việc", exact: true }).click();
+        await page.getByRole("button", { name: "Mở sidebar", exact: true }).click();
+      }
+      for (const selector of [".nav-item.active .nav-text", ".nav-item:not(.active) .nav-text"]) {
+        await expect(sidebar.locator(selector).first()).toHaveCSS("font-size", "14px");
+        await expect(sidebar.locator(selector).first()).toHaveCSS("font-weight", "400");
+      }
+      if (width < 700) {
+        await closeMobileSidebar(page);
+        await page.getByRole("navigation", { name: "Điều hướng mobile" }).getByRole("button", { name: "Hôm nay", exact: true }).click();
+        const dockLabel = page.locator(".mobile-dock-label").first();
+        await expect(dockLabel).toHaveCSS("font-size", "10px");
+        await expect(dockLabel).toHaveCSS("font-weight", "700");
+        await expect(dockLabel).toHaveCSS("text-transform", "uppercase");
+      }
       await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
       const form = page.locator(".quick-add-dialog");
       const add = form.getByRole("button", { name: "Thêm", exact: true });

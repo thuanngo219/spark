@@ -6,15 +6,19 @@ Cập nhật: 2026-10-30. Đây là điểm bắt đầu cho phiên phát triể
 
 - Production: `https://spark.thuanngo.com`, Vercel project `spark`, team Thuan Ngo. D-211 đã phát hành ngày 2026-10-30: commit mã `501d78ceb66ca16341a22bda8c54adec511e650e`, deployment READY `dpl_3bvNp4XdG93UnwBQQfNxwK9vJ7X8`, alias production đã trỏ đúng. Push tài liệu có thể tạo deployment mới cùng mã ứng dụng; kiểm tra SHA/alias khi tiếp tục.
 - Kiểm tra D-211: lint, typecheck, 176 unit test và production build đạt. 44 case trình duyệt cho typography/casing/hover/quick-add/chi tiết/header/tiện ích đạt trên mobile và desktop, sáng/tối. Đã xem ảnh để xác nhận chữ nhập không bị uppercase và ngày vẫn đầy đủ.
-- Sau phát hành: 6 case trực tiếp production ở 320/390/1280px × sáng/tối đạt; xác minh menu/list/Nội dung 15px, label 10px/700/uppercase, ô tên quick-add 16px, font Inter tiếng Việt thường/nghiêng và trạng thái nút.
+- Sau phát hành: 6 case trực tiếp production ở 320/390/1280px × sáng/tối đạt; xác minh menu 14px/400, list/Nội dung 15px, label 10px/700/uppercase, ô tên quick-add 16px, font Inter tiếng Việt thường/nghiêng và trạng thái nút.
 - Kiểm tra offline font thường/nghiêng và editor bằng Chrome local đã đạt ở D-210; D-211 không sửa font file hoặc cơ chế offline. Chưa kiểm tra iPhone vật lý, sync hai thiết bị hoặc cách ly tài khoản thật trong lượt này.
 - B-005 rà copy đã hoàn tất. Search và việc kiểm tra độ tin cậy dữ liệu vẫn tạm hoãn như phạm vi bên dưới.
 
-## Typography hiện hành — D-211 (2026-10-30)
+## Typography hiện hành — D-212 (2026-10-30)
 
 Chủ dự án duyệt nhúng Inter, chuẩn hóa typography, gộp Navy và hover action, yêu cầu deploy production. Inter 4.1 variable thường/nghiêng nằm trong `src/app/fonts/` kèm giấy phép, tải cùng origin bằng `next/font/local`.
 
-Root 100% cả hai thiết bị. Menu/list/nội dung 15px, tên chi tiết 18px, heading dialog 24px, support/metadata control 14px. Label 10px/700/uppercase cả desktop/mobile. Weight 400/700; line-height 1.2/1.4/1.6 theo vai trò. Heading view desktop38–56px, mobile30px/compact21px. Một Navy #111742; giữ dark neutral/artwork logo. Hover action Turquoise/Navy ↔ Navy/trắng; selected và disabled giữ riêng. D-211 thay các thông số typography của D-210. Ô nhập tên quick-add dùng token riêng 16px; nhãn viết hoa không tác động chữ do người dùng nhập.
+Root 100% cả hai thiết bị. Menu 14px/400, list/nội dung 15px, tên chi tiết 18px, heading dialog 24px, support/metadata control 14px. Label 10px/700/uppercase cả desktop/mobile. Weight 400/700; line-height 1.2/1.4/1.6 theo vai trò. Heading view desktop38–56px, mobile30px/compact21px. Một Navy #111742; giữ dark neutral/artwork logo. Hover action Turquoise/Navy ↔ Navy/trắng; selected và disabled giữ riêng. D-211 thay các thông số typography của D-210. Ô nhập tên quick-add dùng token riêng 16px; nhãn viết hoa không tác động chữ do người dùng nhập.
+
+## D-212 — đang chuẩn bị phát hành
+
+Menu/sidebar 14px/400 cả thường và đang chọn trên desktop/mobile. List/Nội dung15px; dock10px/700/uppercase giữ nguyên.
 
 ## Phạm vi tiếp tục đã thống nhất
 
@@ -36,7 +40,7 @@ Root 100% cả hai thiết bị. Menu/list/nội dung 15px, tên chi tiết 18px
 - Chi tiết mobile cho vuốt từ mép trái để đóng. Nút Navy “← QUAY LẠI” nằm trên vùng Nội Dung, cách metadata 10px; Nội Dung vẫn cuộn bên dưới. Sửa Tên/Nội Dung có tick lưu và X hủy. Metadata neo dưới màn hình, cờ/dự án/hành động ở hàng đầu và hai ngày chia đều hàng thứ hai để ngày không bị cắt với Inter; khi sửa và bàn phím hiện, phần dưới có thể nằm sau bàn phím để dành diện tích nhập.
 - Header sticky thu gọn khi cuộn, giữ h1 và dải màu 4px ở cả desktop/mobile; mobile h1 thường 30px, thu gọn 21px. Letter spacing −0.025em. Header blur 8px; nền app phẳng. Nút/link giữ viền focus bàn phím 2px theo theme; mobile input/select/textarea không có outline ngoài, form đổi viền 1px đậm hơn khi focus và không đổi nền. Bề mặt sửa Tên/Nội Dung inline không có outline. Header dùng animation CSS hiện hành. Chưa có phép đo hiệu năng trên iPhone vật lý.
 - Mobile dưới 700px dùng label **10px** thực, root 100%: nhãn trường/nút, nhãn nhóm điều hướng, nhóm danh sách/sort, metadata danh sách, trạng thái và nhãn tiện ích. Các vai trò còn lại dùng token D-211 ở trên; desktop label 10px.
-- Chữ mục menu/sidebar (`.nav-text`) dùng **15px cả mobile và desktop** (D-211). Nhãn nhóm và số đếm vẫn 10px; dock không đổi.
+- Chữ mục menu/sidebar (`.nav-text`) dùng **14px/400 cả mobile và desktop**, gồm mục đang chọn (D-212). Nhãn nhóm và số đếm vẫn 10px; dock không đổi.
 - Khoảng cách nhãn–nội dung **8px**. Khi sửa Nội Dung, khoảng cách từ **mép dưới hàng nhãn** đến thanh formatting là **2px** trong cả quick-add và chi tiết; toolbar vẫn cao 44px. Không đo từ đáy nét chữ của label.
 - Nút chữ/pill giảm phần hiển thị khoảng 4px: các pill quick-add, HỦY/THÊM, QUAY LẠI và trạng thái đồng bộ cao 40px; vùng chạm vẫn tối thiểu 44px qua pseudo-element. Giữ dock, nút icon và ngoại lệ sort 30px. Nút X hủy sửa Nội Dung ở hai editor dùng nền xám nhẹ theo theme.
 - Mobile quick-add viết hoa TÊN CÔNG VIỆC/TÊN GHI CHÚ, GHI CHÚ, NỘI DUNG, PHÂN LOẠI, NGÀY BẮT ĐẦU, NGÀY ĐẾN HẠN, HỦY và THÊM. GHI CHÚ là nhãn chính xác.

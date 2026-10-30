@@ -593,3 +593,7 @@ D-210 kiểm tra ảnh ở 390px phát hiện native date bị cắt khi dùng I
 ## D-211 — Thang chữ 15px và label 10px/700/uppercase (2026-10-30)
 
 Chủ dự án chốt bảng mới: menu/sidebar, tên task/note trong list, Nội dung đọc/sửa dùng15px ở cả desktop/mobile; quick-add tên giữ16px. Heading view38–56px desktop/30px mobile, compact19–28px/21px, dialog24px, tên chi tiết18px, support và metadata control14px giữ nguyên. Label trường/nút/nhóm/số đếm/metadata list/sort/dock10px, uppercase và700 ở cả hai thiết bị. Chuyển mọi600 sang700; UI chỉ400/700. Tách --text-input khỏi --text-body để ô tên không bị giảm theo nội dung. Casing chỉ là CSS hiển thị cho nhãn, không tác động text người dùng nhập. Root100%, line-height1.2/1.4/1.6 và màu/hover D-210 giữ nguyên.
+
+## D-212 — Menu 14px/400 trên mọi thiết bị (2026-10-30)
+
+Chủ dự án cập nhật menu/sidebar về14px, weight400 ở cả desktop/mobile; mục đang chọn cũng400, giữ tín hiệu màu/nền. Dùng token --text-support hiện có và sửa selector gốc. Tên task/note trong danh sách15px/400, Nội dung15px/400 (đậm700), dock10px/700/uppercase giữ đúng D-211. Không đổi các thành phần khác.

@@ -246,7 +246,7 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 - Cả hai font phải dùng phiên bản có hỗ trợ đầy đủ dấu tiếng Việt.
 - Logo luôn dùng artwork chính thức, không dựng lại bằng Raleway hoặc Inter.
 
-### Typography hiện hành — D-211
+### Typography hiện hành — D-212
 
 Inter nhúng thường/nghiêng, root 100% ở cả desktop/mobile. Cỡ rem quy đổi với mặc định trình duyệt 16px; label cố định 10px cả hai thiết bị.
 
@@ -256,7 +256,8 @@ Inter nhúng thường/nghiêng, root 100% ở cả desktop/mobile. Cỡ rem quy
 | Heading view thu gọn | 19–28px | 21px | 700 | 1.2 |
 | Heading dialog / Thêm task | 24px | 24px | 700 | 1.2 |
 | Tên task/note trong chi tiết | 18px | 18px | 700 | 1.4 |
-| Menu/sidebar, tên task/note trong danh sách | 15px | 15px | 400; menu đang chọn 700 | 1.4 |
+| Menu/sidebar (cả đang chọn) | 14px | 14px | 400 | 1.4 |
+| Tên task/note trong danh sách | 15px | 15px | 400 | 1.4 |
 | Nội dung đọc/sửa | 15px | 15px | 400; đậm 700 | 1.6 |
 | Ô nhập tên quick-add | 16px | 16px | 400 | 1.4 |
 | Chữ giải thích/thông báo lỗi | 14px | 14px | 400 | 1.4 hoặc 1.6 cho đoạn dài |
@@ -266,7 +267,7 @@ Inter nhúng thường/nghiêng, root 100% ở cả desktop/mobile. Cỡ rem quy
 
 Token: `--text-body: .9375rem`, `--text-input: 1rem`, `--text-support: .875rem`, `--text-title: 1.125rem`, `--text-dialog: 1.5rem`, `--ui-label-size: 10px`. Chỉ dùng weight 400/700; toàn bộ 600 cũ chuyển 700. Line-height 1.2/1.4/1.6 giữ nguyên. Uppercase chỉ áp dụng nhãn hiển thị, không đổi tên/nội dung do người dùng nhập hoặc giá trị trong form.
 
-Menu có token nội dung riêng. Heading view tracking −0.025em; nhãn nhóm giữ tracking hiện hành. Logo dùng artwork, Raleway chỉ cho brand moment ngoài app.
+Menu dùng token `--text-support` 14px và weight 400; trạng thái chọn chỉ đổi màu/nền. Heading view tracking −0.025em; nhãn nhóm giữ tracking hiện hành. Logo dùng artwork, Raleway chỉ cho brand moment ngoài app.
 
 Khoảng cách mobile: nhãn–nội dung 8px, hàng nhãn–toolbar 2px; vùng chạm tối thiểu44px, sort ngoại lệ30px. Metadata chi tiết mobile giữ hai hàng: cờ/dự án/hành động trên, hai ô ngày chia đều dưới. Nút X hủy Nội Dung dùng `--control-hover`. D-211 thay thang chữ D-210, không đổi palette/hover hay dữ liệu.
 
