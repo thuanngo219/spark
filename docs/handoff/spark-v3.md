@@ -4,21 +4,17 @@ Cập nhật: 2026-10-30. Đây là điểm bắt đầu cho phiên phát triể
 
 ## Trạng thái bàn giao
 
-- Production: `https://spark.thuanngo.com`, Vercel project `spark`, team Thuan Ngo. D-211 đã phát hành ngày 2026-10-30: commit mã `501d78ceb66ca16341a22bda8c54adec511e650e`, deployment READY `dpl_3bvNp4XdG93UnwBQQfNxwK9vJ7X8`, alias production đã trỏ đúng. Push tài liệu có thể tạo deployment mới cùng mã ứng dụng; kiểm tra SHA/alias khi tiếp tục.
-- Kiểm tra D-211: lint, typecheck, 176 unit test và production build đạt. 44 case trình duyệt cho typography/casing/hover/quick-add/chi tiết/header/tiện ích đạt trên mobile và desktop, sáng/tối. Đã xem ảnh để xác nhận chữ nhập không bị uppercase và ngày vẫn đầy đủ.
+- Production: `https://spark.thuanngo.com`, Vercel project `spark`, team Thuan Ngo. D-212 đã phát hành ngày 2026-10-30: commit mã `8d9a600070accd41a283c6ac3ed655b98d870339`, deployment READY `dpl_AqyVqBzbVyc3wecYwGAqrobVKcRt`, alias production đã trỏ đúng. Push tài liệu có thể tạo deployment mới cùng mã ứng dụng; kiểm tra SHA/alias khi tiếp tục.
+- Kiểm tra D-212: lint, typecheck, 176 unit test và production build đạt. 6 case trình duyệt ở 320/390/1280px × sáng/tối đạt, kiểm tra typography, menu thường/đang chọn, dock, quick-add, chi tiết và trạng thái nút.
 - Sau phát hành: 6 case trực tiếp production ở 320/390/1280px × sáng/tối đạt; xác minh menu 14px/400, list/Nội dung 15px, label 10px/700/uppercase, ô tên quick-add 16px, font Inter tiếng Việt thường/nghiêng và trạng thái nút.
-- Kiểm tra offline font thường/nghiêng và editor bằng Chrome local đã đạt ở D-210; D-211 không sửa font file hoặc cơ chế offline. Chưa kiểm tra iPhone vật lý, sync hai thiết bị hoặc cách ly tài khoản thật trong lượt này.
+- Kiểm tra offline font thường/nghiêng và editor bằng Chrome local đã đạt ở D-210; D-212 không sửa font file hoặc cơ chế offline. Chưa kiểm tra iPhone vật lý, sync hai thiết bị hoặc cách ly tài khoản thật trong lượt này.
 - B-005 rà copy đã hoàn tất. Search và việc kiểm tra độ tin cậy dữ liệu vẫn tạm hoãn như phạm vi bên dưới.
 
 ## Typography hiện hành — D-212 (2026-10-30)
 
 Chủ dự án duyệt nhúng Inter, chuẩn hóa typography, gộp Navy và hover action, yêu cầu deploy production. Inter 4.1 variable thường/nghiêng nằm trong `src/app/fonts/` kèm giấy phép, tải cùng origin bằng `next/font/local`.
 
-Root 100% cả hai thiết bị. Menu 14px/400, list/nội dung 15px, tên chi tiết 18px, heading dialog 24px, support/metadata control 14px. Label 10px/700/uppercase cả desktop/mobile. Weight 400/700; line-height 1.2/1.4/1.6 theo vai trò. Heading view desktop38–56px, mobile30px/compact21px. Một Navy #111742; giữ dark neutral/artwork logo. Hover action Turquoise/Navy ↔ Navy/trắng; selected và disabled giữ riêng. D-211 thay các thông số typography của D-210. Ô nhập tên quick-add dùng token riêng 16px; nhãn viết hoa không tác động chữ do người dùng nhập.
-
-## D-212 — đang chuẩn bị phát hành
-
-Menu/sidebar 14px/400 cả thường và đang chọn trên desktop/mobile. List/Nội dung15px; dock10px/700/uppercase giữ nguyên.
+Root 100% cả hai thiết bị. Menu 14px/400, list/nội dung 15px, tên chi tiết 18px, heading dialog 24px, support/metadata control 14px. Label 10px/700/uppercase cả desktop/mobile. Weight 400/700; line-height 1.2/1.4/1.6 theo vai trò. Heading view desktop38–56px, mobile30px/compact21px. Một Navy #111742; giữ dark neutral/artwork logo. Hover action Turquoise/Navy ↔ Navy/trắng; selected và disabled giữ riêng. D-211 thay các thông số typography của D-210; D-212 chỉnh menu/sidebar về 14px/400 cả thường và đang chọn. Ô nhập tên quick-add dùng token riêng 16px; nhãn viết hoa không tác động chữ do người dùng nhập.
 
 ## Phạm vi tiếp tục đã thống nhất
 
