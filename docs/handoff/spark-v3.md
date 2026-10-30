@@ -4,8 +4,9 @@ Cập nhật: 2026-10-30. Đây là điểm bắt đầu cho phiên phát triể
 
 ## Trạng thái bàn giao
 
-- Production: `https://spark.thuanngo.com`, Vercel project `spark`, team Thuan Ngo. Trước phát hành D-209/D-210, bản được xác minh là `a3e55a1`, deployment READY `dpl_8YLCT4qT3KEfHYPbB46ekkNkx5yV`. Gói dưới đây đã được duyệt deploy; cần cập nhật bằng chứng alias/SHA sau push.
+- Production: `https://spark.thuanngo.com`, Vercel project `spark`, team Thuan Ngo. Đã phát hành D-209/D-210 ngày 2026-10-30: commit mã `c6e2d3702fd3b3296799d80f0aafe6feb40d5da0`, deployment READY `dpl_J24SY4bRiDccnVGNcFg7cZrUuBvj`, alias production đã trỏ đúng. Push tài liệu có thể tạo deployment mới cùng mã ứng dụng; kiểm tra SHA/alias khi tiếp tục.
 - Kiểm tra D-209/D-210: lint, typecheck, 176 unit test, production build đều đạt. 76 browser case UI/content/font ở 320/390/600/699/700/1280/1440px và sáng/tối đạt; case offline được bật riêng và đạt, tổng 77 case. Đã kiểm tra font thường/nghiêng thực tế và glyph tiếng Việt; mở trang mới offline tải được cả hai face từ cache. Ảnh mobile xác nhận ngày không bị cắt.
+- Sau phát hành: 10 browser case trực tiếp trên `spark.thuanngo.com` đạt, gồm typography/font Việt, normal/italic, size mobile10px/desktop12px, hover/disabled và quick-add ở 320/390/1280px × sáng/tối.
 - Đây là kiểm tra Chrome mô phỏng viewport và offline local; chưa thay cho kiểm tra iPhone vật lý, sync hai thiết bị hoặc cách ly tài khoản thật.
 - B-005 rà copy đã hoàn tất. Search và việc kiểm tra độ tin cậy dữ liệu vẫn tạm hoãn như phạm vi bên dưới.
 
@@ -13,7 +14,7 @@ Cập nhật: 2026-10-30. Đây là điểm bắt đầu cho phiên phát triể
 
 Chủ dự án duyệt nhúng Inter, chuẩn hóa typography, gộp Navy và hover action, yêu cầu deploy production. Inter 4.1 variable thường/nghiêng nằm trong `src/app/fonts/` kèm giấy phép, tải cùng origin bằng `next/font/local`.
 
-Root 100% cả hai thiết bị. Menu/list/nội dung 16px, tên chi tiết 18px, heading dialog 24px, support/metadata control 14px. Label desktop12px/mobile10px. Weight 400/600/700; line-height 1.2/1.4/1.6 theo vai trò. Heading view desktop38–56px, mobile30px/compact21px. Một Navy #111742; giữ dark neutral/artwork logo. Hover action Turquoise/Navy ↔ Navy/trắng; selected và disabled giữ riêng. Thông số này thay các size/weight/root scale trước D-210. Trạng thái release cần xác minh sau push.
+Root 100% cả hai thiết bị. Menu/list/nội dung 16px, tên chi tiết 18px, heading dialog 24px, support/metadata control 14px. Label desktop12px/mobile10px. Weight 400/600/700; line-height 1.2/1.4/1.6 theo vai trò. Heading view desktop38–56px, mobile30px/compact21px. Một Navy #111742; giữ dark neutral/artwork logo. Hover action Turquoise/Navy ↔ Navy/trắng; selected và disabled giữ riêng. Thông số này thay các size/weight/root scale trước D-210. Gói này đã phát hành theo bằng chứng ở Trạng thái bàn giao.
 
 ## Phạm vi tiếp tục đã thống nhất
 
