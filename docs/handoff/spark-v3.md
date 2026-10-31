@@ -128,3 +128,6 @@ D-223 (2026-10-31): Sao/Lưu trữ/Xóa một hàng pill, Hủy/Lưu hàng pill 
 
 
 D-224 (2026-10-31): Hàng pill Yêu thích/Lưu trữ/Xóa sát phần màu nhận diện, bỏ margin-top20px của action group. Đổi Sao thành Yêu thích. Hủy dùng nền control-hover xám nhẹ; bỏ border-top hàng Hủy/Lưu, giữ margin-top24px và padding-top20px hiện hành.
+
+
+D-225 (2026-10-31): Bỏ nút X ở header tạo/chỉnh sửa dự án trên desktop/mobile; dùng Hủy ở hàng hành động để đóng.
