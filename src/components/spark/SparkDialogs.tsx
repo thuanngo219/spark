@@ -87,14 +87,16 @@ export function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose
   const customPickerValue = /^#[0-9a-f]{6}$/i.test(color) ? color : projectColors[0];
   const nameInputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useDialogControls(onClose);
+  useLayoutEffect(() => {
+    if (!window.matchMedia("(max-width: 699px)").matches || !dialogRef.current) return;
+    return lockDetailScroll(dialogRef.current);
+  }, [dialogRef]);
   useEffect(() => {
-    if (project || confirmDelete || !window.matchMedia("(max-width: 699px)").matches) return;
+    if (confirmDelete || !window.matchMedia("(max-width: 699px)").matches) return;
     const input = nameInputRef.current;
     const backdrop = dialogRef.current;
     const visualViewport = window.visualViewport;
     if (!input || !backdrop) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
 
     const revealNameInput = () => {
       input.focus({ preventScroll: true });
@@ -116,7 +118,6 @@ export function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose
     visualViewport?.addEventListener("resize", fitToKeyboard);
     visualViewport?.addEventListener("scroll", fitToKeyboard);
     return () => {
-      document.body.style.overflow = previousOverflow;
       backdrop.style.top = "";
       backdrop.style.bottom = "";
       backdrop.style.height = "";
@@ -127,7 +128,7 @@ export function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose
     };
   }, [confirmDelete, dialogRef, project]);
   return (
-    <div ref={dialogRef} className="dialog-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="project-editor-title">
+    <div ref={dialogRef} className="dialog-backdrop project-editor-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="project-editor-title">
       {confirmDelete && project ? (
         <section className="editor-sheet compact-editor" onClick={(event) => event.stopPropagation()}>
           <div className="editor-header"><div><span>Dự án</span><h2 id="project-editor-title">Xóa dự án này?</h2></div><button className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
@@ -159,7 +160,7 @@ export function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose
           </div>
         </fieldset>
         {project && <div className="project-lifecycle">
-          <p className="project-lifecycle-hint">{project.archivedAt ? "Khôi phục để đưa dự án trở lại sidebar và bộ chọn dự án." : "Lưu trữ để thu gọn sidebar. Task và note vẫn được giữ nguyên."}</p>
+          {project.archivedAt && <p className="project-lifecycle-hint">Khôi phục để đưa dự án trở lại sidebar và bộ chọn dự án.</p>}
           <div className="project-lifecycle-actions">
             <button type="button" className="archive-button" onClick={onArchive}><Icon name="archive" size={17} />{project.archivedAt ? "Khôi phục dự án" : "Lưu trữ dự án"}</button>
             <button type="button" className="delete-button" onClick={() => setConfirmDelete(true)}><Icon name="trash" size={17} />Xóa dự án</button>

@@ -113,7 +113,6 @@ export function Sidebar({
         </button>
         {!compact && <div className="project-actions">
           <button className={`project-star ${project.isStarred ? "selected" : ""}`} onClick={() => onToggleProjectStar(project)} aria-label={project.isStarred ? `Bỏ ${project.name} khỏi Cần lưu ý` : `Đưa ${project.name} vào Cần lưu ý`} title={project.isStarred ? "Bỏ gắn sao" : "Gắn sao"}><Icon name="star" size={15} /></button>
-          <button className="project-more" onClick={() => onEditProject(project)} aria-label={`Sửa ${project.name}`}><Icon name="more" size={17} /></button>
         </div>}
       </div>
     );

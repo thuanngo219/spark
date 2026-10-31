@@ -634,3 +634,6 @@ D-219 (2026-10-30): yêu cầu chặn pinch zoom bằng viewport maximumScale1/u
 
 
 D-220 (2026-10-30): Nội dung đọc/chỉnh sửa dùng token riêng --text-content:15px cả desktop/mobile, weight400/đậm700, line-height1.6. Tên task/note desktop giữ14px theo D-218. Deploy production sau kiểm tra.
+
+
+D-221 (2026-10-31): Sidebar bỏ nút ... sửa dự án, giữ sao; hover/selected phủ cả hàng dự án và sao. Sửa dự án qua nút trên header dự án. Bỏ câu “Lưu trữ để thu gọn sidebar. Task và note vẫn được giữ nguyên.” Màn tạo/sửa/xác nhận xóa dự án mobile toàn màn hình, khóa cuộn và inert nền bằng lockDetailScroll; form cuộn riêng, theo visualViewport khi bàn phím mở.
