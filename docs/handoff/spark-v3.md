@@ -137,3 +137,6 @@ D-226 (2026-10-31): Margin dưới color-picker đổi27px thành10px để hàn
 
 
 D-227 (2026-10-31): Khôi phục border-top hàng Hủy/Lưu, padding-top15px. Mobile neo cụm cuối form theo visualViewport, đáy nút cách đáy màn hình/vùng trên bàn phím25px. Giữ nhóm Yêu thích/Lưu trữ/Xóa gần vòng màu.
+
+
+D-228 (2026-10-31): Đáy nút Hủy/Lưu trong form dự án mobile cách mép dưới50px, thay25px của D-227. Gap đường ngang đến nút15px giữ nguyên.

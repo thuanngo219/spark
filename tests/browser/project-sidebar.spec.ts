@@ -13,6 +13,7 @@ for (const width of [320, 390, 1280]) {
     await page.getByRole("button", { name: "Chỉnh sửa dự án Công việc", exact: true }).click();
     const dialog = page.locator(".project-editor-backdrop");
     await expect(dialog).toBeVisible();
+    await dialog.evaluate(el => Promise.all(el.getAnimations({ subtree: true }).filter(a => a.effect?.getTiming().iterations !== Infinity).map(a => a.finished)));
     const colorBox = (await dialog.locator(".color-picker-options").boundingBox())!;
     const managementBox = (await dialog.locator(".project-management-actions").boundingBox())!;
     expect(managementBox.y - colorBox.y - colorBox.height).toBeCloseTo(10, 0);
@@ -20,7 +21,7 @@ for (const width of [320, 390, 1280]) {
     await expect(dialog.locator(".project-editor-actions")).toHaveCSS("border-top-width", "1px");
     if (width < 700) {
       const footerBox = (await dialog.locator(".project-editor-actions").boundingBox())!;
-      expect(844 - footerBox.y - footerBox.height).toBeCloseTo(25, 0);
+      expect(844 - footerBox.y - footerBox.height).toBeCloseTo(50, 0);
     }
     const actions = dialog.locator(".project-editor-actions button");
     await expect(actions).toHaveCount(2);
