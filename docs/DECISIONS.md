@@ -661,3 +661,6 @@ D-228 (2026-10-31): Đáy nút Hủy/Lưu trong form dự án mobile cách mép 
 
 
 D-229 (2026-10-31): Khoảng cách đường ngang đến Hủy/Lưu25px thay15px; đáy nút cách mép dưới mobile50px giữ nguyên.
+
+
+D-230 (2026-10-31): Form dự án mobile giữ padding đáy50px khi bàn phím đóng, giảm16px khi visualViewport co hơn120px ở scale1. Khôi phục50px khi đóng bàn phím; backdrop tiếp tục kín layout viewport, khoảng gạch đến nút25px giữ nguyên.

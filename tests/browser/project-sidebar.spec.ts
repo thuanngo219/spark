@@ -35,6 +35,9 @@ for (const width of [320, 390, 1280]) {
       await page.evaluate(() => { Object.defineProperty(visualViewport!, "height", { configurable: true, get: () => 420 }); visualViewport!.dispatchEvent(new Event("resize")); });
       await expect(dialog).toHaveCSS("height", "844px");
       await expect(dialog.locator("form")).toHaveCSS("height", "420px");
+      await expect(dialog.locator("form")).toHaveCSS("padding-bottom", "16px");
+      const keyboardFooter = (await dialog.locator(".project-editor-actions").boundingBox())!;
+      expect(420 - keyboardFooter.y - keyboardFooter.height).toBeCloseTo(16, 0);
       await page.evaluate(() => { Object.defineProperty(visualViewport!, "height", { configurable: true, get: () => 844 }); visualViewport!.dispatchEvent(new Event("resize")); });
     }
     await expect(dialog).not.toContainText("Lưu trữ để thu gọn sidebar.");

@@ -106,6 +106,8 @@ export function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose
       if (!visualViewport) return;
       backdrop.style.setProperty("--project-viewport-top", `${visualViewport.offsetTop}px`);
       backdrop.style.setProperty("--project-viewport-height", `${visualViewport.height}px`);
+      const keyboardOpen = visualViewport.scale === 1 && window.innerHeight - visualViewport.height > 120;
+      backdrop.style.setProperty("--project-bottom-gap", keyboardOpen ? "16px" : "50px");
       window.requestAnimationFrame(() => input.scrollIntoView({ block: "center", inline: "nearest" }));
     };
 
@@ -119,6 +121,7 @@ export function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose
     return () => {
       backdrop.style.removeProperty("--project-viewport-top");
       backdrop.style.removeProperty("--project-viewport-height");
+      backdrop.style.removeProperty("--project-bottom-gap");
       window.cancelAnimationFrame(focusFrame);
       window.clearTimeout(keyboardTimer);
       visualViewport?.removeEventListener("resize", fitToKeyboard);
