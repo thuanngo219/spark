@@ -6,7 +6,7 @@ export type SyncStatus = "demo" | "loading" | "syncing" | "synced" | "offline" |
 export type CloudUser = { id: string; email: string };
 
 export function projectPillWidth(name: string) {
-  return Math.max(32, Math.ceil(22 + name.trim().length * 6.4));
+  return Math.max(32, Math.ceil(30 + name.trim().length * 8));
 }
 
 export function orderProjectsForSidebar(projects: Project[]) {

@@ -19,6 +19,8 @@
   .item-detail-sheet .detail-metadata { padding-inline: max(22px, calc((100% - var(--detail-column-width)) / 2 + 22px)); }
   .item-detail-sheet .detail-date-error { padding-inline: max(22px, calc((100% - var(--detail-column-width)) / 2 + 22px)); }
   .item-main { align-items: center; }
+  .item-row { align-items: center; }
+  .item-row > .checkbox, .item-row > .note-bullet, .item-project-dot, .project-dot-spacer { margin-top: 0; }
   .item-flags { margin-top: -4px; }
 }
 

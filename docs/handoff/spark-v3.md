@@ -149,3 +149,6 @@ D-230 (2026-10-31): Form dự án mobile giữ padding đáy50px khi bàn phím 
 
 
 D-231 (2026-10-31): Desktop bỏ margin dưới nhóm điều hướng chính để Tất cả/Quan Trọng cách nhau như item liền kề. Sidebar compact dùng cùng section margin18px, hàng project34px và heading26px với expanded, giữ vị trí tâm icon khi thu/mở.
+
+
+D-232 (2026-10-31): Nhãn dự án mở rộng desktop luôn một dòng, các pill cùng chiều rộng/cột theo tên dài nhất trong view, cách nội dung6px. Tăng dự trù chiều rộng cho chữ hoa Inter; tên quá dài vượt cột35% dùng ellipsis và tooltip thay vì xuống dòng. Hàng desktop căn giữa dọc để dot khi thu gọn nằm giữa từng item.
