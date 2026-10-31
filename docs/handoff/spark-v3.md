@@ -8,7 +8,7 @@ Cập nhật 2026-10-31. Chỉ giữ quy tắc đang có hiệu lực. Lịch s�
 - Mã ứng dụng mới nhất: `8d8aca066b24c69d63bbf87cd891d0723a30aa01` (D-234), deployment `dpl_7qoa24PWnLhGD1ge3szR91wTPWkk` READY và alias đã xác minh ngày2026-10-31. Push tài liệu có thể tạo deployment mới với cùng mã app; xác minh SHA/alias khi tiếp tục.
 - Lint, typecheck,176 unit test và build đã đạt cho bản mã mới nhất. Kiểm tra production gần nhất: divider cách hàng trên10px và icon giữ tọa độ ở sidebar expand/compact đạt. Các đợt trước đã kiểm tra typography/hover sáng-tối, nhãn dự án một dòng/cùng chiều rộng/dot căn giữa, dự án fullscreen/keyboard ở320/390/700/1280px theo từng bộ test; không coi đây là một lần chạy toàn bộ regression.
 - Chủ dự án xác nhận khoảng trống bàn phím trên iPhone đã ổn (16px mở/50px đóng), và xác nhận UI mới nhất “Ổn rồi” ngày2026-10-31. Đây là phản hồi thực tế của chủ dự án; agent chưa tự kiểm tra native iPhone. Pinch/system edge gesture cần xác nhận riêng trên máy thật.
-- B-005 rà copy hoàn tất. Search và kiểm tra độ tin cậy dữ liệu vẫn tạm hoãn.
+- B-005 rà copy hoàn tất. Đợt kiểm tra độ tin cậy dữ liệu điện thoại/máy tính đã hoàn tất theo xác nhận chủ dự án ngày2026-10-31; [kết quả chi tiết](../DATA_RELIABILITY_CHECK.md). Không có bước nghiệm thu đang chờ.
 
 ## Typography hiện hành
 
@@ -42,11 +42,11 @@ Inter4.1 WOFF2 thường/nghiêng trong src/app/fonts/, next/font/local; root100
 
 Giữ các quy tắc mobile đã duyệt: GHI CHÚ, ← QUAY LẠI; touch44px mặc định, sort30px ngoại lệ; metadata chi tiết hai hàng, hai ngày chia đều; quick-add giữ tên và hàng nút cố định, Nội dung cuộn riêng, Phân loại phủ action. Theme sáng/tối/system, splash Navy/logo âm bản, header sticky blur8px/dải màu4px và phím tắt ngoài editor tiếp tục như mã hiện hành. Palette một Navy#111742, Turquoise#44D4CD, Amber#D6A84F, Coral#D9776A; artwork logo giữ nguyên.
 
-## Phạm vi tiếp tục đã thống nhất
+## Phạm vi và nghiệm thu hiện tại
 
-- Tạm hoãn tìm kiếm; chưa triển khai và không tự đưa lại vào scope.
-- Kiểm tra độ tin cậy dữ liệu trên điện thoại/máy tính để lần tới. Chưa triển khai cơ chế version/conflict, sao lưu/khôi phục hoặc thay đổi data model trong đợt UI này.
-- Các phép kiểm còn thiếu ở phần Dữ liệu bên dưới là bước cần làm trước khi sửa sâu đồng bộ. Chốt phạm vi thay đổi sau khi có kết quả; các đề xuất trước đây không phải yêu cầu đã được duyệt triển khai.
+- Chủ dự án xác nhận đồng bộ/update dữ liệu tốt, chấp nhận hoàn tất đợt kiểm tra, gồm xác nhận khả năng bảo toàn hai phiên bản. Kết quả cụ thể và xác nhận chung các bước cuối được phân biệt trong [báo cáo kiểm tra](../DATA_RELIABILITY_CHECK.md).
+- Không còn yêu cầu triển khai hoặc điểm cần trao đổi đang mở. Không tự triển khai cơ chế version/conflict, sao lưu/khôi phục hoặc đổi data model.
+- Search không thuộc phạm vi hiện tại và không phải backlog/tính năng hoãn. Chỉ xem xét nếu chủ dự án yêu cầu mới.
 
 ## Phạm vi sản phẩm đang chạy
 
@@ -60,7 +60,7 @@ Giữ các quy tắc mobile đã duyệt: GHI CHÚ, ← QUAY LẠI; touch44px m�
 - Web public; chế độ local bắt đầu rỗng và lưu trên thiết bị. Cloud dùng Supabase Auth OTP email; project hạ tầng dùng chung `WorkSpace`, ref `ukoowtpqztknbrgpyqdx`, hai bảng `public.projects`/`public.items` có Row Level Security theo `user_id`.
 - `src/lib/offline-storage.ts` giữ snapshot và mutation queue trong IndexedDB theo scope/user, fallback `localStorage` nếu cần. Với local data, bản snapshot chờ được ghi đồng bộ trước giao dịch IndexedDB để reload sát thao tác không mất dữ liệu. Service worker chỉ cache app shell/tài nguyên cùng origin, không cache phản hồi Supabase hay session.
 - Cloud mutation ghi local trước, gửi tuần tự, retry và reconcile khi có mạng, Realtime hoặc app trở lại foreground. Không seed dữ liệu mẫu vào local/cloud khi khởi động; chỉ dọn bộ seed local cũ nếu nhận diện chắc chắn. Snapshot cloud rỗng không kéo dữ liệu demo lên cloud.
-- Giới hạn còn tồn tại: full-row upsert có thể last-write-wins nếu hai thiết bị sửa offline cùng một item. Chưa tái kiểm độc lập trong lượt bàn giao này: cold-start offline trên iPhone, sync giữa hai thiết bị thật và cách ly tài khoản A/B với session thật. Đây là các phép kiểm cần chạy trước khi thay đổi sâu phần đồng bộ; không ghi chúng là lỗi đã phát hiện.
+- Kết quả thực tế: chủ dự án xác nhận đợt kiểm tra hai thiết bị hoàn tất, gồm cold-start offline, đồng bộ hai chiều, hàng đợi, xóa và bảo toàn hai phiên bản. Agent không tự thao tác trên thiết bị/tài khoản thật. Giữ ghi chú kiến trúc: full-row upsert có thể last-write-wins; phản hồi nghiệm thu không bổ sung tính năng version history/merge vào mã. Không có lỗi mới được báo trong đợt kiểm tra.
 - WorkSpace dùng chung nhiều app. Trước migration Spark phải xem `migration list`; không dùng `db push --include-all`, không repair history hoặc sửa shared auth hook của app khác để giải quyết việc riêng Spark.
 
 ## Bản đồ mã nguồn

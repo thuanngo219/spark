@@ -44,8 +44,6 @@ npm run dev
 - [Logo concepts](assets/logo-concepts/README.md): năm hướng nhận diện ban đầu cho Spark.
 - [Official logo](assets/logo/README.md): logo chính thức, palette và quy tắc sử dụng hiện tại.
 
-## Phạm vi tiếp tục v3
+## Trạng thái nghiệm thu v3
 
-- Tìm kiếm đang tạm hoãn; chưa có code tìm kiếm. Kiểm tra độ tin cậy dữ liệu để lần tới, chưa chốt triển khai cơ chế xử lý xung đột hoặc sao lưu.
-- Kiểm tra riêng cold-start offline trên iPhone, sync hai thiết bị và cách ly hai tài khoản thật trước khi sửa sâu luồng dữ liệu. Handoff v3 phân biệt rõ những phép kiểm này với xác nhận dùng iPhone của chủ dự án.
-- Nếu mở rộng phạm vi người dùng hoặc dùng offline đồng thời trên nhiều thiết bị, thiết kế version/conflict detection cho full-row upsert hiện tại trước khi triển khai.
+Đợt kiểm tra độ tin cậy dữ liệu điện thoại/máy tính đã hoàn tất theo xác nhận chủ dự án ngày2026-10-31. Không có yêu cầu code hoặc bước nghiệm thu đang chờ. [Kết quả kiểm tra](docs/DATA_RELIABILITY_CHECK.md) phân biệt kết quả từng bước với xác nhận chung; không thay cơ chế dữ liệu trong đợt này. Phạm vi mới chỉ thực hiện khi được yêu cầu.

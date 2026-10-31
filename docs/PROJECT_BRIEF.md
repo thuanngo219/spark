@@ -1,5 +1,7 @@
 # Product Brief — Spark
 
+Đợt kiểm tra dữ liệu hai thiết bị đã hoàn tất theo xác nhận chủ dự án ngày2026-10-31. [Báo cáo kết quả](DATA_RELIABILITY_CHECK.md) là nguồn nghiệm thu thủ công, gồm giới hạn bằng chứng; không có bước kiểm tra đang chờ trong đợt này. Không có thay đổi cơ chế đồng bộ. Phạm vi triển khai mới chỉ mở khi được yêu cầu.
+
 Chủ dự án xác nhận giao diện production “Ổn rồi” ngày 2026-10-29 sau D-207. [Handoff v3](handoff/spark-v3.md) chỉ ghi quy tắc còn hiệu lực và phạm vi đã kiểm chứng; các mục D-xxx phía dưới là lịch sử phát triển, nên đọc cùng quyết định mới nhất khi một thông số thay đổi.
 
 ## Giao diện hiện hành — đến D-234 (2026-10-31)

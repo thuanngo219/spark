@@ -1,5 +1,7 @@
 # Implementation Guide
 
+Đợt kiểm tra dữ liệu hai thiết bị đã hoàn tất theo xác nhận chủ dự án ngày2026-10-31. [Báo cáo kết quả](DATA_RELIABILITY_CHECK.md) là nguồn nghiệm thu thủ công, gồm giới hạn bằng chứng; không có bước kiểm tra đang chờ trong đợt này. Không có thay đổi cơ chế đồng bộ. Phạm vi triển khai mới chỉ mở khi được yêu cầu.
+
 Trạng thái triển khai hiện hành và đường dẫn mã nguồn ở [handoff v3](handoff/spark-v3.md). Các mục D-117–D-199 ở cuối file ghi lại quá trình triển khai và có thể chứa thông số đã được quyết định sau thay thế; dùng handoff v3 và code để lấy giá trị đang chạy. Chủ dự án xác nhận giao diện production “Ổn rồi” ngày 2026-10-29 sau D-207.
 
 ## Trạng thái kỹ thuật hiện hành đến D-234

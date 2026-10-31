@@ -1,5 +1,7 @@
 # Offline và đồng bộ dữ liệu
 
+Đợt kiểm tra dữ liệu hai thiết bị đã hoàn tất theo xác nhận chủ dự án ngày2026-10-31. [Báo cáo kết quả](DATA_RELIABILITY_CHECK.md) là nguồn nghiệm thu thủ công, gồm giới hạn bằng chứng; không có bước kiểm tra đang chờ trong đợt này. Không có thay đổi cơ chế đồng bộ. Phạm vi triển khai mới chỉ mở khi được yêu cầu.
+
 Tài liệu này mô tả hành vi offline-first hiện tại của Spark. Supabase vẫn là nguồn dữ liệu cloud có thẩm quyền; IndexedDB là nguồn dữ liệu tức thời trên từng browser đã đăng nhập.
 
 Trạng thái phát hành và phạm vi đã được kiểm chứng cho v3 nằm ở [handoff hiện hành](handoff/spark-v3.md). Danh sách “Kiểm thử bắt buộc” bên dưới là checklist cho thay đổi tiếp theo, không có nghĩa từng mục đã được tái kiểm trên iPhone trong lượt bàn giao này.
