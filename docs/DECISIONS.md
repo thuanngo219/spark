@@ -658,3 +658,6 @@ D-227 (2026-10-31): Khôi phục border-top hàng Hủy/Lưu, padding-top15px. M
 
 
 D-228 (2026-10-31): Đáy nút Hủy/Lưu trong form dự án mobile cách mép dưới50px, thay25px của D-227. Gap đường ngang đến nút15px giữ nguyên.
+
+
+D-229 (2026-10-31): Khoảng cách đường ngang đến Hủy/Lưu25px thay15px; đáy nút cách mép dưới mobile50px giữ nguyên.

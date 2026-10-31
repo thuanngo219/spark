@@ -91,7 +91,7 @@
   .project-editor-backdrop .editor-sheet { position: absolute; top: var(--project-viewport-top, 0px); width: 100%; height: var(--project-viewport-height, 100dvh); max-height: none; border-radius: 0; padding: calc(20px + env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) 50px max(20px, env(safe-area-inset-left)); background: var(--canvas); overflow-y: auto; overscroll-behavior: contain; box-shadow: none; animation: none; }
   .project-editor-backdrop form.editor-sheet { display: flex; flex-direction: column; }
   .project-editor-backdrop .project-editor-action-group { flex: 1 0 auto; display: flex; flex-direction: column; }
-  .project-editor-backdrop .project-editor-actions { margin-top: auto; padding-top: 15px; position: sticky; bottom: 0; background: var(--canvas); }
+  .project-editor-backdrop .project-editor-actions { margin-top: auto; padding-top: 25px; position: sticky; bottom: 0; background: var(--canvas); }
   .project-editor-backdrop .project-management-actions { margin-bottom: 24px; }
 
   .dialog-backdrop.quick-add-backdrop { padding: 0; background: var(--canvas); overflow: hidden; overscroll-behavior: none; animation: none; }
