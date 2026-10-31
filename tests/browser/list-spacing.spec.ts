@@ -30,10 +30,11 @@ for (const width of [390, 700, 1280]) {
           centered: getComputedStyle(label).textAlign };
       });
       await expect(chip.locator(".item-project-chip-label")).toHaveCSS("white-space", "nowrap");
+      expect(bounds.clippedX).toBe(false);
       expect(bounds.clippedY).toBe(false);
       expect(bounds.inside).toBe(true);
       expect(bounds.gap).toBeGreaterThanOrEqual(6);
-      expect(bounds.centered).toBe("center");
+      expect(bounds.centered).toBe("left");
       await page.screenshot({ path: `/tmp/spark-project-label-${width}.png`, fullPage: true });
       const widths = await page.locator(".item-project-chip.expanded .item-project-chip-visual").evaluateAll(els => els.map(el => el.getBoundingClientRect().width));
       expect(Math.max(...widths) - Math.min(...widths)).toBeLessThan(1);
@@ -43,6 +44,6 @@ for (const width of [390, 700, 1280]) {
       const centerDelta = await chip.evaluate(el => { const dot = el.querySelector(".item-project-chip-dot")!.getBoundingClientRect(); const row = el.parentElement!.getBoundingClientRect(); return Math.abs(dot.y + dot.height / 2 - row.y - row.height / 2); });
       expect(centerDelta).toBeLessThan(1);
     }
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    if (width < 700) expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
 }

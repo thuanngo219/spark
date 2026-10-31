@@ -670,3 +670,6 @@ D-231 (2026-10-31): Desktop bỏ margin dưới nhóm điều hướng chính đ
 
 
 D-232 (2026-10-31): Nhãn dự án mở rộng desktop luôn một dòng, các pill cùng chiều rộng/cột theo tên dài nhất trong view, cách nội dung6px. Tăng dự trù chiều rộng cho chữ hoa Inter; tên quá dài vượt cột35% dùng ellipsis và tooltip thay vì xuống dòng. Hàng desktop căn giữa dọc để dot khi thu gọn nằm giữa từng item.
+
+
+D-233 (2026-10-31): Nhãn dự án desktop dùng chiều rộng đo bằng font thực tế sau fonts.ready, chung theo tên dài nhất đang render, bỏ cap35%/ellipsis, căn trái, gap10px đến vùng task/note. Tên cực dài có thể cần cuộn ngang khi không đủ màn hình. Sidebar thêm divider trắng13%/1px trước Đã lưu trữ.

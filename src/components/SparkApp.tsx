@@ -362,6 +362,24 @@ export function SparkApp() {
       return project ? Math.max(widest, projectPillWidth(project.name)) : widest;
     }, 0);
   }, [completedOpen, projectById, visibleInactiveItems, visibleOpenItems]);
+  const [measuredProjectChipWidth, setMeasuredProjectChipWidth] = useState<number | null>(null);
+  useEffect(() => {
+    let active = true;
+    const measure = () => {
+      const label = document.querySelector<HTMLElement>(".item-project-chip-label");
+      if (!label || !active) return;
+      const style = getComputedStyle(label);
+      const context = document.createElement("canvas").getContext("2d");
+      if (!context) return;
+      context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+      const names = Array.from(document.querySelectorAll<HTMLElement>(".item-project-chip-label"), el => el.textContent ?? "");
+      const spacing = parseFloat(style.letterSpacing) || 0;
+      setMeasuredProjectChipWidth(Math.ceil(Math.max(0, ...names.map(name => context.measureText(name.toUpperCase()).width + Array.from(name.toUpperCase()).length * spacing))) + 30);
+    };
+    measure();
+    void document.fonts.ready.then(measure);
+    return () => { active = false; };
+  }, [projectChipWidth, visibleOpenItems, visibleInactiveItems, completedOpen, projectById]);
   const { overdue, current, todayItems, ongoing, undated, taskCount, noteCount, overdueCount } = useMemo(() => {
     const overdueItems: SparkItem[] = [];
     const dueTodayItems: SparkItem[] = [];
@@ -755,7 +773,7 @@ export function SparkApp() {
 
           <div
             className="list-area"
-            style={{ "--project-chip-width": `${projectChipWidth}px` } as CSSProperties}
+            style={{ "--project-chip-width": `${measuredProjectChipWidth ?? projectChipWidth}px` } as CSSProperties}
           >
             {overdue.length > 0 && (
               <ItemGroup
