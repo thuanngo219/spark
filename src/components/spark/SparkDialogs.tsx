@@ -159,14 +159,12 @@ export function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose
             </label>
           </div>
         </fieldset>
-        {project && <div className="project-lifecycle">
-          {project.archivedAt && <p className="project-lifecycle-hint">Khôi phục để đưa dự án trở lại sidebar và bộ chọn dự án.</p>}
-          <div className="project-lifecycle-actions">
-            <button type="button" className="archive-button" onClick={onArchive}><Icon name="archive" size={17} />{project.archivedAt ? "Khôi phục dự án" : "Lưu trữ dự án"}</button>
-            <button type="button" className="delete-button" onClick={() => setConfirmDelete(true)}><Icon name="trash" size={17} />Xóa dự án</button>
-          </div>
-        </div>}
-        <div className="editor-actions"><button type="button" className="text-button" onClick={onClose}>Hủy</button><button className="primary-button" disabled={!name.trim()}>{project ? "Lưu thay đổi" : "Tạo dự án"}</button></div>
+        <div className={`editor-actions project-editor-actions ${project ? "has-project" : ""}`}>
+          {project && <><button type="button" className="archive-button" onClick={onArchive}><Icon name="archive" size={17} /><span>{project.archivedAt ? "Khôi phục" : "Lưu trữ"}</span></button>
+          <button type="button" className="delete-button" onClick={() => setConfirmDelete(true)}><Icon name="trash" size={17} /><span>Xóa</span></button></>}
+          <button type="button" className="text-button" onClick={onClose}><Icon name="close" size={17} /><span>Hủy</span></button>
+          <button className="primary-button" disabled={!name.trim()}><Icon name="check" size={17} /><span>{project ? "Lưu thay đổi" : "Tạo dự án"}</span></button>
+        </div>
       </form>
       )}
     </div>

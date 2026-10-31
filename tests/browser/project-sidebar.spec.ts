@@ -1,5 +1,5 @@
 import { test, expect } from "./fixtures";
-for (const width of [390, 1280]) {
+for (const width of [320, 390, 1280]) {
   test(`project sidebar and editor ${width}`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/");
@@ -13,6 +13,14 @@ for (const width of [390, 1280]) {
     await page.getByRole("button", { name: "Chỉnh sửa dự án Công việc", exact: true }).click();
     const dialog = page.locator(".project-editor-backdrop");
     await expect(dialog).toBeVisible();
+    const actions = dialog.locator(".project-editor-actions button");
+    await expect(actions).toHaveCount(4);
+    const boxes = await actions.evaluateAll(elements => elements.map(el => { const b = el.getBoundingClientRect(); return { y: b.y, right: b.right }; }));
+    expect(new Set(boxes.map(box => box.y)).size).toBe(1);
+    expect(Math.max(...boxes.map(box => box.right))).toBeLessThanOrEqual(width);
+    await expect(dialog.locator(".project-editor-actions svg")).toHaveCount(4);
+    await dialog.evaluate(el => Promise.all(el.getAnimations({ subtree: true }).filter(a => a.effect?.getTiming().iterations !== Infinity).map(a => a.finished)));
+    await page.screenshot({ path: `/tmp/spark-project-actions-${width}.png` });
     await expect(dialog).not.toContainText("Lưu trữ để thu gọn sidebar.");
     if (width < 700) {
       await expect(page.locator("body")).toHaveCSS("position", "fixed");

@@ -119,3 +119,6 @@ D-220 (2026-10-30): Nội dung đọc/chỉnh sửa dùng token riêng --text-co
 
 
 D-221 (2026-10-31): Sidebar bỏ nút ... sửa dự án, giữ sao; hover/selected phủ cả hàng dự án và sao. Sửa dự án qua nút trên header dự án. Bỏ câu “Lưu trữ để thu gọn sidebar. Task và note vẫn được giữ nguyên.” Màn tạo/sửa/xác nhận xóa dự án mobile toàn màn hình, khóa cuộn và inert nền bằng lockDetailScroll; form cuộn riêng, theo visualViewport khi bàn phím mở.
+
+
+D-222 (2026-10-31): Bốn action sửa dự án Lưu trữ/Xóa/Hủy/Lưu thay đổi chung một hàng grid4, mỗi nút icon trên/nhãn dưới, cùng padding/height64/radius12 cả desktop/mobile. Bỏ thanh action sticky riêng mobile. Sidebar thêm padding phải8px cho sao, bỏ hàng tiêu đề Cần lưu ý, luôn hiện các filter và dự án gắn sao bên trong.

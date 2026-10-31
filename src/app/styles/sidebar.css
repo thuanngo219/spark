@@ -35,7 +35,7 @@
 .project-nav-row.drop-before::before { top: -4px; }
 .project-nav-row.drop-after::after { bottom: -4px; }
 .project-nav-row .project-dot { width: 12px; height: 12px; margin-inline: 3px; }
-.project-actions { display: flex; align-items: center; }
+.project-actions { display: flex; align-items: center; padding-right: 8px; }
 .project-star { width: 30px; height: 30px; }
 .project-star.selected { color: var(--important-ink); }
 .project-star.selected svg { fill: currentColor; }

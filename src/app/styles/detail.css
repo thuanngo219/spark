@@ -125,3 +125,7 @@
   .project-select-menu button[aria-selected="true"] { background: var(--turquoise-soft); color: var(--heading); }
   .project-select-menu button:disabled { color: var(--muted); cursor: not-allowed; }
 }
+
+.project-editor-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 20px; }
+.project-editor-actions.has-project { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.project-editor-actions button { min-width: 0; min-height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 8px 4px; border-radius: 12px; text-align: center; line-height: 1.4; }

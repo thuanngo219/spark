@@ -10,7 +10,6 @@ import { SPARK_LOGO_NEGATIVE_SRC, orderProjectsForSidebar, syncStatusDetail, syn
 export function Sidebar({
   archivedProjects,
   onOpenProjectArchive,
-  attentionOpen,
   compact,
   counts,
   currentView,
@@ -19,7 +18,6 @@ export function Sidebar({
   onHelp,
   onNavigate,
   onSync,
-  onToggleAttention,
   onToggleProjects,
   onToggleProjectStar,
   onReorderProjects,
@@ -132,13 +130,12 @@ export function Sidebar({
           ))}
         </div>}
         <div className="nav-section attention-nav">
-          {!compact && <button className="section-toggle" onClick={onToggleAttention} aria-expanded={attentionOpen}><Icon name="chevron" size={13} className={attentionOpen ? "section-open" : ""} /><span className="nav-label">Cần lưu ý</span></button>}
-          {(compact || attentionOpen) && smartItems.map((entry) => (
+          {smartItems.map((entry) => (
             <button key={entry.label} className={`nav-item ${entry.className} ${isActive(entry.view) ? "active" : ""}`} onClick={() => onNavigate(entry.view)} aria-label={entry.label} title={compact ? undefined : entry.label} data-tooltip={compact ? entry.label : undefined}>
               <Icon name={entry.icon} /><span className="nav-text">{entry.label}</span>
             </button>
           ))}
-          {(compact || attentionOpen) && starredProjects.map(renderProject)}
+          {starredProjects.map(renderProject)}
         </div>
         <div className="nav-section projects-nav">
           <div className="nav-heading">

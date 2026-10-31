@@ -233,7 +233,7 @@
   .color-picker-options::-webkit-scrollbar { display: none; }
   .color-picker-options > button, .color-picker .project-star-option, .custom-color-option { flex-basis: 44px; width: 44px; height: 44px; min-height: 44px; }
   .custom-color-option.selected > span::after { inset: 10px; }
-  .editor-actions { position: sticky; bottom: -19px; background: var(--surface); padding-bottom: 4px; }
+  .editor-actions:not(.project-editor-actions) { position: sticky; bottom: -19px; background: var(--surface); padding-bottom: 4px; }
   .toast { left: 14px; right: 14px; bottom: max(136px, calc(116px + env(safe-area-inset-bottom))); max-width: none; }
 }
 
