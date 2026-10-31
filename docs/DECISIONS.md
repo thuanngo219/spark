@@ -649,3 +649,6 @@ D-224 (2026-10-31): Hàng pill Yêu thích/Lưu trữ/Xóa sát phần màu nh�
 
 
 D-225 (2026-10-31): Bỏ nút X ở header tạo/chỉnh sửa dự án trên desktop/mobile; dùng Hủy ở hàng hành động để đóng.
+
+
+D-226 (2026-10-31): Margin dưới color-picker đổi27px thành10px để hàng Yêu thích/Lưu trữ/Xóa cách vòng màu10px, bằng khoảng cách legend đến vòng màu.

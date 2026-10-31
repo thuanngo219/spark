@@ -100,7 +100,7 @@
 .delete-button { display: flex; align-items: center; gap: 6px; color: var(--urgent-ink); background: rgba(217,119,106,.08); }
 .archive-button { display: flex; align-items: center; gap: 6px; color: var(--link); background: var(--control-hover); }
 .archive-button:hover { background: var(--selected); color: var(--selected-ink); }
-.color-picker { min-width: 0; border: 0; padding: 0; margin: 2px 0 27px; }
+.color-picker { min-width: 0; border: 0; padding: 0; margin: 2px 0 10px; }
 .color-picker legend { margin-bottom: 10px; }
 .color-picker-options { display: flex; gap: 10px; }
 .color-picker button { flex: 0 0 auto; width: 31px; height: 31px; border: 2px solid var(--surface); border-radius: 50%; box-shadow: none; }

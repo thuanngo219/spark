@@ -13,6 +13,9 @@ for (const width of [320, 390, 1280]) {
     await page.getByRole("button", { name: "Chỉnh sửa dự án Công việc", exact: true }).click();
     const dialog = page.locator(".project-editor-backdrop");
     await expect(dialog).toBeVisible();
+    const colorBox = (await dialog.locator(".color-picker-options").boundingBox())!;
+    const managementBox = (await dialog.locator(".project-management-actions").boundingBox())!;
+    expect(managementBox.y - colorBox.y - colorBox.height).toBeCloseTo(10, 0);
     const actions = dialog.locator(".project-editor-actions button");
     await expect(actions).toHaveCount(2);
     const boxes = await actions.evaluateAll(elements => elements.map(el => { const b = el.getBoundingClientRect(); return { y: b.y, right: b.right }; }));
