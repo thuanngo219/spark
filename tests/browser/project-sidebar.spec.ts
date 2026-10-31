@@ -14,13 +14,19 @@ for (const width of [320, 390, 1280]) {
     const dialog = page.locator(".project-editor-backdrop");
     await expect(dialog).toBeVisible();
     const actions = dialog.locator(".project-editor-actions button");
-    await expect(actions).toHaveCount(4);
+    await expect(actions).toHaveCount(2);
     const boxes = await actions.evaluateAll(elements => elements.map(el => { const b = el.getBoundingClientRect(); return { y: b.y, right: b.right }; }));
     expect(new Set(boxes.map(box => box.y)).size).toBe(1);
     expect(Math.max(...boxes.map(box => box.right))).toBeLessThanOrEqual(width);
-    await expect(dialog.locator(".project-editor-actions svg")).toHaveCount(4);
+    await expect(dialog.locator(".project-editor-action-group svg")).toHaveCount(5);
     await dialog.evaluate(el => Promise.all(el.getAnimations({ subtree: true }).filter(a => a.effect?.getTiming().iterations !== Infinity).map(a => a.finished)));
     await page.screenshot({ path: `/tmp/spark-project-actions-${width}.png` });
+    if (width < 700) {
+      await page.evaluate(() => { Object.defineProperty(visualViewport!, "height", { configurable: true, get: () => 420 }); visualViewport!.dispatchEvent(new Event("resize")); });
+      await expect(dialog).toHaveCSS("height", "844px");
+      await expect(dialog.locator("form")).toHaveCSS("height", "420px");
+      await page.evaluate(() => { Object.defineProperty(visualViewport!, "height", { configurable: true, get: () => 844 }); visualViewport!.dispatchEvent(new Event("resize")); });
+    }
     await expect(dialog).not.toContainText("Lưu trữ để thu gọn sidebar.");
     if (width < 700) {
       await expect(page.locator("body")).toHaveCSS("position", "fixed");

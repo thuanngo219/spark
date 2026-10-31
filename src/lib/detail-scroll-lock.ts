@@ -68,7 +68,7 @@ export function lockDetailScroll(backdrop: HTMLElement, isolateAncestors = false
     if (Math.abs(dy) < 2 || Math.abs(dx) >= Math.abs(dy) || (selection && !selection.isCollapsed && selection.toString().length > 0)) return;
     if (gesture.mode === "pending") gesture.mode = performance.now() - gesture.time > 450 ? "selection" : "scroll";
     if (gesture.mode === "selection") return;
-    const input = gesture.target.closest<HTMLElement>(isolateAncestors ? ".content-editor-input, .quick-add-body, .quick-classification" : ".content-editor-input");
+    const input = gesture.target.closest<HTMLElement>(isolateAncestors ? ".content-editor-input, .quick-add-body, .quick-classification, .project-editor-backdrop .editor-sheet" : ".content-editor-input");
     const maxScroll = input ? input.scrollHeight - input.clientHeight : 0;
     const atBoundary = !input || maxScroll <= 1 || (dy > 0 && input.scrollTop <= 1) || (dy < 0 && input.scrollTop >= maxScroll - 1);
     if (atBoundary && event.cancelable) event.preventDefault();

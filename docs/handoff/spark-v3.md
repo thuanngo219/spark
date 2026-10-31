@@ -122,3 +122,6 @@ D-221 (2026-10-31): Sidebar bỏ nút ... sửa dự án, giữ sao; hover/selec
 
 
 D-222 (2026-10-31): Bốn action sửa dự án Lưu trữ/Xóa/Hủy/Lưu thay đổi chung một hàng grid4, mỗi nút icon trên/nhãn dưới, cùng padding/height64/radius12 cả desktop/mobile. Bỏ thanh action sticky riêng mobile. Sidebar thêm padding phải8px cho sao, bỏ hàng tiêu đề Cần lưu ý, luôn hiện các filter và dự án gắn sao bên trong.
+
+
+D-223 (2026-10-31): Sao/Lưu trữ/Xóa một hàng pill, Hủy/Lưu hàng pill dưới cách24px, padding trên20px/viền phân cách. Sao chuyển khỏi hàng màu. Mobile backdrop luôn phủ toàn layout viewport; chỉ form theo visualViewport khi bàn phím mở, tránh lộ nền. Khóa cuộn isolate toàn bộ nhánh nền và chặn overscroll ngoài form.

@@ -89,7 +89,7 @@ export function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose
   const dialogRef = useDialogControls(onClose);
   useLayoutEffect(() => {
     if (!window.matchMedia("(max-width: 699px)").matches || !dialogRef.current) return;
-    return lockDetailScroll(dialogRef.current);
+    return lockDetailScroll(dialogRef.current, true);
   }, [dialogRef]);
   useEffect(() => {
     if (confirmDelete || !window.matchMedia("(max-width: 699px)").matches) return;
@@ -104,9 +104,8 @@ export function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose
     };
     const fitToKeyboard = () => {
       if (!visualViewport) return;
-      backdrop.style.top = `${visualViewport.offsetTop}px`;
-      backdrop.style.bottom = "auto";
-      backdrop.style.height = `${visualViewport.height}px`;
+      backdrop.style.setProperty("--project-viewport-top", `${visualViewport.offsetTop}px`);
+      backdrop.style.setProperty("--project-viewport-height", `${visualViewport.height}px`);
       window.requestAnimationFrame(() => input.scrollIntoView({ block: "center", inline: "nearest" }));
     };
 
@@ -118,9 +117,8 @@ export function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose
     visualViewport?.addEventListener("resize", fitToKeyboard);
     visualViewport?.addEventListener("scroll", fitToKeyboard);
     return () => {
-      backdrop.style.top = "";
-      backdrop.style.bottom = "";
-      backdrop.style.height = "";
+      backdrop.style.removeProperty("--project-viewport-top");
+      backdrop.style.removeProperty("--project-viewport-height");
       window.cancelAnimationFrame(focusFrame);
       window.clearTimeout(keyboardTimer);
       visualViewport?.removeEventListener("resize", fitToKeyboard);
@@ -143,15 +141,6 @@ export function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose
         <fieldset className="color-picker">
           <legend>Màu nhận diện</legend>
           <div className="color-picker-options">
-            <button
-              type="button"
-              className={`project-star-option ${isStarred ? "selected" : ""}`}
-              onClick={() => setIsStarred((value) => !value)}
-              aria-label={isStarred ? "Bỏ khỏi Cần lưu ý" : "Đưa vào Cần lưu ý"}
-              title={isStarred ? "Bỏ khỏi Cần lưu ý" : "Đưa vào Cần lưu ý"}
-            >
-              <Icon name="star" size={17} />
-            </button>
             {projectColors.map((entry) => <button type="button" aria-label={`Chọn màu ${entry}`} className={color.toLowerCase() === entry.toLowerCase() ? "selected" : ""} style={{ background: entry }} key={entry} onClick={() => setColor(entry)} />)}
             <label className={`custom-color-option ${usesCustomColor ? "selected" : ""}`} style={{ "--custom-project-color": customPickerValue } as CSSProperties} title="Chọn màu tùy ý">
               <input type="color" value={customPickerValue} onChange={(event) => setColor(event.target.value)} aria-label="Chọn màu tùy ý" />
@@ -159,11 +148,16 @@ export function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose
             </label>
           </div>
         </fieldset>
-        <div className={`editor-actions project-editor-actions ${project ? "has-project" : ""}`}>
-          {project && <><button type="button" className="archive-button" onClick={onArchive}><Icon name="archive" size={17} /><span>{project.archivedAt ? "Khôi phục" : "Lưu trữ"}</span></button>
-          <button type="button" className="delete-button" onClick={() => setConfirmDelete(true)}><Icon name="trash" size={17} /><span>Xóa</span></button></>}
-          <button type="button" className="text-button" onClick={onClose}><Icon name="close" size={17} /><span>Hủy</span></button>
-          <button className="primary-button" disabled={!name.trim()}><Icon name="check" size={17} /><span>{project ? "Lưu thay đổi" : "Tạo dự án"}</span></button>
+        <div className="project-editor-action-group">
+          <div className="project-management-actions">
+            <button type="button" className={`archive-button ${isStarred ? "is-starred" : ""}`} aria-pressed={isStarred} onClick={() => setIsStarred(value => !value)}><Icon name="star" size={17} /><span>Sao</span></button>
+            {project && <><button type="button" className="archive-button" onClick={onArchive}><Icon name="archive" size={17} /><span>{project.archivedAt ? "Khôi phục" : "Lưu trữ"}</span></button>
+            <button type="button" className="delete-button" onClick={() => setConfirmDelete(true)}><Icon name="trash" size={17} /><span>Xóa</span></button></>}
+          </div>
+          <div className="editor-actions project-editor-actions">
+            <button type="button" className="text-button" onClick={onClose}><Icon name="close" size={17} /><span>Hủy</span></button>
+            <button className="primary-button" disabled={!name.trim()}><Icon name="check" size={17} /><span>{project ? "Lưu" : "Tạo dự án"}</span></button>
+          </div>
         </div>
       </form>
       )}
