@@ -9,8 +9,14 @@ test("desktop sidebar icons retain positions across collapse", async ({ page }) 
   const all = (await sidebar.getByRole("button", { name: "Tất cả", exact: true }).boundingBox())!;
   const important = (await sidebar.getByRole("button", { name: "Quan Trọng", exact: true }).boundingBox())!;
   expect(important.y - all.y - all.height).toBe(0);
+  const dividerGap = () => sidebar.locator(".archived-projects-nav").evaluate(el => {
+    const previous = el.previousElementSibling!.getBoundingClientRect();
+    return el.getBoundingClientRect().top + parseFloat(getComputedStyle(el, "::before").top) - previous.bottom;
+  });
+  expect(await dividerGap()).toBe(10);
   const expanded = await positions();
   await page.getByRole("button", { name: "Thu gọn sidebar" }).click();
   await page.locator(".app-shell").evaluate(el => Promise.all(el.getAnimations().map(a => a.finished)));
   expect(await positions()).toEqual(expanded);
+  expect(await dividerGap()).toBe(10);
 });

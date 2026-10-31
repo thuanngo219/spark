@@ -673,3 +673,6 @@ D-232 (2026-10-31): Nhãn dự án mở rộng desktop luôn một dòng, các p
 
 
 D-233 (2026-10-31): Nhãn dự án desktop dùng chiều rộng đo bằng font thực tế sau fonts.ready, chung theo tên dài nhất đang render, bỏ cap35%/ellipsis, căn trái, gap10px đến vùng task/note. Tên cực dài có thể cần cuộn ngang khi không đủ màn hình. Sidebar thêm divider trắng13%/1px trước Đã lưu trữ.
+
+
+D-234 (2026-10-31): Divider trước Đã lưu trữ cách đáy hàng dự án phía trên10px; dùng margin-top21px và divider top-11px/height1px, giữ10px phía dưới divider.

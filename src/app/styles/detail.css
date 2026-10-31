@@ -18,7 +18,6 @@
 .project-archive-name .project-dot { flex-shrink: 0; }
 .project-archive-row .detail-icon-action { width: 44px; height: 44px; }
 .project-archive-empty { color: var(--muted); font-size: var(--text-support); padding: 12px 0; }
-.archived-projects-nav { margin-top: 6px; }
 .editor-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 21px; }
 .editor-header > div > span { color: var(--label-accent); font-size: var(--ui-label-size); font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
 .editor-header h2 { margin: 3px 0 0; font-size: var(--text-dialog); color: var(--heading); letter-spacing: -.025em; }
