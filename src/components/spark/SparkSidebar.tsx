@@ -122,7 +122,7 @@ export function Sidebar({
         <span className="brand-full-wrap"><Image className="brand-full" src={SPARK_LOGO_NEGATIVE_SRC} width={153.6} height={57.6} alt="Spark" priority unoptimized /></span>
       </div>
       <nav aria-label="Điều hướng chính">
-        {!mobile && <div className="nav-section">
+        {!mobile && <div className="nav-section primary-nav">
           {navItems.map((entry) => (
             <button key={entry.label} className={`nav-item ${isActive(entry.view) ? "active" : ""}`} onClick={() => onNavigate(entry.view)} aria-label={entry.label} title={compact ? undefined : entry.label} data-tooltip={compact ? entry.label : undefined}>
               <Icon name={entry.icon} /><span className="nav-text">{entry.label}</span>{entry.count !== undefined && <span className="nav-count">{entry.count}</span>}

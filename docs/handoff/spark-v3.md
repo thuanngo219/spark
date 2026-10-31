@@ -146,3 +146,6 @@ D-229 (2026-10-31): Khoảng cách đường ngang đến Hủy/Lưu25px thay15p
 
 
 D-230 (2026-10-31): Form dự án mobile giữ padding đáy50px khi bàn phím đóng, giảm16px khi visualViewport co hơn120px ở scale1. Khôi phục50px khi đóng bàn phím; backdrop tiếp tục kín layout viewport, khoảng gạch đến nút25px giữ nguyên.
+
+
+D-231 (2026-10-31): Desktop bỏ margin dưới nhóm điều hướng chính để Tất cả/Quan Trọng cách nhau như item liền kề. Sidebar compact dùng cùng section margin18px, hàng project34px và heading26px với expanded, giữ vị trí tâm icon khi thu/mở.
