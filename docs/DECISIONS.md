@@ -643,3 +643,6 @@ D-222 (2026-10-31): Bốn action sửa dự án Lưu trữ/Xóa/Hủy/Lưu thay 
 
 
 D-223 (2026-10-31): Sao/Lưu trữ/Xóa một hàng pill, Hủy/Lưu hàng pill dưới cách24px, padding trên20px/viền phân cách. Sao chuyển khỏi hàng màu. Mobile backdrop luôn phủ toàn layout viewport; chỉ form theo visualViewport khi bàn phím mở, tránh lộ nền. Khóa cuộn isolate toàn bộ nhánh nền và chặn overscroll ngoài form.
+
+
+D-224 (2026-10-31): Hàng pill Yêu thích/Lưu trữ/Xóa sát phần màu nhận diện, bỏ margin-top20px của action group. Đổi Sao thành Yêu thích. Hủy dùng nền control-hover xám nhẹ; bỏ border-top hàng Hủy/Lưu, giữ margin-top24px và padding-top20px hiện hành.

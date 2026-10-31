@@ -150,7 +150,7 @@ export function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose
         </fieldset>
         <div className="project-editor-action-group">
           <div className="project-management-actions">
-            <button type="button" className={`archive-button ${isStarred ? "is-starred" : ""}`} aria-pressed={isStarred} onClick={() => setIsStarred(value => !value)}><Icon name="star" size={17} /><span>Sao</span></button>
+            <button type="button" className={`archive-button ${isStarred ? "is-starred" : ""}`} aria-pressed={isStarred} onClick={() => setIsStarred(value => !value)}><Icon name="star" size={17} /><span>Yêu thích</span></button>
             {project && <><button type="button" className="archive-button" onClick={onArchive}><Icon name="archive" size={17} /><span>{project.archivedAt ? "Khôi phục" : "Lưu trữ"}</span></button>
             <button type="button" className="delete-button" onClick={() => setConfirmDelete(true)}><Icon name="trash" size={17} /><span>Xóa</span></button></>}
           </div>
