@@ -2,9 +2,22 @@
 
 Trạng thái triển khai hiện hành và đường dẫn mã nguồn ở [handoff v3](handoff/spark-v3.md). Các mục D-117–D-199 ở cuối file ghi lại quá trình triển khai và có thể chứa thông số đã được quyết định sau thay thế; dùng handoff v3 và code để lấy giá trị đang chạy. Chủ dự án xác nhận giao diện production “Ổn rồi” ngày 2026-10-29 sau D-207.
 
-Font UI: Inter 4.1 variable thường/nghiêng được nhúng bằng `next/font/local` trong `src/app/layout.tsx`; source WOFF2 và giấy phép ở `src/app/fonts/`. Body dùng `--font-inter`; không tải font từ dịch vụ bên ngoài khi chạy/build. D-212 chuẩn hóa root 100%, token size/line-height trong foundation.css, weight 400/700; label 10px/700/uppercase cả desktop/mobile, menu14px/400; chỉ giữ Navy #111742. Hover action tách khỏi token selected.
+## Trạng thái kỹ thuật hiện hành đến D-234
 
-## Token và kiểm chứng mobile hiện hành — D-212
+- Font Inter 4.1 thường/nghiêng nhúng cùng origin; cỡ chữ px, weight400/700. Desktop/mobile: list14/15px, menu14/15px, support14/15px, metadata ngày/dự án12/13px; Nội dung15px, tên chi tiết18px, tên quick-add16px, dialog24px cả hai. Label10px/700/uppercase. Heading desktop38–56px/mobile30px, compact19–28px/21px; line-height1.2/1.4/1.6 theo vai trò.
+- Gap item2px; nhãn–nội dung8px. Toolbar chi tiết desktop cao44px, dưới hàng nhãn8px, cách text15px; editor mobile giữ hàng nhãn–toolbar2px. Caption loading cách progress17px.
+- Sidebar chỉ có sao ở hàng dự án, không nút ... hoặc tiêu đề Cần lưu ý. Hover/selected phủ toàn hàng; sao có đệm phải8px. Desktop Tất cả/Quan Trọng liền nhau như item thường; icon giữ tọa độ khi expand/compact. Divider trước Đã lưu trữ mảnh1px, cách hàng dự án trên10px.
+- Nhãn dự án trong danh sách desktop hiển thị đầy đủ một dòng, căn trái, chung chiều rộng theo tên dài nhất đang render, đo font thực sau fonts.ready; gap10px đến nội dung. Không cap35%/ellipsis; tên quá dài có thể cần cuộn ngang. Khi thu gọn dot căn giữa dọc item.
+- Sửa dự án: Yêu thích/Lưu trữ/Xóa một hàng pill, cách vòng màu10px. Hủy/Lưu hàng dưới; Hủy nền xám nhẹ, không nút X ở header. Có divider cách hai nút25px. Mobile toàn màn hình: đáy nút cách mép dưới50px khi bàn phím đóng,16px khi mở. Backdrop kín layout viewport; form theo visualViewport, khóa cuộn/inert nền và chặn overscroll ngoài form.
+- Menu dự án chi tiết desktop là listbox của app: dòng tối thiểu44px, padding10px14px, gap4px, hỗ trợ keyboard; mobile native select.
+- Focus input/select/textarea cả desktop/mobile chỉ đậm viền, không outline ngoài/đổi nền. Nút/link giữ focus bàn phím. Hover màu desktop220ms Quint; selected/disabled và semantic color giữ riêng; reduced motion có hỗ trợ.
+- Mobile quick-add vuốt mép trái đủ ngưỡng sẽ hủy nháp như HỦY. Cấu hình pinch: maximumScale1/userScalablefalse và touch-action pan-x pan-y; trình duyệt có thể ưu tiên zoom trợ năng. Chi tiết vẫn vuốt mép trái để đóng.
+
+Các file mới cần chú ý: src/components/ProjectSelect.tsx (listbox desktop/native mobile); src/lib/detail-scroll-lock.ts (khóa/inert/scroll boundary); src/components/SparkApp.tsx (đo chiều rộng nhãn bằng canvas sau fonts.ready); SparkDialogs.tsx (form theo visualViewport, backdrop kín, đáy16/50px). Font/token ở foundation.css và responsive.css.
+
+Các bộ browser test liên quan: typography-actions, hover-motion, list-spacing, sidebar-alignment, project-sidebar, project-menu, quick-add-edge, desktop-detail và mobile-detail. Test dùng fixture local, không chứng minh sync tài khoản thật.
+
+## Tham chiếu triển khai D-212 (lịch sử; thông số mới ở trên)
 
 Token trong media query `max-width: 699px` của `src/app/styles/responsive.css`:
 

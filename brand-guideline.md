@@ -246,42 +246,33 @@ Trạng thái thông thường không phụ thuộc vào một màu riêng. Sele
 - Cả hai font phải dùng phiên bản có hỗ trợ đầy đủ dấu tiếng Việt.
 - Logo luôn dùng artwork chính thức, không dựng lại bằng Raleway hoặc Inter.
 
-### Typography hiện hành — D-212
+### Typography và UI hiện hành — đến D-234
 
-Inter nhúng thường/nghiêng, root 100% ở cả desktop/mobile. Cỡ rem quy đổi với mặc định trình duyệt 16px; label cố định 10px cả hai thiết bị.
+Inter nhúng; font-size dùng px, root100%. Raleway chỉ dùng cho brand ngoài app; logo dùng artwork.
 
-| Vai trò | Desktop | Mobile | Weight | Line-height |
-|---|---|---|---|---|
-| Heading view | 38–56px theo chiều rộng | 30px | 700 | 1.2 |
-| Heading view thu gọn | 19–28px | 21px | 700 | 1.2 |
-| Heading dialog / Thêm task | 24px | 24px | 700 | 1.2 |
-| Tên task/note trong chi tiết | 18px | 18px | 700 | 1.4 |
-| Menu/sidebar (cả đang chọn) | 14px | 14px | 400 | 1.4 |
-| Tên task/note trong danh sách | 15px | 15px | 400 | 1.4 |
-| Nội dung đọc/sửa | 15px | 15px | 400; đậm 700 | 1.6 |
+| Thành phần | Desktop | Mobile | Weight | Line-height |
+|---|---:|---:|---|---|
+| Tiêu đề view | 38–56px | 30px | 700 | 1.2 |
+| Tiêu đề view thu gọn | 19–28px | 21px | 700 | 1.2 |
+| Tiêu đề dialog / Thêm task | 24px | 24px | 700 | 1.2 |
+| Tên task/note chi tiết | 18px | 18px | 700 | 1.4 |
 | Ô nhập tên quick-add | 16px | 16px | 400 | 1.4 |
-| Chữ giải thích/thông báo lỗi | 14px | 14px | 400 | 1.4 hoặc 1.6 cho đoạn dài |
-| Giá trị ngày/dự án trong chi tiết | 12px | 12px | 700 | 1.4 |
-| Label trường/nút/nhóm/số đếm/metadata list/sort | 10px | 10px | 700, uppercase | 1.4 |
-| Nhãn dock | — | 10px | 700, uppercase | 1.4 |
+| Tên task/note danh sách | 14px | 15px | 400 | 1.4 |
+| Nội dung đọc/chỉnh sửa | 15px | 15px | 400; đậm700 | 1.6 |
+| Menu/sidebar | 14px | 15px | 400 | 1.4 |
+| Giải thích/lỗi/toast | 14px | 15px | 400 | 1.4; đoạn dài1.6 |
+| Ngày/dự án chi tiết và quick-add; menu dự án | 12px | 13px | 700 | 1.4 |
+| Label/nút/nhóm/số đếm/metadata list/sort | 10px | 10px | 700, ALL CAPS | 1.4 |
+| Nhãn dock | — | 10px | 700, ALL CAPS | 1.4 |
 
-Token: `--text-body: .9375rem`, `--text-input: 1rem`, `--text-support: .875rem`, `--text-title: 1.125rem`, `--text-dialog: 1.5rem`, `--ui-label-size: 10px`. Chỉ dùng weight 400/700; toàn bộ 600 cũ chuyển 700. Line-height 1.2/1.4/1.6 giữ nguyên. Uppercase chỉ áp dụng nhãn hiển thị, không đổi tên/nội dung do người dùng nhập hoặc giá trị trong form.
-
-Menu dùng token `--text-support` 14px và weight 400; trạng thái chọn chỉ đổi màu/nền. Heading view tracking −0.025em; nhãn nhóm giữ tracking hiện hành. Logo dùng artwork, Raleway chỉ cho brand moment ngoài app.
-
-Khoảng cách mobile: nhãn–nội dung 8px, hàng nhãn–toolbar 2px; vùng chạm tối thiểu44px, sort ngoại lệ30px. Metadata chi tiết mobile giữ hai hàng: cờ/dự án/hành động trên, hai ô ngày chia đều dưới. Nút X hủy Nội Dung dùng `--control-hover`. D-211 thay thang chữ D-210, không đổi palette/hover hay dữ liệu.
-
-### Form và toolbar desktop — D-215
-
-Input/select/textarea desktop dùng focus như mobile: không outline ngoài, không đổi nền; viền form đậm hơn. Nút/link giữ focus bàn phím. Toolbar sửa Nội dung trong chi tiết desktop nằm dưới hàng nhãn 8px, cao 44px, rộng toàn cột, nút B/I/U 32px.
-
-### Khoảng cách danh sách và loading — D-214
-
-Gap giữa item 2px trên desktop/mobile. Caption loading cách thanh progress 17px. Pill tên dự án mở rộng có padding cân hai bên, chữ căn giữa và xuống dòng khi dài; cột tối đa 35%, chừa 6px sau chip trước nội dung task/note.
-
-### Hover desktop — D-213
-
-Từ 700px với hover/fine pointer, nút chuyển nền/chữ/viền trong 220ms bằng easing Quint hiện hành. Thời lượng màu tách khỏi transform; giữ palette, selected và disabled. Mobile/touch giữ thời lượng cũ. Reduced motion dùng .01ms.
+- Font Inter 4.1 thường/nghiêng nhúng cùng origin; cỡ chữ px, weight400/700. Desktop/mobile: list14/15px, menu14/15px, support14/15px, metadata ngày/dự án12/13px; Nội dung15px, tên chi tiết18px, tên quick-add16px, dialog24px cả hai. Label10px/700/uppercase. Heading desktop38–56px/mobile30px, compact19–28px/21px; line-height1.2/1.4/1.6 theo vai trò.
+- Gap item2px; nhãn–nội dung8px. Toolbar chi tiết desktop cao44px, dưới hàng nhãn8px, cách text15px; editor mobile giữ hàng nhãn–toolbar2px. Caption loading cách progress17px.
+- Sidebar chỉ có sao ở hàng dự án, không nút ... hoặc tiêu đề Cần lưu ý. Hover/selected phủ toàn hàng; sao có đệm phải8px. Desktop Tất cả/Quan Trọng liền nhau như item thường; icon giữ tọa độ khi expand/compact. Divider trước Đã lưu trữ mảnh1px, cách hàng dự án trên10px.
+- Nhãn dự án trong danh sách desktop hiển thị đầy đủ một dòng, căn trái, chung chiều rộng theo tên dài nhất đang render, đo font thực sau fonts.ready; gap10px đến nội dung. Không cap35%/ellipsis; tên quá dài có thể cần cuộn ngang. Khi thu gọn dot căn giữa dọc item.
+- Sửa dự án: Yêu thích/Lưu trữ/Xóa một hàng pill, cách vòng màu10px. Hủy/Lưu hàng dưới; Hủy nền xám nhẹ, không nút X ở header. Có divider cách hai nút25px. Mobile toàn màn hình: đáy nút cách mép dưới50px khi bàn phím đóng,16px khi mở. Backdrop kín layout viewport; form theo visualViewport, khóa cuộn/inert nền và chặn overscroll ngoài form.
+- Menu dự án chi tiết desktop là listbox của app: dòng tối thiểu44px, padding10px14px, gap4px, hỗ trợ keyboard; mobile native select.
+- Focus input/select/textarea cả desktop/mobile chỉ đậm viền, không outline ngoài/đổi nền. Nút/link giữ focus bàn phím. Hover màu desktop220ms Quint; selected/disabled và semantic color giữ riêng; reduced motion có hỗ trợ.
+- Mobile quick-add vuốt mép trái đủ ngưỡng sẽ hủy nháp như HỦY. Cấu hình pinch: maximumScale1/userScalablefalse và touch-action pan-x pan-y; trình duyệt có thể ưu tiên zoom trợ năng. Chi tiết vẫn vuốt mép trái để đóng.
 
 ## 6. Iconography
 
@@ -583,16 +574,3 @@ Mobile: đổi `--editor-toolbar-gap` từ 10px thành 2px cho cả editor Nội
 ## D-208 — Khôi phục cỡ chữ mục menu (2026-10-29)
 
 Chữ các mục menu/sidebar (`.nav-text`), gồm điều hướng, smart filter, tên dự án, Đã lưu trữ và Phím tắt, dùng lại `0.8125rem`: 15.6px trên mobile với root 120%, 14.625px trên desktop với root 112.5%. Tách khỏi token label 10px của D-204. Nhãn nhóm, số đếm, dock và các label khác giữ hiện hành; không đổi vùng chạm hoặc hành vi.
-
-
-## D-216 — Cỡ chữ px và khoảng cách (2026-10-30)
-
-Gap item 2px cả desktop/mobile. Toolbar Nội dung chi tiết desktop cách phần text bên dưới 15px. Giá trị ngày/dự án trong chi tiết và quick-add 12px/700, line-height 1.4. Token font chuyển từ rem sang px: body15, input16, support14, metadata12, title18, dialog24; heading desktop clamp(38px, 5vw, 56px) giữ responsive hiện hành. Không còn cỡ chữ rem trong CSS app; line-height vẫn theo hệ số. Chưa phát hành.
-
-
-## D-218 — Typography desktop/mobile (2026-10-30)
-
-Desktop: list/Nội dung 14px; menu và support 14px; metadata ngày/dự án 12px. Mobile: list/Nội dung/menu/support 15px; metadata ngày/dự án 13px (gồm native project select). Giữ title chi tiết18, input quick-add16, dialog24, heading view desktop38–56/mobile30, compact desktop19–28/mobile21. Label10px/700/uppercase, dock10px. Weight và line-height hiện hành giữ nguyên. Cỡ chữ px; tự deploy production sau kiểm tra.
-
-
-D-220 (2026-10-30): Nội dung đọc/chỉnh sửa dùng token riêng --text-content:15px cả desktop/mobile, weight400/đậm700, line-height1.6. Tên task/note desktop giữ14px theo D-218. Deploy production sau kiểm tra.

@@ -2,15 +2,16 @@
 
 Chủ dự án xác nhận giao diện production “Ổn rồi” ngày 2026-10-29 sau D-207. [Handoff v3](handoff/spark-v3.md) chỉ ghi quy tắc còn hiệu lực và phạm vi đã kiểm chứng; các mục D-xxx phía dưới là lịch sử phát triển, nên đọc cùng quyết định mới nhất khi một thông số thay đổi.
 
-## Giao diện hiện hành — D-212
+## Giao diện hiện hành — đến D-234 (2026-10-31)
 
-Typography và màu áp dụng cả desktop/mobile; các quy tắc mobile bên dưới áp dụng dưới 700px. Các mục D-xxx phía dưới giữ vai trò lịch sử khi có thông số khác.
-
-- D-212: root 100% cả desktop/mobile; label 10px/700/uppercase cả desktop/mobile. Menu 14px/400, list/nội dung 15px, tên chi tiết 18px, heading dialog 24px; support/metadata control 14px. Weight 400/700; line-height 1.2/1.4/1.6 theo vai trò. Một Navy #111742, action hover đảo Navy/trắng ↔ Turquoise/Navy; selected và disabled giữ riêng.
-- Nhãn–nội dung 8px; khi sửa Nội Dung, mép dưới hàng nhãn cách toolbar 2px ở cả quick-add và chi tiết. Toolbar cao 44px.
-- Nút chữ/pill giảm bề mặt khoảng 4px, các pill quick-add, HỦY/THÊM và QUAY LẠI cao 40px; vùng chạm vẫn tối thiểu 44px. Sort giữ ngoại lệ 30px.
-- Chi tiết dùng “← QUAY LẠI”. Quick-add viết hoa các nhãn và HỦY/THÊM; nhãn note là GHI CHÚ. Hai nút X hủy sửa Nội Dung có nền xám nhẹ theo theme.
-- Input/select/textarea không có outline ngoài trên mobile; form dùng viền 1px đậm hơn khi focus, không đổi nền. Vùng sửa inline Tên/Nội Dung giữ nền sạch; nút/link vẫn có focus bàn phím.
+- Font Inter 4.1 thường/nghiêng nhúng cùng origin; cỡ chữ px, weight400/700. Desktop/mobile: list14/15px, menu14/15px, support14/15px, metadata ngày/dự án12/13px; Nội dung15px, tên chi tiết18px, tên quick-add16px, dialog24px cả hai. Label10px/700/uppercase. Heading desktop38–56px/mobile30px, compact19–28px/21px; line-height1.2/1.4/1.6 theo vai trò.
+- Gap item2px; nhãn–nội dung8px. Toolbar chi tiết desktop cao44px, dưới hàng nhãn8px, cách text15px; editor mobile giữ hàng nhãn–toolbar2px. Caption loading cách progress17px.
+- Sidebar chỉ có sao ở hàng dự án, không nút ... hoặc tiêu đề Cần lưu ý. Hover/selected phủ toàn hàng; sao có đệm phải8px. Desktop Tất cả/Quan Trọng liền nhau như item thường; icon giữ tọa độ khi expand/compact. Divider trước Đã lưu trữ mảnh1px, cách hàng dự án trên10px.
+- Nhãn dự án trong danh sách desktop hiển thị đầy đủ một dòng, căn trái, chung chiều rộng theo tên dài nhất đang render, đo font thực sau fonts.ready; gap10px đến nội dung. Không cap35%/ellipsis; tên quá dài có thể cần cuộn ngang. Khi thu gọn dot căn giữa dọc item.
+- Sửa dự án: Yêu thích/Lưu trữ/Xóa một hàng pill, cách vòng màu10px. Hủy/Lưu hàng dưới; Hủy nền xám nhẹ, không nút X ở header. Có divider cách hai nút25px. Mobile toàn màn hình: đáy nút cách mép dưới50px khi bàn phím đóng,16px khi mở. Backdrop kín layout viewport; form theo visualViewport, khóa cuộn/inert nền và chặn overscroll ngoài form.
+- Menu dự án chi tiết desktop là listbox của app: dòng tối thiểu44px, padding10px14px, gap4px, hỗ trợ keyboard; mobile native select.
+- Focus input/select/textarea cả desktop/mobile chỉ đậm viền, không outline ngoài/đổi nền. Nút/link giữ focus bàn phím. Hover màu desktop220ms Quint; selected/disabled và semantic color giữ riêng; reduced motion có hỗ trợ.
+- Mobile quick-add vuốt mép trái đủ ngưỡng sẽ hủy nháp như HỦY. Cấu hình pinch: maximumScale1/userScalablefalse và touch-action pan-x pan-y; trình duyệt có thể ưu tiên zoom trợ năng. Chi tiết vẫn vuốt mép trái để đóng.
 
 ## 1. Tóm tắt
 

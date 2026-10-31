@@ -1,24 +1,46 @@
 # Spark v3 — bàn giao hiện hành
 
-Cập nhật: 2026-10-30. Đây là điểm bắt đầu cho phiên phát triển v3. Handoff chỉ ghi trạng thái và quy tắc còn hiệu lực; lịch sử quyết định nằm trong Git và `docs/DECISIONS.md`. Hành vi sản phẩm chi tiết nằm trong `docs/PROJECT_BRIEF.md`, quy tắc thương hiệu trong `brand-guideline.md` và dữ liệu offline trong `docs/OFFLINE_SYNC.md`.
+Cập nhật 2026-10-31. Chỉ giữ quy tắc đang có hiệu lực. Lịch sử thay đổi tra Git và docs/DECISIONS.md; không dùng thông số cũ trong các mục lịch sử làm trạng thái hiện tại.
 
-## Trạng thái bàn giao
+## Production và kiểm chứng
 
-- Production: `https://spark.thuanngo.com`, Vercel project `spark`, team Thuan Ngo. D-216 đã phát hành ngày 2026-10-30: commit mã `ed1a8e47c4d76119eb7c1d3027651bebda2e31b0`, deployment READY `dpl_5sRgHn7Vxxk6JmYo3QuNsGf4PUuc`, alias production đã trỏ đúng. Push tài liệu có thể tạo deployment mới cùng mã ứng dụng; kiểm tra SHA/alias khi tiếp tục.
-- Kiểm tra D-213: lint, typecheck, 176 unit test, build và 30 case trình duyệt local đạt. Bao gồm hover nội suy màu/đảo chiều, reduced motion, touch, header, vuốt chi tiết và utility trên desktop/mobile sáng/tối.
-- Sau phát hành: 9 case trực tiếp production đạt: hover 220ms sáng/tối, reduced motion, touch 390px và typography/action ở 320/390/1280px × sáng/tối.
-- Kiểm tra offline font thường/nghiêng và editor bằng Chrome local đã đạt ở D-210; D-213 không sửa font file hoặc cơ chế offline. Chưa kiểm tra iPhone vật lý, sync hai thiết bị hoặc cách ly tài khoản thật trong lượt này.
-- B-005 rà copy đã hoàn tất. Search và việc kiểm tra độ tin cậy dữ liệu vẫn tạm hoãn như phạm vi bên dưới.
+- Domain https://spark.thuanngo.com; Vercel project spark (`prj_mpTXdTL5cUsrpbT40lw7fmBt8NZM`), team Thuan Ngo (`team_CDEqBJfEqWiriY02pfrXzqMX`), nhánh main.
+- Mã ứng dụng mới nhất: `8d8aca066b24c69d63bbf87cd891d0723a30aa01` (D-234), deployment `dpl_7qoa24PWnLhGD1ge3szR91wTPWkk` READY và alias đã xác minh ngày2026-10-31. Push tài liệu có thể tạo deployment mới với cùng mã app; xác minh SHA/alias khi tiếp tục.
+- Lint, typecheck,176 unit test và build đã đạt cho bản mã mới nhất. Kiểm tra production gần nhất: divider cách hàng trên10px và icon giữ tọa độ ở sidebar expand/compact đạt. Các đợt trước đã kiểm tra typography/hover sáng-tối, nhãn dự án một dòng/cùng chiều rộng/dot căn giữa, dự án fullscreen/keyboard ở320/390/700/1280px theo từng bộ test; không coi đây là một lần chạy toàn bộ regression.
+- Chủ dự án xác nhận khoảng trống bàn phím trên iPhone đã ổn (16px mở/50px đóng), và xác nhận UI mới nhất “Ổn rồi” ngày2026-10-31. Đây là phản hồi thực tế của chủ dự án; agent chưa tự kiểm tra native iPhone. Pinch/system edge gesture cần xác nhận riêng trên máy thật.
+- B-005 rà copy hoàn tất. Search và kiểm tra độ tin cậy dữ liệu vẫn tạm hoãn.
 
-## Typography hiện hành — D-212 (2026-10-30)
+## Typography hiện hành
 
-Chủ dự án duyệt nhúng Inter, chuẩn hóa typography, gộp Navy và hover action, yêu cầu deploy production. Inter 4.1 variable thường/nghiêng nằm trong `src/app/fonts/` kèm giấy phép, tải cùng origin bằng `next/font/local`.
+Inter4.1 WOFF2 thường/nghiêng trong src/app/fonts/, next/font/local; root100%, font-size dùng px. Native option mobile có thể chịu cách render hệ thống.
 
-Root 100% cả hai thiết bị. Menu 14px/400, list/nội dung 15px, tên chi tiết 18px, heading dialog 24px, support/metadata control 14px. Label 10px/700/uppercase cả desktop/mobile. Weight 400/700; line-height 1.2/1.4/1.6 theo vai trò. Heading view desktop38–56px, mobile30px/compact21px. Một Navy #111742; giữ dark neutral/artwork logo. Hover action Turquoise/Navy ↔ Navy/trắng; selected và disabled giữ riêng. D-211 thay các thông số typography của D-210; D-212 chỉnh menu/sidebar về 14px/400 cả thường và đang chọn. Ô nhập tên quick-add dùng token riêng 16px; nhãn viết hoa không tác động chữ do người dùng nhập.
+| Thành phần | Desktop | Mobile | Weight | Line-height |
+|---|---:|---:|---|---|
+| Tiêu đề view | 38–56px | 30px | 700 | 1.2 |
+| Tiêu đề view thu gọn | 19–28px | 21px | 700 | 1.2 |
+| Tiêu đề dialog / Thêm task | 24px | 24px | 700 | 1.2 |
+| Tên task/note chi tiết | 18px | 18px | 700 | 1.4 |
+| Ô nhập tên quick-add | 16px | 16px | 400 | 1.4 |
+| Tên task/note danh sách | 14px | 15px | 400 | 1.4 |
+| Nội dung đọc/chỉnh sửa | 15px | 15px | 400; đậm700 | 1.6 |
+| Menu/sidebar | 14px | 15px | 400 | 1.4 |
+| Giải thích/lỗi/toast | 14px | 15px | 400 | 1.4; đoạn dài1.6 |
+| Ngày/dự án chi tiết và quick-add; menu dự án | 12px | 13px | 700 | 1.4 |
+| Label/nút/nhóm/số đếm/metadata list/sort | 10px | 10px | 700, ALL CAPS | 1.4 |
+| Nhãn dock | — | 10px | 700, ALL CAPS | 1.4 |
 
-## Hover desktop hiện hành — D-213
+## Giao diện hiện hành
 
-Hover nút desktop (từ 700px, hover/fine pointer) chuyển màu nền/chữ/viền 220ms Quint, bao gồm các nút trước đây đổi màu tức thời. Giữ animation màn hình/gesture, màu selected/disabled, mobile/touch và reduced motion.
+- Font Inter 4.1 thường/nghiêng nhúng cùng origin; cỡ chữ px, weight400/700. Desktop/mobile: list14/15px, menu14/15px, support14/15px, metadata ngày/dự án12/13px; Nội dung15px, tên chi tiết18px, tên quick-add16px, dialog24px cả hai. Label10px/700/uppercase. Heading desktop38–56px/mobile30px, compact19–28px/21px; line-height1.2/1.4/1.6 theo vai trò.
+- Gap item2px; nhãn–nội dung8px. Toolbar chi tiết desktop cao44px, dưới hàng nhãn8px, cách text15px; editor mobile giữ hàng nhãn–toolbar2px. Caption loading cách progress17px.
+- Sidebar chỉ có sao ở hàng dự án, không nút ... hoặc tiêu đề Cần lưu ý. Hover/selected phủ toàn hàng; sao có đệm phải8px. Desktop Tất cả/Quan Trọng liền nhau như item thường; icon giữ tọa độ khi expand/compact. Divider trước Đã lưu trữ mảnh1px, cách hàng dự án trên10px.
+- Nhãn dự án trong danh sách desktop hiển thị đầy đủ một dòng, căn trái, chung chiều rộng theo tên dài nhất đang render, đo font thực sau fonts.ready; gap10px đến nội dung. Không cap35%/ellipsis; tên quá dài có thể cần cuộn ngang. Khi thu gọn dot căn giữa dọc item.
+- Sửa dự án: Yêu thích/Lưu trữ/Xóa một hàng pill, cách vòng màu10px. Hủy/Lưu hàng dưới; Hủy nền xám nhẹ, không nút X ở header. Có divider cách hai nút25px. Mobile toàn màn hình: đáy nút cách mép dưới50px khi bàn phím đóng,16px khi mở. Backdrop kín layout viewport; form theo visualViewport, khóa cuộn/inert nền và chặn overscroll ngoài form.
+- Menu dự án chi tiết desktop là listbox của app: dòng tối thiểu44px, padding10px14px, gap4px, hỗ trợ keyboard; mobile native select.
+- Focus input/select/textarea cả desktop/mobile chỉ đậm viền, không outline ngoài/đổi nền. Nút/link giữ focus bàn phím. Hover màu desktop220ms Quint; selected/disabled và semantic color giữ riêng; reduced motion có hỗ trợ.
+- Mobile quick-add vuốt mép trái đủ ngưỡng sẽ hủy nháp như HỦY. Cấu hình pinch: maximumScale1/userScalablefalse và touch-action pan-x pan-y; trình duyệt có thể ưu tiên zoom trợ năng. Chi tiết vẫn vuốt mép trái để đóng.
+
+Giữ các quy tắc mobile đã duyệt: GHI CHÚ, ← QUAY LẠI; touch44px mặc định, sort30px ngoại lệ; metadata chi tiết hai hàng, hai ngày chia đều; quick-add giữ tên và hàng nút cố định, Nội dung cuộn riêng, Phân loại phủ action. Theme sáng/tối/system, splash Navy/logo âm bản, header sticky blur8px/dải màu4px và phím tắt ngoài editor tiếp tục như mã hiện hành. Palette một Navy#111742, Turquoise#44D4CD, Amber#D6A84F, Coral#D9776A; artwork logo giữ nguyên.
 
 ## Phạm vi tiếp tục đã thống nhất
 
@@ -32,20 +54,6 @@ Hover nút desktop (từ 700px, hover/fine pointer) chuyển màu nền/chữ/vi
 - Tên tối đa 100 ký tự. Nội Dung tối đa 4.000 Unicode code points, chỉ hỗ trợ đậm, nghiêng, gạch chân và phím tắt ⌘/Ctrl+B/I/U. Dữ liệu lưu là văn bản thuần cùng text runs `description_format`, không lưu HTML. Bullet/numbered list đã được gỡ.
 - Ngày là date-only theo `Asia/Ho_Chi_Minh`, tuần bắt đầu Thứ Hai. Quick-add không tự đặt ngày bắt đầu, trừ task mới được tạo trong view Hôm nay. Ngày sai hoặc khoảng ngày ngược không được lưu. Hôm nay, Sắp tới, Theo ngày và Tất cả dùng quy tắc lọc/nhóm/sort trong Product Brief; filter Ẩn/Hiện note chỉ thay đổi hiển thị.
 - Dự án có sáu màu preset, màu tùy chọn, sao, thứ tự thủ công, lưu trữ/khôi phục/xóa. Violet đã được bỏ và project cũ dùng Violet được chuyển sang Amber; Deep Purple vẫn được giữ. Quan Trọng dùng Amber, Ưu tiên dùng Coral nhất quán ở danh sách và chi tiết.
-
-## Giao diện hiện hành
-
-- Desktop có sidebar mở rộng/compact rail; mobile có drawer và dock năm vị trí. Mobile quick-add và chi tiết là màn hình toàn phần. Desktop chi tiết cũng toàn màn hình, cột nội dung cùng chiều rộng canvas danh sách; quick-add ở giữa màn hình. Các màn Phím tắt và Đồng bộ toàn màn hình.
-- Mobile quick-add giữ Tên và hàng GHI CHÚ/NỘI DUNG/PHÂN LOẠI đứng yên; chỉ phần xem trước Nội Dung dài cuộn. Phân Loại mở sheet từ dưới, chứa ngày bắt đầu, ngày đến hạn và dự án, phủ Hủy/Thêm. Sửa Nội Dung mở editor tập trung, khóa cuộn nền và xử lý bàn phím bằng `visualViewport`. Sau khi Thêm thành công, đóng quick-add và trở về view trước đó.
-- Chi tiết mobile cho vuốt từ mép trái để đóng. Nút Navy “← QUAY LẠI” nằm trên vùng Nội Dung, cách metadata 10px; Nội Dung vẫn cuộn bên dưới. Sửa Tên/Nội Dung có tick lưu và X hủy. Metadata neo dưới màn hình, cờ/dự án/hành động ở hàng đầu và hai ngày chia đều hàng thứ hai để ngày không bị cắt với Inter; khi sửa và bàn phím hiện, phần dưới có thể nằm sau bàn phím để dành diện tích nhập.
-- Header sticky thu gọn khi cuộn, giữ h1 và dải màu 4px ở cả desktop/mobile; mobile h1 thường 30px, thu gọn 21px. Letter spacing −0.025em. Header blur 8px; nền app phẳng. Nút/link giữ viền focus bàn phím 2px theo theme; mobile input/select/textarea không có outline ngoài, form đổi viền 1px đậm hơn khi focus và không đổi nền. Bề mặt sửa Tên/Nội Dung inline không có outline. Header dùng animation CSS hiện hành. Chưa có phép đo hiệu năng trên iPhone vật lý.
-- Mobile dưới 700px dùng label **10px** thực, root 100%: nhãn trường/nút, nhãn nhóm điều hướng, nhóm danh sách/sort, metadata danh sách, trạng thái và nhãn tiện ích. Các vai trò còn lại dùng token D-211 ở trên; desktop label 10px.
-- Chữ mục menu/sidebar (`.nav-text`) dùng **14px/400 cả mobile và desktop**, gồm mục đang chọn (D-212). Nhãn nhóm và số đếm vẫn 10px; dock không đổi.
-- Khoảng cách nhãn–nội dung **8px**. Khi sửa Nội Dung, khoảng cách từ **mép dưới hàng nhãn** đến thanh formatting là **2px** trong cả quick-add và chi tiết; toolbar vẫn cao 44px. Không đo từ đáy nét chữ của label.
-- Nút chữ/pill giảm phần hiển thị khoảng 4px: các pill quick-add, HỦY/THÊM, QUAY LẠI và trạng thái đồng bộ cao 40px; vùng chạm vẫn tối thiểu 44px qua pseudo-element. Giữ dock, nút icon và ngoại lệ sort 30px. Nút X hủy sửa Nội Dung ở hai editor dùng nền xám nhẹ theo theme.
-- Mobile quick-add viết hoa TÊN CÔNG VIỆC/TÊN GHI CHÚ, GHI CHÚ, NỘI DUNG, PHÂN LOẠI, NGÀY BẮT ĐẦU, NGÀY ĐẾN HẠN, HỦY và THÊM. GHI CHÚ là nhãn chính xác.
-- Light/dark/system theme được ghi nhớ theo thiết bị. Vùng iOS status bar lấy màu theo theme khi mở lại/reveal; splash Navy có logo âm bản ở giữa, progress trên mép trên và reveal sang phải. Sidebar mobile dùng lớp phủ trong suốt, không blur. Giữ reduced-motion behavior.
-- Phím tắt điều hướng/filter chỉ hoạt động ngoài input và editor. Bảng Phím tắt trong app là nguồn tham khảo thao tác; handler tập trung ở `src/lib/keyboard-shortcuts.ts`.
 
 ## Dữ liệu, bảo mật và giới hạn
 
@@ -72,7 +80,7 @@ Hover nút desktop (từ 700px, hover/fine pointer) chuyển màu nền/chữ/vi
 
 1. Đọc theo thứ tự trong `AGENTS.md`, sau đó đối chiếu quyết định mới với Product Brief và code. Khi phần ghi lịch sử trong tài liệu khác handoff này, kiểm tra quyết định mới nhất và mã đang chạy trước khi sửa.
 2. Chạy `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`; kiểm tra responsive tối thiểu ở 390px. Dùng `SPARK_TEST_URL` để chạy Playwright trên bản build local hoặc domain production khi cần. Không chạy Impeccable hoặc bật hook của nó nếu chủ dự án không yêu cầu rõ.
-3. Git `main` được Vercel deploy tự động khi push. Sau push, xác minh deployment **READY**, commit SHA và alias `spark.thuanngo.com` trước khi báo đã phát hành. Không suy trạng thái production từ local build hoặc commit. Không đưa secret, `.env*`, `.vercel`, `.next`, test artifacts hay file ngoài Spark vào commit.
+3. Sau mỗi yêu cầu chỉnh sửa app, kiểm tra rồi tự deploy production theo yêu cầu chủ dự án, không chờ lệnh riêng. Git `main` được Vercel deploy tự động khi push. Sau push, xác minh deployment **READY**, commit SHA và alias `spark.thuanngo.com` trước khi báo đã phát hành. Không suy trạng thái production từ local build hoặc commit. Không đưa secret, `.env*`, `.vercel`, `.next`, test artifacts hay file ngoài Spark vào commit.
 4. Với nút mobile nhỏ hơn 44px, kiểm tra cả click bên ngoài bề mặt và click trực tiếp checkbox. Giữ `isolation: isolate` trên nút/pill và `z-index: -1` của pseudo-element mở rộng vùng chạm để không che checkbox.
 5. `masan-cos-showcase/` là repo riêng; `output/` và `outputs/` là dữ liệu ngoài Spark. Giữ nguyên và loại khỏi rà soát/commit Spark. Không xóa các thư mục này.
 
@@ -84,77 +92,3 @@ Hover nút desktop (từ 700px, hover/fine pointer) chuyển màu nền/chữ/vi
 - `docs/UI_OPTIONS.md`: hướng Compact Canvas và lịch sử tinh chỉnh UI.
 - `docs/DECISIONS.md`: quyết định có thứ tự; mục sau thay phần tương ứng của mục trước.
 - `docs/IMPLEMENTATION_GUIDE.md` và `docs/OFFLINE_SYNC.md`: kiến trúc, dữ liệu, offline, kiểm tra và deploy.
-
-## D-214 — đã phát hành
-
-Gap item 3px cả desktop/mobile; caption loading cách thanh progress 17px. Nhãn dự án mở rộng căn giữa, cho phép xuống dòng để hiện đủ tên, cột tối đa 35% và chừa 6px sau chip. Tooltip sidebar thu gọn cũng giới hạn theo viewport để tên dài không gây tràn ngang. Lint, typecheck, 176 unit test, build, 8 case header và 3 case spacing/tên dài ở 390/700/1280px đạt; đã xem ảnh nhãn dài. Đã phát hành cùng commit ở trạng thái bàn giao.
-
-## D-215 — đã phát hành
-
-Desktop focus form giống mobile: chỉ đậm viền, không outline ngoài hoặc đổi nền; giữ focus bàn phím cho nút/link. Toolbar sửa Nội dung trong chi tiết nằm dưới hàng nhãn 8px, toàn chiều rộng nội dung, cao 44px, nút 32px. Mobile/quick-add giữ layout. Lint, typecheck, 176 unit test, build và 16 case desktop/mobile chi tiết đạt; đã xem ảnh toolbar desktop. Đã phát hành cùng commit ở trạng thái bàn giao.
-
-Kiểm tra trực tiếp production D-214/D-215: 11 case đạt, gồm spacing/loading/tên dự án dài ở 390/700/1280px, toolbar và focus desktop sáng/tối ở 700/1280/1440px.
-
-
-## D-216 — Cỡ chữ px và khoảng cách (2026-10-30)
-
-Gap item 2px cả desktop/mobile. Toolbar Nội dung chi tiết desktop cách phần text bên dưới 15px. Giá trị ngày/dự án trong chi tiết và quick-add 12px/700, line-height 1.4. Token font chuyển từ rem sang px: body15, input16, support14, metadata12, title18, dialog24; heading desktop clamp(38px, 5vw, 56px) giữ responsive hiện hành. Không còn cỡ chữ rem trong CSS app; line-height vẫn theo hệ số. Chưa phát hành.
-
-D-216 đã đạt lint, typecheck, 176 unit test, build và 17 case trình duyệt desktop/mobile sáng/tối. Đã deploy production; 11 case kiểm tra trực tiếp đạt.
-
-Chủ dự án yêu cầu tự kiểm tra và deploy production sau mỗi yêu cầu chỉnh sửa app, không chờ lệnh deploy riêng (2026-10-30).
-
-D-217: menu dự án chi tiết desktop có dòng 44px, padding 10px 14px, gap 4px, hỗ trợ keyboard; mobile giữ native select.
-
-
-## D-218 — Typography desktop/mobile (2026-10-30)
-
-Desktop: list/Nội dung 14px; menu và support 14px; metadata ngày/dự án 12px. Mobile: list/Nội dung/menu/support 15px; metadata ngày/dự án 13px (gồm native project select). Giữ title chi tiết18, input quick-add16, dialog24, heading view desktop38–56/mobile30, compact desktop19–28/mobile21. Label10px/700/uppercase, dock10px. Weight và line-height hiện hành giữ nguyên. Cỡ chữ px; tự deploy production sau kiểm tra.
-
-
-D-219 (2026-10-30): yêu cầu chặn pinch zoom bằng viewport maximumScale1/userScalablefalse và touch-action pan-x pan-y mobile. Quick-add dùng chung nhận diện vuốt mép trái với chi tiết: vuốt đủ ngưỡng hủy toàn bộ nháp như HỦY, vuốt ngắn/đứng/nội vùng không hủy. Trình duyệt/hệ điều hành có thể ưu tiên thiết lập accessibility zoom; cần xác nhận iPhone thật.
-
-
-D-220 (2026-10-30): Nội dung đọc/chỉnh sửa dùng token riêng --text-content:15px cả desktop/mobile, weight400/đậm700, line-height1.6. Tên task/note desktop giữ14px theo D-218. Deploy production sau kiểm tra.
-
-
-D-221 (2026-10-31): Sidebar bỏ nút ... sửa dự án, giữ sao; hover/selected phủ cả hàng dự án và sao. Sửa dự án qua nút trên header dự án. Bỏ câu “Lưu trữ để thu gọn sidebar. Task và note vẫn được giữ nguyên.” Màn tạo/sửa/xác nhận xóa dự án mobile toàn màn hình, khóa cuộn và inert nền bằng lockDetailScroll; form cuộn riêng, theo visualViewport khi bàn phím mở.
-
-
-D-222 (2026-10-31): Bốn action sửa dự án Lưu trữ/Xóa/Hủy/Lưu thay đổi chung một hàng grid4, mỗi nút icon trên/nhãn dưới, cùng padding/height64/radius12 cả desktop/mobile. Bỏ thanh action sticky riêng mobile. Sidebar thêm padding phải8px cho sao, bỏ hàng tiêu đề Cần lưu ý, luôn hiện các filter và dự án gắn sao bên trong.
-
-
-D-223 (2026-10-31): Sao/Lưu trữ/Xóa một hàng pill, Hủy/Lưu hàng pill dưới cách24px, padding trên20px/viền phân cách. Sao chuyển khỏi hàng màu. Mobile backdrop luôn phủ toàn layout viewport; chỉ form theo visualViewport khi bàn phím mở, tránh lộ nền. Khóa cuộn isolate toàn bộ nhánh nền và chặn overscroll ngoài form.
-
-
-D-224 (2026-10-31): Hàng pill Yêu thích/Lưu trữ/Xóa sát phần màu nhận diện, bỏ margin-top20px của action group. Đổi Sao thành Yêu thích. Hủy dùng nền control-hover xám nhẹ; bỏ border-top hàng Hủy/Lưu, giữ margin-top24px và padding-top20px hiện hành.
-
-
-D-225 (2026-10-31): Bỏ nút X ở header tạo/chỉnh sửa dự án trên desktop/mobile; dùng Hủy ở hàng hành động để đóng.
-
-
-D-226 (2026-10-31): Margin dưới color-picker đổi27px thành10px để hàng Yêu thích/Lưu trữ/Xóa cách vòng màu10px, bằng khoảng cách legend đến vòng màu.
-
-
-D-227 (2026-10-31): Khôi phục border-top hàng Hủy/Lưu, padding-top15px. Mobile neo cụm cuối form theo visualViewport, đáy nút cách đáy màn hình/vùng trên bàn phím25px. Giữ nhóm Yêu thích/Lưu trữ/Xóa gần vòng màu.
-
-
-D-228 (2026-10-31): Đáy nút Hủy/Lưu trong form dự án mobile cách mép dưới50px, thay25px của D-227. Gap đường ngang đến nút15px giữ nguyên.
-
-
-D-229 (2026-10-31): Khoảng cách đường ngang đến Hủy/Lưu25px thay15px; đáy nút cách mép dưới mobile50px giữ nguyên.
-
-
-D-230 (2026-10-31): Form dự án mobile giữ padding đáy50px khi bàn phím đóng, giảm16px khi visualViewport co hơn120px ở scale1. Khôi phục50px khi đóng bàn phím; backdrop tiếp tục kín layout viewport, khoảng gạch đến nút25px giữ nguyên.
-
-
-D-231 (2026-10-31): Desktop bỏ margin dưới nhóm điều hướng chính để Tất cả/Quan Trọng cách nhau như item liền kề. Sidebar compact dùng cùng section margin18px, hàng project34px và heading26px với expanded, giữ vị trí tâm icon khi thu/mở.
-
-
-D-232 (2026-10-31): Nhãn dự án mở rộng desktop luôn một dòng, các pill cùng chiều rộng/cột theo tên dài nhất trong view, cách nội dung6px. Tăng dự trù chiều rộng cho chữ hoa Inter; tên quá dài vượt cột35% dùng ellipsis và tooltip thay vì xuống dòng. Hàng desktop căn giữa dọc để dot khi thu gọn nằm giữa từng item.
-
-
-D-233 (2026-10-31): Nhãn dự án desktop dùng chiều rộng đo bằng font thực tế sau fonts.ready, chung theo tên dài nhất đang render, bỏ cap35%/ellipsis, căn trái, gap10px đến vùng task/note. Tên cực dài có thể cần cuộn ngang khi không đủ màn hình. Sidebar thêm divider trắng13%/1px trước Đã lưu trữ.
-
-
-D-234 (2026-10-31): Divider trước Đã lưu trữ cách đáy hàng dự án phía trên10px; dùng margin-top21px và divider top-11px/height1px, giữ10px phía dưới divider.
