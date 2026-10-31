@@ -16,6 +16,12 @@ for (const width of [320, 390, 1280]) {
     const colorBox = (await dialog.locator(".color-picker-options").boundingBox())!;
     const managementBox = (await dialog.locator(".project-management-actions").boundingBox())!;
     expect(managementBox.y - colorBox.y - colorBox.height).toBeCloseTo(10, 0);
+    await expect(dialog.locator(".project-editor-actions")).toHaveCSS("padding-top", "15px");
+    await expect(dialog.locator(".project-editor-actions")).toHaveCSS("border-top-width", "1px");
+    if (width < 700) {
+      const footerBox = (await dialog.locator(".project-editor-actions").boundingBox())!;
+      expect(844 - footerBox.y - footerBox.height).toBeCloseTo(25, 0);
+    }
     const actions = dialog.locator(".project-editor-actions button");
     await expect(actions).toHaveCount(2);
     const boxes = await actions.evaluateAll(elements => elements.map(el => { const b = el.getBoundingClientRect(); return { y: b.y, right: b.right }; }));

@@ -134,3 +134,6 @@ D-225 (2026-10-31): Bỏ nút X ở header tạo/chỉnh sửa dự án trên de
 
 
 D-226 (2026-10-31): Margin dưới color-picker đổi27px thành10px để hàng Yêu thích/Lưu trữ/Xóa cách vòng màu10px, bằng khoảng cách legend đến vòng màu.
+
+
+D-227 (2026-10-31): Khôi phục border-top hàng Hủy/Lưu, padding-top15px. Mobile neo cụm cuối form theo visualViewport, đáy nút cách đáy màn hình/vùng trên bàn phím25px. Giữ nhóm Yêu thích/Lưu trữ/Xóa gần vòng màu.
