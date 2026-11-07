@@ -378,15 +378,15 @@ for (const width of [1280, 390]) {
       await reopen(`Lưu khi bấm ${name}`);
       await expect(date).toHaveValue(value);
     }
-    await draft("Lưu khi chọn dự án");
-    const project = sheet.getByLabel("Dự án", { exact: true });
+    await draft("Lưu khi chọn danh mục");
+    const project = sheet.getByLabel("Danh mục", { exact: true });
     await project.click();
     await expect(project).toBeFocused();
     await project.press("Escape");
     await project.selectOption({ index: 1 });
     const projectId = await project.inputValue();
     expect(projectId).not.toBe("");
-    await reopen("Lưu khi chọn dự án");
+    await reopen("Lưu khi chọn danh mục");
     await expect(project).toHaveValue(projectId);
     await draft("Lưu khi lưu trữ");
     await sheet.getByRole("button", { name: "Lưu trữ ghi chú", exact: true }).click();

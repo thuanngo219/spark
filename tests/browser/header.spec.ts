@@ -7,7 +7,7 @@ for (const width of [1280, 390, 320]) {
     test(`header collapses and restores without scroll jumps at ${width}px in ${theme}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 800 });
       await page.emulateMedia({ colorScheme: theme });
-      const projectName = width === 390 ? "DNA / sparkOne" : "Dự án kiểm tra tiêu đề dài";
+      const projectName = width === 390 ? "DNA / sparkOne" : "Danh mục kiểm tra tiêu đề dài";
       await page.addInitScript((projectName) => {
         const projectId = crypto.randomUUID();
         localStorage.setItem("spark:data:v1", JSON.stringify({
@@ -73,7 +73,7 @@ for (const width of [1280, 390, 320]) {
         await expect(header.locator(".view-title-row")).toHaveCSS("gap", "4px");
         expect(await title.evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeCloseTo(30, 1);
         const menu = header.getByRole("button", { name: "Mở sidebar", exact: true });
-        const edit = header.getByRole("button", { name: /Chỉnh sửa dự án/ });
+        const edit = header.getByRole("button", { name: /Chỉnh sửa danh mục/ });
         for (const control of [menu, edit]) {
           const box = (await control.boundingBox())!;
           expect(box.width).toBeGreaterThanOrEqual(44);
@@ -91,7 +91,7 @@ for (const width of [1280, 390, 320]) {
       await page.mouse.move(width - 40, 450);
       await page.mouse.wheel(0, 400);
       await expect(header).toHaveClass(/is-compact/);
-      await expect(header.getByRole("button", { name: /Chỉnh sửa dự án/ })).toBeHidden();
+      await expect(header.getByRole("button", { name: /Chỉnh sửa danh mục/ })).toBeHidden();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       expect(errors).toEqual([]);
     });

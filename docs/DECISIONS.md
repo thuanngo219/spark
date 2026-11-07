@@ -681,3 +681,8 @@ D-234 (2026-10-31): Divider trước Đã lưu trữ cách đáy hàng dự án 
 ## D-235 — Chốt kiểm tra dữ liệu v3 và phạm vi (2026-10-31)
 
 Chủ dự án xác nhận kiểm tra điện thoại/máy tính đã hoàn tất, các bước còn lại ổn và khả năng bảo toàn hai phiên bản ổn. Báo cáo docs/DATA_RELIABILITY_CHECK.md phân biệt kết quả báo từng bước và xác nhận chung; đây là nghiệm thu người dùng, không phải xác minh độc lập thuật toán merge/version history. Không sửa mã/schema. Không còn điểm cần trao đổi hoặc yêu cầu triển khai đang chờ. Search không cần trong phạm vi hiện tại, bỏ trạng thái hoãn/backlog; chỉ xem xét khi có yêu cầu mới.
+
+
+## D-236 — Nhãn Danh mục (2026-11-07)
+
+Giao diện desktop và mobile dùng “Danh mục” cho thực thể project, gồm nhãn, tùy chọn trống, tiêu đề, trợ giúp, tooltip và nhãn hỗ trợ tiếp cận. Tên người dùng đặt và định danh dữ liệu project giữ nguyên.

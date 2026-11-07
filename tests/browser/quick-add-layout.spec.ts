@@ -28,7 +28,7 @@ for (const width of [320, 390, 1280]) {
         await expect(page.locator(".quick-add-backdrop")).toHaveCSS("opacity", "1");
         await expect(page.locator(".quick-add-backdrop")).toHaveCSS("animation-name", "none");
         expect(await page.locator(".item-main").first().evaluate(el => Boolean(el.closest("[inert]")))).toBe(true);
-        await expect(form.getByRole("combobox", { name: "Dự án", exact: true })).toBeHidden();
+        await expect(form.getByRole("combobox", { name: "Danh mục", exact: true })).toBeHidden();
         const cancel = (await form.getByRole("button", { name: "Hủy", exact: true }).boundingBox())!;
         const add = (await form.getByRole("button", { name: "Thêm", exact: true }).boundingBox())!;
         expect((cancel.x + add.x + add.width) / 2).toBeCloseTo(width / 2, 1);
@@ -65,7 +65,7 @@ for (const width of [320, 390, 1280]) {
       if (width < 700) {
         const classification = form.getByRole("button", { name: "Phân Loại", exact: true });
         await classification.click();
-        await expect(form.locator(".quick-classification-fields .quick-add-field > span:first-child")).toHaveText(["Ngày Bắt Đầu", "Ngày Đến Hạn", "Dự án"]);
+        await expect(form.locator(".quick-classification-fields .quick-add-field > span:first-child")).toHaveText(["Ngày Bắt Đầu", "Ngày Đến Hạn", "Danh mục"]);
         await expect(classification).toHaveAttribute("aria-expanded", "true");
         await expect(classification).toHaveCSS("background-color", theme === "light" ? "rgb(17, 23, 66)" : "rgb(61, 75, 107)");
         await expect(form.locator(".quick-classification")).toHaveCSS("animation-name", "classification-enter");
@@ -82,7 +82,7 @@ for (const width of [320, 390, 1280]) {
         await dates[1].fill("2026-10-31");
         await expect(form.getByRole("button", { name: "Thêm", exact: true })).toBeDisabled();
         await dates[1].fill("2026-11-02");
-        await form.getByRole("combobox", { name: "Dự án", exact: true }).selectOption({ label: "Công việc" });
+        await form.getByRole("combobox", { name: "Danh mục", exact: true }).selectOption({ label: "Công việc" });
         const panel = (await form.locator(".quick-classification").boundingBox())!;
         await expect(form.locator(".quick-classification")).toHaveCSS("border-radius", "0px");
         await expect(form.locator(".quick-classification")).toHaveCSS("background-color", theme === "light" ? "rgb(233, 235, 239)" : "rgb(36, 43, 61)");
@@ -100,7 +100,7 @@ for (const width of [320, 390, 1280]) {
           Object.defineProperty(window.visualViewport!, "height", { configurable: true, value: 360 });
           window.visualViewport!.dispatchEvent(new Event("resize"));
         });
-        await expect(form.getByRole("combobox", { name: "Dự án", exact: true })).toBeInViewport();
+        await expect(form.getByRole("combobox", { name: "Danh mục", exact: true })).toBeInViewport();
         await page.screenshot({ path: `/tmp/spark-classification-keyboard-${width}-${theme}.png`, clip: { x: 0, y: 0, width, height: 360 } });
         await page.evaluate(() => {
           Reflect.deleteProperty(window.visualViewport!, "height");
@@ -283,7 +283,8 @@ test("mobile quick-add blocks background gestures and restores the scrolled list
   const cdp = await page.context().newCDPSession(page);
   const edgeSwipe = async () => {
     await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: 2, y: 300 }] });
-    for (const x of [30, 75, 125]) await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x, y: 300 }] });
+    // A short swipe must keep quick-add open. A full swipe cancels it.
+    for (const x of [30, 55, 75]) await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x, y: 300 }] });
     await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
   };
   const swipe = async () => {

@@ -5,7 +5,7 @@ import { getLocalDateKey } from "../../src/lib/dates";
 const userId = "a4141cfa-5029-4fbb-8eb9-0ad72825764a";
 const projectId = "b4141cfa-5029-4fbb-8eb9-0ad72825764a";
 const itemId = "c4141cfa-5029-4fbb-8eb9-0ad72825764a";
-const cloudProject = { id: projectId, name: "Dự án thật", color: "#8951C7", is_starred: false, archived_at: null, position: 0 };
+const cloudProject = { id: projectId, name: "Danh mục thật", color: "#8951C7", is_starred: false, archived_at: null, position: 0 };
 const cloudItem = { id: itemId, type: "task", title: "Nội dung thật từ cloud", description: null, start_date: null, due_date: null, project_id: projectId, completed_at: null, archived_at: null, is_important: true, is_urgent: true, created_at: new Date().toISOString() };
 const splash = (page: Page) => page.getByRole("region", { name: "Khởi động Spark" });
 async function mockSession(page: Page, cached = false) {
@@ -15,7 +15,7 @@ async function mockSession(page: Page, cached = false) {
   await page.routeWebSocket(/supabase.*realtime/, ws => ws.close());
   await page.addInitScript(({ token, expires, userId, cached, projectId, itemId }) => {
     localStorage.setItem("sb-ukoowtpqztknbrgpyqdx-auth-token", JSON.stringify({ access_token: token, refresh_token: "test-refresh-token", expires_at: expires, expires_in: 3600, token_type: "bearer", user: { id: userId, email: "test@example.invalid", app_metadata: {}, user_metadata: {}, aud: "authenticated", created_at: new Date().toISOString() } }));
-    if (cached) localStorage.setItem(`spark:data:v2:user:${userId}`, JSON.stringify({ projects: [{ id: projectId, name: "Dự án đã lưu", color: "#65458A", isStarred: false, archivedAt: null, position: 0 }], items: [{ id: itemId, type: "task", title: "Việc thật đã lưu", description: null, startDate: null, dueDate: null, projectId, completedAt: null, archivedAt: null, isImportant: false, isUrgent: false, createdAt: new Date().toISOString() }] }));
+    if (cached) localStorage.setItem(`spark:data:v2:user:${userId}`, JSON.stringify({ projects: [{ id: projectId, name: "Danh mục đã lưu", color: "#65458A", isStarred: false, archivedAt: null, position: 0 }], items: [{ id: itemId, type: "task", title: "Việc thật đã lưu", description: null, startDate: null, dueDate: null, projectId, completedAt: null, archivedAt: null, isImportant: false, isUrgent: false, createdAt: new Date().toISOString() }] }));
   }, { token, expires, userId, cached, projectId, itemId });
 }
 

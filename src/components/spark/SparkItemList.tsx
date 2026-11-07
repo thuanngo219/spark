@@ -343,8 +343,8 @@ const SwipeableItemRow = memo(function SwipeableItemRow({
                 "--project-color": project.color,
               } as CSSProperties}
               aria-expanded={projectLabelExpanded}
-              aria-label={`${projectLabelExpanded ? "Thu gọn" : "Mở rộng"} tên tất cả dự án`}
-              title={`${project.name} · ${projectLabelExpanded ? "Thu gọn" : "Mở rộng"} tên dự án`}
+              aria-label={`${projectLabelExpanded ? "Thu gọn" : "Mở rộng"} tên tất cả danh mục`}
+              title={`${project.name} · ${projectLabelExpanded ? "Thu gọn" : "Mở rộng"} tên danh mục`}
               onClick={() => {
                 closeActions();
                 onProjectLabelExpandedChange(!projectLabelExpanded);

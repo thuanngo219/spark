@@ -5,7 +5,7 @@ for (const width of [390, 700, 1280]) {
     await page.setViewportSize({ width, height: 844 });
     await page.addInitScript(() => {
       const data = JSON.parse(localStorage.getItem("spark:data:v1")!);
-      data.projects[0].name = "WWW DỰ ÁN TIẾNG VIỆT " + "W".repeat(58);
+      data.projects[0].name = "WWW DANH MỤC TIẾNG VIỆT " + "W".repeat(58);
       localStorage.setItem("spark:data:v1", JSON.stringify(data));
     });
     await page.goto("/");

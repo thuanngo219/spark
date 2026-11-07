@@ -139,11 +139,11 @@ export function Sidebar({
         </div>
         <div className="nav-section projects-nav">
           <div className="nav-heading">
-            {!compact && <button className="section-toggle" onClick={onToggleProjects} aria-expanded={projectsOpen}><Icon name="chevron" size={13} className={projectsOpen ? "section-open" : ""} /><span className="nav-label">Dự án</span></button>}
-            {!compact && <button className="mini-button" onClick={() => onEditProject("new")} aria-label="Tạo dự án"><Icon name="plus" size={16} /></button>}
+            {!compact && <button className="section-toggle" onClick={onToggleProjects} aria-expanded={projectsOpen}><Icon name="chevron" size={13} className={projectsOpen ? "section-open" : ""} /><span className="nav-label">Danh mục</span></button>}
+            {!compact && <button className="mini-button" onClick={() => onEditProject("new")} aria-label="Tạo danh mục"><Icon name="plus" size={16} /></button>}
           </div>
           {(compact || projectsOpen) && regularProjects.map(renderProject)}
-          <button className="nav-item archived-projects-nav" onClick={onOpenProjectArchive} aria-label="Dự án đã lưu trữ" data-tooltip={compact ? "Dự án đã lưu trữ" : undefined}>
+          <button className="nav-item archived-projects-nav" onClick={onOpenProjectArchive} aria-label="Danh mục đã lưu trữ" data-tooltip={compact ? "Danh mục đã lưu trữ" : undefined}>
             <Icon name="archive" /><span className="nav-text">Đã lưu trữ</span>{archivedProjects.length > 0 && <span className="nav-count">{archivedProjects.length}</span>}
           </button>
         </div>

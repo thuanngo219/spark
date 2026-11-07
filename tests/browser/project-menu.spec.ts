@@ -7,7 +7,7 @@ for (const theme of ["light", "dark"] as const) {
     await page.locator(".item-main").first().click();
     const trigger = page.locator(".project-select-trigger");
     await trigger.click();
-    const menu = page.getByRole("listbox", { name: "Dự án" });
+    const menu = page.getByRole("listbox", { name: "Danh mục" });
     await expect(menu).toBeVisible();
     await expect(menu).toHaveCSS("row-gap", "4px");
     const option = menu.getByRole("option").first();
@@ -16,7 +16,7 @@ for (const theme of ["light", "dark"] as const) {
     await expect(option).toBeFocused();
     await page.keyboard.press("Enter");
     await expect(menu).toBeHidden();
-    await expect(trigger).toContainText("Không có dự án");
+    await expect(trigger).toContainText("Không có danh mục");
     await trigger.click();
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");

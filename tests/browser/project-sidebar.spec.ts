@@ -10,7 +10,7 @@ for (const width of [320, 390, 1280]) {
     await expect(sidebar.locator(".project-more")).toHaveCount(0);
     await expect(sidebar.locator(".project-star").first()).toBeVisible();
     await sidebar.getByRole("button", { name: "Công việc", exact: true }).click();
-    await page.getByRole("button", { name: "Chỉnh sửa dự án Công việc", exact: true }).click();
+    await page.getByRole("button", { name: "Chỉnh sửa danh mục Công việc", exact: true }).click();
     const dialog = page.locator(".project-editor-backdrop");
     await expect(dialog).toBeVisible();
     await dialog.evaluate(el => Promise.all(el.getAnimations({ subtree: true }).filter(a => a.effect?.getTiming().iterations !== Infinity).map(a => a.finished)));

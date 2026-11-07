@@ -6,12 +6,12 @@ Chủ dự án xác nhận giao diện production “Ổn rồi” ngày 2026-10
 
 ## Giao diện hiện hành — đến D-234 (2026-10-31)
 
-- Font Inter 4.1 thường/nghiêng nhúng cùng origin; cỡ chữ px, weight400/700. Desktop/mobile: list14/15px, menu14/15px, support14/15px, metadata ngày/dự án12/13px; Nội dung15px, tên chi tiết18px, tên quick-add16px, dialog24px cả hai. Label10px/700/uppercase. Heading desktop38–56px/mobile30px, compact19–28px/21px; line-height1.2/1.4/1.6 theo vai trò.
+- Font Inter 4.1 thường/nghiêng nhúng cùng origin; cỡ chữ px, weight400/700. Desktop/mobile: list14/15px, menu14/15px, support14/15px, metadata ngày/danh mục12/13px; Nội dung15px, tên chi tiết18px, tên quick-add16px, dialog24px cả hai. Label10px/700/uppercase. Heading desktop38–56px/mobile30px, compact19–28px/21px; line-height1.2/1.4/1.6 theo vai trò.
 - Gap item2px; nhãn–nội dung8px. Toolbar chi tiết desktop cao44px, dưới hàng nhãn8px, cách text15px; editor mobile giữ hàng nhãn–toolbar2px. Caption loading cách progress17px.
-- Sidebar chỉ có sao ở hàng dự án, không nút ... hoặc tiêu đề Cần lưu ý. Hover/selected phủ toàn hàng; sao có đệm phải8px. Desktop Tất cả/Quan Trọng liền nhau như item thường; icon giữ tọa độ khi expand/compact. Divider trước Đã lưu trữ mảnh1px, cách hàng dự án trên10px.
-- Nhãn dự án trong danh sách desktop hiển thị đầy đủ một dòng, căn trái, chung chiều rộng theo tên dài nhất đang render, đo font thực sau fonts.ready; gap10px đến nội dung. Không cap35%/ellipsis; tên quá dài có thể cần cuộn ngang. Khi thu gọn dot căn giữa dọc item.
-- Sửa dự án: Yêu thích/Lưu trữ/Xóa một hàng pill, cách vòng màu10px. Hủy/Lưu hàng dưới; Hủy nền xám nhẹ, không nút X ở header. Có divider cách hai nút25px. Mobile toàn màn hình: đáy nút cách mép dưới50px khi bàn phím đóng,16px khi mở. Backdrop kín layout viewport; form theo visualViewport, khóa cuộn/inert nền và chặn overscroll ngoài form.
-- Menu dự án chi tiết desktop là listbox của app: dòng tối thiểu44px, padding10px14px, gap4px, hỗ trợ keyboard; mobile native select.
+- Sidebar chỉ có sao ở hàng danh mục, không nút ... hoặc tiêu đề Cần lưu ý. Hover/selected phủ toàn hàng; sao có đệm phải8px. Desktop Tất cả/Quan Trọng liền nhau như item thường; icon giữ tọa độ khi expand/compact. Divider trước Đã lưu trữ mảnh1px, cách hàng danh mục trên10px.
+- Nhãn danh mục trong danh sách desktop hiển thị đầy đủ một dòng, căn trái, chung chiều rộng theo tên dài nhất đang render, đo font thực sau fonts.ready; gap10px đến nội dung. Không cap35%/ellipsis; tên quá dài có thể cần cuộn ngang. Khi thu gọn dot căn giữa dọc item.
+- Sửa danh mục: Yêu thích/Lưu trữ/Xóa một hàng pill, cách vòng màu10px. Hủy/Lưu hàng dưới; Hủy nền xám nhẹ, không nút X ở header. Có divider cách hai nút25px. Mobile toàn màn hình: đáy nút cách mép dưới50px khi bàn phím đóng,16px khi mở. Backdrop kín layout viewport; form theo visualViewport, khóa cuộn/inert nền và chặn overscroll ngoài form.
+- Menu danh mục chi tiết desktop là listbox của app: dòng tối thiểu44px, padding10px14px, gap4px, hỗ trợ keyboard; mobile native select.
 - Focus input/select/textarea cả desktop/mobile chỉ đậm viền, không outline ngoài/đổi nền. Nút/link giữ focus bàn phím. Hover màu desktop220ms Quint; selected/disabled và semantic color giữ riêng; reduced motion có hỗ trợ.
 - Mobile quick-add vuốt mép trái đủ ngưỡng sẽ hủy nháp như HỦY. Cấu hình pinch: maximumScale1/userScalablefalse và touch-action pan-x pan-y; trình duyệt có thể ưu tiên zoom trợ năng. Chi tiết vẫn vuốt mép trái để đóng.
 

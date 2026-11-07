@@ -287,7 +287,7 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
             </label>
           </div>
           <div className="detail-project-actions">
-            <label className="detail-meta-control project" title="Dự án">
+            <label className="detail-meta-control project" title="Danh mục">
               <span className={`project-dot ${project ? "" : "empty"}`} style={project ? { background: project.color } : undefined} />
               <ProjectSelect value={project?.id ?? ""} projects={projects.filter(entry => !entry.archivedAt || entry.id === projectId)} onChange={value => { setProjectId(value); onSave({ projectId: value || null }); }} />
             </label>

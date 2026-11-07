@@ -56,13 +56,13 @@ export function ArchivedProjects({ projects, onClose, onView, onEdit }: {
   return (
     <div ref={dialogRef} className="dialog-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="project-archive-title">
       <section className="editor-sheet compact-editor project-archive-sheet" onClick={(event) => event.stopPropagation()}>
-        <div className="editor-header"><div><span>Dự án</span><h2 id="project-archive-title">Đã lưu trữ</h2></div><button className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
-        <p className="project-lifecycle-hint">Task và note vẫn được giữ nguyên. Mở dự án để xem, hoặc chỉnh sửa để khôi phục.</p>
-        {projects.length === 0 ? <p className="project-archive-empty">Chưa có dự án được lưu trữ.</p> : (
+        <div className="editor-header"><div><span>Danh mục</span><h2 id="project-archive-title">Đã lưu trữ</h2></div><button className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
+        <p className="project-lifecycle-hint">Task và note vẫn được giữ nguyên. Mở danh mục để xem, hoặc chỉnh sửa để khôi phục.</p>
+        {projects.length === 0 ? <p className="project-archive-empty">Chưa có danh mục được lưu trữ.</p> : (
           <div className="project-archive-list">
             {projects.map((project) => <div className="project-archive-row" key={project.id}>
-              <button className="project-archive-name" onClick={() => onView(project)} aria-label={`Xem dự án ${project.name}`}><span className="project-dot" style={{ background: project.color }} /><span>{project.name}</span></button>
-              <button className="detail-icon-action" onClick={() => onEdit(project)} aria-label={`Chỉnh sửa dự án ${project.name}`}><Icon name="edit" size={18} /></button>
+              <button className="project-archive-name" onClick={() => onView(project)} aria-label={`Xem danh mục ${project.name}`}><span className="project-dot" style={{ background: project.color }} /><span>{project.name}</span></button>
+              <button className="detail-icon-action" onClick={() => onEdit(project)} aria-label={`Chỉnh sửa danh mục ${project.name}`}><Icon name="edit" size={18} /></button>
             </div>)}
           </div>
         )}
@@ -132,15 +132,15 @@ export function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose
     <div ref={dialogRef} className="dialog-backdrop project-editor-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="project-editor-title">
       {confirmDelete && project ? (
         <section className="editor-sheet compact-editor" onClick={(event) => event.stopPropagation()}>
-          <div className="editor-header"><div><span>Dự án</span><h2 id="project-editor-title">Xóa dự án này?</h2></div><button className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
+          <div className="editor-header"><div><span>Danh mục</span><h2 id="project-editor-title">Xóa danh mục này?</h2></div><button className="icon-button" onClick={onClose} aria-label="Đóng"><Icon name="close" /></button></div>
           <p className="project-delete-description">“{project.name}” sẽ bị xóa và không thể hoàn tác.</p>
-          <p className="project-lifecycle-hint">{itemCount > 0 ? `${itemCount} task/note bên trong (kể cả mục đã hoàn thành hoặc lưu trữ) vẫn được giữ nguyên và chuyển sang Không có dự án.` : "Không có task/note nào trong dự án này."}</p>
-          <div className="editor-actions"><button autoFocus className="text-button" onClick={() => setConfirmDelete(false)}>Giữ lại</button><button className="delete-button" onClick={onDelete}><Icon name="trash" size={17} /> Xóa dự án</button></div>
+          <p className="project-lifecycle-hint">{itemCount > 0 ? `${itemCount} task/note bên trong (kể cả mục đã hoàn thành hoặc lưu trữ) vẫn được giữ nguyên và chuyển sang Không có danh mục.` : "Không có task/note nào trong danh mục này."}</p>
+          <div className="editor-actions"><button autoFocus className="text-button" onClick={() => setConfirmDelete(false)}>Giữ lại</button><button className="delete-button" onClick={onDelete}><Icon name="trash" size={17} /> Xóa danh mục</button></div>
         </section>
       ) : (
       <form className="editor-sheet compact-editor" onClick={(event) => event.stopPropagation()} onSubmit={(event) => { event.preventDefault(); if (name.trim()) onSave(project ? { ...project, name: name.trim(), color, isStarred } : { id: createUuid(), name: name.trim(), color, isStarred, archivedAt: null }); }}>
-        <div className="editor-header"><div><span>{project?.archivedAt ? "Đã lưu trữ" : "Dự án"}</span><h2 id="project-editor-title">{project ? "Chỉnh sửa dự án" : "Tạo dự án mới"}</h2></div></div>
-        <label className="field"><span>Tên dự án</span><input ref={nameInputRef} autoFocus maxLength={80} value={name} onChange={(event) => setName(event.target.value)} placeholder="Ví dụ: Ra mắt website" /></label>
+        <div className="editor-header"><div><span>{project?.archivedAt ? "Đã lưu trữ" : "Danh mục"}</span><h2 id="project-editor-title">{project ? "Chỉnh sửa danh mục" : "Tạo danh mục mới"}</h2></div></div>
+        <label className="field"><span>Tên danh mục</span><input ref={nameInputRef} autoFocus maxLength={80} value={name} onChange={(event) => setName(event.target.value)} placeholder="Ví dụ: Ra mắt website" /></label>
         <fieldset className="color-picker">
           <legend>Màu nhận diện</legend>
           <div className="color-picker-options">
@@ -159,7 +159,7 @@ export function ProjectEditor({ project, itemCount, onArchive, onDelete, onClose
           </div>
           <div className="editor-actions project-editor-actions">
             <button type="button" className="text-button" onClick={onClose}><Icon name="close" size={17} /><span>Hủy</span></button>
-            <button className="primary-button" disabled={!name.trim()}><Icon name="check" size={17} /><span>{project ? "Lưu" : "Tạo dự án"}</span></button>
+            <button className="primary-button" disabled={!name.trim()}><Icon name="check" size={17} /><span>{project ? "Lưu" : "Tạo danh mục"}</span></button>
           </div>
         </div>
       </form>
@@ -212,7 +212,7 @@ export function ShortcutHelp({
 }) {
   const dialogRef = useUtilityScreen(onClose);
   const groups = [
-    { id: "navigation", title: "Điều hướng", rows: [["T", "Hôm nay"], ["S", "Sắp tới"], ["D", "Theo ngày"], ["A", "Tất cả"], ["1–9", "Dự án theo thứ tự"]] },
+    { id: "navigation", title: "Điều hướng", rows: [["T", "Hôm nay"], ["S", "Sắp tới"], ["D", "Theo ngày"], ["A", "Tất cả"], ["1–9", "Danh mục theo thứ tự"]] },
     { id: "filter", title: "Lọc nội dung", rows: [["I", "Quan Trọng"], ["U", "Ưu tiên"], ["[", "Chỉ ghi chú"], ["]", "Chỉ task"], ["\\", "Tất cả nội dung"]] },
     { id: "actions", title: "Thao tác", rows: [["N", "Thêm task"], ["⌘/Ctrl + \\", "Sidebar"], ["?", "Trợ giúp"], ["Esc", "Đóng"]] },
     { id: "theme", title: "Giao diện", rows: [["<", "Sáng"], [">", "Tối"], ["M", "Theo hệ thống"]] },
@@ -237,7 +237,7 @@ export function ShortcutHelp({
               <ThemePreference />
               <section className="display-preference" aria-labelledby="project-label-preference">
                 <span>
-                  <strong id="project-label-preference">Mở tên dự án khi chạm</strong>
+                  <strong id="project-label-preference">Mở tên danh mục khi chạm</strong>
                   <small>Mở hoặc thu gọn đồng loạt trong mọi view.</small>
                 </span>
                 <button
@@ -343,7 +343,7 @@ export function SyncDialog({ configured, status, user, onClose, onSignedOut }: {
                 <div className="sync-message warning"><Icon name="zap" /><div><strong>Chưa kết nối Supabase</strong><p>Thêm hai biến môi trường trong <code>.env.local</code> và chạy migration để bật đồng bộ.</p></div></div>
               ) : user ? (
                 <>
-                  <div className="sync-hero"><span><Icon name={status === "error" || status === "offline" ? "zap" : "check"} size={27} /></span><h3>{syncStatusTitle(status)}</h3><p>{status === "offline" || status === "error" ? "Mọi thay đổi vẫn được giữ trên thiết bị và sẽ tự thử lại; bạn không cần nhập lại." : "Task, note và dự án của bạn sẽ xuất hiện trên mọi browser sau khi đăng nhập bằng cùng email."}</p></div>
+                  <div className="sync-hero"><span><Icon name={status === "error" || status === "offline" ? "zap" : "check"} size={27} /></span><h3>{syncStatusTitle(status)}</h3><p>{status === "offline" || status === "error" ? "Mọi thay đổi vẫn được giữ trên thiết bị và sẽ tự thử lại; bạn không cần nhập lại." : "Task, note và danh mục của bạn sẽ xuất hiện trên mọi browser sau khi đăng nhập bằng cùng email."}</p></div>
                   <div className="signed-in-row"><div><small>Tài khoản</small><strong>{user.email}</strong></div><button className="disconnect-button" onClick={onSignedOut}><Icon name="log-out" size={17} />Ngắt kết nối</button></div>
                 </>
               ) : sent ? (

@@ -593,7 +593,7 @@ export function SparkApp() {
             ? "Quan Trọng"
             : view.type === "urgent"
               ? "Ưu tiên"
-              : activeProject?.name ?? "Dự án";
+              : activeProject?.name ?? "Danh mục";
 
   const headerContext =
     view.type === "today"
@@ -720,7 +720,7 @@ export function SparkApp() {
           <div ref={headerRef} className={`view-header ${headerCompact ? "is-compact" : ""}`}>
             <div>
               {(headerContext || (view.type === "project" && activeProject)) && <div className="eyebrow">
-                {view.type === "project" && activeProject ? (activeProject.archivedAt ? "Dự án đã lưu trữ" : "Dự án") : headerContext}
+                {view.type === "project" && activeProject ? (activeProject.archivedAt ? "Danh mục đã lưu trữ" : "Danh mục") : headerContext}
               </div>}
               <div className="view-title-row">
                 <button
@@ -736,8 +736,8 @@ export function SparkApp() {
                   <button
                     className="project-edit-button"
                     onClick={() => setProjectEditor(activeProject)}
-                    aria-label={`Chỉnh sửa dự án ${activeProject.name}`}
-                    title="Chỉnh sửa dự án"
+                    aria-label={`Chỉnh sửa danh mục ${activeProject.name}`}
+                    title="Chỉnh sửa danh mục"
                   >
                     <Icon name="edit" size={18} />
                   </button>
