@@ -686,3 +686,8 @@ Chủ dự án xác nhận kiểm tra điện thoại/máy tính đã hoàn tấ
 ## D-236 — Nhãn Danh mục (2026-11-07)
 
 Giao diện desktop và mobile dùng “Danh mục” cho thực thể project, gồm nhãn, tùy chọn trống, tiêu đề, trợ giúp, tooltip và nhãn hỗ trợ tiếp cận. Tên người dùng đặt và định danh dữ liệu project giữ nguyên.
+
+
+## D-237 — Bộ chọn Danh mục trong chi tiết (2026-11-09)
+
+Màn chi tiết desktop dùng bộ chọn mặc định của trình duyệt như quick-add. Tùy chọn trống và danh mục đã lưu trữ vẫn theo quy tắc hiện hành.
