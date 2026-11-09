@@ -5,10 +5,11 @@ Cập nhật 2026-11-09. Chỉ giữ quy tắc đang có hiệu lực. Lịch s�
 ## Production và kiểm chứng
 
 - Domain https://spark.thuanngo.com; Vercel project spark (`prj_mpTXdTL5cUsrpbT40lw7fmBt8NZM`), team Thuan Ngo (`team_CDEqBJfEqWiriY02pfrXzqMX`), nhánh main.
-- Mã ứng dụng mới nhất: `8d8aca066b24c69d63bbf87cd891d0723a30aa01` (D-234), deployment `dpl_7qoa24PWnLhGD1ge3szR91wTPWkk` READY và alias đã xác minh ngày2026-10-31. Push tài liệu có thể tạo deployment mới với cùng mã app; xác minh SHA/alias khi tiếp tục.
-- Lint, typecheck,176 unit test và build đã đạt cho bản mã mới nhất. Kiểm tra production gần nhất: divider cách hàng trên10px và icon giữ tọa độ ở sidebar expand/compact đạt. Các đợt trước đã kiểm tra typography/hover sáng-tối, nhãn danh mục một dòng/cùng chiều rộng/dot căn giữa, danh mục fullscreen/keyboard ở320/390/700/1280px theo từng bộ test; không coi đây là một lần chạy toàn bộ regression.
-- Chủ danh mục xác nhận khoảng trống bàn phím trên iPhone đã ổn (16px mở/50px đóng), và xác nhận UI mới nhất “Ổn rồi” ngày2026-10-31. Đây là phản hồi thực tế của chủ danh mục; agent chưa tự kiểm tra native iPhone. Pinch/system edge gesture cần xác nhận riêng trên máy thật.
-- B-005 rà copy hoàn tất. Đợt kiểm tra độ tin cậy dữ liệu điện thoại/máy tính đã hoàn tất theo xác nhận chủ danh mục ngày2026-10-31; [kết quả chi tiết](../DATA_RELIABILITY_CHECK.md). Không có bước nghiệm thu đang chờ.
+- Mã ứng dụng production: `9cc28664a4de155ce7dbebfdca21e611e8211733` (D-237), deployment `dpl_5NmBVXqiUSmEDTE2FYZUG5dzG4HU` READY. Đã xác minh domain ngày 2026-11-09. Commit chỉ sửa tài liệu có thể tạo deployment khác với cùng mã ứng dụng.
+- D-236: 5 ca kiểm tra production cho nhãn Danh mục, sidebar và bộ chọn đều đạt. D-237: lint, typecheck, 176 test logic, build và 10 ca trình duyệt local đạt. Đã kiểm tra chọn, lưu và bỏ Danh mục trên production ở 390px và 1280px.
+- Chủ dự án xác nhận bản cập nhật nhãn và bộ chọn đã ổn ngày 2026-11-09.
+- Chủ dự án xác nhận khoảng trống bàn phím trên iPhone đã ổn (16px mở/50px đóng), và xác nhận UI mới nhất “Ổn rồi” ngày2026-10-31. Đây là phản hồi thực tế của chủ dự án; agent chưa tự kiểm tra native iPhone. Pinch/system edge gesture cần xác nhận riêng trên máy thật.
+- B-005 rà copy hoàn tất. Đợt kiểm tra độ tin cậy dữ liệu điện thoại/máy tính đã hoàn tất theo xác nhận chủ dự án ngày2026-10-31; [kết quả chi tiết](../DATA_RELIABILITY_CHECK.md). Không có bước nghiệm thu đang chờ.
 
 ## Typography hiện hành
 
@@ -36,6 +37,7 @@ Inter4.1 WOFF2 thường/nghiêng trong src/app/fonts/, next/font/local; root100
 - Sidebar chỉ có sao ở hàng danh mục, không nút ... hoặc tiêu đề Cần lưu ý. Hover/selected phủ toàn hàng; sao có đệm phải8px. Desktop Tất cả/Quan Trọng liền nhau như item thường; icon giữ tọa độ khi expand/compact. Divider trước Đã lưu trữ mảnh1px, cách hàng danh mục trên10px.
 - Nhãn danh mục trong danh sách desktop hiển thị đầy đủ một dòng, căn trái, chung chiều rộng theo tên dài nhất đang render, đo font thực sau fonts.ready; gap10px đến nội dung. Không cap35%/ellipsis; tên quá dài có thể cần cuộn ngang. Khi thu gọn dot căn giữa dọc item.
 - Sửa danh mục: Yêu thích/Lưu trữ/Xóa một hàng pill, cách vòng màu10px. Hủy/Lưu hàng dưới; Hủy nền xám nhẹ, không nút X ở header. Có divider cách hai nút25px. Mobile toàn màn hình: đáy nút cách mép dưới50px khi bàn phím đóng,16px khi mở. Backdrop kín layout viewport; form theo visualViewport, khóa cuộn/inert nền và chặn overscroll ngoài form.
+- Giao diện desktop và mobile dùng nhãn “Danh mục”, gồm bộ chọn, màn tạo/chỉnh sửa, lưu trữ, trợ giúp và nhãn hỗ trợ tiếp cận.
 - Bộ chọn Danh mục trong chi tiết dùng menu mặc định của trình duyệt trên desktop và mobile, cùng cách hiển thị với quick-add.
 - Focus input/select/textarea cả desktop/mobile chỉ đậm viền, không outline ngoài/đổi nền. Nút/link giữ focus bàn phím. Hover màu desktop220ms Quint; selected/disabled và semantic color giữ riêng; reduced motion có hỗ trợ.
 - Mobile quick-add vuốt mép trái đủ ngưỡng sẽ hủy nháp như HỦY. Cấu hình pinch: maximumScale1/userScalablefalse và touch-action pan-x pan-y; trình duyệt có thể ưu tiên zoom trợ năng. Chi tiết vẫn vuốt mép trái để đóng.
@@ -44,9 +46,9 @@ Giữ các quy tắc mobile đã duyệt: GHI CHÚ, ← QUAY LẠI; touch44px m�
 
 ## Phạm vi và nghiệm thu hiện tại
 
-- Chủ danh mục xác nhận đồng bộ/update dữ liệu tốt, chấp nhận hoàn tất đợt kiểm tra, gồm xác nhận khả năng bảo toàn hai phiên bản. Kết quả cụ thể và xác nhận chung các bước cuối được phân biệt trong [báo cáo kiểm tra](../DATA_RELIABILITY_CHECK.md).
+- Chủ dự án xác nhận đồng bộ/update dữ liệu tốt, chấp nhận hoàn tất đợt kiểm tra, gồm xác nhận khả năng bảo toàn hai phiên bản. Kết quả cụ thể và xác nhận chung các bước cuối được phân biệt trong [báo cáo kiểm tra](../DATA_RELIABILITY_CHECK.md).
 - Không còn yêu cầu triển khai hoặc điểm cần trao đổi đang mở. Không tự triển khai cơ chế version/conflict, sao lưu/khôi phục hoặc đổi data model.
-- Search không thuộc phạm vi hiện tại và không phải backlog/tính năng hoãn. Chỉ xem xét nếu chủ danh mục yêu cầu mới.
+- Search không thuộc phạm vi hiện tại và không phải backlog/tính năng hoãn. Chỉ xem xét nếu chủ dự án yêu cầu mới.
 
 ## Phạm vi sản phẩm đang chạy
 
@@ -60,7 +62,7 @@ Giữ các quy tắc mobile đã duyệt: GHI CHÚ, ← QUAY LẠI; touch44px m�
 - Web public; chế độ local bắt đầu rỗng và lưu trên thiết bị. Cloud dùng Supabase Auth OTP email; project hạ tầng dùng chung `WorkSpace`, ref `ukoowtpqztknbrgpyqdx`, hai bảng `public.projects`/`public.items` có Row Level Security theo `user_id`.
 - `src/lib/offline-storage.ts` giữ snapshot và mutation queue trong IndexedDB theo scope/user, fallback `localStorage` nếu cần. Với local data, bản snapshot chờ được ghi đồng bộ trước giao dịch IndexedDB để reload sát thao tác không mất dữ liệu. Service worker chỉ cache app shell/tài nguyên cùng origin, không cache phản hồi Supabase hay session.
 - Cloud mutation ghi local trước, gửi tuần tự, retry và reconcile khi có mạng, Realtime hoặc app trở lại foreground. Không seed dữ liệu mẫu vào local/cloud khi khởi động; chỉ dọn bộ seed local cũ nếu nhận diện chắc chắn. Snapshot cloud rỗng không kéo dữ liệu demo lên cloud.
-- Kết quả thực tế: chủ danh mục xác nhận đợt kiểm tra hai thiết bị hoàn tất, gồm cold-start offline, đồng bộ hai chiều, hàng đợi, xóa và bảo toàn hai phiên bản. Agent không tự thao tác trên thiết bị/tài khoản thật. Giữ ghi chú kiến trúc: full-row upsert có thể last-write-wins; phản hồi nghiệm thu không bổ sung tính năng version history/merge vào mã. Không có lỗi mới được báo trong đợt kiểm tra.
+- Kết quả thực tế: chủ dự án xác nhận đợt kiểm tra hai thiết bị hoàn tất, gồm cold-start offline, đồng bộ hai chiều, hàng đợi, xóa và bảo toàn hai phiên bản. Agent không tự thao tác trên thiết bị/tài khoản thật. Giữ ghi chú kiến trúc: full-row upsert có thể last-write-wins; phản hồi nghiệm thu không bổ sung tính năng version history/merge vào mã. Không có lỗi mới được báo trong đợt kiểm tra.
 - WorkSpace dùng chung nhiều app. Trước migration Spark phải xem `migration list`; không dùng `db push --include-all`, không repair history hoặc sửa shared auth hook của app khác để giải quyết việc riêng Spark.
 
 ## Bản đồ mã nguồn
@@ -79,8 +81,8 @@ Giữ các quy tắc mobile đã duyệt: GHI CHÚ, ← QUAY LẠI; touch44px m�
 ## Quy trình tiếp tục
 
 1. Đọc theo thứ tự trong `AGENTS.md`, sau đó đối chiếu quyết định mới với Product Brief và code. Khi phần ghi lịch sử trong tài liệu khác handoff này, kiểm tra quyết định mới nhất và mã đang chạy trước khi sửa.
-2. Chạy `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`; kiểm tra responsive tối thiểu ở 390px. Dùng `SPARK_TEST_URL` để chạy Playwright trên bản build local hoặc domain production khi cần. Không chạy Impeccable hoặc bật hook của nó nếu chủ danh mục không yêu cầu rõ.
-3. Sau mỗi yêu cầu chỉnh sửa app, kiểm tra rồi tự deploy production theo yêu cầu chủ danh mục, không chờ lệnh riêng. Git `main` được Vercel deploy tự động khi push. Sau push, xác minh deployment **READY**, commit SHA và alias `spark.thuanngo.com` trước khi báo đã phát hành. Không suy trạng thái production từ local build hoặc commit. Không đưa secret, `.env*`, `.vercel`, `.next`, test artifacts hay file ngoài Spark vào commit.
+2. Chạy `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`; kiểm tra responsive tối thiểu ở 390px. Dùng `SPARK_TEST_URL` để chạy Playwright trên bản build local hoặc domain production khi cần. Không chạy Impeccable hoặc bật hook của nó nếu chủ dự án không yêu cầu rõ.
+3. Sau mỗi yêu cầu chỉnh sửa app, kiểm tra rồi tự deploy production theo yêu cầu chủ dự án, không chờ lệnh riêng. Git `main` được Vercel deploy tự động khi push. Sau push, xác minh deployment **READY**, commit SHA và alias `spark.thuanngo.com` trước khi báo đã phát hành. Không suy trạng thái production từ local build hoặc commit. Không đưa secret, `.env*`, `.vercel`, `.next`, test artifacts hay file ngoài Spark vào commit.
 4. Với nút mobile nhỏ hơn 44px, kiểm tra cả click bên ngoài bề mặt và click trực tiếp checkbox. Giữ `isolation: isolate` trên nút/pill và `z-index: -1` của pseudo-element mở rộng vùng chạm để không che checkbox.
 5. `masan-cos-showcase/` là repo riêng; `output/` và `outputs/` là dữ liệu ngoài Spark. Giữ nguyên và loại khỏi rà soát/commit Spark. Không xóa các thư mục này.
 
