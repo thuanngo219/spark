@@ -5,8 +5,9 @@ Cập nhật 2026-11-13. Chỉ giữ quy tắc đang có hiệu lực. Lịch s�
 ## Production và kiểm chứng
 
 - Domain https://spark.thuanngo.com; Vercel project spark (`prj_mpTXdTL5cUsrpbT40lw7fmBt8NZM`), team Thuan Ngo (`team_CDEqBJfEqWiriY02pfrXzqMX`), nhánh main.
-- Mã ứng dụng production: `9cc28664a4de155ce7dbebfdca21e611e8211733` (D-237), deployment `dpl_5NmBVXqiUSmEDTE2FYZUG5dzG4HU` READY. Đã xác minh domain ngày 2026-11-09. Commit chỉ sửa tài liệu có thể tạo deployment khác với cùng mã ứng dụng.
-- D-236: 5 ca kiểm tra production cho nhãn Danh mục, sidebar và bộ chọn đều đạt. D-237: lint, typecheck, 176 test logic, build và 10 ca trình duyệt local đạt. Đã kiểm tra chọn, lưu và bỏ Danh mục trên production ở 390px và 1280px.
+- Mã ứng dụng production: `0d9bee3056e9e136de436acc262477bcd83cdf45` (D-239), deployment `dpl_etzMVMoWhY3y4jvh5mtvMQWGtz8G` READY. Đã xác minh domain ngày 2026-11-13. Commit tài liệu có thể tạo deployment mới với cùng mã ứng dụng.
+- D-238: 9 ca kiểm tra production cho phím tắt, chuyển mục và bảng trợ giúp đều đạt. D-239: lint, typecheck, 176 test logic, build và 5 ca trình duyệt local đạt, gồm bộ chọn ở 390px. Ba ca kiểm tra production cho Tất cả, Chỉ ghi chú và Chỉ task đều đạt.
+- Chủ dự án xác nhận bản sửa lỗi giật khi chuyển mục đã ổn ngày 2026-11-13.
 - Chủ dự án xác nhận bản cập nhật nhãn và bộ chọn đã ổn ngày 2026-11-09.
 - Chủ dự án xác nhận khoảng trống bàn phím trên iPhone đã ổn (16px mở/50px đóng), và xác nhận UI mới nhất “Ổn rồi” ngày2026-10-31. Đây là phản hồi thực tế của chủ dự án; agent chưa tự kiểm tra native iPhone. Pinch/system edge gesture cần xác nhận riêng trên máy thật.
 - B-005 rà copy hoàn tất. Đợt kiểm tra độ tin cậy dữ liệu điện thoại/máy tính đã hoàn tất theo xác nhận chủ dự án ngày2026-10-31; [kết quả chi tiết](../DATA_RELIABILITY_CHECK.md). Không có bước nghiệm thu đang chờ.
@@ -32,7 +33,7 @@ Inter4.1 WOFF2 thường/nghiêng trong src/app/fonts/, next/font/local; root100
 
 ## Giao diện hiện hành
 
-- Chi tiết task/note có E để sửa nội dung, Shift + E để sửa tên. Desktop dùng nút hai mép hoặc ←/→ để đi theo thứ tự danh sách đã lọc lúc mở chi tiết. Dừng ở đầu/cuối và tạm ngưng chuyển mục khi sửa. Khung chi tiết giữ nguyên khi chuyển mục. Nội dung của mục mới bắt đầu từ đầu vùng cuộn.
+- Chi tiết task/note có E để sửa nội dung, Shift + E để sửa tên. Desktop dùng nút hai mép hoặc ←/→ để đi theo thứ tự danh sách đã lọc lúc mở chi tiết. Dừng ở đầu/cuối và tạm ngưng chuyển mục khi sửa. Khung chi tiết và lớp khóa cuộn được giữ khi chuyển mục, nên hiệu ứng mở màn chỉ chạy lúc mở chi tiết. Nội dung mục mới bắt đầu từ đầu vùng cuộn.
 
 - Font Inter 4.1 thường/nghiêng nhúng cùng origin; cỡ chữ px, weight400/700. Desktop/mobile: list14/15px, menu14/15px, support14/15px, metadata ngày/danh mục12/13px; Nội dung15px, tên chi tiết18px, tên quick-add16px, dialog24px cả hai. Label10px/700/uppercase. Heading desktop38–56px/mobile30px, compact19–28px/21px; line-height1.2/1.4/1.6 theo vai trò.
 - Gap item2px; nhãn–nội dung8px. Toolbar chi tiết desktop cao44px, dưới hàng nhãn8px, cách text15px; editor mobile giữ hàng nhãn–toolbar2px. Caption loading cách progress17px.

@@ -4,7 +4,7 @@
 
 Chủ dự án xác nhận giao diện production “Ổn rồi” ngày 2026-10-29 sau D-207. [Handoff v3](handoff/spark-v3.md) chỉ ghi quy tắc còn hiệu lực và phạm vi đã kiểm chứng; các mục D-xxx phía dưới là lịch sử phát triển, nên đọc cùng quyết định mới nhất khi một thông số thay đổi.
 
-## Giao diện hiện hành — đến D-237 (2026-11-09)
+## Giao diện hiện hành — đến D-239 (2026-11-13)
 
 - Font Inter 4.1 thường/nghiêng nhúng cùng origin; cỡ chữ px, weight400/700. Desktop/mobile: list14/15px, menu14/15px, support14/15px, metadata ngày/danh mục12/13px; Nội dung15px, tên chi tiết18px, tên quick-add16px, dialog24px cả hai. Label10px/700/uppercase. Heading desktop38–56px/mobile30px, compact19–28px/21px; line-height1.2/1.4/1.6 theo vai trò.
 - Gap item2px; nhãn–nội dung8px. Toolbar chi tiết desktop cao44px, dưới hàng nhãn8px, cách text15px; editor mobile giữ hàng nhãn–toolbar2px. Caption loading cách progress17px.
@@ -13,6 +13,7 @@ Chủ dự án xác nhận giao diện production “Ổn rồi” ngày 2026-10
 - Sửa danh mục: Yêu thích/Lưu trữ/Xóa một hàng pill, cách vòng màu10px. Hủy/Lưu hàng dưới; Hủy nền xám nhẹ, không nút X ở header. Có divider cách hai nút25px. Mobile toàn màn hình: đáy nút cách mép dưới50px khi bàn phím đóng,16px khi mở. Backdrop kín layout viewport; form theo visualViewport, khóa cuộn/inert nền và chặn overscroll ngoài form.
 - Giao diện desktop và mobile dùng nhãn “Danh mục”, gồm bộ chọn, màn tạo/chỉnh sửa, lưu trữ, trợ giúp và nhãn hỗ trợ tiếp cận.
 - Bộ chọn Danh mục trong chi tiết dùng menu mặc định của trình duyệt trên desktop và mobile, cùng cách hiển thị với quick-add.
+- Trong chi tiết task hoặc ghi chú, E mở sửa nội dung và Shift + E mở sửa tên. Desktop dùng nút hai mép hoặc ←/→ để chuyển theo bộ lọc và thứ tự danh sách lúc mở chi tiết. Dừng ở đầu hoặc cuối. Khi đang sửa, phím mũi tên điều khiển con trỏ. Khi chuyển mục, khung chi tiết giữ nguyên và nội dung mới bắt đầu ở đầu vùng cuộn.
 - Focus input/select/textarea cả desktop/mobile chỉ đậm viền, không outline ngoài/đổi nền. Nút/link giữ focus bàn phím. Hover màu desktop220ms Quint; selected/disabled và semantic color giữ riêng; reduced motion có hỗ trợ.
 - Mobile quick-add vuốt mép trái đủ ngưỡng sẽ hủy nháp như HỦY. Cấu hình pinch: maximumScale1/userScalablefalse và touch-action pan-x pan-y; trình duyệt có thể ưu tiên zoom trợ năng. Chi tiết vẫn vuốt mép trái để đóng.
 

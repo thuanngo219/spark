@@ -10,7 +10,7 @@ Hướng UI đã chọn: **Option C — Compact Canvas**, dùng Navy, Turquoise,
 
 Logo chính thức và mọi icon app dùng biểu tượng tick/vòng tròn trắng trên badge gradient xanh–Navy do chủ dự án cung cấp. Wordmark `spark` giữ vector cũ: primary Deep Purple, negative trắng. D-134 áp dụng cho logo chính, sidebar desktop/mobile, compact rail, icon cài đặt và favicon; source/cách sinh asset ở [assets/logo/README.md](assets/logo/README.md).
 
-Production: **https://spark.thuanngo.com**. Bản D-237 ngày 2026-11-09 dùng nhãn “Danh mục” trên desktop và mobile. Bộ chọn trong màn chi tiết desktop dùng menu mặc định của trình duyệt như quick-add. Sau mỗi yêu cầu chỉnh sửa app, kiểm tra rồi deploy production và xác minh trực tiếp. Thông số đang có hiệu lực, bản phát hành và giới hạn kiểm chứng ở [handoff v3](docs/handoff/spark-v3.md).
+Production: **https://spark.thuanngo.com**. Production đến D-239 ngày 2026-11-13 dùng nhãn “Danh mục” trên desktop và mobile. Bộ chọn trong màn chi tiết desktop dùng menu mặc định của trình duyệt như quick-add. Trong chi tiết, E sửa nội dung, Shift + E sửa tên. Desktop dùng nút hai mép hoặc ←/→ để chuyển mục trong danh sách đang xem. Sau mỗi yêu cầu chỉnh sửa app, kiểm tra rồi deploy production và xác minh trực tiếp. Thông số đang có hiệu lực, bản phát hành và giới hạn kiểm chứng ở [handoff v3](docs/handoff/spark-v3.md).
 
 Vercel owner: team **Thuan Ngo** tại [vercel.com/thuanngo](https://vercel.com/thuanngo). Liên kết local trong `.vercel/repo.json` dùng team ID ổn định nên không phụ thuộc vào việc đổi tên hoặc URL slug của team.
 
