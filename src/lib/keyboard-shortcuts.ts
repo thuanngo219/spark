@@ -51,3 +51,12 @@ export function resolveStandaloneShortcut(
 export function resolveProjectShortcut(key: string) {
   return /^[1-9]$/.test(key) ? Number(key) - 1 : null;
 }
+
+
+export function isTypingTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) return false;
+  return (
+    ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName) ||
+    target.isContentEditable
+  );
+}

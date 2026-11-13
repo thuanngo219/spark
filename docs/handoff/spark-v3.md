@@ -1,6 +1,6 @@
 # Spark v3 — bàn giao hiện hành
 
-Cập nhật 2026-11-09. Chỉ giữ quy tắc đang có hiệu lực. Lịch sử thay đổi tra Git và docs/DECISIONS.md; không dùng thông số cũ trong các mục lịch sử làm trạng thái hiện tại.
+Cập nhật 2026-11-13. Chỉ giữ quy tắc đang có hiệu lực. Lịch sử thay đổi tra Git và docs/DECISIONS.md; không dùng thông số cũ trong các mục lịch sử làm trạng thái hiện tại.
 
 ## Production và kiểm chứng
 
@@ -31,6 +31,8 @@ Inter4.1 WOFF2 thường/nghiêng trong src/app/fonts/, next/font/local; root100
 | Nhãn dock | — | 10px | 700, ALL CAPS | 1.4 |
 
 ## Giao diện hiện hành
+
+- Chi tiết task/note có E để sửa nội dung, Shift + E để sửa tên. Desktop dùng nút hai mép hoặc ←/→ để đi theo thứ tự danh sách đã lọc lúc mở chi tiết. Dừng ở đầu/cuối và tạm ngưng chuyển mục khi sửa.
 
 - Font Inter 4.1 thường/nghiêng nhúng cùng origin; cỡ chữ px, weight400/700. Desktop/mobile: list14/15px, menu14/15px, support14/15px, metadata ngày/danh mục12/13px; Nội dung15px, tên chi tiết18px, tên quick-add16px, dialog24px cả hai. Label10px/700/uppercase. Heading desktop38–56px/mobile30px, compact19–28px/21px; line-height1.2/1.4/1.6 theo vai trò.
 - Gap item2px; nhãn–nội dung8px. Toolbar chi tiết desktop cao44px, dưới hàng nhãn8px, cách text15px; editor mobile giữ hàng nhãn–toolbar2px. Caption loading cách progress17px.

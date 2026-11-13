@@ -27,7 +27,7 @@ for (const width of [320, 390, 1280]) {
       const closeHelp = help.getByRole("button", { name: "Đóng bảng phím tắt" });
       await expect(closeHelp).toBeFocused();
       if (width >= 700) expect((await closeHelp.boundingBox())!.x + (await closeHelp.boundingBox())!.width).toBe(width - 20);
-      await expect(help.locator(".shortcut-group > div")).toHaveCount(17);
+      await expect(help.locator(".shortcut-group > div")).toHaveCount(20);
       await expect(help.locator(".shortcut-columns + .shortcut-note + .theme-preference")).toHaveCount(1);
       const headingColor = await help.locator("#project-label-preference").evaluate(el => getComputedStyle(el).color);
       for (const label of await help.locator(".shortcut-group h3").all()) await expect(label).toHaveCSS("color", headingColor);

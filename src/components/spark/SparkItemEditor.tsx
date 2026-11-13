@@ -7,6 +7,7 @@ import ContentEditor, { type ContentEditorHandle } from "@/components/ContentEdi
 import { FormattedContent } from "@/components/FormattedContent";
 import { Icon } from "@/components/ui/Icon";
 import { CONTENT_LIMIT, contentLength, normalizeContent } from "@/lib/content-format";
+import { isTypingTarget } from "@/lib/keyboard-shortcuts";
 import { isValidDateRange } from "@/lib/dates";
 import { installDetailMotion } from "@/lib/detail-motion";
 import { lockDetailScroll } from "@/lib/detail-scroll-lock";
@@ -53,7 +54,7 @@ function DetailTitleField({ value, label, onChange, onSave, onCancel }: {
   return mobile ? <textarea {...shared} ref={textareaRef} rows={1} /> : <input {...shared} />;
 }
 
-export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave }: { item: SparkItem; projects: Project[]; onArchive: () => void; onClose: () => void; onDelete: () => void; onSave: (update: Partial<SparkItem>) => void }) {
+export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSave, onPrevious, onNext, shortcutsBlocked }: { item: SparkItem; projects: Project[]; onArchive: () => void; onClose: () => void; onDelete: () => void; onSave: (update: Partial<SparkItem>) => void; onPrevious?: () => void; onNext?: () => void; shortcutsBlocked: boolean }) {
   const backdropPointer = useRef<number | null>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
   const contentEditorRef = useRef<ContentEditorHandle>(null);
@@ -168,6 +169,25 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
       contentEditorRef.current?.focusEnd();
     } else setEditingField(field);
   };
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (shortcutsBlocked || editingField || event.defaultPrevented || event.isComposing ||
+          event.repeat || event.ctrlKey || event.metaKey || event.altKey || isTypingTarget(event.target)) return;
+      if (event.key.toLowerCase() === "e") {
+        event.preventDefault();
+        switchField(event.shiftKey ? "title" : "content");
+        return;
+      }
+      if (event.shiftKey || !window.matchMedia("(min-width: 700px)").matches) return;
+      const move = event.key === "ArrowLeft" ? onPrevious : event.key === "ArrowRight" ? onNext : undefined;
+      if (move) {
+        event.preventDefault();
+        move();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  });
   const saveDates = (start: string, due: string) => {
     setStartDate(start); setDueDate(due);
     const invalid = !isValidDateRange(start, due);
@@ -217,6 +237,10 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
       }}
     >
       <section className={`editor-sheet item-detail-sheet ${editingField === "content" ? "editing-content" : editingField === "title" ? "editing-title" : ""}`} role="dialog" aria-modal="true" aria-label={editingField === "content" ? "Nội dung" : title} onClick={(event) => event.stopPropagation()}>
+        <div className="detail-item-navigation" role="group" aria-label="Chuyển mục">
+          <button type="button" className="icon-button detail-previous" aria-label="Mục trước" onClick={onPrevious} disabled={!onPrevious || Boolean(editingField) || shortcutsBlocked}><Icon name="chevron" size={20} /></button>
+          <button type="button" className="icon-button detail-next" aria-label="Mục sau" onClick={onNext} disabled={!onNext || Boolean(editingField) || shortcutsBlocked}><Icon name="chevron" size={20} /></button>
+        </div>
         <div className="detail-main">
           <div className="detail-main-inner">
             <div className="detail-content">

@@ -305,6 +305,7 @@ const SwipeableItemRow = memo(function SwipeableItemRow({
       </div>
 
       <article
+        data-detail-item-id={item.id}
         className={`item-row ${project && projectLabelsEnabled ? "project-labels-enabled" : ""} ${project && projectLabelsEnabled && projectLabelExpanded ? "project-labels-expanded" : ""} ${item.completedAt ? "is-complete" : ""} ${item.archivedAt ? "is-archived" : ""}`}
         style={{ "--swipe-offset": `${offset}px` } as CSSProperties}
         onClickCapture={(event) => {

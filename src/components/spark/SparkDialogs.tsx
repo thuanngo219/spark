@@ -215,6 +215,7 @@ export function ShortcutHelp({
     { id: "navigation", title: "Điều hướng", rows: [["T", "Hôm nay"], ["S", "Sắp tới"], ["D", "Theo ngày"], ["A", "Tất cả"], ["1–9", "Danh mục theo thứ tự"]] },
     { id: "filter", title: "Lọc nội dung", rows: [["I", "Quan Trọng"], ["U", "Ưu tiên"], ["[", "Chỉ ghi chú"], ["]", "Chỉ task"], ["\\", "Tất cả nội dung"]] },
     { id: "actions", title: "Thao tác", rows: [["N", "Thêm task"], ["⌘/Ctrl + \\", "Sidebar"], ["?", "Trợ giúp"], ["Esc", "Đóng"]] },
+    { id: "detail", title: "Màn chi tiết", rows: [["E", "Sửa nội dung"], ["Shift + E", "Sửa tên"], ["← / →", "Mục trước / sau trên desktop"]] },
     { id: "theme", title: "Giao diện", rows: [["<", "Sáng"], [">", "Tối"], ["M", "Theo hệ thống"]] },
   ];
   return (

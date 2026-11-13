@@ -120,3 +120,24 @@
 .project-management-actions .is-starred svg { fill: currentColor; }
 
 .project-editor-actions .text-button { background: var(--control-hover); }
+
+.detail-item-navigation { display: none; }
+@media (min-width: 700px) {
+  .detail-item-navigation { display: contents; }
+  .detail-item-navigation .icon-button {
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    z-index: 1;
+    width: 36px;
+    height: 36px;
+    background: var(--surface);
+    color: var(--heading);
+    border: 1px solid var(--field-border);
+  }
+  .detail-item-navigation .icon-button:hover:not(:disabled) { background: var(--control-hover); color: var(--heading); transform: none; }
+  .detail-item-navigation .icon-button:disabled { opacity: .4; cursor: default; }
+  .detail-previous { left: 8px; }
+  .detail-next { right: 8px; }
+  .detail-next svg { rotate: 180deg; }
+}

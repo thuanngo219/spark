@@ -13,7 +13,7 @@ import { shouldOpenMobileSidebar } from "@/lib/mobile-gestures";
 import { createUuid } from "@/lib/ids";
 import { reorderProjectsForDrop, type ProjectDropPlacement } from "@/lib/project-order";
 import { filterItems, filterItemsByDisplayMode, getSidebarCounts, groupItemsByTime, inactiveForView, type ItemDisplayMode, type ItemSortField, type ItemSortPreference, type TimeGroup } from "@/lib/task-filters";
-import { resolveProjectShortcut, resolveStandaloneShortcut } from "@/lib/keyboard-shortcuts";
+import { isTypingTarget, resolveProjectShortcut, resolveStandaloneShortcut } from "@/lib/keyboard-shortcuts";
 import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase";
 import type { Project, SparkItem, View } from "@/lib/types";
 import { Sidebar } from "@/components/spark/SparkSidebar";
@@ -65,14 +65,6 @@ function parseSortSettings(value: string | null): Record<string, ItemSortPrefere
 }
 
 
-function isTypingTarget(target: EventTarget | null) {
-  if (!(target instanceof HTMLElement)) return false;
-  return (
-    ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName) ||
-    target.isContentEditable
-  );
-}
-
 function viewKey(view: View) {
   if (view.type === "calendar") return `calendar:${view.date}`;
   if (view.type === "project") return `project:${view.projectId}`;
@@ -109,6 +101,13 @@ export function SparkApp() {
   const [allGroupsOpen, setAllGroupsOpen] = useState<Partial<Record<TimeGroup, boolean>>>({});
   const [sortSettings, setSortSettings] = useState<Record<string, ItemSortPreference>>({});
   const [editingItem, setEditingItem] = useState<SparkItem | null>(null);
+  const [detailOrder, setDetailOrder] = useState<string[]>([]);
+  const openItemDetails = (item: SparkItem) => {
+    // The rendered list already reflects grouping, filtering and each group's sort.
+    setDetailOrder(Array.from(document.querySelectorAll<HTMLElement>("[data-detail-item-id]"), row => row.dataset.detailItemId!));
+    setEditingItem(item);
+  };
+
   const [projectEditor, setProjectEditor] = useState<Project | "new" | null>(null);
   const [projectArchiveOpen, setProjectArchiveOpen] = useState(false);
   const [deletedItem, setDeletedItem] = useState<SparkItem | null>(null);
@@ -654,6 +653,11 @@ export function SparkApp() {
     onComplete={() => setStartupActive(false)} />;
   if (!data) return <>{startupScreen}</>;
 
+  const detailIndex = editingItem ? detailOrder.indexOf(editingItem.id) : -1;
+  const previousItem = detailIndex > 0 ? data.items.find(item => item.id === detailOrder[detailIndex - 1]) : undefined;
+  const nextItem = detailIndex >= 0 ? data.items.find(item => item.id === detailOrder[detailIndex + 1]) : undefined;
+
+
   return (
     <>
     {startupScreen}
@@ -789,7 +793,7 @@ export function SparkApp() {
                 onArchive={toggleNoteArchive}
                 onComplete={toggleComplete}
                 onDelete={requestItemDelete}
-                onEdit={setEditingItem}
+                onEdit={openItemDetails}
                 onFlag={mutateItem}
                 projectLabelsExpanded={projectLabelsExpanded}
                 onProjectLabelsExpandedChange={setProjectLabelsExpanded}
@@ -814,7 +818,7 @@ export function SparkApp() {
                 onArchive={toggleNoteArchive}
                 onComplete={toggleComplete}
                 onDelete={requestItemDelete}
-                onEdit={setEditingItem}
+                onEdit={openItemDetails}
                 onFlag={mutateItem}
                 projectLabelsExpanded={projectLabelsExpanded}
                 onProjectLabelsExpandedChange={setProjectLabelsExpanded}
@@ -837,7 +841,7 @@ export function SparkApp() {
                 onArchive={toggleNoteArchive}
                 onComplete={toggleComplete}
                 onDelete={requestItemDelete}
-                onEdit={setEditingItem}
+                onEdit={openItemDetails}
                 onFlag={mutateItem}
                 projectLabelsExpanded={projectLabelsExpanded}
                 onProjectLabelsExpandedChange={setProjectLabelsExpanded}
@@ -860,7 +864,7 @@ export function SparkApp() {
                 onArchive={toggleNoteArchive}
                 onComplete={toggleComplete}
                 onDelete={requestItemDelete}
-                onEdit={setEditingItem}
+                onEdit={openItemDetails}
                 onFlag={mutateItem}
                 projectLabelsExpanded={projectLabelsExpanded}
                 onProjectLabelsExpandedChange={setProjectLabelsExpanded}
@@ -884,7 +888,7 @@ export function SparkApp() {
                 onArchive={toggleNoteArchive}
                 onComplete={toggleComplete}
                 onDelete={requestItemDelete}
-                onEdit={setEditingItem}
+                onEdit={openItemDetails}
                 onFlag={mutateItem}
                 projectLabelsExpanded={projectLabelsExpanded}
                 onProjectLabelsExpandedChange={setProjectLabelsExpanded}
@@ -912,7 +916,7 @@ export function SparkApp() {
                 onArchive={toggleNoteArchive}
                 onComplete={toggleComplete}
                 onDelete={requestItemDelete}
-                onEdit={setEditingItem}
+                onEdit={openItemDetails}
                 onFlag={mutateItem}
                 projectLabelsExpanded={projectLabelsExpanded}
                 onProjectLabelsExpandedChange={setProjectLabelsExpanded}
@@ -951,7 +955,7 @@ export function SparkApp() {
                 onArchive={toggleNoteArchive}
                 onComplete={toggleComplete}
                 onDelete={requestItemDelete}
-                onEdit={setEditingItem}
+                onEdit={openItemDetails}
                 onFlag={mutateItem}
                 projectLabelsExpanded={projectLabelsExpanded}
                 onProjectLabelsExpandedChange={setProjectLabelsExpanded}
@@ -990,7 +994,11 @@ export function SparkApp() {
 
       {editingItem && (
         <ItemEditor
+          key={editingItem.id}
           item={editingItem}
+          onPrevious={previousItem ? () => setEditingItem(previousItem) : undefined}
+          onNext={nextItem ? () => setEditingItem(nextItem) : undefined}
+          shortcutsBlocked={Boolean(deleteConfirmation || helpOpen || syncDialogOpen || projectEditor || projectArchiveOpen)}
           projects={allProjects}
           onArchive={() => toggleNoteArchive(editingItem)}
           onClose={() => setEditingItem(null)}

@@ -691,3 +691,7 @@ Giao diện desktop và mobile dùng “Danh mục” cho thực thể project, 
 ## D-237 — Bộ chọn Danh mục trong chi tiết (2026-11-09)
 
 Màn chi tiết desktop dùng bộ chọn mặc định của trình duyệt như quick-add. Tùy chọn trống và danh mục đã lưu trữ vẫn theo quy tắc hiện hành.
+
+## D-238 — Phím tắt và chuyển mục trong chi tiết (2026-11-13)
+
+E mở sửa nội dung, Shift + E mở sửa tên. Desktop có nút ở hai mép và phím ←/→ để chuyển mục theo danh sách đang hiển thị lúc mở chi tiết, gồm bộ lọc và thứ tự từng nhóm. Dừng ở đầu/cuối. Tạm ngưng phím tắt và chuyển mục khi đang chỉnh sửa hoặc có hộp thoại khác mở.
