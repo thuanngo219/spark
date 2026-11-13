@@ -695,3 +695,7 @@ Màn chi tiết desktop dùng bộ chọn mặc định của trình duyệt nh�
 ## D-238 — Phím tắt và chuyển mục trong chi tiết (2026-11-13)
 
 E mở sửa nội dung, Shift + E mở sửa tên. Desktop có nút ở hai mép và phím ←/→ để chuyển mục theo danh sách đang hiển thị lúc mở chi tiết, gồm bộ lọc và thứ tự từng nhóm. Dừng ở đầu/cuối. Tạm ngưng phím tắt và chuyển mục khi đang chỉnh sửa hoặc có hộp thoại khác mở.
+
+## D-239 — Chuyển mục không chạy lại hiệu ứng mở chi tiết (2026-11-13)
+
+Giữ khung chi tiết và lớp khóa cuộn khi chuyển mục. Nạp lại các trường theo mục mới và đưa nội dung về đầu.

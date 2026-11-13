@@ -131,6 +131,27 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
   const [editingField, setEditingField] = useState<"title" | "content" | null>(null);
   const [dateError, setDateError] = useState(false);
   const [titleError, setTitleError] = useState(false);
+  const [draftItemId, setDraftItemId] = useState(item.id);
+  if (draftItemId !== item.id) {
+    setDraftItemId(item.id);
+    setTitle(item.title);
+    setDescription(item.description ?? "");
+    setDescriptionFormat(item.descriptionFormat ?? null);
+    setStartDate(item.startDate ?? "");
+    setDueDate(item.dueDate ?? "");
+    setProjectId(item.projectId ?? "");
+    setImportant(item.isImportant);
+    setUrgent(item.isUrgent);
+    setEditingField(null);
+    setDateError(false);
+    setTitleError(false);
+  }
+
+  useLayoutEffect(() => {
+    backdropRef.current?.querySelectorAll(".detail-content, .detail-description .detail-read-row")
+      .forEach(element => { element.scrollTop = 0; });
+  }, [item.id]);
+
   const project = projects.find((entry) => entry.id === projectId);
   const closeDetail = () => detailMotionRef.current?.close();
 

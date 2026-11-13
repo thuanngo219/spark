@@ -14,8 +14,10 @@ for (const mode of ["\\", "[", "]"]) {
     await expect(detail).toHaveAccessibleName(titles[0]);
     await expect(detail.getByRole("button", { name: "Mục trước" })).toBeDisabled();
     if (titles.length > 1) {
+      const backdrop = await page.locator(".item-detail-backdrop").elementHandle();
       await page.keyboard.press("ArrowRight");
       await expect(detail).toHaveAccessibleName(titles[1]);
+      expect(await page.locator(".item-detail-backdrop").evaluate((current, original) => current === original, backdrop)).toBe(true);
       await detail.getByRole("button", { name: "Mục trước" }).click();
     } else {
       await expect(detail.getByRole("button", { name: "Mục sau" })).toBeDisabled();

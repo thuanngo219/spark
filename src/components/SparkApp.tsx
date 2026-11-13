@@ -994,7 +994,6 @@ export function SparkApp() {
 
       {editingItem && (
         <ItemEditor
-          key={editingItem.id}
           item={editingItem}
           onPrevious={previousItem ? () => setEditingItem(previousItem) : undefined}
           onNext={nextItem ? () => setEditingItem(nextItem) : undefined}
