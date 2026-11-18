@@ -725,3 +725,7 @@ Mục không có cả ngày bắt đầu lẫn ngày đến hạn đặt biểu 
 ## D-245 — Chiều cao mục một dòng trên mobile
 
 Mục không có ngày dùng chiều cao tối thiểu 44px cho hàng và vùng chạm, gồm nút checkbox và nút hiện khi vuốt.
+
+## D-246 — Mục một dòng trên mobile cao 40px (2026-11-18)
+
+Hàng không có ngày cao tối thiểu 40px. Checkbox trong hàng có vùng chạm 44 × 40px.
