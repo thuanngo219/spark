@@ -12,7 +12,7 @@ for (const width of [390, 700, 1280]) {
     await expect(page.locator(".startup-caption")).toHaveCSS("margin-top", "17px");
     await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
     await page.evaluate(() => document.fonts.ready);
-    await expect(page.locator(".item-list").first()).toHaveCSS("row-gap", width < 700 ? "5px" : "2px");
+    await expect(page.locator(".item-list").first()).toHaveCSS("row-gap", width < 700 ? "0px" : "2px");
     if (width < 700) {
       const row = page.locator(".item-row").filter({ has: page.locator(".item-project-dot:visible") }).filter({ has: page.locator(".checkbox") }).first();
       const geometry = await row.evaluate(element => {

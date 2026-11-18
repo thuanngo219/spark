@@ -713,3 +713,7 @@ Canh tâm checkbox và chấm Danh mục với dòng đầu của tên. Khoảng
 ## D-242 — Khoảng cách danh sách mobile (2026-11-18)
 
 Các mục trong cùng nhóm trên mobile cách nhau 5px, thay cho 15px ở D-241.
+
+## D-243 — Khoảng cách danh sách mobile (2026-11-18)
+
+Các mục trong cùng nhóm trên mobile cách nhau 0px, thay cho 5px ở D-242.
