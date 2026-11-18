@@ -47,6 +47,7 @@
   .project-edit-button { flex: 0 0 44px; width: 44px; height: 44px; margin-right: -10px; }
   .view-actions { display: none; }
   .list-area { padding: 12px 0 calc(148px + env(safe-area-inset-bottom)); }
+  .item-list { row-gap: 15px; }
   .item-group-header { padding-inline: 12px; gap: 5px; }
   .item-group h2 { min-width: 0; padding-inline: 0; }
   .item-sort-controls { gap: 3px; }
@@ -63,21 +64,21 @@
   .swipe-action.urgent.selected svg { fill: currentColor; }
   .swipe-action.delete { color: white; background: var(--coral); }
   .swipe-action.archive { color: white; background: var(--navy-900); }
-  .item-row, .item-row.project-labels-expanded { position: relative; z-index: 1; min-height: 52px; grid-template-columns: 44px 11px minmax(0, 1fr); align-items: start; padding: 0 6px 0 2px; border-radius: 0; background: transparent; touch-action: pan-y; transform: translate3d(var(--swipe-offset, 0), 0, 0); transition: transform var(--motion-duration, 190ms) var(--ease), background var(--motion-duration, 160ms) var(--ease); }
+  .item-row, .item-row.project-labels-expanded { position: relative; z-index: 1; min-height: 52px; --item-title-center: 15.5px; grid-template-columns: 36px 15px minmax(0, 1fr); align-items: start; padding: 0 6px 0 2px; border-radius: 0; background: transparent; touch-action: pan-y; transform: translate3d(var(--swipe-offset, 0), 0, 0); transition: transform var(--motion-duration, 190ms) var(--ease), background var(--motion-duration, 160ms) var(--ease); }
   .swipe-row.is-open .item-row, .swipe-row.is-dragging .item-row { will-change: transform; background: color-mix(in srgb, var(--canvas) 96%, transparent); }
   .swipe-row.is-dragging .item-row { transition: none; }
   .item-row:hover { background: transparent; }
   .checkbox { position: relative; width: 44px; height: 52px; margin-top: 0; border: 0; background: transparent; }
-  .checkbox::before { content: ""; position: absolute; box-sizing: border-box; top: 9px; left: 50%; width: var(--task-checkbox-size); height: var(--task-checkbox-size); border: 1.5px solid var(--checkbox-border); border-radius: 999px; background: transparent; transform: translateX(-50%); }
+  .checkbox::before { content: ""; position: absolute; box-sizing: border-box; top: var(--item-title-center); left: 50%; width: var(--task-checkbox-size); height: var(--task-checkbox-size); border: 1.5px solid var(--checkbox-border); border-radius: 999px; background: transparent; transform: translate(-50%, -50%); }
   .checkbox.checked { background: transparent; }
   .checkbox.checked::before { border-color: var(--task-checked); background: var(--task-checked); }
-  .checkbox svg { position: absolute; z-index: 1; top: 11px; left: 50%; transform: translateX(-50%); }
-  .note-bullet { width: 44px; height: 52px; margin-top: 0; padding-top: 14px; align-items: start; justify-self: center; }
-  .item-project-dot { width: 9px; height: 9px; margin-top: 11px; }
+  .checkbox svg { position: absolute; z-index: 1; top: var(--item-title-center); left: 50%; transform: translate(-50%, -50%); }
+  .note-bullet { width: 44px; height: 52px; margin-top: 0; padding-top: 14px; align-items: start; justify-self: start; }
+  .item-project-dot { width: 9px; height: 9px; margin-top: calc(var(--item-title-center) - 4.5px); justify-self: start; pointer-events: none; }
   .project-dot-spacer { width: 9px; height: 9px; margin-top: 11px; }
   .item-project-chip { display: none; }
   .mobile-project-dot { display: block; }
-  .item-main { min-height: 52px; display: grid; align-content: start; gap: 2px; padding: 5px 4px; }
+  .item-main { min-height: 52px; display: grid; align-content: start; gap: 2px; padding: 5px 4px 5px 0; }
   .item-title-wrap { width: 100%; }
   .item-title { display: block; line-height: var(--leading-ui); }
   .item-meta { min-height: 0; margin-left: 0; justify-content: flex-start; flex-wrap: wrap; gap: 3px 8px; }

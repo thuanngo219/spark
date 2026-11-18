@@ -704,3 +704,8 @@ Giữ khung chi tiết và lớp khóa cuộn khi chuyển mục. Nạp lại c�
 ## D-240 — Kích thước checkbox task (2026-11-18)
 
 Checkbox trong danh sách và màn chi tiết hiển thị 16 × 16px trên desktop và mobile. Dấu tick 12px. Vùng chạm mobile giữ tối thiểu 44px.
+
+
+## D-241 — Canh hàng đầu danh sách mobile (2026-11-18)
+
+Canh tâm checkbox và chấm Danh mục với dòng đầu của tên. Khoảng cách từ checkbox đến chấm và từ chấm đến tên đều là 6px. Các mục trong cùng nhóm cách nhau 15px. Hàng thông tin bên dưới giữ khoảng cách hiện hành.
