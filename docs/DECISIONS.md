@@ -721,3 +721,7 @@ Các mục trong cùng nhóm trên mobile cách nhau 0px, thay cho 5px ở D-242
 ## D-244 — Biểu tượng của mục không có ngày trên mobile (2026-11-18)
 
 Mục không có cả ngày bắt đầu lẫn ngày đến hạn đặt biểu tượng nội dung, Quan Trọng và Ưu tiên ở mép phải dòng tên. Ẩn nhãn ngày trống ở bố cục một dòng.
+
+## D-245 — Chiều cao mục một dòng trên mobile
+
+Mục không có ngày dùng chiều cao tối thiểu 44px cho hàng và vùng chạm, gồm nút checkbox và nút hiện khi vuốt.

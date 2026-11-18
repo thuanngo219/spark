@@ -82,6 +82,8 @@ test("mobile puts undated item icons beside the title", async ({ page }) => {
   await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
   await page.keyboard.press("a");
   const row = page.locator(".item-main").filter({ hasText: "Chốt ba việc quan trọng cho hôm nay" });
+  await expect(row).toHaveCSS("height", "44px");
+  await expect(row.locator("..").locator(".checkbox")).toHaveCSS("height", "44px");
   const title = (await row.locator(".item-title").boundingBox())!;
   const icons = (await row.locator(".item-meta").boundingBox())!;
   const bounds = (await row.boundingBox())!;

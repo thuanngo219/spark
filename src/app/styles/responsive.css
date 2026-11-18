@@ -52,10 +52,11 @@
   .item-group h2 { min-width: 0; padding-inline: 0; }
   .item-sort-controls { gap: 3px; }
   .item-sort-controls select { font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; }
-  .swipe-row { position: relative; min-height: 52px; overflow: hidden; touch-action: pan-y; }
+  .swipe-row { --item-row-height: 52px; position: relative; min-height: var(--item-row-height); overflow: hidden; touch-action: pan-y; }
+  .swipe-row:not(:has(> .item-row > .item-main .item-date:not(.empty))) { --item-row-height: 44px; }
   .swipe-actions { position: absolute; inset: 0 0 0 auto; width: 144px; display: grid; grid-template-columns: repeat(3, 48px); opacity: 0; visibility: hidden; pointer-events: none; }
   .swipe-row.is-open .swipe-actions, .swipe-row.is-dragging .swipe-actions { opacity: 1; visibility: visible; pointer-events: auto; }
-  .swipe-action { min-width: 44px; min-height: 52px; padding: 0; border: 0; display: grid; place-items: center; }
+  .swipe-action { min-width: 44px; min-height: var(--item-row-height); padding: 0; border: 0; display: grid; place-items: center; }
   .swipe-action.important { color: var(--important-ink); background: var(--important-surface, #f7edda); }
   .swipe-action.important.selected { color: var(--important-ink); background: var(--important-selected, #ead39f); }
   .swipe-action.important.selected svg { fill: currentColor; }
@@ -64,21 +65,21 @@
   .swipe-action.urgent.selected svg { fill: currentColor; }
   .swipe-action.delete { color: white; background: var(--coral); }
   .swipe-action.archive { color: white; background: var(--navy-900); }
-  .item-row, .item-row.project-labels-expanded { position: relative; z-index: 1; min-height: 52px; --item-title-center: 15.5px; grid-template-columns: 36px 15px minmax(0, 1fr); align-items: start; padding: 0 6px 0 2px; border-radius: 0; background: transparent; touch-action: pan-y; transform: translate3d(var(--swipe-offset, 0), 0, 0); transition: transform var(--motion-duration, 190ms) var(--ease), background var(--motion-duration, 160ms) var(--ease); }
+  .item-row, .item-row.project-labels-expanded { position: relative; z-index: 1; min-height: var(--item-row-height); --item-title-center: 15.5px; grid-template-columns: 36px 15px minmax(0, 1fr); align-items: start; padding: 0 6px 0 2px; border-radius: 0; background: transparent; touch-action: pan-y; transform: translate3d(var(--swipe-offset, 0), 0, 0); transition: transform var(--motion-duration, 190ms) var(--ease), background var(--motion-duration, 160ms) var(--ease); }
   .swipe-row.is-open .item-row, .swipe-row.is-dragging .item-row { will-change: transform; background: color-mix(in srgb, var(--canvas) 96%, transparent); }
   .swipe-row.is-dragging .item-row { transition: none; }
   .item-row:hover { background: transparent; }
-  .checkbox { position: relative; width: 44px; height: 52px; margin-top: 0; border: 0; background: transparent; }
+  .checkbox { position: relative; width: 44px; height: var(--item-row-height); margin-top: 0; border: 0; background: transparent; }
   .checkbox::before { content: ""; position: absolute; box-sizing: border-box; top: var(--item-title-center); left: 50%; width: var(--task-checkbox-size); height: var(--task-checkbox-size); border: 1.5px solid var(--checkbox-border); border-radius: 999px; background: transparent; transform: translate(-50%, -50%); }
   .checkbox.checked { background: transparent; }
   .checkbox.checked::before { border-color: var(--task-checked); background: var(--task-checked); }
   .checkbox svg { position: absolute; z-index: 1; top: var(--item-title-center); left: 50%; transform: translate(-50%, -50%); }
-  .note-bullet { width: 44px; height: 52px; margin-top: 0; padding-top: 14px; align-items: start; justify-self: start; }
+  .note-bullet { width: 44px; height: var(--item-row-height); margin-top: 0; padding-top: 14px; align-items: start; justify-self: start; }
   .item-project-dot { width: 9px; height: 9px; margin-top: calc(var(--item-title-center) - 4.5px); justify-self: start; pointer-events: none; }
   .project-dot-spacer { width: 9px; height: 9px; margin-top: 11px; }
   .item-project-chip { display: none; }
   .mobile-project-dot { display: block; }
-  .item-main { min-height: 52px; display: grid; align-content: start; gap: 2px; padding: 5px 4px 5px 0; }
+  .item-main { min-height: var(--item-row-height); display: grid; align-content: start; gap: 2px; padding: 5px 4px 5px 0; }
   .item-title-wrap { width: 100%; }
   .item-title { display: block; line-height: var(--leading-ui); }
   .item-meta { min-height: 0; margin-left: 0; justify-content: flex-start; flex-wrap: wrap; gap: 3px 8px; }
