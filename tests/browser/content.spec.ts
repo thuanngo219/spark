@@ -240,7 +240,7 @@ test("detail task checkbox saves drafts and completion without striking the titl
   const checkbox = page.locator(".detail-title-row").getByRole("checkbox");
   await expect(checkbox).not.toBeChecked();
   const target = await checkbox.boundingBox();
-  expect(target!.width).toBe(19); expect(target!.height).toBe(28);
+  expect(target!.width).toBe(16); expect(target!.height).toBe(28);
   expect(await checkbox.evaluate(e => getComputedStyle(e, "::before").width)).toBe("44px");
   expect(await checkbox.evaluate(e => getComputedStyle(e, "::before").height)).toBe("44px");
   await page.getByRole("button", { name: "Sửa tên", exact: true }).click();

@@ -61,7 +61,7 @@
 .detail-inline-editor { display: block; }
 .detail-title-row { display: flex; align-items: center; gap: 10px; min-height: 28px; }
 .detail-title-marker { position: relative; flex: 0 0 auto; height: 28px; padding: 0; border: 0; background: transparent; display: grid; place-items: center; }
-.detail-status-toggle::before { content: ""; position: absolute; inset: -8px -10px -8px -15px; }
+.detail-status-toggle::before { content: ""; position: absolute; inset: -8px -11px -8px -17px; }
 .detail-title-row > input { flex: 1; }
 .detail-title-row .detail-edit-actions { flex: 0 0 auto; }
 .detail-inline-editor input { width: 100%; min-width: 0; border: 0; border-bottom: 1px solid var(--field-border); border-radius: 0; background: transparent; padding: 1px 0; color: var(--ink); font: inherit; height: 28px; min-height: 28px; font-size: var(--text-title); font-weight: 700; line-height: var(--leading-ui); outline: none; box-shadow: none; }

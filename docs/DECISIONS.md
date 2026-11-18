@@ -699,3 +699,8 @@ E mở sửa nội dung, Shift + E mở sửa tên. Desktop có nút ở hai mé
 ## D-239 — Chuyển mục không chạy lại hiệu ứng mở chi tiết (2026-11-13)
 
 Giữ khung chi tiết và lớp khóa cuộn khi chuyển mục. Nạp lại các trường theo mục mới và đưa nội dung về đầu.
+
+
+## D-240 — Kích thước checkbox task (2026-11-18)
+
+Checkbox trong danh sách và màn chi tiết hiển thị 16 × 16px trên desktop và mobile. Dấu tick 12px. Vùng chạm mobile giữ tối thiểu 44px.

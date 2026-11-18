@@ -17,7 +17,7 @@
 .item-row.project-labels-expanded { grid-template-columns: 24px calc(var(--project-chip-width, 80px) + 12.5px) minmax(0, 1fr) auto; }
 .item-row.project-labels-expanded > .item-main { padding-left: 0; }
 .item-row:hover { background: color-mix(in srgb, var(--surface) 66%, transparent); }
-.checkbox, .detail-status-box { width: 19px; height: 19px; border: 1.5px solid var(--checkbox-border); border-radius: 999px; background: transparent; display: grid; place-items: center; color: white; padding: 0; transition: background-color var(--motion-duration, var(--control-color-duration, 180ms)) var(--ease), border-color var(--motion-duration, var(--control-color-duration, 180ms)) var(--ease), color var(--motion-duration, var(--control-color-duration, 180ms)) var(--ease); }
+.checkbox, .detail-status-box { --task-checkbox-size: 16px; width: var(--task-checkbox-size); height: var(--task-checkbox-size); border: 1.5px solid var(--checkbox-border); border-radius: 999px; background: transparent; display: grid; place-items: center; color: white; padding: 0; transition: background-color var(--motion-duration, var(--control-color-duration, 180ms)) var(--ease), border-color var(--motion-duration, var(--control-color-duration, 180ms)) var(--ease), color var(--motion-duration, var(--control-color-duration, 180ms)) var(--ease); }
 .checkbox { margin-top: 3px; }
 .checkbox:hover, .detail-status-toggle:hover .detail-status-box { border-color: var(--task-checked); }
 .checkbox.checked, .detail-status-box.checked { background: var(--task-checked); border-color: var(--task-checked); }

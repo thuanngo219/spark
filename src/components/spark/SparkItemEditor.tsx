@@ -230,7 +230,7 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
       }}
     >
       <span className={`detail-status-box ${item.completedAt ? "checked" : ""}`} aria-hidden="true">
-        {item.completedAt && <Icon name="check" size={15} />}
+        {item.completedAt && <Icon name="check" size={12} />}
       </span>
     </button>
   ) : (

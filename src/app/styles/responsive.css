@@ -68,10 +68,10 @@
   .swipe-row.is-dragging .item-row { transition: none; }
   .item-row:hover { background: transparent; }
   .checkbox { position: relative; width: 44px; height: 52px; margin-top: 0; border: 0; background: transparent; }
-  .checkbox::before { content: ""; position: absolute; top: 7px; left: 50%; width: 19px; height: 19px; border: 1.5px solid var(--checkbox-border); border-radius: 999px; background: transparent; transform: translateX(-50%); }
+  .checkbox::before { content: ""; position: absolute; box-sizing: border-box; top: 9px; left: 50%; width: var(--task-checkbox-size); height: var(--task-checkbox-size); border: 1.5px solid var(--checkbox-border); border-radius: 999px; background: transparent; transform: translateX(-50%); }
   .checkbox.checked { background: transparent; }
   .checkbox.checked::before { border-color: var(--task-checked); background: var(--task-checked); }
-  .checkbox svg { position: absolute; z-index: 1; top: 9px; left: 50%; transform: translateX(-50%); }
+  .checkbox svg { position: absolute; z-index: 1; top: 11px; left: 50%; transform: translateX(-50%); }
   .note-bullet { width: 44px; height: 52px; margin-top: 0; padding-top: 14px; align-items: start; justify-self: center; }
   .item-project-dot { width: 9px; height: 9px; margin-top: 11px; }
   .project-dot-spacer { width: 9px; height: 9px; margin-top: 11px; }

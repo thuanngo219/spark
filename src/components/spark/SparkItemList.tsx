@@ -320,7 +320,7 @@ const SwipeableItemRow = memo(function SwipeableItemRow({
       >
         {item.type === "task" ? (
           <button className={`checkbox ${item.completedAt ? "checked" : ""}`} onClick={() => onComplete(item)} aria-label={item.completedAt ? `Đánh dấu chưa xong: ${item.title}` : `Hoàn thành: ${item.title}`}>
-            {item.completedAt && <Icon name="check" size={15} />}
+            {item.completedAt && <Icon name="check" size={12} />}
           </button>
         ) : (
           <button

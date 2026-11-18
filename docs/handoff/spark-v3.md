@@ -1,6 +1,6 @@
 # Spark v3 — bàn giao hiện hành
 
-Cập nhật 2026-11-13. Chỉ giữ quy tắc đang có hiệu lực. Lịch sử thay đổi tra Git và docs/DECISIONS.md; không dùng thông số cũ trong các mục lịch sử làm trạng thái hiện tại.
+Cập nhật 2026-11-18. Chỉ giữ quy tắc đang có hiệu lực. Lịch sử thay đổi tra Git và docs/DECISIONS.md; không dùng thông số cũ trong các mục lịch sử làm trạng thái hiện tại.
 
 ## Production và kiểm chứng
 
@@ -56,6 +56,7 @@ Giữ các quy tắc mobile đã duyệt: GHI CHÚ, ← QUAY LẠI; touch44px m�
 ## Phạm vi sản phẩm đang chạy
 
 - Công cụ cá nhân, tiếng Việt, giao diện Compact Canvas. Task có checkbox và trạng thái hoàn thành; note dùng dấu gạch ngang, không có trạng thái hoàn thành. Cả hai có Tên, Nội Dung tùy chọn, ngày bắt đầu/đến hạn, danh mục, Quan Trọng và Ưu tiên độc lập.
+- Checkbox task hiển thị 16 × 16px trong danh sách và chi tiết trên desktop lẫn mobile. Vùng chạm mobile tối thiểu 44px.
 - Tên tối đa 100 ký tự. Nội Dung tối đa 4.000 Unicode code points, chỉ hỗ trợ đậm, nghiêng, gạch chân và phím tắt ⌘/Ctrl+B/I/U. Dữ liệu lưu là văn bản thuần cùng text runs `description_format`, không lưu HTML. Bullet/numbered list đã được gỡ.
 - Ngày là date-only theo `Asia/Ho_Chi_Minh`, tuần bắt đầu Thứ Hai. Quick-add không tự đặt ngày bắt đầu, trừ task mới được tạo trong view Hôm nay. Ngày sai hoặc khoảng ngày ngược không được lưu. Hôm nay, Sắp tới, Theo ngày và Tất cả dùng quy tắc lọc/nhóm/sort trong Product Brief; filter Ẩn/Hiện note chỉ thay đổi hiển thị.
 - Danh mục có sáu màu preset, màu tùy chọn, sao, thứ tự thủ công, lưu trữ/khôi phục/xóa. Violet đã được bỏ và project cũ dùng Violet được chuyển sang Amber; Deep Purple vẫn được giữ. Quan Trọng dùng Amber, Ưu tiên dùng Coral nhất quán ở danh sách và chi tiết.
