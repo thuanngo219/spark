@@ -47,7 +47,7 @@
   .project-edit-button { flex: 0 0 44px; width: 44px; height: 44px; margin-right: -10px; }
   .view-actions { display: none; }
   .list-area { padding: 12px 0 calc(148px + env(safe-area-inset-bottom)); }
-  .item-list { row-gap: 15px; }
+  .item-list { row-gap: 5px; }
   .item-group-header { padding-inline: 12px; gap: 5px; }
   .item-group h2 { min-width: 0; padding-inline: 0; }
   .item-sort-controls { gap: 3px; }

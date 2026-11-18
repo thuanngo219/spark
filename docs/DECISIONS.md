@@ -709,3 +709,7 @@ Checkbox trong danh sách và màn chi tiết hiển thị 16 × 16px trên desk
 ## D-241 — Canh hàng đầu danh sách mobile (2026-11-18)
 
 Canh tâm checkbox và chấm Danh mục với dòng đầu của tên. Khoảng cách từ checkbox đến chấm và từ chấm đến tên đều là 6px. Các mục trong cùng nhóm cách nhau 15px. Hàng thông tin bên dưới giữ khoảng cách hiện hành.
+
+## D-242 — Khoảng cách danh sách mobile (2026-11-18)
+
+Các mục trong cùng nhóm trên mobile cách nhau 5px, thay cho 15px ở D-241.
