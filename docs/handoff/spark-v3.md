@@ -37,7 +37,7 @@ Inter4.1 WOFF2 thường/nghiêng trong src/app/fonts/, next/font/local; root100
 
 - Font Inter 4.1 thường/nghiêng nhúng cùng origin; cỡ chữ px, weight400/700. Desktop/mobile: list14/15px, menu14/15px, support14/15px, metadata ngày/danh mục12/13px; Nội dung15px, tên chi tiết18px, tên quick-add16px, dialog24px cả hai. Label10px/700/uppercase. Heading desktop38–56px/mobile30px, compact19–28px/21px; line-height1.2/1.4/1.6 theo vai trò.
 - Khoảng cách giữa các mục là 2px trên desktop và 0px trên mobile; nhãn–nội dung8px. Toolbar chi tiết desktop cao44px, dưới hàng nhãn8px, cách text15px; editor mobile giữ hàng nhãn–toolbar2px. Caption loading cách progress17px.
-- Trên mobile, mục không có ngày bắt đầu và ngày đến hạn hiển thị các biểu tượng ở mép phải dòng tên và cao tối thiểu 36px. Mục có ít nhất một ngày giữ hàng thông tin bên dưới.
+- Trên mobile, mục không có ngày bắt đầu và ngày đến hạn hiển thị các biểu tượng ở mép phải dòng tên và cao tối thiểu 38px. Mục có ít nhất một ngày giữ hàng thông tin bên dưới.
 - Sidebar chỉ có sao ở hàng danh mục, không nút ... hoặc tiêu đề Cần lưu ý. Hover/selected phủ toàn hàng; sao có đệm phải8px. Desktop Tất cả/Quan Trọng liền nhau như item thường; icon giữ tọa độ khi expand/compact. Divider trước Đã lưu trữ mảnh1px, cách hàng danh mục trên10px.
 - Nhãn danh mục trong danh sách desktop hiển thị đầy đủ một dòng, căn trái, chung chiều rộng theo tên dài nhất đang render, đo font thực sau fonts.ready; gap10px đến nội dung. Không cap35%/ellipsis; tên quá dài có thể cần cuộn ngang. Khi thu gọn dot căn giữa dọc item.
 - Sửa danh mục: Yêu thích/Lưu trữ/Xóa một hàng pill, cách vòng màu10px. Hủy/Lưu hàng dưới; Hủy nền xám nhẹ, không nút X ở header. Có divider cách hai nút25px. Mobile toàn màn hình: đáy nút cách mép dưới50px khi bàn phím đóng,16px khi mở. Backdrop kín layout viewport; form theo visualViewport, khóa cuộn/inert nền và chặn overscroll ngoài form.
@@ -57,7 +57,7 @@ Giữ các quy tắc mobile đã duyệt: GHI CHÚ, ← QUAY LẠI; touch44px m�
 ## Phạm vi sản phẩm đang chạy
 
 - Công cụ cá nhân, tiếng Việt, giao diện Compact Canvas. Task có checkbox và trạng thái hoàn thành; note dùng dấu gạch ngang, không có trạng thái hoàn thành. Cả hai có Tên, Nội Dung tùy chọn, ngày bắt đầu/đến hạn, danh mục, Quan Trọng và Ưu tiên độc lập.
-- Checkbox task hiển thị 16 × 16px trong danh sách và chi tiết trên desktop lẫn mobile. Vùng chạm mobile tối thiểu 44px, riêng hàng không có ngày rộng 44px và cao 36px.
+- Checkbox task hiển thị 16 × 16px trong danh sách và chi tiết trên desktop lẫn mobile. Vùng chạm mobile tối thiểu 44px, riêng hàng không có ngày rộng 44px và cao 38px.
 - Tên tối đa 100 ký tự. Nội Dung tối đa 4.000 Unicode code points, chỉ hỗ trợ đậm, nghiêng, gạch chân và phím tắt ⌘/Ctrl+B/I/U. Dữ liệu lưu là văn bản thuần cùng text runs `description_format`, không lưu HTML. Bullet/numbered list đã được gỡ.
 - Ngày là date-only theo `Asia/Ho_Chi_Minh`, tuần bắt đầu Thứ Hai. Quick-add không tự đặt ngày bắt đầu, trừ task mới được tạo trong view Hôm nay. Ngày sai hoặc khoảng ngày ngược không được lưu. Hôm nay, Sắp tới, Theo ngày và Tất cả dùng quy tắc lọc/nhóm/sort trong Product Brief; filter Ẩn/Hiện note chỉ thay đổi hiển thị.
 - Danh mục có sáu màu preset, màu tùy chọn, sao, thứ tự thủ công, lưu trữ/khôi phục/xóa. Violet đã được bỏ và project cũ dùng Violet được chuyển sang Amber; Deep Purple vẫn được giữ. Quan Trọng dùng Amber, Ưu tiên dùng Coral nhất quán ở danh sách và chi tiết.
