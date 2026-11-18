@@ -83,6 +83,13 @@
   .item-title { display: block; line-height: var(--leading-ui); }
   .item-meta { min-height: 0; margin-left: 0; justify-content: flex-start; flex-wrap: wrap; gap: 3px 8px; }
   .item-meta:empty { display: none; }
+  .item-main:not(:has(.item-date:not(.empty))) {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 8px;
+  }
+  .item-main:not(:has(.item-date:not(.empty))) .item-meta { flex-wrap: nowrap; justify-content: flex-end; }
+  .item-main:not(:has(.item-date:not(.empty))) .item-date.empty { display: none; }
   .item-flags { display: none; }
   .item-state-icons { display: flex; align-items: center; gap: 3px; }
   .item-state-icons:empty { display: none; }

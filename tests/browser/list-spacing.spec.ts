@@ -70,3 +70,21 @@ for (const width of [390, 700, 1280]) {
     if (width < 700) expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
 }
+
+test("mobile puts undated item icons beside the title", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.addInitScript(() => {
+    const data = JSON.parse(localStorage.getItem("spark:data:v1")!);
+    Object.assign(data.items[0], { startDate: null, dueDate: null });
+    localStorage.setItem("spark:data:v1", JSON.stringify(data));
+  });
+  await page.goto("/");
+  await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
+  await page.keyboard.press("a");
+  const row = page.locator(".item-main").filter({ hasText: "Chốt ba việc quan trọng cho hôm nay" });
+  const title = (await row.locator(".item-title").boundingBox())!;
+  const icons = (await row.locator(".item-meta").boundingBox())!;
+  const bounds = (await row.boundingBox())!;
+  expect(icons.y + icons.height / 2).toBeCloseTo(title.y + title.height / 2, 1);
+  expect(icons.x + icons.width).toBeCloseTo(bounds.x + bounds.width - 4, 1);
+});

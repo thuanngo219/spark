@@ -717,3 +717,7 @@ Các mục trong cùng nhóm trên mobile cách nhau 5px, thay cho 15px ở D-24
 ## D-243 — Khoảng cách danh sách mobile (2026-11-18)
 
 Các mục trong cùng nhóm trên mobile cách nhau 0px, thay cho 5px ở D-242.
+
+## D-244 — Biểu tượng của mục không có ngày trên mobile (2026-11-18)
+
+Mục không có cả ngày bắt đầu lẫn ngày đến hạn đặt biểu tượng nội dung, Quan Trọng và Ưu tiên ở mép phải dòng tên. Ẩn nhãn ngày trống ở bố cục một dòng.
