@@ -53,7 +53,7 @@
   .item-sort-controls { gap: 3px; }
   .item-sort-controls select { font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; }
   .swipe-row { --item-row-height: 52px; position: relative; min-height: var(--item-row-height); overflow: hidden; touch-action: pan-y; }
-  .swipe-row:not(:has(> .item-row > .item-main .item-date:not(.empty))) { --item-row-height: 40px; }
+  .swipe-row:not(:has(> .item-row > .item-main .item-date:not(.empty))) { --item-row-height: 36px; }
   .swipe-actions { position: absolute; inset: 0 0 0 auto; width: 144px; display: grid; grid-template-columns: repeat(3, 48px); opacity: 0; visibility: hidden; pointer-events: none; }
   .swipe-row.is-open .swipe-actions, .swipe-row.is-dragging .swipe-actions { opacity: 1; visibility: visible; pointer-events: auto; }
   .swipe-action { min-width: 44px; min-height: var(--item-row-height); padding: 0; border: 0; display: grid; place-items: center; }
