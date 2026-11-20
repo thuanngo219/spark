@@ -737,3 +737,8 @@ Hàng không có ngày cao tối thiểu 36px. Checkbox trong hàng có vùng ch
 ## D-248 — Chiều cao mục một dòng trên mobile (2026-11-18)
 
 Mục không có ngày cao tối thiểu 38px. Vùng chạm checkbox trong hàng là 44 × 38px.
+
+
+## D-249 — Phím chuyển Danh mục (2026-11-20)
+
+Nhấn F rồi 1–9 trong vòng 2 giây để mở Danh mục theo thứ tự sidebar. Phím số riêng lẻ không chuyển mục. Chuỗi áp dụng ngoài vùng nhập và hộp thoại, hủy khi nhấn phím khác hoặc đổi focus.

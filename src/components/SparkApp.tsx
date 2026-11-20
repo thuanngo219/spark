@@ -231,8 +231,33 @@ export function SparkApp() {
   }, [attentionOpen, projectsOpen]);
 
   useEffect(() => {
+    let categoryShortcutUntil = 0;
+    const cancelCategoryShortcut = () => { categoryShortcutUntil = 0; };
     function onKeyDown(event: KeyboardEvent) {
-      if (startupActive || event.isComposing || isTypingTarget(event.target)) return;
+      if (startupActive || event.isComposing || isTypingTarget(event.target)) {
+        cancelCategoryShortcut();
+        return;
+      }
+      const categoryShortcutsAllowed = !editingItem && !quickAddOpen && !projectEditor &&
+        !projectArchiveOpen && !helpOpen && !syncDialogOpen && !deleteConfirmation;
+      const plainKey = !event.ctrlKey && !event.metaKey && !event.altKey;
+      const projectIndex = categoryShortcutsAllowed && plainKey && !event.repeat &&
+        Date.now() < categoryShortcutUntil ? resolveProjectShortcut(event.key) : null;
+      if (projectIndex !== null) {
+        cancelCategoryShortcut();
+        const project = orderProjectsForSidebar(
+          (dataRef.current?.projects ?? []).filter(project => !project.archivedAt),
+        )[projectIndex];
+        event.preventDefault();
+        if (project) setView({ type: "project", projectId: project.id });
+        return;
+      }
+      if (!event.repeat) cancelCategoryShortcut();
+      if (categoryShortcutsAllowed && plainKey && event.key.toLowerCase() === "f") {
+        if (!event.repeat) categoryShortcutUntil = Date.now() + 2000;
+        event.preventDefault();
+        return;
+      }
       const standaloneShortcut = resolveStandaloneShortcut(event.key, {
         ctrlKey: event.ctrlKey,
         metaKey: event.metaKey,
@@ -303,20 +328,17 @@ export function SparkApp() {
         setView(shortcutView);
         return;
       }
-      const projectIndex = resolveProjectShortcut(event.key);
-      if (projectIndex !== null) {
-        const shortcutProjects = orderProjectsForSidebar(
-          (dataRef.current?.projects ?? []).filter((project) => !project.archivedAt),
-        );
-        const project = shortcutProjects[projectIndex];
-        if (!project) return;
-        event.preventDefault();
-        setView({ type: "project", projectId: project.id });
-      }
+
     }
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [startupActive, editingItem, helpOpen, mobileNav, projectEditor, projectArchiveOpen, syncDialogOpen, today, dataRef]);
+    window.addEventListener("blur", cancelCategoryShortcut);
+    document.addEventListener("focusin", cancelCategoryShortcut);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("blur", cancelCategoryShortcut);
+      document.removeEventListener("focusin", cancelCategoryShortcut);
+    };
+  }, [startupActive, editingItem, quickAddOpen, deleteConfirmation, helpOpen, mobileNav, projectEditor, projectArchiveOpen, syncDialogOpen, today, dataRef]);
 
   const allProjects = useMemo(() => data?.projects ?? [], [data]);
   const projects = useMemo(

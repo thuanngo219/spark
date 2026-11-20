@@ -1,5 +1,7 @@
 # Spark v3 — bàn giao hiện hành
 
+Phím chuyển Danh mục hiện hành là F rồi 1–9 trong vòng 2 giây. Phím khác, đổi focus hoặc mở hộp thoại sẽ hủy chuỗi đang chờ.
+
 Cập nhật 2026-11-18. Chỉ giữ quy tắc đang có hiệu lực. Lịch sử thay đổi tra Git và docs/DECISIONS.md; không dùng thông số cũ trong các mục lịch sử làm trạng thái hiện tại.
 
 ## Production và kiểm chứng

@@ -1,0 +1,30 @@
+import { test, expect } from "./fixtures";
+
+test("category navigation requires F before the number", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("region", { name: "Khởi động Spark" })).toBeHidden();
+  const heading = page.locator(".view-header h1");
+  await expect(heading).toHaveText("Hôm nay");
+  await page.keyboard.press("1");
+  await expect(heading).toHaveText("Hôm nay");
+  await page.keyboard.press("f");
+  await page.keyboard.press("1");
+  await expect(heading).toHaveText("Công việc");
+  await page.keyboard.press("2");
+  await expect(heading).toHaveText("Công việc");
+  await page.keyboard.press("f");
+  await page.keyboard.press("2");
+  await expect(heading).toHaveText("Cá nhân");
+  await page.keyboard.press("f");
+  await page.keyboard.press("t");
+  await page.keyboard.press("1");
+  await expect(heading).toHaveText("Hôm nay");
+  await page.keyboard.press("f");
+  await page.getByRole("button", { name: "Thêm công việc", exact: true }).click();
+  const input = page.getByRole("textbox", { name: "Tên mục", exact: true });
+  await input.fill("f123");
+  await expect(input).toHaveValue("f123");
+  await page.getByRole("button", { name: "Hủy", exact: true }).click();
+  await page.keyboard.press("1");
+  await expect(heading).toHaveText("Hôm nay");
+});
