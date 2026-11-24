@@ -754,3 +754,8 @@ Dùng xác nhận của trình duyệt. Khi tải lại/đóng trang, đăng ký
 ## D-251 — Xác nhận bỏ nháp bằng hộp thoại Spark (2026-11-24)
 
 Dùng hộp thoại của Spark cho mọi thao tác bỏ nháp trong app, với hai nút “Tiếp tục sửa” và “Bỏ thay đổi”. Mặc định focus “Tiếp tục sửa”; Escape giữ bản nháp. Hộp thoại chặn thao tác nền và giữ focus bên trong, dùng màu/chữ theo theme. Khi vuốt mở xác nhận, màn phía sau trở về vị trí ban đầu và vẫn thao tác được nếu chọn tiếp tục. Không dùng window.confirm trong luồng này. Riêng tải lại/đóng tab vẫn dùng beforeunload và cảnh báo do trình duyệt kiểm soát.
+
+
+## D-252 — Nội dung và nút xác nhận chưa lưu (2026-11-24)
+
+Hộp thoại dùng tiêu đề “Nội dung chưa lưu?” và câu “Bạn có thay đổi chưa được lưu. Bạn có thật sự muốn thoát?”. Hai nút giữ nhãn “Tiếp tục sửa” và “Bỏ thay đổi”, thêm icon edit/log-out 17px trước chữ, cách 6px. Nút tiếp tục dùng hover neutral của text-button; nút bỏ thay đổi dùng hover Coral/chữ trắng cùng nút thao tác nguy hiểm của hệ thống. Desktop giữ chuyển màu 220ms và focus bàn phím hiện hành.

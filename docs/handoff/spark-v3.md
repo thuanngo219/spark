@@ -6,10 +6,10 @@ Cập nhật 2026-11-24. Chỉ giữ quy tắc đang có hiệu lực. Lịch s�
 
 ## Production và kiểm chứng
 
-- D-251: lint, typecheck, 176 test logic, build và 23 ca trình duyệt local đạt, gồm 320/390/1280px, sáng/tối, xác nhận trong app, vòng focus/khôi phục focus, vuốt từ chối/đồng ý, tải lại trang và chỉ đổi định dạng chữ. Kiểm tra dùng Chrome; native iPhone cần chủ dự án kiểm tra trực tiếp.
+- D-252: lint, typecheck, 176 test logic, build và 10 ca trình duyệt local đạt ở 390/1280px, gồm copy mới, icon, hover desktop, xác nhận trong app, vòng focus/khôi phục focus, vuốt từ chối/đồng ý, tải lại trang và chỉ đổi định dạng chữ. Kiểm tra dùng Chrome; native iPhone cần chủ dự án kiểm tra trực tiếp.
 
 - Domain https://spark.thuanngo.com; Vercel project spark (`prj_mpTXdTL5cUsrpbT40lw7fmBt8NZM`), team Thuan Ngo (`team_CDEqBJfEqWiriY02pfrXzqMX`), nhánh main.
-- Bản ứng dụng hiện hành: D-251 (2026-11-24), bảo vệ thay đổi chưa lưu. Đối chiếu SHA và alias của bản phát hành trên Vercel với commit triển khai, không dùng SHA cũ của D-239 làm trạng thái hiện tại.
+- Bản ứng dụng hiện hành: D-252 (2026-11-24), bảo vệ thay đổi chưa lưu. Đối chiếu SHA và alias của bản phát hành trên Vercel với commit triển khai, không dùng SHA cũ của D-239 làm trạng thái hiện tại.
 - D-238: 9 ca kiểm tra production cho phím tắt, chuyển mục và bảng trợ giúp đều đạt. D-239: lint, typecheck, 176 test logic, build và 5 ca trình duyệt local đạt, gồm bộ chọn ở 390px. Ba ca kiểm tra production cho Tất cả, Chỉ ghi chú và Chỉ task đều đạt.
 - Chủ dự án xác nhận bản sửa lỗi giật khi chuyển mục đã ổn ngày 2026-11-13.
 - Chủ dự án xác nhận bản cập nhật nhãn và bộ chọn đã ổn ngày 2026-11-09.
@@ -39,6 +39,8 @@ Inter4.1 WOFF2 thường/nghiêng trong src/app/fonts/, next/font/local; root100
 
 - Khi quick-add hoặc trình sửa tên/Nội dung có thay đổi chưa lưu, Hủy/X, đóng/quay lại, bấm nền desktop hoặc vuốt mép trái mobile phải hỏi xác nhận trước khi bỏ nháp. Từ chối thoát giữ nguyên chữ, định dạng và khả năng thao tác; đồng ý mới hủy. Quick-add theo dõi cả loại task/note, ngày và Danh mục. Escape trong editor chỉ hủy phần đang sửa sau xác nhận, không đóng tiếp màn chi tiết trong cùng lần nhấn. Không hỏi khi chưa thay đổi hoặc đã lưu thành công. Thay đổi metadata chi tiết vẫn tự lưu theo hành vi hiện hành.
 - Dùng hộp thoại của Spark cho mọi thao tác bỏ nháp trong app, với hai nút “Tiếp tục sửa” và “Bỏ thay đổi”. Mặc định focus “Tiếp tục sửa”; Escape giữ bản nháp. Hộp thoại chặn thao tác nền và giữ focus bên trong, dùng màu/chữ theo theme. Khi vuốt mở xác nhận, màn phía sau trở về vị trí ban đầu và vẫn thao tác được nếu chọn tiếp tục. Không dùng window.confirm trong luồng này. Riêng tải lại/đóng tab vẫn dùng beforeunload và cảnh báo do trình duyệt kiểm soát.
+
+Hộp thoại dùng tiêu đề “Nội dung chưa lưu?” và câu “Bạn có thay đổi chưa được lưu. Bạn có thật sự muốn thoát?”. Hai nút giữ nhãn “Tiếp tục sửa” và “Bỏ thay đổi”, thêm icon edit/log-out 17px trước chữ, cách 6px. Nút tiếp tục dùng hover neutral của text-button; nút bỏ thay đổi dùng hover Coral/chữ trắng cùng nút thao tác nguy hiểm của hệ thống. Desktop giữ chuyển màu 220ms và focus bàn phím hiện hành.
 
 - Chi tiết task/note có E để sửa nội dung, Shift + E để sửa tên. Desktop dùng nút hai mép hoặc ←/→ để đi theo thứ tự danh sách đã lọc lúc mở chi tiết. Dừng ở đầu/cuối và tạm ngưng chuyển mục khi sửa. Khung chi tiết và lớp khóa cuộn được giữ khi chuyển mục, nên hiệu ứng mở màn chỉ chạy lúc mở chi tiết. Nội dung mục mới bắt đầu từ đầu vùng cuộn.
 

@@ -83,7 +83,7 @@
 .detail-item-actions { margin-left: auto; display: flex; align-items: center; gap: 7px; }
 .detail-meta-button.archive { color: var(--link); }
 .detail-meta-button.delete { color: var(--urgent-ink); border-color: rgba(217,119,106,.38); background: rgba(217,119,106,.08); }
-.detail-meta-button.delete:hover { color: white; border-color: var(--urgent-ink); background: var(--coral); }
+.detail-meta-button.delete:hover, .delete-button:hover { color: white; border-color: var(--urgent-ink); background: var(--coral); }
 .detail-meta-danger-separator { width: 1px; min-height: 28px; background: var(--line); }
 .confirm-delete-backdrop { z-index: 100; }
 .confirm-delete-sheet { align-self: center; width: min(440px, 100%); }

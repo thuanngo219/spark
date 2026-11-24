@@ -1,5 +1,6 @@
 "use client";
 
+import { Icon } from "@/components/ui/Icon";
 import { createPortal } from "react-dom";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, useId } from "react";
 
@@ -64,11 +65,11 @@ function DiscardChangesDialog({ onRespond }: { onRespond: (discard: boolean) => 
           else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
         }
       }}>
-      <div className="editor-header"><h2 id={titleId}>Bỏ thay đổi chưa lưu?</h2></div>
-      <p id={descriptionId}>Bạn có thay đổi chưa lưu. Bạn muốn tiếp tục chỉnh sửa hay bỏ các thay đổi này?</p>
+      <div className="editor-header"><h2 id={titleId}>Nội dung chưa lưu?</h2></div>
+      <p id={descriptionId}>Bạn có thay đổi chưa được lưu. Bạn có thật sự muốn thoát?</p>
       <div className="editor-actions">
-        <button type="button" className="text-button" autoFocus onClick={() => choose(false)}>Tiếp tục sửa</button>
-        <button type="button" className="delete-button" onClick={() => choose(true)}>Bỏ thay đổi</button>
+        <button type="button" className="text-button" autoFocus onClick={() => choose(false)}><Icon name="edit" size={17} />Tiếp tục sửa</button>
+        <button type="button" className="delete-button" onClick={() => choose(true)}><Icon name="log-out" size={17} />Bỏ thay đổi</button>
       </div>
     </dialog>, document.body,
   );
