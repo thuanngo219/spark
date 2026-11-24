@@ -1,9 +1,10 @@
 // Native browser motion only; shared CSS tokens control duration and easing.
-export function installDetailMotion(backdrop: HTMLElement, onClose: () => void, canClose: () => boolean = () => true) {
+export function installDetailMotion(backdrop: HTMLElement, onClose: () => void, canClose: () => boolean | Promise<boolean> = () => true) {
   const mobile = window.matchMedia("(max-width: 699px)");
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
   let animation: Animation | null = null;
   let closing = false;
+  let confirming = false;
   let destroyed = false;
   let gesture: { x: number; y: number; time: number; offset: number; claimed: boolean } | null = null;
 
@@ -29,9 +30,14 @@ export function installDetailMotion(backdrop: HTMLElement, onClose: () => void, 
       finish?.();
     }, () => undefined);
   };
-  const close = () => {
-    if (closing || destroyed) return;
-    if (!canClose()) { settle(0); return; }
+  const close = async () => {
+    if (closing || confirming || destroyed) return;
+    confirming = true;
+    // Return a claimed swipe to its resting position while confirmation is open.
+    settle(0);
+    const allowed = await canClose();
+    confirming = false;
+    if (!allowed || destroyed) return;
     closing = true;
     if (!mobile.matches) { onClose(); return; }
     gesture = null;
@@ -43,7 +49,7 @@ export function installDetailMotion(backdrop: HTMLElement, onClose: () => void, 
   };
   const start = (event: TouchEvent) => {
     cancelGesture();
-    if (!mobile.matches || closing || event.touches.length !== 1) { cancelGesture(); return; }
+    if (!mobile.matches || closing || confirming || event.touches.length !== 1) { cancelGesture(); return; }
     const touch = event.touches[0];
     const selection = window.getSelection();
     if (touch.clientX > 24 || (selection && !selection.isCollapsed && selection.toString())) return;

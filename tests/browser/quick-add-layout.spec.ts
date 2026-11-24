@@ -165,8 +165,8 @@ for (const width of [320, 390, 1280]) {
         await expect(editor).toBeFocused();
         await expect(editor.locator("strong")).toHaveText("Nội dung nháp cần giữ");
         await editor.fill("Bản nháp cần hủy");
-        page.once("dialog", dialog => dialog.accept());
         await form.getByRole("button", { name: "Hủy Nội dung", exact: true }).click();
+        await page.getByRole("button", { name: "Bỏ thay đổi", exact: true }).click();
         await expect(form).toBeVisible();
         await expect(form.locator(".quick-add-controls")).toBeVisible();
         await expect(form.locator(".quick-description-preview")).toContainText("Nội dung nháp cần giữ");

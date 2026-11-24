@@ -60,7 +60,7 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
   const backdropRef = useRef<HTMLDivElement>(null);
   const contentEditorRef = useRef<ContentEditorHandle>(null);
   const closeRef = useRef(onClose);
-  const canCloseRef = useRef<() => boolean>(() => true);
+  const canCloseRef = useRef<() => Promise<boolean>>(() => Promise.resolve(true));
   const detailMotionRef = useRef<ReturnType<typeof installDetailMotion> | null>(null);
   useLayoutEffect(() => { closeRef.current = onClose; }, [onClose]);
   useLayoutEffect(() => {
@@ -157,10 +157,10 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
   const dirty = editingField === "title" ? title !== item.title : editingField === "content" &&
     JSON.stringify(normalizeContent(description, descriptionFormat)) !==
     JSON.stringify(normalizeContent(item.description ?? "", item.descriptionFormat ?? null));
-  const canDiscard = useUnsavedChanges(Boolean(dirty));
+  const { canDiscard, confirmation } = useUnsavedChanges(Boolean(dirty));
   useLayoutEffect(() => { canCloseRef.current = canDiscard; }, [canDiscard]);
-  const cancelTitle = () => {
-    if (!canDiscard()) return;
+  const cancelTitle = async () => {
+    if (!(await canDiscard())) return;
     setTitle(item.title);
     setTitleError(false);
     setEditingField(null);
@@ -188,8 +188,8 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
     if (finishEditing) setEditingField(null);
     return true;
   };
-  const cancelContent = () => {
-    if (!canDiscard()) return;
+  const cancelContent = async () => {
+    if (!(await canDiscard())) return;
     setDescription(item.description ?? "");
     setDescriptionFormat(item.descriptionFormat ?? null);
     setEditingField(null);
@@ -277,6 +277,7 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
         if (dismiss && !window.matchMedia("(max-width: 699px)").matches) closeDetail();
       }}
     >
+      {confirmation}
       <section className={`editor-sheet item-detail-sheet ${editingField === "content" ? "editing-content" : editingField === "title" ? "editing-title" : ""}`} role="dialog" aria-modal="true" aria-label={editingField === "content" ? "Nội dung" : title} onClick={(event) => event.stopPropagation()}>
         <div className="detail-item-navigation" role="group" aria-label="Chuyển mục">
           <button type="button" className="icon-button detail-previous" aria-label="Mục trước" onClick={onPrevious} disabled={!onPrevious || Boolean(editingField) || shortcutsBlocked}><Icon name="chevron" size={20} /></button>

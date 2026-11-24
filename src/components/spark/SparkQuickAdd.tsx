@@ -1,6 +1,6 @@
 "use client";
 
-import { confirmDiscardChanges, useUnsavedChanges } from "@/lib/unsaved-changes";
+import { useUnsavedChanges } from "@/lib/unsaved-changes";
 import { flushSync } from "react-dom";
 import { installDetailMotion } from "@/lib/detail-motion";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEvent } from "react";
@@ -52,7 +52,7 @@ export function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedCha
     setWasExpanded(expanded);
     if (expanded) setInitialDraft(draftSnapshot);
   }
-  const canDiscard = useUnsavedChanges(expanded && draftSnapshot !== initialDraft);
+  const { canDiscard, confirmation } = useUnsavedChanges(expanded && draftSnapshot !== initialDraft);
   const contentDraftRef = useRef({ description, descriptionFormat });
   useLayoutEffect(() => { contentDraftRef.current = { description, descriptionFormat }; }, [description, descriptionFormat]);
 
@@ -69,8 +69,8 @@ export function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedCha
     setStartDateOverride(null);
     window.requestAnimationFrame(() => triggerRef.current?.focus());
   }, [onExpandedChange]);
-  const close = useCallback(() => {
-    if (canDiscard()) resetAndClose();
+  const close = useCallback(async () => {
+    if (await canDiscard()) resetAndClose();
   }, [canDiscard, resetAndClose]);
   useEffect(() => {
     const backdrop = backdropRef.current;
@@ -87,11 +87,11 @@ export function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedCha
     window.requestAnimationFrame(() => descriptionToggleRef.current?.focus({ preventScroll: true }));
   }, []);
 
-  const cancelContent = useCallback(() => {
+  const cancelContent = useCallback(async () => {
     const previous = contentBeforeEditRef.current;
     const current = contentDraftRef.current;
     if (previous && JSON.stringify(normalizeContent(current.description, current.descriptionFormat)) !==
-        JSON.stringify(normalizeContent(previous.description, previous.format)) && !confirmDiscardChanges()) return;
+        JSON.stringify(normalizeContent(previous.description, previous.format)) && !(await canDiscard(true))) return;
     if (previous) {
       setDescription(previous.description);
       setDescriptionFormat(previous.format);
@@ -101,7 +101,7 @@ export function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedCha
     if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
     setContentFocused(false);
     window.requestAnimationFrame(() => descriptionToggleRef.current?.focus({ preventScroll: true }));
-  }, []);
+  }, [canDiscard]);
 
   const hideClassification = useCallback(() => {
     setClassificationOpen(false);
@@ -218,6 +218,7 @@ export function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedCha
 
   return (
     <div ref={backdropRef} className="dialog-backdrop quick-add-backdrop" onClick={close}>
+      {confirmation}
       <form
         className={`quick-add quick-add-dialog ${contentFocused ? "focused-content" : ""}`}
         role="dialog"
