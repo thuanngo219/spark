@@ -1,5 +1,6 @@
 "use client";
 
+import { confirmDiscardChanges, useUnsavedChanges } from "@/lib/unsaved-changes";
 import { flushSync } from "react-dom";
 import { installDetailMotion } from "@/lib/detail-motion";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEvent } from "react";
@@ -44,7 +45,18 @@ export function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedCha
     (date) => date >= upcomingStart && date <= upcomingEnd,
   );
 
-  const close = useCallback(() => {
+  const draftSnapshot = JSON.stringify([type, title, normalizeContent(description, descriptionFormat), startDate, dueDate, projectId]);
+  const [initialDraft, setInitialDraft] = useState(draftSnapshot);
+  const [wasExpanded, setWasExpanded] = useState(expanded);
+  if (wasExpanded !== expanded) {
+    setWasExpanded(expanded);
+    if (expanded) setInitialDraft(draftSnapshot);
+  }
+  const canDiscard = useUnsavedChanges(expanded && draftSnapshot !== initialDraft);
+  const contentDraftRef = useRef({ description, descriptionFormat });
+  useLayoutEffect(() => { contentDraftRef.current = { description, descriptionFormat }; }, [description, descriptionFormat]);
+
+  const resetAndClose = useCallback(() => {
     onExpandedChange(false);
     setTitle("");
     setDescription("");
@@ -57,12 +69,15 @@ export function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedCha
     setStartDateOverride(null);
     window.requestAnimationFrame(() => triggerRef.current?.focus());
   }, [onExpandedChange]);
+  const close = useCallback(() => {
+    if (canDiscard()) resetAndClose();
+  }, [canDiscard, resetAndClose]);
   useEffect(() => {
     const backdrop = backdropRef.current;
     if (!expanded || !backdrop) return;
-    const motion = installDetailMotion(backdrop, close);
+    const motion = installDetailMotion(backdrop, resetAndClose, canDiscard);
     return () => motion.destroy();
-  }, [expanded, close]);
+  }, [expanded, resetAndClose, canDiscard]);
 
 
   const finishContent = useCallback(() => {
@@ -74,6 +89,9 @@ export function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedCha
 
   const cancelContent = useCallback(() => {
     const previous = contentBeforeEditRef.current;
+    const current = contentDraftRef.current;
+    if (previous && JSON.stringify(normalizeContent(current.description, current.descriptionFormat)) !==
+        JSON.stringify(normalizeContent(previous.description, previous.format)) && !confirmDiscardChanges()) return;
     if (previous) {
       setDescription(previous.description);
       setDescriptionFormat(previous.format);
@@ -148,7 +166,7 @@ export function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedCha
         else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
         return;
       }
-      if (event.key !== "Escape") return;
+      if (event.key !== "Escape" || event.defaultPrevented) return;
       event.preventDefault();
       if (window.matchMedia("(max-width: 699px)").matches && backdropRef.current?.querySelector(".focused-content")) cancelContent();
       else close();
@@ -181,7 +199,7 @@ export function QuickAdd({ expanded, projects, today, view, onAdd, onExpandedCha
       isUrgent: false,
       createdAt: new Date().toISOString(),
     });
-    if (added) close();
+    if (added) resetAndClose();
   };
 
   if (!expanded) {

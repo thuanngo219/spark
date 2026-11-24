@@ -6,6 +6,12 @@ Phím chuyển Danh mục hiện hành là F rồi 1–9 trong vòng 2 giây. Ph
 
 Chủ dự án xác nhận giao diện production “Ổn rồi” ngày 2026-10-29 sau D-207. [Handoff v3](handoff/spark-v3.md) chỉ ghi quy tắc còn hiệu lực và phạm vi đã kiểm chứng; các mục D-xxx phía dưới là lịch sử phát triển, nên đọc cùng quyết định mới nhất khi một thông số thay đổi.
 
+## Bảo vệ thay đổi chưa lưu — D-250
+
+Khi quick-add hoặc trình sửa tên/Nội dung có thay đổi chưa lưu, Hủy/X, đóng/quay lại, bấm nền desktop hoặc vuốt mép trái mobile phải hỏi xác nhận trước khi bỏ nháp. Từ chối thoát giữ nguyên chữ, định dạng và khả năng thao tác; đồng ý mới hủy. Quick-add theo dõi cả loại task/note, ngày và Danh mục. Escape trong editor chỉ hủy phần đang sửa sau xác nhận, không đóng tiếp màn chi tiết trong cùng lần nhấn. Không hỏi khi chưa thay đổi hoặc đã lưu thành công. Thay đổi metadata chi tiết vẫn tự lưu theo hành vi hiện hành.
+
+Dùng xác nhận của trình duyệt. Khi tải lại/đóng trang, đăng ký beforeunload chỉ trong lúc có nháp; trình duyệt quyết định câu chữ và việc hiển thị. iOS đóng cưỡng bức app hoặc hệ điều hành kết thúc tiến trình có thể không phát sự kiện này; chưa tự kiểm tra native iPhone trong phiên này.
+
 ## Giao diện hiện hành — đến D-239 (2026-11-13)
 
 - Font Inter 4.1 thường/nghiêng nhúng cùng origin; cỡ chữ px, weight400/700. Desktop/mobile: list14/15px, menu14/15px, support14/15px, metadata ngày/danh mục12/13px; Nội dung15px, tên chi tiết18px, tên quick-add16px, dialog24px cả hai. Label10px/700/uppercase. Heading desktop38–56px/mobile30px, compact19–28px/21px; line-height1.2/1.4/1.6 theo vai trò.

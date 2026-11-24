@@ -742,3 +742,10 @@ Mục không có ngày cao tối thiểu 38px. Vùng chạm checkbox trong hàng
 ## D-249 — Phím chuyển Danh mục (2026-11-20)
 
 Nhấn F rồi 1–9 trong vòng 2 giây để mở Danh mục theo thứ tự sidebar. Phím số riêng lẻ không chuyển mục. Chuỗi áp dụng ngoài vùng nhập và hộp thoại, hủy khi nhấn phím khác hoặc đổi focus.
+
+
+## D-250 — Xác nhận trước khi bỏ thay đổi chưa lưu (2026-11-24)
+
+Khi quick-add hoặc trình sửa tên/Nội dung có thay đổi chưa lưu, Hủy/X, đóng/quay lại, bấm nền desktop hoặc vuốt mép trái mobile phải hỏi xác nhận trước khi bỏ nháp. Từ chối thoát giữ nguyên chữ, định dạng và khả năng thao tác; đồng ý mới hủy. Quick-add theo dõi cả loại task/note, ngày và Danh mục. Escape trong editor chỉ hủy phần đang sửa sau xác nhận, không đóng tiếp màn chi tiết trong cùng lần nhấn. Không hỏi khi chưa thay đổi hoặc đã lưu thành công. Thay đổi metadata chi tiết vẫn tự lưu theo hành vi hiện hành.
+
+Dùng xác nhận của trình duyệt. Khi tải lại/đóng trang, đăng ký beforeunload chỉ trong lúc có nháp; trình duyệt quyết định câu chữ và việc hiển thị. iOS đóng cưỡng bức app hoặc hệ điều hành kết thúc tiến trình có thể không phát sự kiện này; chưa tự kiểm tra native iPhone trong phiên này.

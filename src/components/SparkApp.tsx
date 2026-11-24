@@ -273,6 +273,7 @@ export function SparkApp() {
       }
       if (projectEditor || projectArchiveOpen || helpOpen || syncDialogOpen) return;
       if (event.key === "Escape") {
+        if (editingItem || quickAddOpen) return;
         setHelpOpen(false);
         setMobileNav(false);
         setEditingItem(null);

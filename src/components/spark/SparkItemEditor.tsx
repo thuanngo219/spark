@@ -1,5 +1,6 @@
 "use client";
 
+import { useUnsavedChanges } from "@/lib/unsaved-changes";
 import { ProjectSelect } from "@/components/ProjectSelect";
 import { flushSync } from "react-dom";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -48,7 +49,7 @@ function DetailTitleField({ value, label, onChange, onSave, onCancel }: {
     onChange: (event: { target: { value: string } }) => onChange(event.target.value.replace(/[\r\n]+/g, " ")),
     onKeyDown: (event: { key: string; preventDefault: () => void }) => {
       if (event.key === "Enter") { event.preventDefault(); onSave(); }
-      if (event.key === "Escape") onCancel();
+      if (event.key === "Escape") { event.preventDefault(); onCancel(); }
     },
   };
   return mobile ? <textarea {...shared} ref={textareaRef} rows={1} /> : <input {...shared} />;
@@ -59,6 +60,7 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
   const backdropRef = useRef<HTMLDivElement>(null);
   const contentEditorRef = useRef<ContentEditorHandle>(null);
   const closeRef = useRef(onClose);
+  const canCloseRef = useRef<() => boolean>(() => true);
   const detailMotionRef = useRef<ReturnType<typeof installDetailMotion> | null>(null);
   useLayoutEffect(() => { closeRef.current = onClose; }, [onClose]);
   useLayoutEffect(() => {
@@ -69,7 +71,7 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
     let layoutWidth = window.innerWidth;
     let layoutHeight = window.innerHeight;
     backdrop.style.setProperty("--detail-layout-height", `${layoutHeight}px`);
-    const motion = installDetailMotion(backdrop, () => closeRef.current());
+    const motion = installDetailMotion(backdrop, () => closeRef.current(), () => canCloseRef.current());
     detailMotionRef.current = motion;
     const unlockScroll = lockDetailScroll(backdrop);
     const fitViewport = () => {
@@ -152,6 +154,18 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
       .forEach(element => { element.scrollTop = 0; });
   }, [item.id]);
 
+  const dirty = editingField === "title" ? title !== item.title : editingField === "content" &&
+    JSON.stringify(normalizeContent(description, descriptionFormat)) !==
+    JSON.stringify(normalizeContent(item.description ?? "", item.descriptionFormat ?? null));
+  const canDiscard = useUnsavedChanges(Boolean(dirty));
+  useLayoutEffect(() => { canCloseRef.current = canDiscard; }, [canDiscard]);
+  const cancelTitle = () => {
+    if (!canDiscard()) return;
+    setTitle(item.title);
+    setTitleError(false);
+    setEditingField(null);
+  };
+
   const project = projects.find((entry) => entry.id === projectId);
   const closeDetail = () => detailMotionRef.current?.close();
 
@@ -175,6 +189,7 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
     return true;
   };
   const cancelContent = () => {
+    if (!canDiscard()) return;
     setDescription(item.description ?? "");
     setDescriptionFormat(item.descriptionFormat ?? null);
     setEditingField(null);
@@ -192,6 +207,11 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
   };
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (!shortcutsBlocked && !editingField && event.key === "Escape" && !event.defaultPrevented) {
+        event.preventDefault();
+        closeDetail();
+        return;
+      }
       if (shortcutsBlocked || editingField || event.defaultPrevented || event.isComposing ||
           event.repeat || event.ctrlKey || event.metaKey || event.altKey || isTypingTarget(event.target)) return;
       if (event.key.toLowerCase() === "e") {
@@ -270,10 +290,10 @@ export function ItemEditor({ item, projects, onArchive, onClose, onDelete, onSav
                   <>
                     <div className="detail-inline-editor detail-title-row">
                       {titleMarker}
-                      <DetailTitleField value={title} label={item.type === "task" ? "Tên task" : "Tên ghi chú"} onChange={setTitle} onSave={() => saveTitle()} onCancel={() => { setTitle(item.title); setTitleError(false); setEditingField(null); }} />
+                      <DetailTitleField value={title} label={item.type === "task" ? "Tên task" : "Tên ghi chú"} onChange={setTitle} onSave={() => saveTitle()} onCancel={cancelTitle} />
                       <div className="detail-edit-actions">
                         <button type="button" className="detail-icon-action save" onClick={() => saveTitle()} aria-label="Lưu"><Icon name="check" size={18} /></button>
-                        <button type="button" className="detail-icon-action cancel" onClick={() => { setTitle(item.title); setTitleError(false); setEditingField(null); }} aria-label="Hủy"><Icon name="close" size={18} /></button>
+                        <button type="button" className="detail-icon-action cancel" onClick={cancelTitle} aria-label="Hủy"><Icon name="close" size={18} /></button>
                       </div>
                     </div>
                     {titleError && <p className="form-error" role="status">Tên không được để trống.</p>}

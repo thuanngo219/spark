@@ -1,5 +1,5 @@
 // Native browser motion only; shared CSS tokens control duration and easing.
-export function installDetailMotion(backdrop: HTMLElement, onClose: () => void) {
+export function installDetailMotion(backdrop: HTMLElement, onClose: () => void, canClose: () => boolean = () => true) {
   const mobile = window.matchMedia("(max-width: 699px)");
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
   let animation: Animation | null = null;
@@ -31,6 +31,7 @@ export function installDetailMotion(backdrop: HTMLElement, onClose: () => void) 
   };
   const close = () => {
     if (closing || destroyed) return;
+    if (!canClose()) { settle(0); return; }
     closing = true;
     if (!mobile.matches) { onClose(); return; }
     gesture = null;

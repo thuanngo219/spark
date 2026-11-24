@@ -2,12 +2,14 @@
 
 Phím chuyển Danh mục hiện hành là F rồi 1–9 trong vòng 2 giây. Phím khác, đổi focus hoặc mở hộp thoại sẽ hủy chuỗi đang chờ.
 
-Cập nhật 2026-11-18. Chỉ giữ quy tắc đang có hiệu lực. Lịch sử thay đổi tra Git và docs/DECISIONS.md; không dùng thông số cũ trong các mục lịch sử làm trạng thái hiện tại.
+Cập nhật 2026-11-24. Chỉ giữ quy tắc đang có hiệu lực. Lịch sử thay đổi tra Git và docs/DECISIONS.md; không dùng thông số cũ trong các mục lịch sử làm trạng thái hiện tại.
 
 ## Production và kiểm chứng
 
+- D-250: lint, typecheck, 176 test logic, build và 21 ca trình duyệt local đạt, gồm 320/390/1280px, sáng/tối, xác nhận giữ/bỏ nháp, vuốt từ chối/đồng ý, tải lại trang và chỉ đổi định dạng chữ. Kiểm tra dùng Chrome; native iPhone cần chủ dự án kiểm tra trực tiếp.
+
 - Domain https://spark.thuanngo.com; Vercel project spark (`prj_mpTXdTL5cUsrpbT40lw7fmBt8NZM`), team Thuan Ngo (`team_CDEqBJfEqWiriY02pfrXzqMX`), nhánh main.
-- Mã ứng dụng production: `0d9bee3056e9e136de436acc262477bcd83cdf45` (D-239), deployment `dpl_etzMVMoWhY3y4jvh5mtvMQWGtz8G` READY. Đã xác minh domain ngày 2026-11-13. Commit tài liệu có thể tạo deployment mới với cùng mã ứng dụng.
+- Bản ứng dụng hiện hành: D-250 (2026-11-24), bảo vệ thay đổi chưa lưu. Đối chiếu SHA và alias của bản phát hành trên Vercel với commit triển khai, không dùng SHA cũ của D-239 làm trạng thái hiện tại.
 - D-238: 9 ca kiểm tra production cho phím tắt, chuyển mục và bảng trợ giúp đều đạt. D-239: lint, typecheck, 176 test logic, build và 5 ca trình duyệt local đạt, gồm bộ chọn ở 390px. Ba ca kiểm tra production cho Tất cả, Chỉ ghi chú và Chỉ task đều đạt.
 - Chủ dự án xác nhận bản sửa lỗi giật khi chuyển mục đã ổn ngày 2026-11-13.
 - Chủ dự án xác nhận bản cập nhật nhãn và bộ chọn đã ổn ngày 2026-11-09.
@@ -35,6 +37,9 @@ Inter4.1 WOFF2 thường/nghiêng trong src/app/fonts/, next/font/local; root100
 
 ## Giao diện hiện hành
 
+- Khi quick-add hoặc trình sửa tên/Nội dung có thay đổi chưa lưu, Hủy/X, đóng/quay lại, bấm nền desktop hoặc vuốt mép trái mobile phải hỏi xác nhận trước khi bỏ nháp. Từ chối thoát giữ nguyên chữ, định dạng và khả năng thao tác; đồng ý mới hủy. Quick-add theo dõi cả loại task/note, ngày và Danh mục. Escape trong editor chỉ hủy phần đang sửa sau xác nhận, không đóng tiếp màn chi tiết trong cùng lần nhấn. Không hỏi khi chưa thay đổi hoặc đã lưu thành công. Thay đổi metadata chi tiết vẫn tự lưu theo hành vi hiện hành.
+- Dùng xác nhận của trình duyệt. Khi tải lại/đóng trang, đăng ký beforeunload chỉ trong lúc có nháp; trình duyệt quyết định câu chữ và việc hiển thị. iOS đóng cưỡng bức app hoặc hệ điều hành kết thúc tiến trình có thể không phát sự kiện này; chưa tự kiểm tra native iPhone trong phiên này.
+
 - Chi tiết task/note có E để sửa nội dung, Shift + E để sửa tên. Desktop dùng nút hai mép hoặc ←/→ để đi theo thứ tự danh sách đã lọc lúc mở chi tiết. Dừng ở đầu/cuối và tạm ngưng chuyển mục khi sửa. Khung chi tiết và lớp khóa cuộn được giữ khi chuyển mục, nên hiệu ứng mở màn chỉ chạy lúc mở chi tiết. Nội dung mục mới bắt đầu từ đầu vùng cuộn.
 
 - Font Inter 4.1 thường/nghiêng nhúng cùng origin; cỡ chữ px, weight400/700. Desktop/mobile: list14/15px, menu14/15px, support14/15px, metadata ngày/danh mục12/13px; Nội dung15px, tên chi tiết18px, tên quick-add16px, dialog24px cả hai. Label10px/700/uppercase. Heading desktop38–56px/mobile30px, compact19–28px/21px; line-height1.2/1.4/1.6 theo vai trò.
@@ -46,7 +51,7 @@ Inter4.1 WOFF2 thường/nghiêng trong src/app/fonts/, next/font/local; root100
 - Giao diện desktop và mobile dùng nhãn “Danh mục”, gồm bộ chọn, màn tạo/chỉnh sửa, lưu trữ, trợ giúp và nhãn hỗ trợ tiếp cận.
 - Bộ chọn Danh mục trong chi tiết dùng menu mặc định của trình duyệt trên desktop và mobile, cùng cách hiển thị với quick-add.
 - Focus input/select/textarea cả desktop/mobile chỉ đậm viền, không outline ngoài/đổi nền. Nút/link giữ focus bàn phím. Hover màu desktop220ms Quint; selected/disabled và semantic color giữ riêng; reduced motion có hỗ trợ.
-- Mobile quick-add vuốt mép trái đủ ngưỡng sẽ hủy nháp như HỦY. Cấu hình pinch: maximumScale1/userScalablefalse và touch-action pan-x pan-y; trình duyệt có thể ưu tiên zoom trợ năng. Chi tiết vẫn vuốt mép trái để đóng.
+- Mobile quick-add vuốt mép trái đủ ngưỡng sẽ yêu cầu xác nhận nếu có nháp, giống HỦY. Cấu hình pinch: maximumScale1/userScalablefalse và touch-action pan-x pan-y; trình duyệt có thể ưu tiên zoom trợ năng. Chi tiết vẫn vuốt mép trái để đóng.
 
 Giữ các quy tắc mobile đã duyệt: GHI CHÚ, ← QUAY LẠI; touch44px mặc định, sort30px ngoại lệ; metadata chi tiết hai hàng, hai ngày chia đều; quick-add giữ tên và hàng nút cố định, Nội dung cuộn riêng, Phân loại phủ action. Theme sáng/tối/system, splash Navy/logo âm bản, header sticky blur8px/dải màu4px và phím tắt ngoài editor tiếp tục như mã hiện hành. Palette một Navy#111742, Turquoise#44D4CD, Amber#D6A84F, Coral#D9776A; artwork logo giữ nguyên.
 
