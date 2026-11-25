@@ -32,5 +32,5 @@ kbd { font-family: inherit; }
 .preference-switch[aria-checked="true"] > span { transform: translateX(18px); }
 .toast { position: fixed; right: 88px; bottom: 25px; z-index: 95; max-width: calc(100vw - 112px); background: var(--navy-900); color: white; border-radius: 13px; padding: 12px 13px 12px 15px; display: flex; align-items: center; gap: 18px; box-shadow: 0 15px 38px rgba(17,23,66,.25); font-size: var(--text-support); }
 .toast span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.toast button { border: 0; background: var(--turquoise); color: var(--navy-900); border-radius: 999px; padding: 7px 9px; font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; }
-.toast button:hover { background: var(--navy-900); color: white; }
+.toast button { border: 0; background: var(--navy-900); color: #fff; border-radius: 999px; padding: 7px 9px; font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; }
+.toast button:hover { background: var(--turquoise); color: var(--navy-900); }

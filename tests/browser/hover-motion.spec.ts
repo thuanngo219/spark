@@ -10,10 +10,10 @@ for (const theme of ["light", "dark"] as const) {
     const add = page.locator(".quick-add-dialog .primary-button");
     await expect(add).toBeDisabled();
     await add.hover({ force: true });
-    await expect(add).toHaveCSS("background-color", "rgb(68, 212, 205)");
+    await expect(add).toHaveCSS("background-color", "rgb(17, 23, 66)");
     await page.getByRole("textbox", { name: "Tên mục", exact: true }).fill("Kiểm tra chuyển màu");
     await page.mouse.move(0, 0);
-    await expect(add).toHaveCSS("background-color", "rgb(68, 212, 205)");
+    await expect(add).toHaveCSS("background-color", "rgb(17, 23, 66)");
     await add.hover();
     const intermediate = await add.evaluate(el => {
       const transitions = el.getAnimations().filter(a => a instanceof CSSTransition && a.transitionProperty === "background-color");
@@ -25,17 +25,17 @@ for (const theme of ["light", "dark"] as const) {
     });
     expect(intermediate.count).toBe(1);
     expect(intermediate.duration).toBe(220);
-    expect(intermediate.color).not.toBe("rgb(68, 212, 205)");
     expect(intermediate.color).not.toBe("rgb(17, 23, 66)");
+    expect(intermediate.color).not.toBe("rgb(68, 212, 205)");
     await add.evaluate(el => el.getAnimations().forEach(a => a.finish()));
-    await expect(add).toHaveCSS("background-color", "rgb(17, 23, 66)");
-    await page.mouse.move(0, 0);
     await expect(add).toHaveCSS("background-color", "rgb(68, 212, 205)");
+    await page.mouse.move(0, 0);
+    await expect(add).toHaveCSS("background-color", "rgb(17, 23, 66)");
     await page.emulateMedia({ reducedMotion: "reduce" });
     const durations = await add.evaluate(el => getComputedStyle(el).transitionDuration.split(",").map(parseFloat));
     expect(durations.every(duration => duration <= 0.00001)).toBe(true);
     await add.hover();
-    await expect(add).toHaveCSS("background-color", "rgb(17, 23, 66)");
+    await expect(add).toHaveCSS("background-color", "rgb(68, 212, 205)");
   });
 }
 

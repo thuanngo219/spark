@@ -15,10 +15,10 @@ for (const width of [320, 390, 1280]) {
     await expect(dialog).toBeVisible();
     const archive = dialog.getByRole("button", { name: "Lưu trữ", exact: true });
     await expect(archive).toHaveClass("text-button");
-    await expect(archive).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await expect(archive).toHaveCSS("background-color", "rgb(241, 242, 245)");
     if (width >= 700) {
       await archive.hover();
-      await expect(archive).toHaveCSS("background-color", "rgb(241, 242, 245)");
+      await expect(archive).toHaveCSS("background-color", "rgb(228, 230, 236)");
     }
     await dialog.evaluate(el => Promise.all(el.getAnimations({ subtree: true }).filter(a => a.effect?.getTiming().iterations !== Infinity).map(a => a.finished)));
     const colorBox = (await dialog.locator(".color-picker-options").boundingBox())!;

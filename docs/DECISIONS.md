@@ -764,3 +764,8 @@ Hộp thoại dùng tiêu đề “Nội dung chưa lưu?” và câu “Bạn c
 ## D-253 — Vai trò CTA tiếp tục sửa và lưu trữ (2026-11-25)
 
 “Tiếp tục sửa” trong hộp thoại Nội dung chưa lưu dùng CTA chính: nền Turquoise/chữ Navy, hover Navy/chữ trắng; giữ icon edit, mặc định focus và hành vi giữ nháp. Lưu trữ/Khôi phục trong chỉnh sửa Danh mục và chi tiết ghi chú dùng hành động phụ neutral, hover xám nhẹ/chữ chính. Giữ Yêu thích là nút trạng thái riêng.
+
+
+## D-254 — Một kiểu CTA chính và nền hành động phụ (2026-11-25)
+
+CTA chính chỉ dùng nền Navy #111742, chữ/icon trắng trên desktop và mobile; hover Turquoise #44D4CD, chữ/icon Navy. Áp dụng cho Thêm/Lưu/Tiếp tục sửa, nút thêm nổi/dock, primary icon, Hôm nay trong bộ chọn ngày và Hoàn tác trong toast. Disabled giữ Navy, giảm tương phản chữ trắng, không đổi màu hover. Hành động phụ (Hủy, Lưu trữ/Khôi phục, sửa/điều hướng phụ) dùng nền xám nhẹ #F1F2F5, hover #E4E6EC; dark mode dùng #30394E → #3B455B. Giữ semantic/selected và thao tác bỏ/xóa theo màu riêng. Desktop giữ chuyển màu 220ms và reduced motion.

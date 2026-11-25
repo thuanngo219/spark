@@ -22,6 +22,7 @@
   --muted: #73788d;
   --control-muted: #8b8f9e;
   --control-hover: #f1f2f5;
+  --secondary-hover: #e4e6ec;
   --field: #fafbfc;
   --field-border: #dde0e8;
   --task-checked: #8b8f9e;
@@ -71,6 +72,7 @@
   --muted: #a0a8bc;
   --control-muted: #a0a8bc;
   --control-hover: #30394e;
+  --secondary-hover: #3b455b;
   --text-secondary: #c3c9d8;
   --text-subtle: #a0a8bc;
   --text-faint: #a0a8bc;

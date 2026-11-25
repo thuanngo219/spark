@@ -182,17 +182,18 @@ Phần này là source of truth cho web app. Khi CSS/component mới khác bản
 | `ui-ink` | `#171B35` | Text chính. |
 | `ui-muted` | `#73788D` | Body phụ và metadata. |
 | `ui-control-muted` | `#8B8F9E` | Secondary text/icon button. |
-| `ui-control-hover` | `#F1F2F5` | Nền hover của secondary button. |
+| `ui-control-hover` | `#F1F2F5` | Nền hành động phụ và hover control khác. |
+| `secondary-hover` | `#E4E6EC` | Nền hover của hành động phụ. |
 | `ui-note-mark` | `#AEB3BF` | Dash nhận diện note trong listing. |
 
 #### Button variants
 
 | Variant | Dùng cho | Default | Hover | Disabled |
 |---|---|---|---|---|
-| Primary | Thêm, Tạo/Lưu dự án, CTA chính | Turquoise `#44D4CD`, chữ Navy `#111742` | Navy, chữ trắng | Giữ nền Turquoise; chữ Navy ở `46%`, không giảm opacity toàn nút. |
-| Primary icon | Close và utility icon cần nổi bật | Turquoise, icon Navy, `44×44px`, hình tròn | Navy, icon trắng | Như Primary. |
-| Secondary text | Hủy và action phụ | Transparent, chữ `#8B8F9E`, cao `40px`, bo tròn hai đầu | Nền `#F1F2F5`, chữ `#171B35` | Giảm tương phản chữ, không thêm glow. |
-| Secondary icon | Search/Help ở header, edit cạnh tên dự án | Transparent, icon `#8B8F9E`, `36–40px`, hình tròn | Nền `#F1F2F5`, icon `#171B35` | Giảm tương phản icon. |
+| Primary | Thêm, Tạo/Lưu Danh mục, Tiếp tục sửa, CTA chính | Navy `#111742`, chữ trắng | Turquoise `#44D4CD`, chữ Navy | Giữ nền Navy; chữ trắng ở `46%`, không giảm opacity toàn nút. |
+| Primary icon | Close và utility icon cần nổi bật | Navy, icon trắng, `44×44px`, hình tròn | Turquoise, icon Navy | Như Primary. |
+| Secondary text | Hủy, Lưu trữ/Khôi phục và action phụ | Nền `#F1F2F5`, chữ `#8B8F9E`, cao `40px`, bo tròn hai đầu | Nền `#E4E6EC`, chữ `#171B35` | Giảm tương phản chữ, không thêm glow. |
+| Secondary icon | Help ở header, sửa và điều hướng phụ | Nền `#F1F2F5`, icon `#8B8F9E`, `36–40px`, hình tròn | Nền `#E4E6EC`, icon `#171B35` | Giảm tương phản icon. |
 | Destructive | Xóa item | Muted Coral/tint đi kèm icon và label | Tăng tint tiết chế | Không dùng màu làm tín hiệu duy nhất. |
 | Semantic | Star, Ưu tiên, checkbox, project color | Màu theo ý nghĩa hoặc trạng thái | Chỉ đổi khi giúp nhận biết hành động | Phải giữ icon/shape/label làm tín hiệu bổ sung. |
 
@@ -202,7 +203,7 @@ Phần này là source of truth cho web app. Khi CSS/component mới khác bản
 - Nút trong cùng một action row dùng cùng chiều cao và radius; Primary và Hủy vẫn giữ phân cấp màu khác nhau.
 - Navigation button, color swatch, date tile và project dot không bị ép vào màu Primary vì chúng là selection/navigation control.
 
-Hai biến thể action D-210 dùng cùng cặp màu ở cả theme: Turquoise/chữ Navy → hover Navy/chữ trắng; Navy/chữ trắng → hover Turquoise/chữ Navy. THÊM mobile, QUAY LẠI, đóng Phân Loại và tick Lưu thuộc biến thể Navy. Nút disabled không đổi màu khi hover. Selected (B/I/U, ngày, theme, filter) giữ token và tín hiệu chọn riêng; semantic/destructive giữ Amber/Coral.
+D-254: mọi CTA chính dùng Navy/chữ trắng → hover Turquoise/chữ Navy trên cả theme, desktop và mobile. Nền hành động phụ sáng #F1F2F5 → hover #E4E6EC; tối #30394E → hover #3B455B. Nút disabled không đổi màu khi hover. Selected (B/I/U, ngày, theme, filter) giữ token và tín hiệu chọn riêng; semantic/destructive giữ Amber/Coral.
 
 #### Link trong nội dung
 

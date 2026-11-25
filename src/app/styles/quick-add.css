@@ -1,5 +1,5 @@
-.quick-add-trigger { position: fixed; right: 24px; bottom: 24px; z-index: 70; width: 48px; height: 48px; min-height: 48px; margin: 0; border: 0; background: var(--turquoise); color: var(--navy-900); border-radius: 999px; display: grid; place-items: center; padding: 0; transition: color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease), background-color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease), transform var(--motion-duration, 160ms) var(--ease); }
-.quick-add-trigger:hover { color: #fff; background: var(--navy-900); }
+.quick-add-trigger { position: fixed; right: 24px; bottom: 24px; z-index: 70; width: 48px; height: 48px; min-height: 48px; margin: 0; border: 0; background: var(--navy-900); color: #fff; border-radius: 999px; display: grid; place-items: center; padding: 0; transition: color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease), background-color var(--motion-duration, var(--control-color-duration, 160ms)) var(--ease), transform var(--motion-duration, 160ms) var(--ease); }
+.quick-add-trigger:hover { color: var(--navy-900); background: var(--turquoise); }
 .quick-add-trigger:active { transform: scale(.985); }
 .quick-add { background: var(--surface); border: 1px solid var(--field-border); border-radius: 16px; padding: 18px; }
 .quick-add-dialog { width: min(840px, 100%); max-height: 100%; overflow-y: auto; margin: 0; box-shadow: 0 24px 70px rgba(17,23,66,.24); animation: slide-up var(--motion-duration, 200ms) var(--ease); }
@@ -41,11 +41,11 @@
 .quick-add-actions .text-button, .quick-add-actions .primary-button { min-height: calc(44px - var(--label-button-trim, 0px)); }
 .text-button, .primary-button, .delete-button, .archive-button { min-height: calc(40px - var(--label-button-trim, 0px)); border-radius: 999px; border: 0; padding: 0 14px; font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; }
 .text-button, .primary-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
-.text-button { background: transparent; color: var(--control-muted); }
-.text-button:hover, .detail-meta-button.archive:hover { background: var(--control-hover); color: var(--ink); }
-.primary-button { background: var(--turquoise); color: var(--navy-900); box-shadow: none; }
-.primary-button:not(:disabled):hover { background: var(--navy-900); color: #fff; transform: translateY(-1px); }
-.primary-button:disabled { opacity: 1; background: var(--turquoise); color: rgba(17,23,66,.46); cursor: not-allowed; transform: none; }
+.text-button { background: var(--control-hover); color: var(--control-muted); }
+.text-button:hover, .detail-meta-button.archive:hover { background: var(--secondary-hover); color: var(--ink); }
+.primary-button { background: var(--navy-900); color: #fff; box-shadow: none; }
+.primary-button:not(:disabled):hover { background: var(--turquoise); color: var(--navy-900); transform: translateY(-1px); }
+.primary-button:disabled { opacity: 1; background: var(--navy-900); color: rgba(255,255,255,.46); cursor: not-allowed; transform: none; }
 .completed-toggle { width: 100%; min-height: 44px; border: 0; background: transparent; color: var(--text-subtle, #8e92a1); display: flex; align-items: center; gap: 7px; padding: 0 13px; font-size: var(--ui-label-size); font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
 .completed-toggle span { margin-left: auto; }
 .completed-toggle svg { flex-shrink: 0; transition: transform var(--motion-duration, 160ms) var(--ease); }
@@ -63,5 +63,5 @@
 .date-strip strong { color: var(--heading); font-size: var(--text-body); }
 .date-strip button.selected { background: var(--selected); border-color: var(--selected); }
 .date-strip button.selected small, .date-strip button.selected strong { color: var(--selected-ink); }
-.today-button { min-height: calc(41px - var(--label-button-trim, 0px)); border: 0; background: var(--turquoise); color: var(--navy-900); border-radius: 999px; padding: 0 12px; font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; }
-.today-button:hover { background: var(--navy-900); color: #fff; }
+.today-button { min-height: calc(41px - var(--label-button-trim, 0px)); border: 0; background: var(--navy-900); color: #fff; border-radius: 999px; padding: 0 12px; font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; }
+.today-button:hover { background: var(--turquoise); color: var(--navy-900); }
