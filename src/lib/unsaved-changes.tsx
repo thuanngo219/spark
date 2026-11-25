@@ -68,7 +68,7 @@ function DiscardChangesDialog({ onRespond }: { onRespond: (discard: boolean) => 
       <div className="editor-header"><h2 id={titleId}>Nội dung chưa lưu?</h2></div>
       <p id={descriptionId}>Bạn có thay đổi chưa được lưu. Bạn có thật sự muốn thoát?</p>
       <div className="editor-actions">
-        <button type="button" className="text-button" autoFocus onClick={() => choose(false)}><Icon name="edit" size={17} />Tiếp tục sửa</button>
+        <button type="button" className="primary-button" autoFocus onClick={() => choose(false)}><Icon name="edit" size={17} />Tiếp tục sửa</button>
         <button type="button" className="delete-button" onClick={() => choose(true)}><Icon name="log-out" size={17} />Bỏ thay đổi</button>
       </div>
     </dialog>, document.body,

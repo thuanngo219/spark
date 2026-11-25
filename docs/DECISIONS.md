@@ -759,3 +759,8 @@ Dùng hộp thoại của Spark cho mọi thao tác bỏ nháp trong app, với 
 ## D-252 — Nội dung và nút xác nhận chưa lưu (2026-11-24)
 
 Hộp thoại dùng tiêu đề “Nội dung chưa lưu?” và câu “Bạn có thay đổi chưa được lưu. Bạn có thật sự muốn thoát?”. Hai nút giữ nhãn “Tiếp tục sửa” và “Bỏ thay đổi”, thêm icon edit/log-out 17px trước chữ, cách 6px. Nút tiếp tục dùng hover neutral của text-button; nút bỏ thay đổi dùng hover Coral/chữ trắng cùng nút thao tác nguy hiểm của hệ thống. Desktop giữ chuyển màu 220ms và focus bàn phím hiện hành.
+
+
+## D-253 — Vai trò CTA tiếp tục sửa và lưu trữ (2026-11-25)
+
+“Tiếp tục sửa” trong hộp thoại Nội dung chưa lưu dùng CTA chính: nền Turquoise/chữ Navy, hover Navy/chữ trắng; giữ icon edit, mặc định focus và hành vi giữ nháp. Lưu trữ/Khôi phục trong chỉnh sửa Danh mục và chi tiết ghi chú dùng hành động phụ neutral, hover xám nhẹ/chữ chính. Giữ Yêu thích là nút trạng thái riêng.

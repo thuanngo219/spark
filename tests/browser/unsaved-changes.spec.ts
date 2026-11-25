@@ -117,6 +117,8 @@ for (const width of [390, 1280]) {
     await expect(discard.locator("svg:first-child")).toBeVisible();
     await expect(dialog).toHaveCSS("background-color", "rgb(27, 32, 48)");
     await expect(keep).toBeFocused();
+    await expect(keep).toHaveCSS("background-color", "rgb(68, 212, 205)");
+    await expect(keep).toHaveCSS("color", "rgb(17, 23, 66)");
     await page.keyboard.press("Shift+Tab");
     await expect(discard).toBeFocused();
     await page.keyboard.press("Tab");
@@ -125,6 +127,8 @@ for (const width of [390, 1280]) {
       const normalBackground = await keep.evaluate(el => getComputedStyle(el).backgroundColor);
       await keep.hover();
       await expect(keep).not.toHaveCSS("background-color", normalBackground);
+      await expect(keep).toHaveCSS("background-color", "rgb(17, 23, 66)");
+      await expect(keep).toHaveCSS("color", "rgb(255, 255, 255)");
       await expect(keep).toHaveCSS("transition-duration", "0.22s, 0.22s, 0.22s, 0.16s");
       await discard.hover();
       await expect(discard).toHaveCSS("background-color", "rgb(217, 119, 106)");

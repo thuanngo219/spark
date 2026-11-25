@@ -40,8 +40,9 @@
 .quick-add-actions { display: flex; gap: 8px; align-items: center; }
 .quick-add-actions .text-button, .quick-add-actions .primary-button { min-height: calc(44px - var(--label-button-trim, 0px)); }
 .text-button, .primary-button, .delete-button, .archive-button { min-height: calc(40px - var(--label-button-trim, 0px)); border-radius: 999px; border: 0; padding: 0 14px; font-size: var(--ui-label-size); text-transform: uppercase; font-weight: 700; }
-.text-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: transparent; color: var(--control-muted); }
-.text-button:hover { background: var(--control-hover); color: var(--ink); }
+.text-button, .primary-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.text-button { background: transparent; color: var(--control-muted); }
+.text-button:hover, .detail-meta-button.archive:hover { background: var(--control-hover); color: var(--ink); }
 .primary-button { background: var(--turquoise); color: var(--navy-900); box-shadow: none; }
 .primary-button:not(:disabled):hover { background: var(--navy-900); color: #fff; transform: translateY(-1px); }
 .primary-button:disabled { opacity: 1; background: var(--turquoise); color: rgba(17,23,66,.46); cursor: not-allowed; transform: none; }
