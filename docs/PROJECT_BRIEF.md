@@ -6,7 +6,7 @@ Phím chuyển Danh mục hiện hành là F rồi 1–9 trong vòng 2 giây. Ph
 
 Chủ dự án xác nhận giao diện production “Ổn rồi” ngày 2026-10-29 sau D-207. [Handoff v3](handoff/spark-v3.md) chỉ ghi quy tắc còn hiệu lực và phạm vi đã kiểm chứng; các mục D-xxx phía dưới là lịch sử phát triển, nên đọc cùng quyết định mới nhất khi một thông số thay đổi.
 
-CTA chính chỉ dùng nền Navy #111742, chữ/icon trắng trên desktop và mobile; hover Turquoise #44D4CD, chữ/icon Navy. Áp dụng cho Thêm/Lưu/Tiếp tục sửa, nút thêm nổi/dock, primary icon, Hôm nay trong bộ chọn ngày và Hoàn tác trong toast. Disabled giữ Navy, giảm tương phản chữ trắng, không đổi màu hover. Hành động phụ (Hủy, Lưu trữ/Khôi phục, sửa/điều hướng phụ) dùng nền xám nhẹ #F1F2F5, hover #E4E6EC; dark mode dùng #30394E → #3B455B. Giữ semantic/selected và thao tác bỏ/xóa theo màu riêng. Desktop giữ chuyển màu 220ms và reduced motion.
+CTA chính dùng một kiểu trên desktop/mobile và cả hai theme: nền Navy `#111742`, chữ/icon trắng `#FFFFFF`; hover nền Turquoise `#44D4CD`, chữ/icon Navy. Hành động phụ có nền xám nhẹ, hover chuyển sang sắc xám nổi rõ hơn; thao tác bỏ/xóa và nút trạng thái giữ màu theo ý nghĩa. Chi tiết màu và trạng thái tại [brand guideline](../brand-guideline.md#button-variants--d-254-xác-nhận-ngày-2026-11-25).
 
 ## Bảo vệ thay đổi chưa lưu — D-250/D-254
 
@@ -14,7 +14,7 @@ Khi quick-add hoặc trình sửa tên/Nội dung có thay đổi chưa lưu, H�
 
 Dùng hộp thoại của Spark cho mọi thao tác bỏ nháp trong app, với hai nút “Tiếp tục sửa” và “Bỏ thay đổi”. Mặc định focus “Tiếp tục sửa”; Escape giữ bản nháp. Hộp thoại chặn thao tác nền và giữ focus bên trong, dùng màu/chữ theo theme. Khi vuốt mở xác nhận, màn phía sau trở về vị trí ban đầu và vẫn thao tác được nếu chọn tiếp tục. Không dùng window.confirm trong luồng này. Riêng tải lại/đóng tab vẫn dùng beforeunload và cảnh báo do trình duyệt kiểm soát.
 
-Hộp thoại dùng tiêu đề “Nội dung chưa lưu?” và câu “Bạn có thay đổi chưa được lưu. Bạn có thật sự muốn thoát?”. Hai nút giữ nhãn “Tiếp tục sửa” và “Bỏ thay đổi”, thêm icon edit/log-out 17px trước chữ, cách 6px. Nút tiếp tục dùng CTA chính Navy/chữ trắng, hover Turquoise/chữ Navy; nút bỏ thay đổi dùng hover Coral/chữ trắng cùng nút thao tác nguy hiểm của hệ thống. Desktop giữ chuyển màu 220ms và focus bàn phím hiện hành. “Tiếp tục sửa” trong hộp thoại Nội dung chưa lưu dùng CTA chính: nền Navy/chữ trắng, hover Turquoise/chữ Navy; giữ icon edit, mặc định focus và hành vi giữ nháp. Lưu trữ/Khôi phục trong chỉnh sửa Danh mục và chi tiết ghi chú dùng hành động phụ nền xám nhẹ, hover xám đậm hơn/chữ chính. Giữ Yêu thích là nút trạng thái riêng.
+Hộp thoại dùng tiêu đề “Nội dung chưa lưu?” và câu “Bạn có thay đổi chưa được lưu. Bạn có thật sự muốn thoát?”. “Tiếp tục sửa” là CTA chính, giữ icon edit và focus mặc định; “Bỏ thay đổi” là thao tác bỏ/xóa, dùng icon log-out. Hai icon 17px, đứng trước chữ, cách 6px. Lưu trữ/Khôi phục là hành động phụ; Yêu thích giữ trạng thái riêng.
 
 ## Giao diện hiện hành — đến D-239 (2026-11-13)
 

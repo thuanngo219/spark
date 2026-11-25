@@ -769,3 +769,5 @@ Hộp thoại dùng tiêu đề “Nội dung chưa lưu?” và câu “Bạn c
 ## D-254 — Một kiểu CTA chính và nền hành động phụ (2026-11-25)
 
 CTA chính chỉ dùng nền Navy #111742, chữ/icon trắng trên desktop và mobile; hover Turquoise #44D4CD, chữ/icon Navy. Áp dụng cho Thêm/Lưu/Tiếp tục sửa, nút thêm nổi/dock, primary icon, Hôm nay trong bộ chọn ngày và Hoàn tác trong toast. Disabled giữ Navy, giảm tương phản chữ trắng, không đổi màu hover. Hành động phụ (Hủy, Lưu trữ/Khôi phục, sửa/điều hướng phụ) dùng nền xám nhẹ #F1F2F5, hover #E4E6EC; dark mode dùng #30394E → #3B455B. Giữ semantic/selected và thao tác bỏ/xóa theo màu riêng. Desktop giữ chuyển màu 220ms và reduced motion.
+
+Chủ dự án xác nhận hệ thống CTA D-254 “Ổn rồi” ngày 2026-11-25 và yêu cầu đồng bộ guideline, tài liệu và handoff v3. Lần cập nhật tài liệu này không thay đổi giao diện hoặc hành vi ứng dụng.

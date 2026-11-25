@@ -164,7 +164,7 @@ Dark mode dùng neutral xanh xám, canvas phẳng; giữ nguyên màu nhận di�
 | Link / focus | `#6CE0DA` |
 | Chữ nhãn / Quan Trọng / Ưu tiên | `#A0A8BC` / `#D6A84F` / `#D9776A` |
 
-D-146: Quan Trọng dùng duy nhất Amber #D6A84F, Ưu tiên dùng duy nhất Coral #D9776A ở danh sách, chi tiết, sidebar và swipe, cả hai theme; nền/border có thể dùng độ trong suốt của cùng màu. Nhãn trước đây dùng Violet chuyển sang neutral muted. Deep Purple #65458A giữ nguyên trong logo và dự án. CTA giữ Turquoise và chữ Navy, checked vẫn neutral #8B8F9E. Project giữ giá trị màu đã chọn, dot thêm viền trong trắng 20% để tách khỏi nền. Sidebar tiếp tục dùng logo negative với wordmark trắng. Native date/select theo color-scheme của theme thực tế. Header blur 8px/WebKit và bóng tối nhẹ, không thêm gradient màu nền. Các quy tắc màu sáng bên dưới tiếp tục áp dụng khi chọn Sáng. D-139: hover nút lưu Tên/Nội dung dùng nền Turquoise và icon Navy ở cả hai theme; nút Hủy hover nền neutral nhẹ (ink 8%) và icon ink; nhãn lựa chọn theme hiển thị uppercase.
+D-146: Quan Trọng dùng duy nhất Amber #D6A84F, Ưu tiên dùng duy nhất Coral #D9776A ở danh sách, chi tiết, sidebar và swipe, cả hai theme; nền/border có thể dùng độ trong suốt của cùng màu. Nhãn trước đây dùng Violet chuyển sang neutral muted. Deep Purple #65458A giữ nguyên trong logo và dự án. CTA theo D-254 dùng Navy/chữ trắng, hover Turquoise/chữ Navy; checked vẫn neutral #8B8F9E. Project giữ giá trị màu đã chọn, dot thêm viền trong trắng 20% để tách khỏi nền. Sidebar tiếp tục dùng logo negative với wordmark trắng. Native date/select theo color-scheme của theme thực tế. Header blur 8px/WebKit và bóng tối nhẹ, không thêm gradient màu nền. Các quy tắc màu sáng bên dưới tiếp tục áp dụng khi chọn Sáng. D-139: hover nút lưu Tên/Nội dung dùng nền Turquoise và icon Navy ở cả hai theme; nút Hủy dùng nền neutral và hover theo bảng CTA hiện hành; nhãn lựa chọn theme hiển thị uppercase.
 
 ### Controls và focus
 
@@ -186,24 +186,29 @@ Phần này là source of truth cho web app. Khi CSS/component mới khác bản
 | `secondary-hover` | `#E4E6EC` | Nền hover của hành động phụ. |
 | `ui-note-mark` | `#AEB3BF` | Dash nhận diện note trong listing. |
 
-#### Button variants
+#### Button variants — D-254, xác nhận ngày 2026-11-25
 
-| Variant | Dùng cho | Default | Hover | Disabled |
+CTA chính dùng một kiểu trên desktop/mobile và cả hai theme: nền Navy `#111742`, chữ/icon trắng `#FFFFFF`; hover nền Turquoise `#44D4CD`, chữ/icon Navy. Hành động phụ có nền xám nhẹ, hover chuyển sang sắc xám nổi rõ hơn; thao tác bỏ/xóa và nút trạng thái giữ màu theo ý nghĩa.
+
+| Vai trò | Nền mặc định | Chữ/icon mặc định | Nền hover | Chữ/icon hover |
 |---|---|---|---|---|
-| Primary | Thêm, Tạo/Lưu Danh mục, Tiếp tục sửa, CTA chính | Navy `#111742`, chữ trắng | Turquoise `#44D4CD`, chữ Navy | Giữ nền Navy; chữ trắng ở `46%`, không giảm opacity toàn nút. |
-| Primary icon | Close và utility icon cần nổi bật | Navy, icon trắng, `44×44px`, hình tròn | Turquoise, icon Navy | Như Primary. |
-| Secondary text | Hủy, Lưu trữ/Khôi phục và action phụ | Nền `#F1F2F5`, chữ `#8B8F9E`, cao `40px`, bo tròn hai đầu | Nền `#E4E6EC`, chữ `#171B35` | Giảm tương phản chữ, không thêm glow. |
-| Secondary icon | Help ở header, sửa và điều hướng phụ | Nền `#F1F2F5`, icon `#8B8F9E`, `36–40px`, hình tròn | Nền `#E4E6EC`, icon `#171B35` | Giảm tương phản icon. |
-| Destructive | Xóa item | Muted Coral/tint đi kèm icon và label | Tăng tint tiết chế | Không dùng màu làm tín hiệu duy nhất. |
-| Semantic | Star, Ưu tiên, checkbox, project color | Màu theo ý nghĩa hoặc trạng thái | Chỉ đổi khi giúp nhận biết hành động | Phải giữ icon/shape/label làm tín hiệu bổ sung. |
+| CTA chính, cả hai theme | `#111742` | `#FFFFFF` | `#44D4CD` | `#111742` |
+| Hành động phụ, theme sáng | `#F1F2F5` | `#8B8F9E` | `#E4E6EC` | `#171B35` |
+| Hành động phụ, theme tối | `#30394E` | `#A0A8BC` | `#3B455B` | `#E9ECF5` |
+| Bỏ/xóa, cả hai theme | `rgba(217,119,106,.08)` | `#D9776A` | `#D9776A` | `#FFFFFF` |
 
-- Vùng chạm mobile mặc định là `44×44px`, kể cả khi artwork icon nhỏ hơn. Ngoại lệ đã duyệt D-155: selector sắp xếp cao 30px và nút đổi chiều 30×30px trên desktop/mobile.
-- Desktop floating quick-add là ngoại lệ Primary icon `48×48px`, dấu `+` 32px, neo góc dưới phải. Mobile dùng nút Primary icon 64px nhô nhẹ phía trên dock 58px, dấu + 36px; cả hai luôn có accessible label/tooltip “Thêm công việc”.
-- D-135: nút chỉ có icon dùng hình tròn; nút có chữ/navigation bo hai đầu. Checkbox checked dùng #8B8F9E/tick trắng trên desktop và mobile.
-- Nút trong cùng một action row dùng cùng chiều cao và radius; Primary và Hủy vẫn giữ phân cấp màu khác nhau.
-- Navigation button, color swatch, date tile và project dot không bị ép vào màu Primary vì chúng là selection/navigation control.
+- CTA chính gồm Thêm, Lưu/Tạo Danh mục, Tiếp tục sửa, Quay lại, tick lưu, nút thêm nổi/dock, nút Hôm nay của bộ chọn ngày và Hoàn tác trong toast. Hủy và Lưu trữ/Khôi phục thuộc hành động phụ.
+- Nút Yêu thích, Quan trọng, Ưu tiên, checkbox, bộ lọc, B/I/U, swatch màu và lựa chọn ngày giữ tín hiệu selected/semantic riêng; không ép vào màu CTA chính.
+- Chữ trên nút 10px, weight 700, ALL CAPS. Nút có chữ bo hai đầu; icon-only hình tròn. Icon đi trước chữ, cách 6px; hộp thoại chưa lưu dùng icon edit/log-out 17px.
+- `.primary-button:disabled` giữ nền Navy, chữ trắng ở 46%, không giảm opacity cả nút và không đổi màu khi hover. Không suy rộng thông số disabled này cho nút trạng thái/điều hướng có quy tắc riêng.
+- Desktop dùng chuyển màu 220ms; reduced motion giảm hiệu ứng. Giữ focus bàn phím và vùng chạm mobile theo các ngoại lệ đã duyệt.
+- Cỡ và sắc chữ/icon của control đặc thù có thể khác theo vai trò, ví dụ mũi tên chuyển mục và icon sửa; bảng trên mô tả kiểu CTA chuẩn, không đổi typography hoặc hình học của control.
 
-D-254: mọi CTA chính dùng Navy/chữ trắng → hover Turquoise/chữ Navy trên cả theme, desktop và mobile. Nền hành động phụ sáng #F1F2F5 → hover #E4E6EC; tối #30394E → hover #3B455B. Nút disabled không đổi màu khi hover. Selected (B/I/U, ngày, theme, filter) giữ token và tín hiệu chọn riêng; semantic/destructive giữ Amber/Coral.
+- Các nút trong cùng hàng hành động giữ chiều cao và radius đồng nhất; màu thể hiện vai trò chính, phụ hoặc bỏ/xóa.
+- Chiều cao pill chuẩn: desktop 40px, mobile 36px; quick-add dùng 44px/40px. Vùng chạm mobile mặc định tối thiểu 44px theo quy tắc hiện hành, gồm phần mở rộng vùng chạm khi artwork nhỏ hơn.
+- Selector sắp xếp và nút đổi chiều giữ ngoại lệ D-155: cao 30px / 30×30px. Hàng danh sách mobile không ngày giữ ngoại lệ cao 38px đã duyệt.
+- Nút thêm nổi desktop 48×48px, dấu + 32px. Nút thêm dock mobile 64×64px, dấu + 36px. Primary icon thông thường 44×44px; kích thước nút sửa/điều hướng theo component.
+- Logo Primary/Negative là quy tắc asset riêng, không thuộc biến thể CTA.
 
 #### Link trong nội dung
 

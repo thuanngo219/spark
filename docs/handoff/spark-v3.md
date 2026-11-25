@@ -4,19 +4,38 @@ Phím chuyển Danh mục hiện hành là F rồi 1–9 trong vòng 2 giây. Ph
 
 Cập nhật 2026-11-25. Chỉ giữ quy tắc đang có hiệu lực. Lịch sử thay đổi tra Git và docs/DECISIONS.md; không dùng thông số cũ trong các mục lịch sử làm trạng thái hiện tại.
 
-CTA chính chỉ dùng nền Navy #111742, chữ/icon trắng trên desktop và mobile; hover Turquoise #44D4CD, chữ/icon Navy. Áp dụng cho Thêm/Lưu/Tiếp tục sửa, nút thêm nổi/dock, primary icon, Hôm nay trong bộ chọn ngày và Hoàn tác trong toast. Disabled giữ Navy, giảm tương phản chữ trắng, không đổi màu hover. Hành động phụ (Hủy, Lưu trữ/Khôi phục, sửa/điều hướng phụ) dùng nền xám nhẹ #F1F2F5, hover #E4E6EC; dark mode dùng #30394E → #3B455B. Giữ semantic/selected và thao tác bỏ/xóa theo màu riêng. Desktop giữ chuyển màu 220ms và reduced motion.
+CTA chính dùng một kiểu trên desktop/mobile và cả hai theme: nền Navy `#111742`, chữ/icon trắng `#FFFFFF`; hover nền Turquoise `#44D4CD`, chữ/icon Navy. Hành động phụ có nền xám nhẹ, hover chuyển sang sắc xám nổi rõ hơn; thao tác bỏ/xóa và nút trạng thái giữ màu theo ý nghĩa. Chi tiết tại [brand guideline](../../brand-guideline.md#button-variants--d-254-xác-nhận-ngày-2026-11-25).
 
 ## Production và kiểm chứng
 
 - D-254: lint, typecheck, 176 test logic, build và 25 ca trình duyệt local đạt: CTA chính/phụ, hover 220ms, disabled, reduced motion, sáng/tối, quick-add và Danh mục ở 320/390/1280px, cùng xác nhận giữ/bỏ nháp. Kiểm tra dùng Chrome; native iPhone cần chủ dự án kiểm tra trực tiếp.
 
 - Domain https://spark.thuanngo.com; Vercel project spark (`prj_mpTXdTL5cUsrpbT40lw7fmBt8NZM`), team Thuan Ngo (`team_CDEqBJfEqWiriY02pfrXzqMX`), nhánh main.
-- Bản ứng dụng hiện hành: D-254 (2026-11-25), bảo vệ thay đổi chưa lưu. Đối chiếu SHA và alias của bản phát hành trên Vercel với commit triển khai, không dùng SHA cũ của D-239 làm trạng thái hiện tại.
+- Mã ứng dụng production D-254: `3e5dd3ec50e14681b741577eebdb3e54b151f84f`, deployment `dpl_8viDUasS4AemeowMPhpyprwn7Eg1` READY, alias `spark.thuanngo.com`; đối chiếu trực tiếp ngày 2026-11-25. Commit chỉ sửa tài liệu sau mốc này có thể tạo deployment mới với cùng mã ứng dụng.
+- Tám ca production đã đạt: hover desktop sáng/tối, reduced motion, touch 390px, chỉnh sửa Danh mục 320/390/1280px và hộp thoại chưa lưu 390/1280px. Chủ dự án xác nhận hệ thống CTA “Ổn rồi” ngày 2026-11-25.
 - D-238: 9 ca kiểm tra production cho phím tắt, chuyển mục và bảng trợ giúp đều đạt. D-239: lint, typecheck, 176 test logic, build và 5 ca trình duyệt local đạt, gồm bộ chọn ở 390px. Ba ca kiểm tra production cho Tất cả, Chỉ ghi chú và Chỉ task đều đạt.
 - Chủ dự án xác nhận bản sửa lỗi giật khi chuyển mục đã ổn ngày 2026-11-13.
 - Chủ dự án xác nhận bản cập nhật nhãn và bộ chọn đã ổn ngày 2026-11-09.
 - Chủ dự án xác nhận khoảng trống bàn phím trên iPhone đã ổn (16px mở/50px đóng), và xác nhận UI mới nhất “Ổn rồi” ngày2026-10-31. Đây là phản hồi thực tế của chủ dự án; agent chưa tự kiểm tra native iPhone. Pinch/system edge gesture cần xác nhận riêng trên máy thật.
 - B-005 rà copy hoàn tất. Đợt kiểm tra độ tin cậy dữ liệu điện thoại/máy tính đã hoàn tất theo xác nhận chủ dự án ngày2026-10-31; [kết quả chi tiết](../DATA_RELIABILITY_CHECK.md). Không có bước nghiệm thu đang chờ.
+
+## Hệ thống CTA hiện hành
+
+| Vai trò | Nền mặc định | Chữ/icon mặc định | Nền hover | Chữ/icon hover |
+|---|---|---|---|---|
+| CTA chính, cả hai theme | `#111742` | `#FFFFFF` | `#44D4CD` | `#111742` |
+| Hành động phụ, theme sáng | `#F1F2F5` | `#8B8F9E` | `#E4E6EC` | `#171B35` |
+| Hành động phụ, theme tối | `#30394E` | `#A0A8BC` | `#3B455B` | `#E9ECF5` |
+| Bỏ/xóa, cả hai theme | `rgba(217,119,106,.08)` | `#D9776A` | `#D9776A` | `#FFFFFF` |
+
+- CTA chính gồm Thêm, Lưu/Tạo Danh mục, Tiếp tục sửa, Quay lại, tick lưu, nút thêm nổi/dock, nút Hôm nay của bộ chọn ngày và Hoàn tác trong toast. Hủy và Lưu trữ/Khôi phục thuộc hành động phụ.
+- Nút Yêu thích, Quan trọng, Ưu tiên, checkbox, bộ lọc, B/I/U, swatch màu và lựa chọn ngày giữ tín hiệu selected/semantic riêng; không ép vào màu CTA chính.
+- Chữ trên nút 10px, weight 700, ALL CAPS. Nút có chữ bo hai đầu; icon-only hình tròn. Icon đi trước chữ, cách 6px; hộp thoại chưa lưu dùng icon edit/log-out 17px.
+- `.primary-button:disabled` giữ nền Navy, chữ trắng ở 46%, không giảm opacity cả nút và không đổi màu khi hover. Không suy rộng thông số disabled này cho nút trạng thái/điều hướng có quy tắc riêng.
+- Desktop dùng chuyển màu 220ms; reduced motion giảm hiệu ứng. Giữ focus bàn phím và vùng chạm mobile theo các ngoại lệ đã duyệt.
+- Cỡ và sắc chữ/icon của control đặc thù có thể khác theo vai trò, ví dụ mũi tên chuyển mục và icon sửa; bảng trên mô tả kiểu CTA chuẩn, không đổi typography hoặc hình học của control.
+
+Mã cần đối chiếu: `src/app/styles/foundation.css` (token sáng/tối), `quick-add.css` (CTA/pill/disabled), `canvas.css` (icon), `detail.css` (sửa/lưu/lưu trữ/xóa), `responsive.css` (dock/vùng chạm), `utility.css` (toast). Không thêm màu CTA chính riêng cho mobile. Tests: `hover-motion.spec.ts`, `project-sidebar.spec.ts`, `unsaved-changes.spec.ts`, `quick-add-layout.spec.ts`.
 
 ## Typography hiện hành
 
@@ -42,7 +61,7 @@ Inter4.1 WOFF2 thường/nghiêng trong src/app/fonts/, next/font/local; root100
 - Khi quick-add hoặc trình sửa tên/Nội dung có thay đổi chưa lưu, Hủy/X, đóng/quay lại, bấm nền desktop hoặc vuốt mép trái mobile phải hỏi xác nhận trước khi bỏ nháp. Từ chối thoát giữ nguyên chữ, định dạng và khả năng thao tác; đồng ý mới hủy. Quick-add theo dõi cả loại task/note, ngày và Danh mục. Escape trong editor chỉ hủy phần đang sửa sau xác nhận, không đóng tiếp màn chi tiết trong cùng lần nhấn. Không hỏi khi chưa thay đổi hoặc đã lưu thành công. Thay đổi metadata chi tiết vẫn tự lưu theo hành vi hiện hành.
 - Dùng hộp thoại của Spark cho mọi thao tác bỏ nháp trong app, với hai nút “Tiếp tục sửa” và “Bỏ thay đổi”. Mặc định focus “Tiếp tục sửa”; Escape giữ bản nháp. Hộp thoại chặn thao tác nền và giữ focus bên trong, dùng màu/chữ theo theme. Khi vuốt mở xác nhận, màn phía sau trở về vị trí ban đầu và vẫn thao tác được nếu chọn tiếp tục. Không dùng window.confirm trong luồng này. Riêng tải lại/đóng tab vẫn dùng beforeunload và cảnh báo do trình duyệt kiểm soát.
 
-Hộp thoại dùng tiêu đề “Nội dung chưa lưu?” và câu “Bạn có thay đổi chưa được lưu. Bạn có thật sự muốn thoát?”. Hai nút giữ nhãn “Tiếp tục sửa” và “Bỏ thay đổi”, thêm icon edit/log-out 17px trước chữ, cách 6px. Nút tiếp tục dùng CTA chính Navy/chữ trắng, hover Turquoise/chữ Navy; nút bỏ thay đổi dùng hover Coral/chữ trắng cùng nút thao tác nguy hiểm của hệ thống. Desktop giữ chuyển màu 220ms và focus bàn phím hiện hành. “Tiếp tục sửa” trong hộp thoại Nội dung chưa lưu dùng CTA chính: nền Navy/chữ trắng, hover Turquoise/chữ Navy; giữ icon edit, mặc định focus và hành vi giữ nháp. Lưu trữ/Khôi phục trong chỉnh sửa Danh mục và chi tiết ghi chú dùng hành động phụ nền xám nhẹ, hover xám đậm hơn/chữ chính. Giữ Yêu thích là nút trạng thái riêng.
+Hộp thoại dùng tiêu đề “Nội dung chưa lưu?” và câu “Bạn có thay đổi chưa được lưu. Bạn có thật sự muốn thoát?”. “Tiếp tục sửa” là CTA chính, giữ icon edit và focus mặc định; “Bỏ thay đổi” là thao tác bỏ/xóa, dùng icon log-out. Hai icon 17px, đứng trước chữ, cách 6px. Lưu trữ/Khôi phục là hành động phụ; Yêu thích giữ trạng thái riêng.
 
 - Chi tiết task/note có E để sửa nội dung, Shift + E để sửa tên. Desktop dùng nút hai mép hoặc ←/→ để đi theo thứ tự danh sách đã lọc lúc mở chi tiết. Dừng ở đầu/cuối và tạm ngưng chuyển mục khi sửa. Khung chi tiết và lớp khóa cuộn được giữ khi chuyển mục, nên hiệu ứng mở màn chỉ chạy lúc mở chi tiết. Nội dung mục mới bắt đầu từ đầu vùng cuộn.
 

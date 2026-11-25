@@ -4,7 +4,16 @@
 
 Trạng thái triển khai hiện hành và đường dẫn mã nguồn ở [handoff v3](handoff/spark-v3.md). Các mục D-117–D-199 ở cuối file ghi lại quá trình triển khai và có thể chứa thông số đã được quyết định sau thay thế; dùng handoff v3 và code để lấy giá trị đang chạy. Chủ dự án xác nhận giao diện production “Ổn rồi” ngày 2026-10-29 sau D-207.
 
-## Trạng thái kỹ thuật hiện hành đến D-239
+## Triển khai CTA hiện hành — D-254
+
+CTA chính dùng một kiểu trên desktop/mobile và cả hai theme: nền Navy `#111742`, chữ/icon trắng `#FFFFFF`; hover nền Turquoise `#44D4CD`, chữ/icon Navy. Hành động phụ có nền xám nhẹ, hover chuyển sang sắc xám nổi rõ hơn; thao tác bỏ/xóa và nút trạng thái giữ màu theo ý nghĩa.
+
+- Dùng selector/token hiện có; không tạo biến thể Turquoise mặc định riêng cho mobile. Token `--navy-900`, `--turquoise`, `--control-hover`, `--secondary-hover`, `--control-muted`, `--ink` nằm trong `src/app/styles/foundation.css`.
+- Nguồn style: `quick-add.css`, `canvas.css`, `detail.css`, `responsive.css`, `utility.css`. Khi sửa phải kiểm tra cả hover, disabled, focus-visible và reduced motion; giữ semantic/selected riêng.
+- Bảng màu, ví dụ vai trò và kích thước ở [brand guideline](../brand-guideline.md#button-variants--d-254-xác-nhận-ngày-2026-11-25); SHA, alias và bằng chứng kiểm tra ở [handoff v3](handoff/spark-v3.md).
+- Bộ kiểm tra liên quan: `hover-motion.spec.ts`, `project-sidebar.spec.ts`, `unsaved-changes.spec.ts`, `quick-add-layout.spec.ts`, tại `tests/browser/`. Kiểm tra bằng fixture local, không sửa dữ liệu tài khoản thật.
+
+## Mốc kỹ thuật D-239 (tham khảo lịch sử)
 
 - Font Inter 4.1 thường/nghiêng nhúng cùng origin; cỡ chữ px, weight400/700. Desktop/mobile: list14/15px, menu14/15px, support14/15px, metadata ngày/dự án12/13px; Nội dung15px, tên chi tiết18px, tên quick-add16px, dialog24px cả hai. Label10px/700/uppercase. Heading desktop38–56px/mobile30px, compact19–28px/21px; line-height1.2/1.4/1.6 theo vai trò.
 - Gap item2px; nhãn–nội dung8px. Toolbar chi tiết desktop cao44px, dưới hàng nhãn8px, cách text15px; editor mobile giữ hàng nhãn–toolbar2px. Caption loading cách progress17px.
